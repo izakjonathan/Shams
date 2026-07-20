@@ -28,7 +28,13 @@ Change the variables in that file first for site-wide updates to:
 `app/globals.css` contains component and page rules that consume these tokens. New styles should use the existing semantic variables instead of introducing repeated hard-coded values. Add a new token only when a value is reused or represents a meaningful design decision.
 
 
-## v0.1.9
+## v0.1.10
 - Global accent changed to `#FCC64F`.
 - Added a reusable inline `ArrowIcon` using the supplied SVG geometry.
 - Removed iOS tap-highlight/native button flicker from accordion controls.
+
+## v0.1.10
+
+- Reworked FAQ expansion to animate the content height, opacity, and vertical position smoothly without padding jumps.
+- Added a global newsletter placeholder color token and darkened the email placeholder.
+- Added reduced-motion handling for FAQ transitions.

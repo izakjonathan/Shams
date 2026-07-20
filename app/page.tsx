@@ -178,7 +178,7 @@ export default function Home() {
               <button onClick={() => setOpenFaq(openFaq === index ? null : index)} aria-expanded={openFaq === index}>
                 <span>{question}</span><i>{openFaq === index ? "−" : "+"}</i>
             </button>
-              <div className="faqAnswer"><p>{answer}</p></div>
+              <div className="faqAnswer"><div className="faqAnswerInner"><p>{answer}</p></div></div>
             </article>
           ))}
         </div>

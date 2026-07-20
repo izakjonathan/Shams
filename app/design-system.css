@@ -38,6 +38,7 @@
   --color-ticket-line: #484848;
   --color-control-line: #555;
   --color-text-muted: #555;
+  --color-placeholder: #76736c;
   --color-text-subtle: #777;
   --color-ticket-copy: #aaa;
   --color-ticket-footnote: #888;
@@ -66,9 +67,9 @@
 
   /* Motion */
   --duration-fast: 300ms;
-  --duration-medium: 350ms;
+  --duration-medium: 480ms;
   --duration-menu: 550ms;
-  --ease-standard: ease;
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-menu: cubic-bezier(0.76, 0, 0.24, 1);
 
   /* Effects */
