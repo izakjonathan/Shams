@@ -68,8 +68,10 @@
   --duration-fast: 300ms;
   --duration-medium: 480ms;
   --duration-menu: 550ms;
+  --duration-reveal: 760ms;
   --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-menu: cubic-bezier(0.76, 0, 0.24, 1);
+  --reveal-distance: 42px;
 
   /* Effects */
   --orb-gradient: radial-gradient(

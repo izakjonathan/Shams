@@ -47,6 +47,42 @@ export default function Home() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
+  useEffect(() => {
+    const revealItems = Array.from(
+      document.querySelectorAll<HTMLElement>("main > section:not(.hero), main > footer")
+    );
+
+    if (!revealItems.length) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (reducedMotion || !("IntersectionObserver" in window)) {
+      revealItems.forEach((item) => item.classList.add("isRevealed"));
+      return;
+    }
+
+    document.documentElement.classList.add("scrollRevealEnabled");
+    revealItems.forEach((item) => item.classList.add("scrollReveal"));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("isRevealed");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -10% 0px" }
+    );
+
+    revealItems.forEach((item) => observer.observe(item));
+
+    return () => {
+      observer.disconnect();
+      document.documentElement.classList.remove("scrollRevealEnabled");
+    };
+  }, []);
+
   const closeMenu = () => setMenuOpen(false);
 
   return (

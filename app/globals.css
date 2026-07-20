@@ -4,3 +4,28 @@
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 @media (prefers-reduced-motion:reduce){.faqAnswer,.faqAnswerInner{transition:none}}
+
+/* Progressive scroll reveal: enabled only after JavaScript initializes. */
+.scrollRevealEnabled .scrollReveal {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-distance), 0);
+  transition:
+    opacity var(--duration-reveal) var(--ease-standard),
+    transform var(--duration-reveal) var(--ease-standard);
+  will-change: opacity, transform;
+}
+
+.scrollRevealEnabled .scrollReveal.isRevealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scrollRevealEnabled .scrollReveal,
+  .scrollRevealEnabled .scrollReveal.isRevealed {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
