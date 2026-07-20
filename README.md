@@ -110,3 +110,13 @@ it, those fall back to a placeholder domain.
   `required` for better autofill and mobile keyboards.
 - All non-form buttons explicitly set `type="button"` so they can't
   accidentally submit a form later.
+
+
+## v0.1.17 — iPhone Safari chrome cleanup
+
+- Explicit light backgrounds on both `html` and `body`.
+- Light color scheme and `viewport-fit=cover` metadata.
+- Matching Apple web-app status-bar metadata.
+- Safe-area-aware horizontal layout and footer spacing.
+- Vertical overscroll containment where supported.
+- A small paper-colored endcap after the footer so translucent browser controls do not sample the dark footer at the end of the page.
