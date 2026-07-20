@@ -77,7 +77,6 @@ export default function Home() {
 
       <section className="hero" id="top">
         <div className="heroOrb orbOne"/><div className="heroOrb orbTwo"/><div className="heroOrb orbThree"/>
-        <div className="orbit orbitA"><i/><i/></div><div className="orbit orbitB"><i/></div>
         <div className="heroMeta topLeft"><span>01 / FIRST EDITION</span><span>MUSIC · ART · SOLIDARITY</span></div>
         <div className="heroMeta topRight"><span>06.09.2026</span><span>COPENHAGEN</span></div>
         <div className="heroCenter">
