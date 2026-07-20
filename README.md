@@ -1,16 +1,13 @@
-# Shams for Humanity v0.1.2
+# Shams for Humanity v0.1.3
 
-Vercel deployment correction based on v0.1.1.
+Mobile-first festival frontend built with Next.js.
 
-## Important
+## Vercel deployment
 
-Upload the contents of this archive directly to the repository root. The archive is flat: `package.json`, `app`, and `public` are at the top level.
+This version uses a static export and includes an explicit `vercel.json`:
 
-In Vercel:
-- Framework Preset: Next.js
-- Root Directory: leave blank / repository root
-- Build Command: `npm run build`
-- Output Directory: leave blank
-- Install Command: `npm install`
+- Install: `npm ci`
+- Build: `npm run build`
+- Output directory: `out`
 
-If an older Root Directory is configured, clear it before redeploying.
+Keep the repository root directory blank in Vercel. The files in this ZIP must be placed directly at the repository root.
