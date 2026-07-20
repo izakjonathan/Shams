@@ -42,3 +42,9 @@ Change the variables in that file first for site-wide updates to:
 ## v0.1.11
 
 - Removed the decorative hero orbit lines and crossed-square markers.
+
+## v0.1.12 — display-font loading
+
+- Agilera is loaded through `next/font/local` and preloaded by Next.js.
+- The display face uses blocking font display, so large headings do not first paint in a sans-serif fallback and then shift.
+- The global display-font token remains the single typography control for all decorative headings.
