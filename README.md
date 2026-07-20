@@ -1,23 +1,16 @@
-# Shams for Humanity — v0.1.0
+# Shams for Humanity v0.1.2
 
-Mobile-first Next.js frontend concept for an event/festival website.
+Vercel deployment correction based on v0.1.1.
 
-## Run locally
+## Important
 
-```bash
-npm install
-npm run dev
-```
+Upload the contents of this archive directly to the repository root. The archive is flat: `package.json`, `app`, and `public` are at the top level.
 
-Open http://localhost:3000.
+In Vercel:
+- Framework Preset: Next.js
+- Root Directory: leave blank / repository root
+- Build Command: `npm run build`
+- Output Directory: leave blank
+- Install Command: `npm install`
 
-## Build
-
-```bash
-npm run build
-npm start
-```
-
-## Content to replace
-
-The date, venue, artist names, ticket prices, charity information and social links are placeholders. The supplied Agilera font is included locally at `public/fonts/Agilera.woff` and used for headings and titles.
+If an older Root Directory is configured, clear it before redeploying.
