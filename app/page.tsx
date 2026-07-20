@@ -42,7 +42,7 @@ export default function Home() {
         <button className="menuButton" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-controls="mobile-menu">
           <span>{menuOpen ? "Close" : "Menu"}</span>
           <span className="menuIcon" aria-hidden="true">{menuOpen ? "×" : "＋"}</span>
-        </button>
+      </button>
       </header>
 
       <div id="mobile-menu" className={`mobileMenu ${menuOpen ? "isOpen" : ""}`} aria-hidden={!menuOpen}>
@@ -64,7 +64,7 @@ export default function Home() {
           <p className="eyebrow">A gathering in support of collective care</p>
           <h1>Shams for<br/>Humanity</h1>
           <div className="heroActions">
-            <a className="button buttonPrimary" href="#tickets">Get tickets <span>↗</span></a>
+            <a className="button buttonPrimary" href="#tickets">Get tickets <span></span></a>
             <a className="textLink" href="#about">Discover the festival <span>↓</span></a>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default function Home() {
           <div>
             <p className="lead">Shams for Humanity is an independent festival bringing people together through music, visual art, food and conversation.</p>
             <p>Built around solidarity rather than spectacle, the event creates space for discovery, connection and meaningful action. A portion of every ticket supports trusted humanitarian initiatives.</p>
-            <a className="textLink dark" href="#mission">Our mission <span>↗</span></a>
+            <a className="textLink dark" href="#mission">Our mission <span></span></a>
           </div>
         </div>
       </section>
@@ -107,7 +107,7 @@ export default function Home() {
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
               <h3>{artist.name}</h3>
               <span>{artist.type}</span><span>{artist.time}</span><span>{artist.stage}</span>
-              <button aria-label={`View ${artist.name}`}>↗</button>
+              <button aria-label={`View ${artist.name}`}></button>
             </article>
           ))}
         </div>
@@ -144,8 +144,8 @@ export default function Home() {
         <h2>Choose your way in.</h2>
         <div className="ticketGrid">
           <article><div><span className="ticketType">EARLY SUPPORTER</span><span className="badge">Sold out</span></div><p>For those who believed first.</p><strong>195 <small>DKK</small></strong><button disabled>Sold out</button></article>
-          <article className="featuredTicket"><div><span className="ticketType">GENERAL ADMISSION</span><span className="badge">Available</span></div><p>Full access to all music, art and spaces.</p><strong>275 <small>DKK</small></strong><button>Get ticket <span>↗</span></button></article>
-          <article><div><span className="ticketType">SOLIDARITY TICKET</span><span className="badge">Available</span></div><p>Entry plus an additional direct donation.</p><strong>395 <small>DKK</small></strong><button>Get ticket <span>↗</span></button></article>
+          <article className="featuredTicket"><div><span className="ticketType">GENERAL ADMISSION</span><span className="badge">Available</span></div><p>Full access to all music, art and spaces.</p><strong>275 <small>DKK</small></strong><button>Get ticket <span></span></button></article>
+          <article><div><span className="ticketType">SOLIDARITY TICKET</span><span className="badge">Available</span></div><p>Entry plus an additional direct donation.</p><strong>395 <small>DKK</small></strong><button>Get ticket <span></span></button></article>
         </div>
         <p className="ticketFootnote">All prices include fees. A portion of each ticket is donated.</p>
       </section>
@@ -157,7 +157,7 @@ export default function Home() {
             <article className={openFaq === index ? "open" : ""} key={question}>
               <button onClick={() => setOpenFaq(openFaq === index ? null : index)} aria-expanded={openFaq === index}>
                 <span>{question}</span><i>{openFaq === index ? "−" : "+"}</i>
-              </button>
+            </button>
               <div className="faqAnswer"><p>{answer}</p></div>
             </article>
           ))}
@@ -167,7 +167,7 @@ export default function Home() {
       <section className="newsletter">
         <div className="newsletterOrb"/>
         <div><span className="kicker">STAY CLOSE</span><h2>News from<br/>under the sun.</h2></div>
-        <form onSubmit={(e) => e.preventDefault()}><label htmlFor="email">Email address</label><div><input id="email" type="email" placeholder="you@example.com"/><button type="submit">Join us ↗</button></div><p>No noise. Only meaningful updates.</p></form>
+        <form onSubmit={(e) => e.preventDefault()}><label htmlFor="email">Email address</label><div><input id="email" type="email" placeholder="you@example.com"/><button type="submit">Join us </button></div><p>No noise. Only meaningful updates.</p></form>
       </section>
 
       <footer>
