@@ -26,3 +26,9 @@ Change the variables in that file first for site-wide updates to:
 - recurring orb and ticket gradients
 
 `app/globals.css` contains component and page rules that consume these tokens. New styles should use the existing semantic variables instead of introducing repeated hard-coded values. Add a new token only when a value is reused or represents a meaningful design decision.
+
+
+## v0.1.9
+- Global accent changed to `#FCC64F`.
+- Added a reusable inline `ArrowIcon` using the supplied SVG geometry.
+- Removed iOS tap-highlight/native button flicker from accordion controls.

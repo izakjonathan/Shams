@@ -23,7 +23,7 @@
   /* Core colors */
   --color-paper: #f5f2eb;
   --color-ink: #0b0b0b;
-  --color-accent: #ff5a00;
+  --color-accent: #fcc64f;
   --color-white: #fff;
   --color-dark: #090909;
   --color-ticket-dark: #111;
@@ -76,14 +76,14 @@
     circle at 55% 45%,
     #050505 0 11%,
     var(--color-accent) 31%,
-    rgba(255, 90, 0, 0.13) 62%,
+    rgba(252, 198, 79, 0.13) 62%,
     transparent 70%
   );
   --ticket-gradient: radial-gradient(
     circle,
     var(--color-accent) 0,
     var(--color-accent) 11%,
-    rgba(255, 90, 0, 0.16) 46%,
+    rgba(252, 198, 79, 0.16) 46%,
     transparent 70%
   );
 }

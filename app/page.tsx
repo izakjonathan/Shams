@@ -11,6 +11,26 @@ const artists = [
   { name: "Community Choir", type: "Opening", time: "17:00", stage: "Garden" },
 ];
 
+
+function ArrowIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      className={`arrowIcon ${className}`.trim()}
+      viewBox="0 0 72 72"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g transform="matrix(1,0,0,1,-2738.27,-1214.51)">
+        <g transform="matrix(1,0,0,0.75,-21040.3,0)">
+          <g transform="matrix(0.996029,-1.32804,0.679396,0.905861,4520.26,22882.7)">
+            <path d="M17706.3,2491.41C17706.3,2492.31 17705.9,2493.18 17705.3,2493.81C17693.8,2505.19 17683.8,2517.97 17678.2,2534.7C17678,2535.2 17677.6,2535.59 17677.1,2535.76C17676.6,2535.93 17676,2535.86 17675.6,2535.56C17673,2533.78 17668.2,2530.56 17666,2529.05C17665.3,2528.57 17665,2527.64 17665.4,2526.89C17671.9,2514.32 17682.2,2502.96 17693.8,2493.26C17693.8,2493.26 17653.3,2495.3 17642.4,2495.69C17641.9,2495.7 17641.5,2495.53 17641.1,2495.21C17640.8,2494.9 17640.6,2494.46 17640.6,2494L17640.6,2484.74C17640.6,2484.28 17640.8,2483.84 17641.1,2483.53C17641.5,2483.21 17641.9,2483.04 17642.4,2483.05C17653.3,2483.43 17693.5,2485.47 17693.5,2485.47C17681.9,2475.77 17671.9,2464.52 17665.4,2451.95C17665,2451.2 17665.3,2450.27 17666,2449.79C17668.2,2448.28 17673,2445.07 17675.6,2443.28C17676,2442.98 17676.6,2442.91 17677.1,2443.08C17677.6,2443.25 17678,2443.64 17678.2,2444.14C17683.8,2460.86 17693.8,2473.56 17705.3,2484.93C17705.9,2485.57 17706.3,2486.43 17706.3,2487.33C17706.3,2488.52 17706.3,2490.22 17706.3,2491.41Z" />
+          </g>
+        </g>
+      </g>
+    </svg>
+  );
+}
+
 const faqs = [
   ["Where does the event take place?", "The first edition is planned for Copenhagen. The final venue and access details will be announced to ticket holders."],
   ["Is the event accessible?", "Yes. We are designing step-free routes, accessible toilets, seating areas and a quiet space. Contact us for individual access needs."],
@@ -64,7 +84,7 @@ export default function Home() {
           <p className="eyebrow">A gathering in support of collective care</p>
           <h1>Shams for<br/>Humanity</h1>
           <div className="heroActions">
-            <a className="button buttonPrimary" href="#tickets">Get tickets <span></span></a>
+            <a className="button buttonPrimary" href="#tickets">Get tickets <ArrowIcon /></a>
             <a className="textLink" href="#about">Discover the festival <span>↓</span></a>
           </div>
         </div>
@@ -81,7 +101,7 @@ export default function Home() {
           <div>
             <p className="lead">Shams for Humanity is an independent festival bringing people together through music, visual art, food and conversation.</p>
             <p>Built around solidarity rather than spectacle, the event creates space for discovery, connection and meaningful action. A portion of every ticket supports trusted humanitarian initiatives.</p>
-            <a className="textLink dark" href="#mission">Our mission <span></span></a>
+            <a className="textLink dark" href="#mission">Our mission <ArrowIcon /></a>
           </div>
         </div>
       </section>
@@ -107,7 +127,7 @@ export default function Home() {
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
               <h3>{artist.name}</h3>
               <span>{artist.type}</span><span>{artist.time}</span><span>{artist.stage}</span>
-              <button aria-label={`View ${artist.name}`}></button>
+              <button aria-label={`View ${artist.name}`}><ArrowIcon /></button>
             </article>
           ))}
         </div>
@@ -144,8 +164,8 @@ export default function Home() {
         <h2>Choose your way in.</h2>
         <div className="ticketGrid">
           <article><div><span className="ticketType">EARLY SUPPORTER</span><span className="badge">Sold out</span></div><p>For those who believed first.</p><strong>195 <small>DKK</small></strong><button disabled>Sold out</button></article>
-          <article className="featuredTicket"><div><span className="ticketType">GENERAL ADMISSION</span><span className="badge">Available</span></div><p>Full access to all music, art and spaces.</p><strong>275 <small>DKK</small></strong><button>Get ticket <span></span></button></article>
-          <article><div><span className="ticketType">SOLIDARITY TICKET</span><span className="badge">Available</span></div><p>Entry plus an additional direct donation.</p><strong>395 <small>DKK</small></strong><button>Get ticket <span></span></button></article>
+          <article className="featuredTicket"><div><span className="ticketType">GENERAL ADMISSION</span><span className="badge">Available</span></div><p>Full access to all music, art and spaces.</p><strong>275 <small>DKK</small></strong><button>Get ticket <ArrowIcon /></button></article>
+          <article><div><span className="ticketType">SOLIDARITY TICKET</span><span className="badge">Available</span></div><p>Entry plus an additional direct donation.</p><strong>395 <small>DKK</small></strong><button>Get ticket <ArrowIcon /></button></article>
         </div>
         <p className="ticketFootnote">All prices include fees. A portion of each ticket is donated.</p>
       </section>
