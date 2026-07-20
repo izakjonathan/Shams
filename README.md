@@ -43,7 +43,7 @@ Change the variables in that file first for site-wide updates to:
 
 - Removed the decorative hero orbit lines and crossed-square markers.
 
-## v0.1.13 — display-font loading
+## v0.1.14 — display-font loading
 
 - Agilera is loaded through `next/font/local` and preloaded by Next.js.
 - The display face uses blocking font display, so large headings do not first paint in a sans-serif fallback and then shift.
@@ -53,3 +53,8 @@ Change the variables in that file first for site-wide updates to:
 ## Scroll reveal
 
 Content after the hero uses a reusable IntersectionObserver-based reveal. Global timing, easing, and distance are controlled by `--duration-reveal`, `--ease-standard`, and `--reveal-distance` in `app/design-system.css`. Reduced-motion preferences are respected.
+
+
+## v0.1.14 scroll reveal reliability fix
+- Defers observer startup for two animation frames so the concealed CSS state is painted before reveal.
+- Uses viewport-entry positioning rather than section-area percentage, preventing long mobile sections from revealing before their content is visible.

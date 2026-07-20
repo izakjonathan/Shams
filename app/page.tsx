@@ -61,25 +61,43 @@ export default function Home() {
       return;
     }
 
-    document.documentElement.classList.add("scrollRevealEnabled");
+    const root = document.documentElement;
+    root.classList.add("scrollRevealEnabled");
     revealItems.forEach((item) => item.classList.add("scrollReveal"));
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("isRevealed");
-          observer.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -10% 0px" }
-    );
+    let observer: IntersectionObserver | null = null;
+    let firstFrame = 0;
+    let secondFrame = 0;
 
-    revealItems.forEach((item) => observer.observe(item));
+    // Wait for the concealed state to be painted before observation begins.
+    // Without this, browsers can apply both states in one frame and skip the transition.
+    firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add("isRevealed");
+              observer?.unobserve(entry.target);
+            });
+          },
+          {
+            threshold: 0.01,
+            // Reveal when the section reaches the lower visible portion of the screen.
+            // This avoids long sections completing before their padded content appears.
+            rootMargin: "0px 0px -18% 0px",
+          }
+        );
+
+        revealItems.forEach((item) => observer?.observe(item));
+      });
+    });
 
     return () => {
-      observer.disconnect();
-      document.documentElement.classList.remove("scrollRevealEnabled");
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+      observer?.disconnect();
+      root.classList.remove("scrollRevealEnabled");
     };
   }, []);
 
