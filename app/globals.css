@@ -5,25 +5,34 @@
 
 @media (prefers-reduced-motion:reduce){.faqAnswer,.faqAnswerInner{transition:none}}
 
-/* Progressive scroll reveal: enabled only after JavaScript initializes. */
-.scrollRevealEnabled .scrollReveal {
+/* Progressive, content-level scroll reveal. */
+.scrollRevealEnabled .revealItem {
   opacity: 0;
   transform: translate3d(0, var(--reveal-distance), 0);
   transition:
-    opacity var(--duration-reveal) var(--ease-standard),
-    transform var(--duration-reveal) var(--ease-standard);
+    opacity var(--duration-reveal) var(--ease-reveal),
+    transform var(--duration-reveal) var(--ease-reveal);
+  transition-delay: 0ms;
   will-change: opacity, transform;
 }
 
-.scrollRevealEnabled .scrollReveal.isRevealed {
+.scrollRevealEnabled .revealItem.isRevealed {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  will-change: auto;
+  transition-delay: calc(var(--reveal-order, 0) * var(--reveal-stagger));
+}
+
+.scrollRevealEnabled .artistRow.revealItem,
+.scrollRevealEnabled .infoCards > article.revealItem,
+.scrollRevealEnabled .timeline > div.revealItem,
+.scrollRevealEnabled .ticketGrid > article.revealItem,
+.scrollRevealEnabled .faqList > article.revealItem {
+  --reveal-distance: var(--reveal-distance-small);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scrollRevealEnabled .scrollReveal,
-  .scrollRevealEnabled .scrollReveal.isRevealed {
+  .scrollRevealEnabled .revealItem,
+  .scrollRevealEnabled .revealItem.isRevealed {
     opacity: 1;
     transform: none;
     transition: none;

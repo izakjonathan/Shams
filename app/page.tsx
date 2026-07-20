@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 const artists = [
   { name: "Nour", type: "Live", time: "18:30", stage: "Sun Stage" },
@@ -47,57 +47,71 @@ export default function Home() {
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
-  useEffect(() => {
-    const revealItems = Array.from(
-      document.querySelectorAll<HTMLElement>("main > section:not(.hero), main > footer")
-    );
-
-    if (!revealItems.length) return;
+  useLayoutEffect(() => {
+    const revealGroups: Array<{ root: string; items: string }> = [
+      { root: "#about", items: ".sectionIndex, .statementGrid > h2, .statementGrid > div > *" },
+      { root: "#mission", items: ".verticalText, .kicker, h2, .manifestoTags > span" },
+      { root: "#lineup", items: ".sectionHeading .sectionIndex, .sectionHeading h2, .sectionHeading > p, .artistRow, .lineupNote" },
+      { root: "#info", items: ".infoIntro > *, .infoCards > article" },
+      { root: ".programme", items: ".sectionHeading .sectionIndex, .sectionHeading h2, .sectionHeading > p, .timeline > div" },
+      { root: "#tickets", items: ".ticketsHeader > *, h2, .ticketGrid > article, .ticketFootnote" },
+      { root: ".faq", items: ".sectionHeading .sectionIndex, .sectionHeading h2, .faqList > article" },
+      { root: ".newsletter", items: ".kicker, h2, form > *" },
+      { root: "footer", items: ".footerLogo, .footerLinks > div, .footerBottom > *" },
+    ];
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const root = document.documentElement;
+    const revealItems: HTMLElement[] = [];
+
+    revealGroups.forEach(({ root: rootSelector, items }) => {
+      const groupRoot = document.querySelector<HTMLElement>(rootSelector);
+      if (!groupRoot) return;
+
+      Array.from(groupRoot.querySelectorAll<HTMLElement>(items)).forEach((item, index) => {
+        item.classList.add("revealItem");
+        item.style.setProperty("--reveal-order", String(index % 4));
+        revealItems.push(item);
+      });
+    });
+
+    if (!revealItems.length) return;
 
     if (reducedMotion || !("IntersectionObserver" in window)) {
       revealItems.forEach((item) => item.classList.add("isRevealed"));
       return;
     }
 
-    const root = document.documentElement;
     root.classList.add("scrollRevealEnabled");
-    revealItems.forEach((item) => item.classList.add("scrollReveal"));
 
-    let observer: IntersectionObserver | null = null;
-    let firstFrame = 0;
-    let secondFrame = 0;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const item = entry.target as HTMLElement;
+          item.classList.add("isRevealed");
+          observer.unobserve(item);
+        });
+      },
+      {
+        threshold: 0,
+        rootMargin: "0px 0px -9% 0px",
+      }
+    );
 
-    // Wait for the concealed state to be painted before observation begins.
-    // Without this, browsers can apply both states in one frame and skip the transition.
-    firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(() => {
-        observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              entry.target.classList.add("isRevealed");
-              observer?.unobserve(entry.target);
-            });
-          },
-          {
-            threshold: 0.01,
-            // Reveal when the section reaches the lower visible portion of the screen.
-            // This avoids long sections completing before their padded content appears.
-            rootMargin: "0px 0px -18% 0px",
-          }
-        );
-
-        revealItems.forEach((item) => observer?.observe(item));
-      });
+    // Let the concealed state settle for one frame, then observe each content item.
+    const frame = window.requestAnimationFrame(() => {
+      revealItems.forEach((item) => observer.observe(item));
     });
 
     return () => {
-      window.cancelAnimationFrame(firstFrame);
-      window.cancelAnimationFrame(secondFrame);
-      observer?.disconnect();
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
       root.classList.remove("scrollRevealEnabled");
+      revealItems.forEach((item) => {
+        item.classList.remove("revealItem", "isRevealed");
+        item.style.removeProperty("--reveal-order");
+      });
     };
   }, []);
 
