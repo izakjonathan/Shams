@@ -10,3 +10,19 @@ Important Vercel settings:
 - Install Command: default
 
 This version intentionally contains no `vercel.json` and does not override the Next.js output directory.
+
+## Design system
+
+The global visual system is centralized in `app/design-system.css`.
+
+Change the variables in that file first for site-wide updates to:
+
+- display and body typefaces, weights, tracking, and line heights
+- core and supporting colors
+- borders and radii
+- page gutters and section spacing
+- shared button dimensions
+- transitions and easing
+- recurring orb and ticket gradients
+
+`app/globals.css` contains component and page rules that consume these tokens. New styles should use the existing semantic variables instead of introducing repeated hard-coded values. Add a new token only when a value is reused or represents a meaningful design decision.

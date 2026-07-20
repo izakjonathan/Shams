@@ -1,0 +1,89 @@
+/*
+ * Shams for Humanity — global design tokens
+ *
+ * Edit this file first when changing the visual system. Components should use
+ * semantic variables from here instead of hard-coded colors, typefaces,
+ * borders, radii, spacing, or motion values.
+ */
+
+:root {
+  /* Typography */
+  --font-display: Agilera, sans-serif;
+  --font-body: Arial, Helvetica, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-display: 500;
+  --font-weight-bold: 700;
+  --tracking-tight: -0.055em;
+  --tracking-display: -0.04em;
+  --tracking-label: 0.08em;
+  --tracking-kicker: 0.13em;
+  --line-height-body: 1.45;
+  --line-height-display: 0.9;
+
+  /* Core colors */
+  --color-paper: #f5f2eb;
+  --color-ink: #0b0b0b;
+  --color-accent: #ff5a00;
+  --color-white: #fff;
+  --color-dark: #090909;
+  --color-ticket-dark: #111;
+
+  /* Supporting colors */
+  --color-line: rgba(11, 11, 11, 0.18);
+  --color-line-strong: rgba(0, 0, 0, 0.35);
+  --color-orbit: rgba(0, 0, 0, 0.55);
+  --color-overlay-hover: rgba(0, 0, 0, 0.03);
+  --color-light-muted: rgba(255, 255, 255, 0.7);
+  --color-dark-line: #333;
+  --color-ticket-line: #484848;
+  --color-control-line: #555;
+  --color-text-muted: #555;
+  --color-text-subtle: #777;
+  --color-ticket-copy: #aaa;
+  --color-ticket-footnote: #888;
+  --color-disabled: #666;
+  --color-feature-copy: #221100;
+
+  /* Borders and radii */
+  --border-width: 1px;
+  --border-solid: var(--border-width) solid;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  /* Responsive layout */
+  --page-gutter: clamp(20px, 4vw, 64px);
+  --header-height-mobile: 72px;
+  --header-height-desktop: 84px;
+  --section-space-mobile: 90px;
+  --section-space-desktop: 130px;
+  --section-heading-gap: 22px;
+  --section-heading-margin: 55px;
+
+  /* Reusable component dimensions */
+  --button-height: 52px;
+  --button-height-compact: 48px;
+  --icon-button-size: 34px;
+
+  /* Motion */
+  --duration-fast: 300ms;
+  --duration-medium: 350ms;
+  --duration-menu: 550ms;
+  --ease-standard: ease;
+  --ease-menu: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* Effects */
+  --orb-gradient: radial-gradient(
+    circle at 55% 45%,
+    #050505 0 11%,
+    var(--color-accent) 31%,
+    rgba(255, 90, 0, 0.13) 62%,
+    transparent 70%
+  );
+  --ticket-gradient: radial-gradient(
+    circle,
+    var(--color-accent) 0,
+    var(--color-accent) 11%,
+    rgba(255, 90, 0, 0.16) 46%,
+    transparent 70%
+  );
+}
