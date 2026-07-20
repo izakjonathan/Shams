@@ -1,0 +1,2 @@
+import { useState } from "react";
+export function Tabs(){const items=["Overview","Activity","Settings"];const [active,setActive]=useState(items[0]);return <div className="tabs-demo"><div className="tabs-list" role="tablist">{items.map(item=><button key={item} role="tab" aria-selected={active===item} className={active===item?"is-active":""} onClick={()=>setActive(item)}>{item}</button>)}</div><div className="tabs-panel" role="tabpanel"><strong>{active}</strong><p>Content for the selected {active.toLowerCase()} tab.</p></div></div>}

@@ -1,0 +1,1 @@
+export function SkeletonCard(){return <div className="skeleton-card" aria-label="Loading content"><div className="skeleton skeleton--avatar"/><div className="skeleton-lines"><div className="skeleton skeleton--title"/><div className="skeleton skeleton--line"/><div className="skeleton skeleton--line skeleton--short"/></div></div>}

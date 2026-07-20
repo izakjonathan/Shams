@@ -1,0 +1,2 @@
+import {CheckCircle2,X} from "lucide-react";import {useState} from "react";import {ActionButton} from "./action-button";
+export function ToastDemo(){const[show,setShow]=useState(false);return <div className="toast-demo"><ActionButton variant="outline" onClick={()=>setShow(true)}>Show toast</ActionButton>{show&&<div className="toast" role="status"><CheckCircle2 size={19}/><div><strong>Changes saved</strong><span>Your component settings are up to date.</span></div><button onClick={()=>setShow(false)} aria-label="Dismiss notification"><X size={16}/></button></div>}</div>}
