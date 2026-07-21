@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SplashScreen } from "./components/SplashScreen";
+import { OverscrollBackdrop } from "./components/OverscrollBackdrop";
 import { artists, event, tickets } from "./lib/content";
 
 const agilera = localFont({
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className="splashActive">
         <a className="skipLink" href="#main-content">Skip to content</a>
         <SplashScreen />
+        <OverscrollBackdrop />
         <div className="siteShell">{children}</div>
         <script
           type="application/ld+json"
