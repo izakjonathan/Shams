@@ -112,7 +112,7 @@ it, those fall back to a placeholder domain.
   accidentally submit a form later.
 
 
-## v0.1.33 — iPhone Safari chrome cleanup
+## v0.1.34 — iPhone Safari chrome cleanup
 
 - Explicit light backgrounds on both `html` and `body`.
 - Light color scheme and `viewport-fit=cover` metadata.
@@ -122,18 +122,18 @@ it, those fall back to a placeholder domain.
 - A small paper-colored endcap after the footer so translucent browser controls do not sample the dark footer at the end of the page.
 
 
-## v0.1.33
+## v0.1.34
 
 Light sections now use reusable positioned paper-glow layers on top of the existing gradient washes, matching the hero gradient construction while preserving the dark-section effects.
 
 
-## v0.1.33 gradient cleanup
+## v0.1.34 gradient cleanup
 - Centralized paper, dark, and accent section glow controls around shared width/height/position/transform variables.
 - Standardized light-section washes so About, Artists, Programme, and Practical all use the same control structure.
 - Increased non-hero gradients on mobile for the paper sections and the manifesto, ticket, and newsletter sections.
 
 
-## v0.1.33 splash screen
+## v0.1.34 splash screen
 - Added a full-screen launch splash using the provided artwork in `public/images/splash-screen.png`.
 - Splash remains visible for a minimum of 1 second and waits for the window `load` event if the page is still loading.
 - Splash exit uses a common fade + slight scale + soft blur transition.
@@ -141,21 +141,21 @@ Light sections now use reusable positioned paper-glow layers on top of the exist
 - Body scroll is locked during the splash, then restored automatically.
 
 
-## v0.1.33 splash timing refinement
+## v0.1.34 splash timing refinement
 - Added a dedicated splash-in animation with fade, scale, vertical settling, and deblur.
 - Increased the fully visible hold to approximately 1.8 seconds after the entrance.
 - Slowed the splash-out transition to 1.15 seconds.
 - Lengthened and delayed the site entrance slightly so the two animations overlap more naturally.
 
 
-## v0.1.33 standalone splash viewport
+## v0.1.34 standalone splash viewport
 - Made the splash overlay explicitly cover `100dvh`, with `100svh`, `100vh`, and `-webkit-fill-available` fallbacks.
 - Added standalone/fullscreen display-mode sizing for installed iPhone web apps.
 - Made the artwork wrapper absolute and inherit the full overlay height so it cannot collapse to a content-sized percentage height.
 - Preserved safe-area and viewport-fit behavior.
 
 
-## v0.1.33 animation audit
+## v0.1.34 animation audit
 - Removed the decorative gradient from the solid yellow newsletter section.
 - Simplified the splash/site handoff to avoid full-page blur and permanently active transitions.
 - Removed the infinite splash artwork drift animation.
@@ -164,7 +164,7 @@ Light sections now use reusable positioned paper-glow layers on top of the exist
 - Reduced-motion users now receive a static splash with a shorter hold and near-instant exit.
 
 
-## v0.1.33 edge-to-edge mobile Safari
+## v0.1.34 edge-to-edge mobile Safari
 - Removed the artificial cream browser-chrome endcap after the footer.
 - Removed vertical Safari safe-area filler so live page content continues beneath translucent browser controls.
 - Restored native vertical overscroll/browser-toolbar behavior.
@@ -173,28 +173,28 @@ Light sections now use reusable positioned paper-glow layers on top of the exist
 - Removed the explicit browser `themeColor` override so Safari can derive its translucent treatment from the visible page.
 
 
-## v0.1.33 Safari edge continuation
+## v0.1.34 Safari edge continuation
 - Added a lightweight scroll-boundary controller for Safari rubber-band overscroll.
 - Top overscroll now continues the hero paper/yellow gradient treatment.
 - Bottom overscroll now remains solid black beyond the footer.
 - Footer extends through the bottom safe area in browser and installed web-app modes.
 
 
-## v0.1.33 Safari top chrome fix
+## v0.1.34 Safari top chrome fix
 - Added a hero-matched `theme-color` so Safari does not use its default white status/address-bar tint at the top edge.
 - The edge-state controller now switches Safari chrome tint between warm hero color at the top, paper in the middle, and black at the bottom.
 - Added a fixed top-edge gradient sampling backdrop beneath the page to improve Safari 26 Liquid Glass color sampling.
 - Changed the top rubber-band base color from paper to a warm hero-matched tone, while preserving the hero gradient layers.
 
 
-## v0.1.33 transparent Safari top chrome
+## v0.1.34 transparent Safari top chrome
 - Removed the explicit `theme-color` that produced a solid yellow Safari status-bar band.
 - Removed the fixed top sampling backdrop that Safari treated as an opaque chrome color.
 - Extended the actual hero canvas into the iOS top safe area while compensating its content spacing.
 - Retained the working black bottom overscroll behavior.
 
 
-## v0.1.33 Safari top-canvas root fix
+## v0.1.34 Safari top-canvas root fix
 - Full audit found that iOS Safari ignores root background images in the reserved status-bar canvas and paints only the root background color.
 - Changed the top under-page color from yellow to the exact hero paper base.
 - Removed the ineffective root gradient image.
@@ -202,9 +202,16 @@ Light sections now use reusable positioned paper-glow layers on top of the exist
 - Added a matching paper theme color while retaining the proven solid-black bottom boundary.
 
 
-## v0.1.33 Safari menu canvas fix
+## v0.1.34 Safari menu canvas fix
 - Fixed an iOS Safari race where body scroll locking temporarily collapsed document metrics and incorrectly activated the black bottom overscroll canvas.
 - Overscroll detection now ignores locked-menu measurements, validates that the document is scrollable before applying the bottom state, and always lets the top state win contradictory measurements.
 - Added visual viewport and explicit viewport-state refresh handling after menu lock/unlock.
 - The full-screen mobile menu is now mounted only while opening/open/closing and removed from the DOM after its exit transition, preventing stale black fixed-layer tiles in Safari's top safe area.
 - Replaced inline body overflow mutations with centralized `menuScrollLocked` classes on html/body.
+
+
+## v0.1.34 splash safe-area continuity
+- Rebuilt the splash artwork so the top and bottom edges resolve to the exact paper/root canvas color.
+- Preserved the central illustration and organic gradients while fading them away before Safari-owned safe areas.
+- This lets normal Safari, standalone mode, and installed web-app status areas use a matching flat color without visible seams.
+- Kept the existing full-viewport splash sizing and launch animation.
