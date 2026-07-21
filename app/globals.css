@@ -536,3 +536,66 @@ body {
     --glow-bottom: -34vw;
   }
 }
+
+
+/* v0.1.25 — refined splash timing and entrance sequence. */
+.splashScreen {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity var(--duration-splash-exit) var(--ease-splash),
+    transform var(--duration-splash-exit) var(--ease-splash),
+    filter var(--duration-splash-exit) var(--ease-splash);
+}
+
+.splashScreen.isEntering {
+  opacity: 0;
+  transform: scale(0.965);
+  filter: blur(12px);
+}
+
+.splashScreen.isActive {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+  transition-duration: var(--duration-splash-enter);
+}
+
+.splashScreen.isExiting {
+  opacity: 0;
+  transform: scale(1.045);
+  filter: blur(14px);
+}
+
+.splashScreenArtWrap {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-splash-enter) var(--ease-splash),
+    transform var(--duration-splash-enter) var(--ease-splash);
+}
+
+.splashScreen.isEntering .splashScreenArtWrap {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(0.98);
+}
+
+.splashScreen.isActive .splashScreenArtWrap {
+  opacity: 1;
+  transform: none;
+}
+
+body.splashExiting .siteShell {
+  transition-delay: 260ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splashScreen.isEntering,
+  .splashScreen.isActive,
+  .splashScreen.isExiting,
+  .splashScreenArtWrap {
+    transform: none !important;
+    filter: none !important;
+  }
+}

@@ -3,27 +3,37 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-const MIN_VISIBLE_MS = 1000;
-const EXIT_DURATION_MS = 720;
+const ENTER_DURATION_MS = 760;
+const MIN_HOLD_MS = 1800;
+const EXIT_DURATION_MS = 1150;
+
+type SplashStage = "entering" | "active" | "exiting" | "done";
 
 /**
- * Full-screen splash overlay.
- * Pattern used: minimum dwell time -> wait for page load ->
- * fade/scale/soften splash out -> reveal site shell underneath.
+ * Full-screen splash sequence:
+ * 1. artwork fades/scales/deblurs into place,
+ * 2. remains fully visible for a deliberate hold,
+ * 3. fades and gently expands away while the site enters underneath.
  */
 export function SplashScreen() {
-  const [stage, setStage] = useState<"active" | "exiting" | "done">("active");
+  const [stage, setStage] = useState<SplashStage>("entering");
   const hasBegunExit = useRef(false);
 
   useEffect(() => {
     const body = document.body;
     const start = performance.now();
     let hasLoaded = document.readyState === "complete";
+    let enterFrame = 0;
     let exitTimer = 0;
     let doneTimer = 0;
 
     body.classList.add("splashActive");
     body.classList.remove("splashExiting", "splashComplete");
+
+    // Two frames ensure the entering state is painted before transitioning in.
+    enterFrame = window.requestAnimationFrame(() => {
+      enterFrame = window.requestAnimationFrame(() => setStage("active"));
+    });
 
     const beginExit = () => {
       if (hasBegunExit.current) return;
@@ -31,6 +41,7 @@ export function SplashScreen() {
       setStage("exiting");
       body.classList.remove("splashActive");
       body.classList.add("splashExiting");
+
       doneTimer = window.setTimeout(() => {
         setStage("done");
         body.classList.remove("splashExiting");
@@ -40,8 +51,8 @@ export function SplashScreen() {
 
     const maybeScheduleExit = () => {
       if (!hasLoaded || hasBegunExit.current) return;
-      const elapsed = performance.now() - start;
-      const remaining = Math.max(0, MIN_VISIBLE_MS - elapsed);
+      const minimumTotal = ENTER_DURATION_MS + MIN_HOLD_MS;
+      const remaining = Math.max(0, minimumTotal - (performance.now() - start));
       window.clearTimeout(exitTimer);
       exitTimer = window.setTimeout(beginExit, remaining);
     };
@@ -58,6 +69,7 @@ export function SplashScreen() {
     }
 
     return () => {
+      window.cancelAnimationFrame(enterFrame);
       window.clearTimeout(exitTimer);
       window.clearTimeout(doneTimer);
       window.removeEventListener("load", handleLoad);
@@ -69,7 +81,7 @@ export function SplashScreen() {
 
   return (
     <div
-      className={`splashScreen ${stage === "exiting" ? "isExiting" : ""}`.trim()}
+      className={`splashScreen is${stage[0].toUpperCase()}${stage.slice(1)}`}
       aria-hidden="true"
     >
       <div className="splashScreenArtWrap">
