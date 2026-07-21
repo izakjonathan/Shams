@@ -43,6 +43,8 @@
   --color-ticket-footnote: #888;
   --color-disabled: #666;
   --color-feature-copy: #221100;
+  --color-browser-top: #f6d98d;
+  --color-browser-bottom: #090909;
 
   /* Borders and radii */
   --border-width: 1px;

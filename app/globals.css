@@ -596,7 +596,7 @@ main {
    below the footer remains solid black. */
 html.overscrollTop,
 body.overscrollTop {
-  background-color: var(--color-paper);
+  background-color: var(--color-browser-top);
   background-image:
     radial-gradient(ellipse 68% 40% at -4% 22%, rgba(252, 198, 79, 0.32) 0%, rgba(252, 198, 79, 0.18) 36%, rgba(252, 198, 79, 0.08) 58%, transparent 82%),
     radial-gradient(ellipse 88% 42% at 88% 10%, rgba(252, 198, 79, 0.34) 0%, rgba(252, 198, 79, 0.18) 34%, rgba(252, 198, 79, 0.08) 58%, transparent 82%),
@@ -609,8 +609,38 @@ body.overscrollTop {
 
 html.overscrollBottom,
 body.overscrollBottom {
-  background-color: var(--overscroll-bottom-color, var(--color-dark));
+  background-color: var(--color-browser-bottom);
   background-image: none;
+}
+
+/* Safari 26 samples the rendered top edge independently from the rubber-band
+   canvas. This fixed, hero-matched backdrop gives that sampler a stable warm
+   color/gradient instead of the browser's default white. It is only active at
+   the top boundary and sits beneath all real page content. */
+body::before {
+  content: "";
+  position: fixed;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: max(120px, calc(env(safe-area-inset-top) + 72px));
+  pointer-events: none;
+  opacity: 0;
+  background-color: var(--color-browser-top);
+  background-image:
+    radial-gradient(ellipse 90% 140% at 8% 20%, rgba(252, 198, 79, 0.42) 0%, rgba(252, 198, 79, 0.18) 48%, transparent 78%),
+    radial-gradient(ellipse 100% 160% at 92% 12%, rgba(252, 198, 79, 0.48) 0%, rgba(252, 198, 79, 0.2) 46%, transparent 78%);
+  transition: opacity 120ms linear;
+}
+
+body.overscrollTop::before {
+  opacity: 1;
+}
+
+.siteShell {
+  position: relative;
+  z-index: 1;
 }
 
 footer {
