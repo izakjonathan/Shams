@@ -159,7 +159,6 @@ export default function Home() {
         </div>
         <div className="footerBottom"><span>© 2026 SHAMS FOR HUMANITY</span><span>MADE WITH PURPOSE IN COPENHAGEN</span><a href="#top">BACK TO TOP ↑</a></div>
       </footer>
-      <div className="browserChromeEndcap" aria-hidden="true" />
     </main>
   );
 }
