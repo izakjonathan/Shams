@@ -151,10 +151,11 @@ body {
   position: absolute;
   z-index: 1;
   pointer-events: none;
+  border-radius: 50%;
   background: var(--paper-orb-gradient);
+  background-repeat: no-repeat;
   opacity: 0.82;
   transform-origin: center;
-  contain: paint;
 }
 
 .aboutGlowOne {

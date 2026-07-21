@@ -79,13 +79,13 @@
 
   /* Effects */
   --paper-orb-gradient: radial-gradient(
-    ellipse at 50% 50%,
+    ellipse 50% 50% at 50% 50%,
     rgba(252, 198, 79, 1) 0%,
-    rgba(252, 198, 79, 0.86) 22%,
-    rgba(252, 198, 79, 0.56) 48%,
-    rgba(252, 198, 79, 0.28) 68%,
-    rgba(252, 198, 79, 0.1) 84%,
-    transparent 100%
+    rgba(252, 198, 79, 0.88) 24%,
+    rgba(252, 198, 79, 0.58) 48%,
+    rgba(252, 198, 79, 0.3) 64%,
+    rgba(252, 198, 79, 0.12) 74%,
+    transparent 86%
   );
   --paper-glow-soft: radial-gradient(
     ellipse at 50% 50%,
