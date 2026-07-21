@@ -137,7 +137,9 @@ body {
    high-energy organic glow elements above it. */
 .paperGlowSection {
   overflow: hidden;
+  overflow: clip;
   isolation: isolate;
+  contain: paint;
 }
 
 .paperGlowSection > :not(.paperGlow) {
@@ -150,10 +152,9 @@ body {
   z-index: 1;
   pointer-events: none;
   background: var(--paper-orb-gradient);
-  filter: blur(48px);
   opacity: 0.82;
   transform-origin: center;
-  will-change: transform;
+  contain: paint;
 }
 
 .aboutGlowOne {
@@ -263,10 +264,6 @@ body {
 }
 
 @media (min-width: 760px) {
-  .paperGlow {
-    filter: blur(64px);
-  }
-
   .aboutGlowOne,
   .lineupGlowOne,
   .programmeGlowOne,
@@ -292,8 +289,3 @@ body {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .paperGlow {
-    will-change: auto;
-  }
-}
