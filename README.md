@@ -112,7 +112,7 @@ it, those fall back to a placeholder domain.
   accidentally submit a form later.
 
 
-## v0.1.26 — iPhone Safari chrome cleanup
+## v0.1.27 — iPhone Safari chrome cleanup
 
 - Explicit light backgrounds on both `html` and `body`.
 - Light color scheme and `viewport-fit=cover` metadata.
@@ -122,18 +122,18 @@ it, those fall back to a placeholder domain.
 - A small paper-colored endcap after the footer so translucent browser controls do not sample the dark footer at the end of the page.
 
 
-## v0.1.26
+## v0.1.27
 
 Light sections now use reusable positioned paper-glow layers on top of the existing gradient washes, matching the hero gradient construction while preserving the dark-section effects.
 
 
-## v0.1.26 gradient cleanup
+## v0.1.27 gradient cleanup
 - Centralized paper, dark, and accent section glow controls around shared width/height/position/transform variables.
 - Standardized light-section washes so About, Artists, Programme, and Practical all use the same control structure.
 - Increased non-hero gradients on mobile for the paper sections and the manifesto, ticket, and newsletter sections.
 
 
-## v0.1.26 splash screen
+## v0.1.27 splash screen
 - Added a full-screen launch splash using the provided artwork in `public/images/splash-screen.png`.
 - Splash remains visible for a minimum of 1 second and waits for the window `load` event if the page is still loading.
 - Splash exit uses a common fade + slight scale + soft blur transition.
@@ -141,15 +141,24 @@ Light sections now use reusable positioned paper-glow layers on top of the exist
 - Body scroll is locked during the splash, then restored automatically.
 
 
-## v0.1.26 splash timing refinement
+## v0.1.27 splash timing refinement
 - Added a dedicated splash-in animation with fade, scale, vertical settling, and deblur.
 - Increased the fully visible hold to approximately 1.8 seconds after the entrance.
 - Slowed the splash-out transition to 1.15 seconds.
 - Lengthened and delayed the site entrance slightly so the two animations overlap more naturally.
 
 
-## v0.1.26 standalone splash viewport
+## v0.1.27 standalone splash viewport
 - Made the splash overlay explicitly cover `100dvh`, with `100svh`, `100vh`, and `-webkit-fill-available` fallbacks.
 - Added standalone/fullscreen display-mode sizing for installed iPhone web apps.
 - Made the artwork wrapper absolute and inherit the full overlay height so it cannot collapse to a content-sized percentage height.
 - Preserved safe-area and viewport-fit behavior.
+
+
+## v0.1.27 animation audit
+- Removed the decorative gradient from the solid yellow newsletter section.
+- Simplified the splash/site handoff to avoid full-page blur and permanently active transitions.
+- Removed the infinite splash artwork drift animation.
+- Added visibility and opacity handling to the mobile menu so the closed panel is not kept active.
+- Tightened scroll-reveal distance, duration, and stagger for less compositor pressure.
+- Reduced-motion users now receive a static splash with a shorter hold and near-instant exit.

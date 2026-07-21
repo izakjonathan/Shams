@@ -147,7 +147,6 @@ export default function Home() {
       </section>
 
       <section className="newsletter">
-        <div className="newsletterOrb" aria-hidden="true" />
         <div><span className="kicker">STAY CLOSE</span><h2>News from<br/>under the sun.</h2></div>
         <NewsletterForm />
       </section>

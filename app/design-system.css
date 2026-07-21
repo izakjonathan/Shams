@@ -69,17 +69,17 @@
   --duration-fast: 300ms;
   --duration-medium: 480ms;
   --duration-menu: 550ms;
-  --duration-reveal: 920ms;
+  --duration-reveal: 860ms;
   --duration-splash-enter: 760ms;
   --duration-splash-exit: 1150ms;
   --duration-site-enter: 1050ms;
-  --reveal-stagger: 65ms;
+  --reveal-stagger: 55ms;
   --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-splash: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-menu: cubic-bezier(0.76, 0, 0.24, 1);
-  --reveal-distance: 24px;
-  --reveal-distance-small: 16px;
+  --reveal-distance: 20px;
+  --reveal-distance-small: 14px;
 
   /* Effects */
   --paper-orb-gradient: radial-gradient(

@@ -21,6 +21,7 @@ export function SplashScreen() {
 
   useEffect(() => {
     const body = document.body;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const start = performance.now();
     let hasLoaded = document.readyState === "complete";
     let enterFrame = 0;
@@ -31,9 +32,13 @@ export function SplashScreen() {
     body.classList.remove("splashExiting", "splashComplete");
 
     // Two frames ensure the entering state is painted before transitioning in.
-    enterFrame = window.requestAnimationFrame(() => {
-      enterFrame = window.requestAnimationFrame(() => setStage("active"));
-    });
+    if (reducedMotion) {
+      setStage("active");
+    } else {
+      enterFrame = window.requestAnimationFrame(() => {
+        enterFrame = window.requestAnimationFrame(() => setStage("active"));
+      });
+    }
 
     const beginExit = () => {
       if (hasBegunExit.current) return;
@@ -46,12 +51,12 @@ export function SplashScreen() {
         setStage("done");
         body.classList.remove("splashExiting");
         body.classList.add("splashComplete");
-      }, EXIT_DURATION_MS);
+      }, reducedMotion ? 50 : EXIT_DURATION_MS);
     };
 
     const maybeScheduleExit = () => {
       if (!hasLoaded || hasBegunExit.current) return;
-      const minimumTotal = ENTER_DURATION_MS + MIN_HOLD_MS;
+      const minimumTotal = reducedMotion ? 1000 : ENTER_DURATION_MS + MIN_HOLD_MS;
       const remaining = Math.max(0, minimumTotal - (performance.now() - start));
       window.clearTimeout(exitTimer);
       exitTimer = window.setTimeout(beginExit, remaining);
