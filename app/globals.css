@@ -108,6 +108,15 @@ main {
   body {
     min-height: -webkit-fill-available;
   }
+
+  /* Extend the real hero canvas into Safari's top safe-area instead of
+     painting a separate browser-chrome color. Content spacing is compensated
+     so the header and hero layout retain their existing visual positions. */
+  .hero {
+    margin-top: calc(-1 * env(safe-area-inset-top));
+    min-height: calc(100svh + env(safe-area-inset-top));
+    padding-top: calc(100px + env(safe-area-inset-top));
+  }
 }
 
 
@@ -591,9 +600,8 @@ main {
 
 
 /* Safari rubber-band edge continuation.
-   The under-page canvas switches to the visual treatment of the nearest edge,
-   so pulling above the hero continues the light yellow composition and pulling
-   below the footer remains solid black. */
+   The document canvas follows the nearest real page edge: the hero treatment
+   above and the footer black below. No separate top chrome tint is forced. */
 html.overscrollTop,
 body.overscrollTop {
   background-color: var(--color-browser-top);
@@ -611,31 +619,6 @@ html.overscrollBottom,
 body.overscrollBottom {
   background-color: var(--color-browser-bottom);
   background-image: none;
-}
-
-/* Safari 26 samples the rendered top edge independently from the rubber-band
-   canvas. This fixed, hero-matched backdrop gives that sampler a stable warm
-   color/gradient instead of the browser's default white. It is only active at
-   the top boundary and sits beneath all real page content. */
-body::before {
-  content: "";
-  position: fixed;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: max(120px, calc(env(safe-area-inset-top) + 72px));
-  pointer-events: none;
-  opacity: 0;
-  background-color: var(--color-browser-top);
-  background-image:
-    radial-gradient(ellipse 90% 140% at 8% 20%, rgba(252, 198, 79, 0.42) 0%, rgba(252, 198, 79, 0.18) 48%, transparent 78%),
-    radial-gradient(ellipse 100% 160% at 92% 12%, rgba(252, 198, 79, 0.48) 0%, rgba(252, 198, 79, 0.2) 46%, transparent 78%);
-  transition: opacity 120ms linear;
-}
-
-body.overscrollTop::before {
-  opacity: 1;
 }
 
 .siteShell {

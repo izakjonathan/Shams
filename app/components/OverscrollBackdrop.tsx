@@ -3,10 +3,6 @@
 import { useEffect } from "react";
 
 const EDGE_TOLERANCE = 3;
-const TOP_THEME_COLOR = "#f6d98d";
-const BOTTOM_THEME_COLOR = "#090909";
-const DEFAULT_THEME_COLOR = "#f5f2eb";
-
 /**
  * Keeps Safari's rubber-band under-page background matched to the nearest
  * document edge: the hero treatment at the top and the footer black at bottom.
@@ -15,7 +11,6 @@ export function OverscrollBackdrop() {
   useEffect(() => {
     const root = document.documentElement;
     const body = document.body;
-    const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     let frame = 0;
 
     const applyEdgeState = () => {
@@ -33,15 +28,6 @@ export function OverscrollBackdrop() {
       root.classList.toggle("overscrollBottom", useBottom);
       body.classList.toggle("overscrollBottom", useBottom);
 
-      // Safari's status/address-bar tint is separate from the CSS under-page
-      // canvas. Keep it synchronized with the nearest document edge.
-      if (themeColor) {
-        themeColor.content = useBottom
-          ? BOTTOM_THEME_COLOR
-          : useTop
-            ? TOP_THEME_COLOR
-            : DEFAULT_THEME_COLOR;
-      }
     };
 
     const scheduleUpdate = () => {
@@ -61,7 +47,6 @@ export function OverscrollBackdrop() {
       window.removeEventListener("orientationchange", scheduleUpdate);
       root.classList.remove("overscrollTop", "overscrollBottom");
       body.classList.remove("overscrollTop", "overscrollBottom");
-      if (themeColor) themeColor.content = TOP_THEME_COLOR;
     };
   }, []);
 
