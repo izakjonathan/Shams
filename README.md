@@ -112,7 +112,7 @@ it, those fall back to a placeholder domain.
   accidentally submit a form later.
 
 
-## v0.1.18 — iPhone Safari chrome cleanup
+## v0.1.19 — iPhone Safari chrome cleanup
 
 - Explicit light backgrounds on both `html` and `body`.
 - Light color scheme and `viewport-fit=cover` metadata.

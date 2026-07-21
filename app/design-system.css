@@ -80,17 +80,17 @@
   /* Effects */
   --paper-orb-gradient: radial-gradient(
     ellipse at 50% 50%,
-    rgba(252, 198, 79, 0.96) 0%,
-    rgba(252, 198, 79, 0.72) 26%,
-    rgba(252, 198, 79, 0.36) 56%,
-    rgba(252, 198, 79, 0.14) 74%,
+    rgba(252, 198, 79, 1) 0%,
+    rgba(252, 198, 79, 0.9) 24%,
+    rgba(252, 198, 79, 0.58) 54%,
+    rgba(252, 198, 79, 0.26) 76%,
     transparent 100%
   );
   --paper-glow-soft: radial-gradient(
     ellipse at 50% 50%,
-    rgba(252, 198, 79, 0.44) 0%,
-    rgba(252, 198, 79, 0.24) 42%,
-    rgba(252, 198, 79, 0.1) 68%,
+    rgba(252, 198, 79, 0.62) 0%,
+    rgba(252, 198, 79, 0.34) 42%,
+    rgba(252, 198, 79, 0.14) 70%,
     transparent 100%
   );
   --orb-gradient: radial-gradient(
