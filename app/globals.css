@@ -129,3 +129,171 @@ body {
     padding-bottom: calc(25px + env(safe-area-inset-bottom));
   }
 }
+
+
+/* Layered paper-section glow system
+   The light sections now use the same visual construction as the hero:
+   a quiet multi-gradient wash underneath plus individually positioned,
+   high-energy organic glow elements above it. */
+.paperGlowSection {
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.paperGlowSection > :not(.paperGlow) {
+  position: relative;
+  z-index: 2;
+}
+
+.paperGlow {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--paper-orb-gradient);
+  filter: blur(48px);
+  opacity: 0.82;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.aboutGlowOne {
+  width: 102vw;
+  height: 70vw;
+  left: -48vw;
+  top: -6vw;
+  transform: rotate(18deg) scale(1.16, 0.82);
+}
+
+.aboutGlowTwo {
+  width: 88vw;
+  height: 76vw;
+  right: -50vw;
+  top: 38%;
+  transform: rotate(-24deg) scale(0.96, 1.18);
+  opacity: 0.72;
+}
+
+.aboutGlowThree {
+  width: 86vw;
+  height: 48vw;
+  left: 4vw;
+  bottom: -24vw;
+  transform: rotate(28deg) scale(1.34, 0.58);
+  opacity: 0.64;
+}
+
+.lineupGlowOne {
+  width: 98vw;
+  height: 66vw;
+  right: -48vw;
+  top: -10vw;
+  transform: rotate(-18deg) scale(1.2, 0.84);
+}
+
+.lineupGlowTwo {
+  width: 82vw;
+  height: 92vw;
+  left: -48vw;
+  top: 36%;
+  transform: rotate(24deg) scale(0.86, 1.16);
+  opacity: 0.72;
+}
+
+.lineupGlowThree {
+  width: 96vw;
+  height: 52vw;
+  right: -18vw;
+  bottom: -24vw;
+  transform: rotate(16deg) scale(1.28, 0.62);
+  opacity: 0.62;
+}
+
+.programmeGlowOne {
+  width: 96vw;
+  height: 68vw;
+  left: -42vw;
+  top: -10vw;
+  transform: rotate(16deg) scale(1.12, 0.88);
+  opacity: 0.78;
+}
+
+.programmeGlowTwo {
+  width: 98vw;
+  height: 86vw;
+  right: -54vw;
+  top: 31%;
+  transform: rotate(-26deg) scale(0.92, 1.14);
+  opacity: 0.74;
+}
+
+.programmeGlowThree {
+  width: 90vw;
+  height: 50vw;
+  left: 8vw;
+  bottom: -25vw;
+  transform: rotate(30deg) scale(1.32, 0.56);
+  opacity: 0.62;
+}
+
+.faqGlowOne {
+  width: 96vw;
+  height: 68vw;
+  right: -48vw;
+  top: -10vw;
+  transform: rotate(-16deg) scale(1.18, 0.84);
+  opacity: 0.8;
+}
+
+.faqGlowTwo {
+  width: 84vw;
+  height: 90vw;
+  left: -50vw;
+  top: 38%;
+  transform: rotate(22deg) scale(0.88, 1.14);
+  opacity: 0.7;
+}
+
+.faqGlowThree {
+  width: 94vw;
+  height: 52vw;
+  right: -18vw;
+  bottom: -25vw;
+  transform: rotate(24deg) scale(1.32, 0.58);
+  opacity: 0.62;
+}
+
+@media (min-width: 760px) {
+  .paperGlow {
+    filter: blur(64px);
+  }
+
+  .aboutGlowOne,
+  .lineupGlowOne,
+  .programmeGlowOne,
+  .faqGlowOne {
+    width: 72vw;
+    height: 48vw;
+  }
+
+  .aboutGlowTwo,
+  .lineupGlowTwo,
+  .programmeGlowTwo,
+  .faqGlowTwo {
+    width: 64vw;
+    height: 62vw;
+  }
+
+  .aboutGlowThree,
+  .lineupGlowThree,
+  .programmeGlowThree,
+  .faqGlowThree {
+    width: 70vw;
+    height: 34vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paperGlow {
+    will-change: auto;
+  }
+}

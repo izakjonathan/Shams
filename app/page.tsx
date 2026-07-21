@@ -40,7 +40,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="statement section" id="about">
+      <section className="statement section paperGlowSection" id="about">
+        <div className="paperGlow aboutGlowOne" aria-hidden="true" />
+        <div className="paperGlow aboutGlowTwo" aria-hidden="true" />
+        <div className="paperGlow aboutGlowThree" aria-hidden="true" />
         <div className="sectionIndex">01 — ABOUT</div>
         <div className="statementGrid">
           <h2>Where culture becomes a force for care.</h2>
@@ -63,7 +66,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="lineup section" id="lineup">
+      <section className="lineup section paperGlowSection" id="lineup">
+        <div className="paperGlow lineupGlowOne" aria-hidden="true" />
+        <div className="paperGlow lineupGlowTwo" aria-hidden="true" />
+        <div className="paperGlow lineupGlowThree" aria-hidden="true" />
         <div className="sectionHeading">
           <div><div className="sectionIndex">02 — ARTISTS</div><h2>First wave</h2></div>
           <p>Live performances, boundary-pushing selectors and collaborative moments across two stages.</p>
@@ -95,7 +101,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="programme section">
+      <section className="programme section paperGlowSection">
+        <div className="paperGlow programmeGlowOne" aria-hidden="true" />
+        <div className="paperGlow programmeGlowTwo" aria-hidden="true" />
+        <div className="paperGlow programmeGlowThree" aria-hidden="true" />
         <div className="sectionHeading">
           <div><div className="sectionIndex">04 — PROGRAMME</div><h2>A day in motion</h2></div>
           <p>Move between sound, food, ideas and collective experiences at your own pace.</p>
@@ -129,7 +138,10 @@ export default function Home() {
         <p className="ticketFootnote">All prices include fees. A portion of each ticket is donated.</p>
       </section>
 
-      <section className="faq section">
+      <section className="faq section paperGlowSection">
+        <div className="paperGlow faqGlowOne" aria-hidden="true" />
+        <div className="paperGlow faqGlowTwo" aria-hidden="true" />
+        <div className="paperGlow faqGlowThree" aria-hidden="true" />
         <div className="sectionHeading"><div><div className="sectionIndex">06 — PRACTICAL</div><h2>Good to know</h2></div></div>
         <FaqAccordion faqs={faqs} />
       </section>

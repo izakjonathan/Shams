@@ -112,7 +112,7 @@ it, those fall back to a placeholder domain.
   accidentally submit a form later.
 
 
-## v0.1.19 — iPhone Safari chrome cleanup
+## v0.1.20 — iPhone Safari chrome cleanup
 
 - Explicit light backgrounds on both `html` and `body`.
 - Light color scheme and `viewport-fit=cover` metadata.
@@ -120,3 +120,8 @@ it, those fall back to a placeholder domain.
 - Safe-area-aware horizontal layout and footer spacing.
 - Vertical overscroll containment where supported.
 - A small paper-colored endcap after the footer so translucent browser controls do not sample the dark footer at the end of the page.
+
+
+## v0.1.20
+
+Light sections now use reusable positioned paper-glow layers on top of the existing gradient washes, matching the hero gradient construction while preserving the dark-section effects.
