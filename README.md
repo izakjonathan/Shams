@@ -112,7 +112,7 @@ it, those fall back to a placeholder domain.
   accidentally submit a form later.
 
 
-## v0.1.22 — iPhone Safari chrome cleanup
+## v0.1.24 — iPhone Safari chrome cleanup
 
 - Explicit light backgrounds on both `html` and `body`.
 - Light color scheme and `viewport-fit=cover` metadata.
@@ -122,6 +122,20 @@ it, those fall back to a placeholder domain.
 - A small paper-colored endcap after the footer so translucent browser controls do not sample the dark footer at the end of the page.
 
 
-## v0.1.22
+## v0.1.24
 
 Light sections now use reusable positioned paper-glow layers on top of the existing gradient washes, matching the hero gradient construction while preserving the dark-section effects.
+
+
+## v0.1.24 gradient cleanup
+- Centralized paper, dark, and accent section glow controls around shared width/height/position/transform variables.
+- Standardized light-section washes so About, Artists, Programme, and Practical all use the same control structure.
+- Increased non-hero gradients on mobile for the paper sections and the manifesto, ticket, and newsletter sections.
+
+
+## v0.1.24 splash screen
+- Added a full-screen launch splash using the provided artwork in `public/images/splash-screen.png`.
+- Splash remains visible for a minimum of 1 second and waits for the window `load` event if the page is still loading.
+- Splash exit uses a common fade + slight scale + soft blur transition.
+- Main site enters underneath with a subtle fade-up and deblur transition.
+- Body scroll is locked during the splash, then restored automatically.

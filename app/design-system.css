@@ -70,9 +70,12 @@
   --duration-medium: 480ms;
   --duration-menu: 550ms;
   --duration-reveal: 920ms;
+  --duration-splash-exit: 720ms;
+  --duration-site-enter: 820ms;
   --reveal-stagger: 65ms;
   --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-splash: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-menu: cubic-bezier(0.76, 0, 0.24, 1);
   --reveal-distance: 24px;
   --reveal-distance-small: 16px;
@@ -94,6 +97,12 @@
     rgba(252, 198, 79, 0.14) 70%,
     transparent 100%
   );
+  --paper-glow-opacity: 0.82;
+  --paper-glow-opacity-strong: 0.9;
+  --hero-glow-blur-mobile: 44px;
+  --hero-glow-blur-desktop: 54px;
+  --dark-glow-blur-mobile: 28px;
+  --dark-glow-blur-desktop: 34px;
   --orb-gradient: radial-gradient(
     circle at 55% 45%,
     #050505 0 11%,

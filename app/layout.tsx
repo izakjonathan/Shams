@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { SplashScreen } from "./components/SplashScreen";
 import { artists, event, tickets } from "./lib/content";
 
 const agilera = localFont({
@@ -102,9 +103,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
   return (
     <html lang="en" className={agilera.variable}>
-      <body>
+      <body className="splashActive">
         <a className="skipLink" href="#main-content">Skip to content</a>
-        {children}
+        <SplashScreen />
+        <div className="siteShell">{children}</div>
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
