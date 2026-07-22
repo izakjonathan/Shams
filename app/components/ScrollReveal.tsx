@@ -45,25 +45,13 @@ export function ScrollReveal() {
 
     root.classList.add("scrollRevealEnabled");
 
-    const clearWillChange = (event: TransitionEvent) => {
-      if (event.propertyName !== "opacity") return;
-      const item = event.currentTarget as HTMLElement;
-      item.style.willChange = "auto";
-      item.removeEventListener("transitionend", clearWillChange as EventListener);
-    };
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const item = entry.target as HTMLElement;
-          observer.unobserve(item);
-          // Promote only while this item is actually transitioning, then drop
-          // the layer again — pinning every item on the page at once (before
-          // it's even in view) was costing a lot of compositor overhead.
-          item.style.willChange = "opacity, transform";
-          item.addEventListener("transitionend", clearWillChange as EventListener);
           item.classList.add("isRevealed");
+          observer.unobserve(item);
         });
       },
       {
@@ -84,8 +72,6 @@ export function ScrollReveal() {
       revealItems.forEach((item) => {
         item.classList.remove("revealItem", "isRevealed");
         item.style.removeProperty("--reveal-order");
-        item.style.removeProperty("will-change");
-        item.removeEventListener("transitionend", clearWillChange as EventListener);
       });
     };
   }, []);

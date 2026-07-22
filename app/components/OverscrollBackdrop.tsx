@@ -17,7 +17,11 @@ export function OverscrollBackdrop() {
 
     const applyBottomState = () => {
       frame = 0;
-      if (body.classList.contains("menuOpen")) return;
+      if (body.classList.contains("menuOpen")) {
+        root.classList.remove("overscrollBottom");
+        body.classList.remove("overscrollBottom");
+        return;
+      }
       const scrollTop = Math.max(0, window.scrollY, root.scrollTop, body.scrollTop);
       const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
       const documentHeight = Math.max(root.scrollHeight, body.scrollHeight);
