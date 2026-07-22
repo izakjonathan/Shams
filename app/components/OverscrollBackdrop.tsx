@@ -17,6 +17,7 @@ export function OverscrollBackdrop() {
 
     const applyBottomState = () => {
       frame = 0;
+      if (body.classList.contains("menuOpen")) return;
       const scrollTop = Math.max(0, window.scrollY, root.scrollTop, body.scrollTop);
       const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
       const documentHeight = Math.max(root.scrollHeight, body.scrollHeight);
@@ -37,6 +38,7 @@ export function OverscrollBackdrop() {
     window.addEventListener("resize", schedule, { passive: true });
     window.visualViewport?.addEventListener("resize", schedule, { passive: true });
     window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("shams:viewport-state-change", schedule);
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
@@ -44,6 +46,7 @@ export function OverscrollBackdrop() {
       window.removeEventListener("resize", schedule);
       window.visualViewport?.removeEventListener("resize", schedule);
       window.visualViewport?.removeEventListener("scroll", schedule);
+      window.removeEventListener("shams:viewport-state-change", schedule);
       root.classList.remove("overscrollBottom");
       body.classList.remove("overscrollBottom");
     };
