@@ -1,19 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { event } from "../lib/content";
 
-const MENU_EXIT_FALLBACK_MS = 650;
+const MENU_EXIT_FALLBACK_MS = 620;
+const DARK_SURFACE_SELECTOR = ".manifesto, .tickets, footer";
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuMounted, setMenuMounted] = useState(false);
+  const [isOnDarkSurface, setIsOnDarkSurface] = useState(false);
   const openFrame = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
 
-  const notifyViewportStateChanged = () => {
-    window.dispatchEvent(new Event("shams:viewport-state-change"));
-  };
+  const updateHeaderSurface = useCallback(() => {
+    if (menuMounted) {
+      setIsOnDarkSurface(true);
+      return;
+    }
+
+    const sampleY = Math.max(1, Math.min(window.innerHeight - 1, 36));
+    const sampleX = Math.max(1, Math.min(window.innerWidth - 1, window.innerWidth / 2));
+    const elements = document.elementsFromPoint(sampleX, sampleY);
+    const isDark = elements.some((element) => element.closest(DARK_SURFACE_SELECTOR));
+    setIsOnDarkSurface(isDark);
+  }, [menuMounted]);
 
   const openMenu = () => {
     if (closeTimer.current !== null) {
@@ -23,15 +34,13 @@ export function SiteHeader() {
 
     setMenuMounted(true);
     openFrame.current = window.requestAnimationFrame(() => {
-      openFrame.current = window.requestAnimationFrame(() => {
-        setMenuOpen(true);
-      });
+      openFrame.current = window.requestAnimationFrame(() => setMenuOpen(true));
     });
   };
 
   const finishClosing = () => {
     setMenuMounted(false);
-    notifyViewportStateChanged();
+    window.requestAnimationFrame(updateHeaderSurface);
   };
 
   const closeMenu = () => {
@@ -45,36 +54,56 @@ export function SiteHeader() {
     else openMenu();
   };
 
+  // Determine header contrast from the actual surface below the fixed header.
+  // This replaces mix-blend-mode, which leaves stale composited tiles in iOS Safari.
   useEffect(() => {
-    const root = document.documentElement;
-    const body = document.body;
-    let secondFrame: number | null = null;
+    let frame = 0;
+    const schedule = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        updateHeaderSurface();
+      });
+    };
 
-    root.classList.toggle("menuScrollLocked", menuMounted);
-    body.classList.toggle("menuScrollLocked", menuMounted);
-
-    // Recalculate the Safari edge canvas both immediately and after the
-    // browser has restored normal document metrics on lock/unlock.
-    notifyViewportStateChanged();
-    const firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(notifyViewportStateChanged);
-    });
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    window.visualViewport?.addEventListener("resize", schedule, { passive: true });
+    window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
 
     return () => {
-      window.cancelAnimationFrame(firstFrame);
-      if (secondFrame !== null) window.cancelAnimationFrame(secondFrame);
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("scroll", schedule);
+    };
+  }, [updateHeaderSurface]);
+
+  // The overlay itself consumes gestures. We deliberately do not alter html/body
+  // overflow because doing so changes Safari's viewport metrics and root canvas.
+  useEffect(() => {
+    if (!menuMounted) return;
+
+    const preventTouchMove = (event: TouchEvent) => event.preventDefault();
+    const preventWheel = (event: WheelEvent) => event.preventDefault();
+
+    document.addEventListener("touchmove", preventTouchMove, { passive: false });
+    document.addEventListener("wheel", preventWheel, { passive: false });
+
+    return () => {
+      document.removeEventListener("touchmove", preventTouchMove);
+      document.removeEventListener("wheel", preventWheel);
     };
   }, [menuMounted]);
 
-  // Close the mobile menu if the viewport is resized past the desktop
-  // breakpoint while it is open (for example, after rotating a tablet).
   useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 760px)");
     const handleChange = (mediaEvent: MediaQueryListEvent) => {
-      if (mediaEvent.matches) {
-        setMenuOpen(false);
-        setMenuMounted(false);
-      }
+      if (!mediaEvent.matches) return;
+      setMenuOpen(false);
+      setMenuMounted(false);
     };
     desktopQuery.addEventListener("change", handleChange);
     return () => desktopQuery.removeEventListener("change", handleChange);
@@ -84,14 +113,18 @@ export function SiteHeader() {
     return () => {
       if (openFrame.current !== null) window.cancelAnimationFrame(openFrame.current);
       if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
-      document.documentElement.classList.remove("menuScrollLocked");
-      document.body.classList.remove("menuScrollLocked");
     };
   }, []);
 
+  const headerClass = [
+    "siteHeader",
+    isOnDarkSurface ? "isOnDarkSurface" : "isOnLightSurface",
+    menuMounted ? "isMenuActive" : "",
+  ].filter(Boolean).join(" ");
+
   return (
     <>
-      <header className="siteHeader">
+      <header className={headerClass}>
         <a className="brand" href="#top" aria-label="Shams for Humanity home">
           <span className="brandMark" aria-hidden="true">✦</span>
           <span>SHAMS / HUMANITY</span>
@@ -121,7 +154,7 @@ export function SiteHeader() {
           aria-hidden={!menuOpen}
           inert={!menuOpen}
           onTransitionEnd={(event) => {
-            if (event.target !== event.currentTarget || event.propertyName !== "transform") return;
+            if (event.target !== event.currentTarget || event.propertyName !== "opacity") return;
             if (!menuOpen) {
               if (closeTimer.current !== null) {
                 window.clearTimeout(closeTimer.current);
@@ -131,13 +164,15 @@ export function SiteHeader() {
             }
           }}
         >
-          <nav>
-            <a onClick={closeMenu} href="#about">About <span>01</span></a>
-            <a onClick={closeMenu} href="#lineup">Artists <span>02</span></a>
-            <a onClick={closeMenu} href="#info">Event info <span>03</span></a>
-            <a onClick={closeMenu} href="#tickets">Tickets <span>04</span></a>
-          </nav>
-          <p>{event.city} · {event.date}</p>
+          <div className="mobileMenuInner">
+            <nav>
+              <a onClick={closeMenu} href="#about">About <span>01</span></a>
+              <a onClick={closeMenu} href="#lineup">Artists <span>02</span></a>
+              <a onClick={closeMenu} href="#info">Event info <span>03</span></a>
+              <a onClick={closeMenu} href="#tickets">Tickets <span>04</span></a>
+            </nav>
+            <p>{event.city} · {event.date}</p>
+          </div>
         </div>
       )}
     </>

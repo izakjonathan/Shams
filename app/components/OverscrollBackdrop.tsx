@@ -2,12 +2,12 @@
 
 import { useEffect } from "react";
 
-const EDGE_TOLERANCE = 3;
+const EDGE_TOLERANCE = 4;
 
 /**
- * Keeps Safari's rubber-band under-page background matched to the nearest
- * document edge. Menu scroll locking is ignored because iOS temporarily
- * reports collapsed/invalid page measurements while a fixed overlay is open.
+ * Safari only needs an explicit document-canvas override at the bottom.
+ * The top always uses the normal paper root color. Keeping the controller
+ * one-directional avoids menu/viewport races that previously polluted the top.
  */
 export function OverscrollBackdrop() {
   useEffect(() => {
@@ -15,81 +15,37 @@ export function OverscrollBackdrop() {
     const body = document.body;
     let frame = 0;
 
-    const clearBottomState = () => {
-      root.classList.remove("overscrollBottom");
-      body.classList.remove("overscrollBottom");
-    };
-
-    const applyEdgeState = () => {
+    const applyBottomState = () => {
       frame = 0;
-
-      const menuLocked = root.classList.contains("menuScrollLocked");
       const scrollTop = Math.max(0, window.scrollY, root.scrollTop, body.scrollTop);
-
-      if (menuLocked) {
-        // Never allow the temporary locked viewport to turn the root canvas
-        // black. Preserve a top canvas only when the real page is at the top.
-        const useTop = scrollTop <= EDGE_TOLERANCE;
-        root.classList.toggle("overscrollTop", useTop);
-        body.classList.toggle("overscrollTop", useTop);
-        clearBottomState();
-        return;
-      }
-
-      const viewportHeight = Math.max(
-        window.innerHeight,
-        root.clientHeight,
-        window.visualViewport?.height ?? 0,
-      );
-      const documentHeight = Math.max(
-        root.scrollHeight,
-        body.scrollHeight,
-        root.offsetHeight,
-        body.offsetHeight,
-      );
+      const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+      const documentHeight = Math.max(root.scrollHeight, body.scrollHeight);
       const maxScroll = Math.max(0, documentHeight - viewportHeight);
-      const atTop = scrollTop <= EDGE_TOLERANCE;
-      const hasScrollablePage = maxScroll > EDGE_TOLERANCE;
-      const atBottom = hasScrollablePage && scrollTop >= maxScroll - EDGE_TOLERANCE;
+      const atBottom = maxScroll > EDGE_TOLERANCE && scrollTop >= maxScroll - EDGE_TOLERANCE;
 
-      // Top wins if Safari briefly reports contradictory metrics.
-      const useTop = atTop;
-      const useBottom = !atTop && atBottom;
-
-      root.classList.toggle("overscrollTop", useTop);
-      body.classList.toggle("overscrollTop", useTop);
-      root.classList.toggle("overscrollBottom", useBottom);
-      body.classList.toggle("overscrollBottom", useBottom);
+      root.classList.toggle("overscrollBottom", atBottom);
+      body.classList.toggle("overscrollBottom", atBottom);
     };
 
-    const scheduleUpdate = () => {
+    const schedule = () => {
       if (frame) return;
-      frame = window.requestAnimationFrame(applyEdgeState);
+      frame = window.requestAnimationFrame(applyBottomState);
     };
 
-    const refreshAfterLayout = () => {
-      scheduleUpdate();
-      window.requestAnimationFrame(() => window.requestAnimationFrame(scheduleUpdate));
-    };
-
-    applyEdgeState();
-    window.addEventListener("scroll", scheduleUpdate, { passive: true });
-    window.addEventListener("resize", scheduleUpdate, { passive: true });
-    window.addEventListener("orientationchange", refreshAfterLayout, { passive: true });
-    window.addEventListener("shams:viewport-state-change", refreshAfterLayout);
-    window.visualViewport?.addEventListener("resize", scheduleUpdate, { passive: true });
-    window.visualViewport?.addEventListener("scroll", scheduleUpdate, { passive: true });
+    applyBottomState();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    window.visualViewport?.addEventListener("resize", schedule, { passive: true });
+    window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", scheduleUpdate);
-      window.removeEventListener("resize", scheduleUpdate);
-      window.removeEventListener("orientationchange", refreshAfterLayout);
-      window.removeEventListener("shams:viewport-state-change", refreshAfterLayout);
-      window.visualViewport?.removeEventListener("resize", scheduleUpdate);
-      window.visualViewport?.removeEventListener("scroll", scheduleUpdate);
-      root.classList.remove("overscrollTop", "overscrollBottom");
-      body.classList.remove("overscrollTop", "overscrollBottom");
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("scroll", schedule);
+      root.classList.remove("overscrollBottom");
+      body.classList.remove("overscrollBottom");
     };
   }, []);
 

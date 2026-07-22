@@ -91,7 +91,7 @@ export function SplashScreen() {
     >
       <div className="splashScreenArtWrap">
         <Image
-          src="/images/splash-screen.png"
+          src="/images/splash-screen-edge-safe.png"
           alt=""
           fill
           priority
