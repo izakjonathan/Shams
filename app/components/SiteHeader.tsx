@@ -6,10 +6,26 @@ import { event } from "../lib/content";
 const MENU_EXIT_FALLBACK_MS = 620;
 const DARK_SURFACE_SELECTOR = ".manifesto, .tickets, footer";
 
+type MenuGeometry = {
+  top: number;
+  height: number;
+};
+
+/**
+ * Important iOS Safari constraint:
+ * Safari 26 can permanently retint its top chrome when a fixed/sticky
+ * element's background changes or when a new fixed overlay is shown.
+ * Therefore:
+ * - the fixed header background is always transparent and never changes;
+ * - the mobile menu is document-positioned (`absolute`), not fixed;
+ * - opening/closing the menu never mutates html/body backgrounds or overflow.
+ */
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuMounted, setMenuMounted] = useState(false);
   const [isOnDarkSurface, setIsOnDarkSurface] = useState(false);
+  const [menuGeometry, setMenuGeometry] = useState<MenuGeometry>({ top: 0, height: 0 });
+  const headerRef = useRef<HTMLElement | null>(null);
   const openFrame = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
 
@@ -20,12 +36,25 @@ export function SiteHeader() {
     setIsOnDarkSurface(elements.some((element) => element.closest(DARK_SURFACE_SELECTOR)));
   }, []);
 
+  const measureMenu = useCallback(() => {
+    const viewport = window.visualViewport;
+    const viewportTop = window.scrollY + (viewport?.offsetTop ?? 0);
+    const viewportHeight = viewport?.height ?? window.innerHeight;
+    const headerHeight = window.matchMedia("(min-width: 760px)").matches ? 84 : 72;
+
+    setMenuGeometry({
+      top: Math.round(viewportTop + headerHeight),
+      height: Math.max(0, Math.ceil(viewportHeight - headerHeight)),
+    });
+  }, []);
+
   const openMenu = () => {
     if (closeTimer.current !== null) {
       window.clearTimeout(closeTimer.current);
       closeTimer.current = null;
     }
 
+    measureMenu();
     setMenuMounted(true);
     openFrame.current = window.requestAnimationFrame(() => {
       openFrame.current = window.requestAnimationFrame(() => setMenuOpen(true));
@@ -47,6 +76,39 @@ export function SiteHeader() {
     if (menuOpen || menuMounted) closeMenu();
     else openMenu();
   };
+
+  useEffect(() => {
+    let frame = 0;
+
+    const positionHeader = () => {
+      frame = 0;
+      const viewport = window.visualViewport;
+      const viewportTop = window.scrollY + (viewport?.offsetTop ?? 0);
+      headerRef.current?.style.setProperty(
+        "transform",
+        `translate3d(0, ${Math.round(viewportTop)}px, 0)`,
+      );
+    };
+
+    const schedulePosition = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(positionHeader);
+    };
+
+    positionHeader();
+    window.addEventListener("scroll", schedulePosition, { passive: true });
+    window.addEventListener("resize", schedulePosition, { passive: true });
+    window.visualViewport?.addEventListener("resize", schedulePosition, { passive: true });
+    window.visualViewport?.addEventListener("scroll", schedulePosition, { passive: true });
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedulePosition);
+      window.removeEventListener("resize", schedulePosition);
+      window.visualViewport?.removeEventListener("resize", schedulePosition);
+      window.visualViewport?.removeEventListener("scroll", schedulePosition);
+    };
+  }, []);
 
   useEffect(() => {
     let frame = 0;
@@ -74,6 +136,30 @@ export function SiteHeader() {
   }, [menuMounted, updateHeaderSurface]);
 
   useEffect(() => {
+    if (!menuMounted) return;
+
+    let frame = 0;
+    const scheduleMeasure = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        measureMenu();
+      });
+    };
+
+    window.addEventListener("resize", scheduleMeasure, { passive: true });
+    window.visualViewport?.addEventListener("resize", scheduleMeasure, { passive: true });
+    window.visualViewport?.addEventListener("scroll", scheduleMeasure, { passive: true });
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", scheduleMeasure);
+      window.visualViewport?.removeEventListener("resize", scheduleMeasure);
+      window.visualViewport?.removeEventListener("scroll", scheduleMeasure);
+    };
+  }, [measureMenu, menuMounted]);
+
+  useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 760px)");
     const handleChange = (mediaEvent: MediaQueryListEvent) => {
       if (!mediaEvent.matches) return;
@@ -94,12 +180,11 @@ export function SiteHeader() {
   const headerClass = [
     "siteHeader",
     isOnDarkSurface ? "isOnDarkSurface" : "isOnLightSurface",
-    menuMounted ? "isMenuActive" : "",
-  ].filter(Boolean).join(" ");
+  ].join(" ");
 
   return (
     <>
-      <header className={headerClass}>
+      <header ref={headerRef} className={headerClass}>
         <a className="brand" href="#top" aria-label="Shams for Humanity home">
           <span className="brandMark" aria-hidden="true">✦</span>
           <span>SHAMS / HUMANITY</span>
@@ -126,6 +211,7 @@ export function SiteHeader() {
         <div
           id="mobile-menu"
           className={`mobileMenu ${menuOpen ? "isOpen" : "isClosing"}`}
+          style={{ top: menuGeometry.top, height: menuGeometry.height }}
           aria-hidden={!menuOpen}
           inert={!menuOpen}
           onTouchMove={(event) => event.preventDefault()}
