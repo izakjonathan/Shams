@@ -12,13 +12,27 @@ export function SiteHeader() {
   const [isOnDarkSurface, setIsOnDarkSurface] = useState(false);
   const openFrame = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
+  const darkSurfaceEls = useRef<HTMLElement[]>([]);
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    darkSurfaceEls.current = Array.from(document.querySelectorAll<HTMLElement>(DARK_SURFACE_SELECTOR));
+  }, []);
 
   const updateHeaderSurface = useCallback(() => {
     if (menuMounted) return;
-    const sampleY = Math.max(1, Math.min(window.innerHeight - 1, 36));
-    const sampleX = Math.max(1, Math.min(window.innerWidth - 1, window.innerWidth / 2));
-    const elements = document.elementsFromPoint(sampleX, sampleY);
-    setIsOnDarkSurface(elements.some((element) => element.closest(DARK_SURFACE_SELECTOR)));
+    // Compare against cached section rects instead of document.elementsFromPoint,
+    // which forces a full hit-test of the render tree on every scroll frame and
+    // was a source of scroll jank.
+    const headerRect = headerRef.current?.getBoundingClientRect();
+    const sampleY = headerRect
+      ? Math.max(0, Math.min(window.innerHeight - 1, headerRect.bottom - 8))
+      : 36;
+    const isDark = darkSurfaceEls.current.some((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.top <= sampleY && rect.bottom >= sampleY;
+    });
+    setIsOnDarkSurface(isDark);
   }, [menuMounted]);
 
   const openMenu = () => {
@@ -52,36 +66,46 @@ export function SiteHeader() {
   };
 
   useEffect(() => {
-    if (!menuMounted) return;
-
-    const root = document.documentElement;
     const body = document.body;
-    const preventScroll = (event: Event) => event.preventDefault();
-    const preventScrollKeys = (event: KeyboardEvent) => {
-      if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(event.key)) {
+    const root = document.documentElement;
+
+    const preventPointerScroll = (event: TouchEvent | WheelEvent) => {
+      event.preventDefault();
+    };
+
+    const preventKeyboardScroll = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("a, button, input, textarea, select, [contenteditable='true']")) return;
+      if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(event.key)) {
         event.preventDefault();
       }
     };
 
-    // Do not alter html/body positioning or call scrollTo here. On iOS Safari,
-    // that changes visual-viewport geometry and can restore the document at a
-    // slightly different section boundary after the menu closes.
-    body.classList.add("menuOpen");
-    root.classList.remove("overscrollBottom");
-    body.classList.remove("overscrollBottom");
-    document.addEventListener("touchmove", preventScroll, { passive: false });
-    document.addEventListener("wheel", preventScroll, { passive: false });
-    document.addEventListener("keydown", preventScrollKeys);
-
-    return () => {
+    if (menuMounted) {
+      root.classList.remove("overscrollBottom");
+      body.classList.remove("overscrollBottom");
+      root.classList.add("menuOpen");
+      body.classList.add("menuOpen");
+      document.addEventListener("touchmove", preventPointerScroll, { passive: false });
+      document.addEventListener("wheel", preventPointerScroll, { passive: false });
+      document.addEventListener("keydown", preventKeyboardScroll);
+      window.dispatchEvent(new Event("shams:viewport-state-change"));
+    } else {
+      root.classList.remove("menuOpen");
       body.classList.remove("menuOpen");
-      document.removeEventListener("touchmove", preventScroll);
-      document.removeEventListener("wheel", preventScroll);
-      document.removeEventListener("keydown", preventScrollKeys);
       window.requestAnimationFrame(() => {
         updateHeaderSurface();
         window.dispatchEvent(new Event("shams:viewport-state-change"));
       });
+    }
+
+    return () => {
+      document.removeEventListener("touchmove", preventPointerScroll);
+      document.removeEventListener("wheel", preventPointerScroll);
+      document.removeEventListener("keydown", preventKeyboardScroll);
+      if (!menuMounted) return;
+      root.classList.remove("menuOpen");
+      body.classList.remove("menuOpen");
     };
   }, [menuMounted, updateHeaderSurface]);
 
@@ -132,7 +156,7 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className={headerClass}>
+      <header ref={headerRef} className={headerClass}>
         <a className="brand" href="#top" aria-label="Shams for Humanity home">
           <span className="brandMark" aria-hidden="true">✦</span>
           <span>SHAMS / HUMANITY</span>
