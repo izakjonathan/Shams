@@ -14,17 +14,11 @@ export function SiteHeader() {
   const closeTimer = useRef<number | null>(null);
 
   const updateHeaderSurface = useCallback(() => {
-    if (menuMounted) {
-      setIsOnDarkSurface(true);
-      return;
-    }
-
     const sampleY = Math.max(1, Math.min(window.innerHeight - 1, 36));
     const sampleX = Math.max(1, Math.min(window.innerWidth - 1, window.innerWidth / 2));
     const elements = document.elementsFromPoint(sampleX, sampleY);
-    const isDark = elements.some((element) => element.closest(DARK_SURFACE_SELECTOR));
-    setIsOnDarkSurface(isDark);
-  }, [menuMounted]);
+    setIsOnDarkSurface(elements.some((element) => element.closest(DARK_SURFACE_SELECTOR)));
+  }, []);
 
   const openMenu = () => {
     if (closeTimer.current !== null) {
@@ -54,12 +48,10 @@ export function SiteHeader() {
     else openMenu();
   };
 
-  // Determine header contrast from the actual surface below the fixed header.
-  // This replaces mix-blend-mode, which leaves stale composited tiles in iOS Safari.
   useEffect(() => {
     let frame = 0;
     const schedule = () => {
-      if (frame) return;
+      if (frame || menuMounted) return;
       frame = window.requestAnimationFrame(() => {
         frame = 0;
         updateHeaderSurface();
@@ -79,24 +71,7 @@ export function SiteHeader() {
       window.visualViewport?.removeEventListener("resize", schedule);
       window.visualViewport?.removeEventListener("scroll", schedule);
     };
-  }, [updateHeaderSurface]);
-
-  // The overlay itself consumes gestures. We deliberately do not alter html/body
-  // overflow because doing so changes Safari's viewport metrics and root canvas.
-  useEffect(() => {
-    if (!menuMounted) return;
-
-    const preventTouchMove = (event: TouchEvent) => event.preventDefault();
-    const preventWheel = (event: WheelEvent) => event.preventDefault();
-
-    document.addEventListener("touchmove", preventTouchMove, { passive: false });
-    document.addEventListener("wheel", preventWheel, { passive: false });
-
-    return () => {
-      document.removeEventListener("touchmove", preventTouchMove);
-      document.removeEventListener("wheel", preventWheel);
-    };
-  }, [menuMounted]);
+  }, [menuMounted, updateHeaderSurface]);
 
   useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 760px)");
@@ -153,6 +128,7 @@ export function SiteHeader() {
           className={`mobileMenu ${menuOpen ? "isOpen" : "isClosing"}`}
           aria-hidden={!menuOpen}
           inert={!menuOpen}
+          onTouchMove={(event) => event.preventDefault()}
           onTransitionEnd={(event) => {
             if (event.target !== event.currentTarget || event.propertyName !== "opacity") return;
             if (!menuOpen) {
