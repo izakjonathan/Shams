@@ -239,3 +239,39 @@ Light sections now use reusable positioned paper-glow layers on top of the exist
 - Removed all header background-color changes during menu opening/closing.
 - Added body-only position lock that preserves and restores the exact scroll position.
 - Paused bottom overscroll detection while the menu is mounted.
+
+
+## v0.1.40 — Safari status-bar root fix, scroll-reveal jank, cleanup
+
+**Root cause found for both the stray yellow patch and the menu not covering
+the top of the screen on iOS Safari:** Safari paints the reserved area behind
+its status bar/notch strictly from the `html`/`body` background-color — it
+does not composite fixed-position overlay content (like `.mobileMenu` or the
+hero's gradients) into that strip. Every previous attempt in this changelog
+tried to solve this by manipulating fixed overlays or the hero canvas, which
+is why the artifact kept coming back in different forms.
+
+- Removed the hero's negative-margin safe-area "bleed" hack. It shifted the
+  hero's radial-gradient anchors up into the status-bar strip, which is what
+  produced the yellow patch. The strip is now left to the plain paper
+  background color, with the hero's padding-top simply extended by the safe
+  area so its content still clears the header.
+- The mobile menu now also toggles a `menuOpen` class on `<html>` (previously
+  only on `<body>`), paired with a new rule that sets the root background
+  color to ink while the class is present. This is what actually makes the
+  menu cover the status-bar strip, since no fixed overlay can paint there
+  directly.
+- The fixed header's height and top padding now account for
+  `env(safe-area-inset-top)` so its content clears the notch/status bar
+  instead of sitting underneath it.
+- Fixed a `will-change` inversion in the scroll-reveal CSS that was pinning
+  every not-yet-revealed item on the page (the whole page's worth, from the
+  moment it mounted) to its own compositor layer, while removing the
+  promotion for the item actually in the middle of animating. `will-change`
+  is now applied by `ScrollReveal.tsx` only for the duration of each item's
+  own transition, then cleared.
+- Replaced the header's dark-surface color detection, which called
+  `document.elementsFromPoint` (a full render-tree hit-test) on every scroll
+  frame, with a cached-rect comparison — a source of scroll jank independent
+  of the reveal animation itself.
+- Removed an unused duplicate splash-screen source image.

@@ -13,13 +13,23 @@ export function SiteHeader() {
   const openFrame = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
   const lockedScrollY = useRef(0);
+  const darkSurfaceEls = useRef<HTMLElement[]>([]);
+
+  useEffect(() => {
+    darkSurfaceEls.current = Array.from(document.querySelectorAll<HTMLElement>(DARK_SURFACE_SELECTOR));
+  }, []);
 
   const updateHeaderSurface = useCallback(() => {
     if (menuMounted) return;
-    const sampleY = Math.max(1, Math.min(window.innerHeight - 1, 36));
-    const sampleX = Math.max(1, Math.min(window.innerWidth - 1, window.innerWidth / 2));
-    const elements = document.elementsFromPoint(sampleX, sampleY);
-    setIsOnDarkSurface(elements.some((element) => element.closest(DARK_SURFACE_SELECTOR)));
+    // Compare against cached section rects instead of document.elementsFromPoint,
+    // which forces a full hit-test of the render tree on every scroll frame and
+    // was a source of scroll jank.
+    const sampleY = 36;
+    const isDark = darkSurfaceEls.current.some((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.top <= sampleY && rect.bottom >= sampleY;
+    });
+    setIsOnDarkSurface(isDark);
   }, [menuMounted]);
 
   const openMenu = () => {
@@ -54,6 +64,7 @@ export function SiteHeader() {
 
   useEffect(() => {
     const body = document.body;
+    const root = document.documentElement;
     if (menuMounted) {
       lockedScrollY.current = window.scrollY;
       body.style.position = "fixed";
@@ -62,9 +73,11 @@ export function SiteHeader() {
       body.style.right = "0";
       body.style.width = "100%";
       body.classList.add("menuOpen");
+      root.classList.add("menuOpen");
     } else if (body.classList.contains("menuOpen")) {
       const restoreY = lockedScrollY.current;
       body.classList.remove("menuOpen");
+      root.classList.remove("menuOpen");
       body.style.position = "";
       body.style.top = "";
       body.style.left = "";
@@ -79,6 +92,7 @@ export function SiteHeader() {
     return () => {
       if (!menuMounted) return;
       body.classList.remove("menuOpen");
+      root.classList.remove("menuOpen");
       body.style.position = "";
       body.style.top = "";
       body.style.left = "";
