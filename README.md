@@ -287,10 +287,19 @@ is why the artifact kept coming back in different forms.
 - Normalized `package.json` and the current baseline marker to version `0.1.40`.
 
 
-## v0.1.41 — Safari toolbar tint sentinels
+## v0.1.42 — Safari toolbar tint sentinels
 
 - Added a permanent mobile-WebKit top tint sentinel using the paper color.
 - Added a bottom tint sentinel that is only enabled at the real document bottom.
 - Removed the competing `html.menuOpen` / `body.menuOpen` black root-background override.
 - Kept the fixed header, full-screen menu, non-geometric scroll lock, and working bottom edge controller intact.
 - Sentinels are disabled in standalone/fullscreen display modes where Safari browser toolbars are absent.
+
+
+## v0.1.42 Safari fixed-element sampling exclusion
+- Removed the competing Safari toolbar tint sentinels.
+- Kept the root/body canvas permanently paper-colored.
+- Added neutral `backdrop-filter: saturate(100%)` exclusions to the fixed header, mobile-menu wrapper, and splash wrapper.
+- Made the fixed menu wrapper transparent and moved its black visual surface to an absolutely positioned `::before` layer.
+- Made the fixed splash wrapper transparent and moved its paper surface to an absolutely positioned `::before` layer.
+- Kept the menu and splash fully unmounted after their exit transitions.
