@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { SplashScreen } from "./components/SplashScreen";
 import { OverscrollBackdrop } from "./components/OverscrollBackdrop";
+import { SafariToolbarTint } from "./components/SafariToolbarTint";
 import { artists, event, tickets } from "./lib/content";
 
 const agilera = localFont({
@@ -105,6 +106,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={agilera.variable}>
       <body className="splashActive">
         <a className="skipLink" href="#main-content">Skip to content</a>
+        <SafariToolbarTint />
         <SplashScreen />
         <OverscrollBackdrop />
         <div className="siteShell">{children}</div>

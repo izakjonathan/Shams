@@ -614,12 +614,56 @@ footer {
 
 
 
-/* iOS Safari paints the reserved area behind its status bar/notch from the
-   html/body background-color only — it does not composite fixed-position
-   overlay content into that strip. Toggling the root color here (rather than
-   relying solely on the fixed .mobileMenu layer) is what makes the menu
-   actually cover that area instead of leaving a gap. */
-html.menuOpen,
-body.menuOpen {
-  background-color: var(--color-ink);
+
+
+/* iOS Safari 26 toolbar-color sampling sentinels.
+   These are deliberately tiny, fixed, edge-adjacent surfaces. They provide a
+   stable computed background-color for WebKit to sample instead of allowing
+   the fixed header or full-screen menu to redefine the browser toolbar tint.
+   They are hidden outside mobile WebKit and in installed/fullscreen mode. */
+.safariToolbarTints,
+.safariToolbarTint {
+  display: none;
+}
+
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 759px) {
+    .safariToolbarTints {
+      display: contents;
+    }
+
+    .safariToolbarTint {
+      position: fixed;
+      z-index: 2147483647;
+      left: 0;
+      width: 100%;
+      height: 12px;
+      pointer-events: none;
+      visibility: visible;
+      opacity: 1;
+      transform: translateZ(0);
+    }
+
+    .safariToolbarTintTop {
+      display: block;
+      top: -8px;
+      background-color: #f5f2eb;
+    }
+
+    .safariToolbarTintBottom {
+      bottom: -8px;
+      background-color: #090909;
+    }
+
+    html.overscrollBottom .safariToolbarTintBottom,
+    body.overscrollBottom .safariToolbarTintBottom {
+      display: block;
+    }
+  }
+}
+
+@media (display-mode: standalone), (display-mode: fullscreen) {
+  .safariToolbarTint {
+    display: none !important;
+  }
 }
