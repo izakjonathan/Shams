@@ -2,11 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { event } from "../lib/content";
+import { useSafariUiColor } from "./SafariUiColorProvider";
 
 const MENU_EXIT_FALLBACK_MS = 620;
 const DARK_SURFACE_SELECTOR = ".manifesto, .tickets, footer";
 
 export function SiteHeader() {
+  const { setSurfaceTone, setMenuActive } = useSafariUiColor();
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuMounted, setMenuMounted] = useState(false);
   const [isOnDarkSurface, setIsOnDarkSurface] = useState(false);
@@ -33,7 +35,8 @@ export function SiteHeader() {
       return rect.top <= sampleY && rect.bottom >= sampleY;
     });
     setIsOnDarkSurface(isDark);
-  }, [menuMounted]);
+    setSurfaceTone(isDark ? "dark" : "light");
+  }, [menuMounted, setSurfaceTone]);
 
   const openMenu = () => {
     if (closeTimer.current !== null) {
@@ -48,10 +51,7 @@ export function SiteHeader() {
 
   const finishClosing = () => {
     setMenuMounted(false);
-    window.requestAnimationFrame(() => {
-      updateHeaderSurface();
-      window.dispatchEvent(new Event("shams:viewport-state-change"));
-    });
+    window.requestAnimationFrame(updateHeaderSurface);
   };
 
   const closeMenu = () => {
@@ -66,9 +66,6 @@ export function SiteHeader() {
   };
 
   useEffect(() => {
-    const body = document.body;
-    const root = document.documentElement;
-
     const preventPointerScroll = (event: TouchEvent | WheelEvent) => {
       event.preventDefault();
     };
@@ -81,33 +78,22 @@ export function SiteHeader() {
       }
     };
 
+    setMenuActive(menuMounted);
+
     if (menuMounted) {
-      root.classList.remove("overscrollBottom");
-      body.classList.remove("overscrollBottom");
-      root.classList.add("menuOpen");
-      body.classList.add("menuOpen");
       document.addEventListener("touchmove", preventPointerScroll, { passive: false });
       document.addEventListener("wheel", preventPointerScroll, { passive: false });
       document.addEventListener("keydown", preventKeyboardScroll);
-      window.dispatchEvent(new Event("shams:viewport-state-change"));
     } else {
-      root.classList.remove("menuOpen");
-      body.classList.remove("menuOpen");
-      window.requestAnimationFrame(() => {
-        updateHeaderSurface();
-        window.dispatchEvent(new Event("shams:viewport-state-change"));
-      });
+      window.requestAnimationFrame(updateHeaderSurface);
     }
 
     return () => {
       document.removeEventListener("touchmove", preventPointerScroll);
       document.removeEventListener("wheel", preventPointerScroll);
       document.removeEventListener("keydown", preventKeyboardScroll);
-      if (!menuMounted) return;
-      root.classList.remove("menuOpen");
-      body.classList.remove("menuOpen");
     };
-  }, [menuMounted, updateHeaderSurface]);
+  }, [menuMounted, setMenuActive, updateHeaderSurface]);
 
   useEffect(() => {
     let frame = 0;
@@ -147,7 +133,8 @@ export function SiteHeader() {
   useEffect(() => () => {
     if (openFrame.current !== null) window.cancelAnimationFrame(openFrame.current);
     if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
-  }, []);
+    setMenuActive(false);
+  }, [setMenuActive]);
 
   const headerClass = [
     "siteHeader",

@@ -1,35 +1,33 @@
 "use client";
 
 import { useEffect } from "react";
+import { useSafariUiColor } from "./SafariUiColorProvider";
 
 const EDGE_TOLERANCE = 4;
 
-/**
- * Safari only needs an explicit document-canvas override at the bottom.
- * The top always uses the normal paper root color. Keeping the controller
- * one-directional avoids menu/viewport races that previously polluted the top.
- */
+/** Reports the real bottom boundary to the single Safari UI color controller. */
 export function OverscrollBackdrop() {
+  const { menuActive, setAtBottom } = useSafariUiColor();
+
   useEffect(() => {
-    const root = document.documentElement;
-    const body = document.body;
     let frame = 0;
 
     const applyBottomState = () => {
       frame = 0;
-      if (body.classList.contains("menuOpen")) {
-        root.classList.remove("overscrollBottom");
-        body.classList.remove("overscrollBottom");
+      if (menuActive) {
+        setAtBottom(false);
         return;
       }
+
+      const root = document.documentElement;
+      const body = document.body;
       const scrollTop = Math.max(0, window.scrollY, root.scrollTop, body.scrollTop);
       const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
       const documentHeight = Math.max(root.scrollHeight, body.scrollHeight);
       const maxScroll = Math.max(0, documentHeight - viewportHeight);
       const atBottom = maxScroll > EDGE_TOLERANCE && scrollTop >= maxScroll - EDGE_TOLERANCE;
 
-      root.classList.toggle("overscrollBottom", atBottom);
-      body.classList.toggle("overscrollBottom", atBottom);
+      setAtBottom(atBottom);
     };
 
     const schedule = () => {
@@ -42,7 +40,6 @@ export function OverscrollBackdrop() {
     window.addEventListener("resize", schedule, { passive: true });
     window.visualViewport?.addEventListener("resize", schedule, { passive: true });
     window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("shams:viewport-state-change", schedule);
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
@@ -50,11 +47,9 @@ export function OverscrollBackdrop() {
       window.removeEventListener("resize", schedule);
       window.visualViewport?.removeEventListener("resize", schedule);
       window.visualViewport?.removeEventListener("scroll", schedule);
-      window.removeEventListener("shams:viewport-state-change", schedule);
-      root.classList.remove("overscrollBottom");
-      body.classList.remove("overscrollBottom");
+      setAtBottom(false);
     };
-  }, []);
+  }, [menuActive, setAtBottom]);
 
   return null;
 }

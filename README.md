@@ -287,7 +287,7 @@ is why the artifact kept coming back in different forms.
 - Normalized `package.json` and the current baseline marker to version `0.1.40`.
 
 
-## v0.1.43 — Safari toolbar tint sentinels
+## v0.1.44 — Safari toolbar tint sentinels
 
 - Added a permanent mobile-WebKit top tint sentinel using the paper color.
 - Added a bottom tint sentinel that is only enabled at the real document bottom.
@@ -296,7 +296,7 @@ is why the artifact kept coming back in different forms.
 - Sentinels are disabled in standalone/fullscreen display modes where Safari browser toolbars are absent.
 
 
-## v0.1.43 Safari fixed-element sampling exclusion
+## v0.1.44 Safari fixed-element sampling exclusion
 - Removed the competing Safari toolbar tint sentinels.
 - Kept the root/body canvas permanently paper-colored.
 - Added neutral `backdrop-filter: saturate(100%)` exclusions to the fixed header, mobile-menu wrapper, and splash wrapper.
@@ -305,10 +305,18 @@ is why the artifact kept coming back in different forms.
 - Kept the menu and splash fully unmounted after their exit transitions.
 
 
-## v0.1.43 literal Safari blur(0px) sampling exclusion
+## v0.1.44 literal Safari blur(0px) sampling exclusion
 - Applied the repository/demo pattern literally instead of combining multiple exclusion methods.
 - `.mobileMenu` is still fixed/full-screen and now owns its black background directly.
 - `.splashScreen` now owns its paper background directly.
 - Removed the menu and splash background pseudo-elements.
 - Applied `-webkit-backdrop-filter: blur(0px)` and `backdrop-filter: blur(0px)` directly to the fixed header, menu, and splash.
 - Kept `html` and `body` permanently paper-colored and left theme-color/sentinel logic removed.
+
+
+## v0.1.44 centralized Safari UI color
+- Added one provider as the sole owner of the root/body Safari fallback color.
+- Connected section surface detection, menu state, splash state, and real bottom-edge state to that provider.
+- Removed independent `overscrollBottom` root classes and stale viewport-state events.
+- Removed the manifest theme color so it no longer contradicts the runtime controller.
+- Fixed overlays remain excluded from Safari sampling with `backdrop-filter: blur(0px)`.
