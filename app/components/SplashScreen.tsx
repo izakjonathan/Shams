@@ -34,7 +34,7 @@ export function SplashScreen() {
     body.classList.remove("splashExiting", "splashComplete");
 
     const themeColorMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    themeColorMeta?.setAttribute("content", "#f4f0e8");
+    themeColorMeta?.setAttribute("content", "#f5f2eb");
 
     // Two frames ensure the entering state is painted before transitioning in.
     if (reducedMotion) {
@@ -87,7 +87,7 @@ export function SplashScreen() {
       window.removeEventListener("load", handleLoad);
       root.classList.remove("splashComplete");
       body.classList.remove("splashActive", "splashExiting", "splashComplete");
-      themeColorMeta?.setAttribute("content", "#f4f0e8");
+      themeColorMeta?.setAttribute("content", "#f5f2eb");
     };
   }, []);
 

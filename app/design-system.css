@@ -10,15 +10,12 @@
   /* Typography */
   --font-display: var(--font-agilera), serif;
   --font-body: Arial, Helvetica, sans-serif;
-  --font-weight-regular: 400;
   --font-weight-display: 500;
   --font-weight-bold: 700;
   --tracking-tight: -0.055em;
   --tracking-display: -0.04em;
   --tracking-label: 0.08em;
-  --tracking-kicker: 0.13em;
   --line-height-body: 1.45;
-  --line-height-display: 0.9;
 
   /* Core colors */
   --color-paper: #f5f2eb;
@@ -47,7 +44,6 @@
   /* Borders and radii */
   --border-width: 1px;
   --border-solid: var(--border-width) solid;
-  --radius-pill: 999px;
   --radius-circle: 50%;
 
   /* Responsive layout */
@@ -90,15 +86,7 @@
     rgba(252, 198, 79, 0.162) 74%,
     transparent 86%
   );
-  --paper-glow-soft: radial-gradient(
-    ellipse at 50% 50%,
-    rgba(252, 198, 79, 0.837) 0%,
-    rgba(252, 198, 79, 0.459) 42%,
-    rgba(252, 198, 79, 0.189) 70%,
-    transparent 100%
-  );
   --paper-glow-opacity: 0.94;
-  --paper-glow-opacity-strong: 1;
   --hero-glow-blur-mobile: 44px;
   --hero-glow-blur-desktop: 54px;
   --dark-glow-blur-mobile: 28px;

@@ -16,30 +16,16 @@ npm run lint
 npm run build
 ```
 
-## v0.1.51
+## Current implementation — v0.1.54
 
-This version restores the menu and browser-edge behavior from the uploaded original `v0.1.4` build while retaining the newer site content and components.
+- Full-screen splash with an animated entrance, hold, and exit.
+- Paper-colored root canvas during the splash; black root canvas after the splash completes.
+- Runtime theme color changes from paper to black at the completed-splash boundary.
+- `viewport-fit=cover` is enabled.
+- Mobile menu mounts only when opened, animates with the original vertical transform, and unmounts after closing.
+- Body scrolling is locked only while the splash or mobile menu is active.
+- Fixed header uses the original difference-blend treatment.
+- Strengthened yellow gradients and glows remain part of the visual design.
+- No tint sentinels, edge curtains, overscroll controllers, visual-viewport listeners, backdrop-filter sampling hacks, safe-area CSS, or hidden permanently mounted menu remain.
 
-- Black full-screen mobile menu, permanently mounted and animated with `translateY` only.
-- Difference-blended white header above the menu.
-- Paper-colored `html` and `body` backgrounds.
-- Paper-colored viewport theme setting from the original build.
-- Original body overflow lock while the menu is open.
-- No edge gradients, yellow browser canvas, tint sentinels, overscroll controllers, safe-area adjustments, fixed-element sampling filters, menu opacity transitions, closing timers, delayed unmounting, dark-section detector, or custom touch/wheel/keyboard blockers.
-
-
-## v0.1.52 — permanent black browser canvas after splash
-
-- Switches the real `html` and `body` canvas to black only after the splash exit has fully completed.
-- Updates the runtime theme-color from paper to black at the same completed-splash boundary.
-- Keeps all paper page sections and the original black translateY menu unchanged.
-- Strengthens every yellow radial wash/glow and raises the shared paper-glow opacity.
-
-## v0.1.53 — viewport-fit and real menu unmount
-
-- Added `viewport-fit=cover` to the Next.js viewport metadata.
-- Retained the explicit paper splash background and post-splash black `html`/`body` canvas.
-- Replaced the permanently mounted off-screen mobile menu with an explicit opening/open/closing/closed lifecycle.
-- The menu mounts in its translated closed position, enters on the next painted frame, exits with the original transform animation, and unmounts only after `transitionend`.
-- Added a short fallback timer for interrupted and reduced-motion transitions.
-- Body scrolling remains locked only while the menu is actually mounted.
+Set `NEXT_PUBLIC_SITE_URL` in Vercel to the production domain so canonical, social-preview, sitemap, and structured-data URLs are correct.

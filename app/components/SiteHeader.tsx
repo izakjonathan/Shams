@@ -45,8 +45,8 @@ export function SiteHeader() {
   useEffect(() => {
     if (menuPhase !== "closing") return;
 
-    // transitionend is the primary close path. The timeout is only a safety
-    // net for interrupted transitions and reduced-motion environments.
+    // `transitionend` is the primary close path; the timeout covers interrupted
+    // transitions and reduced-motion environments.
     exitTimerRef.current = window.setTimeout(() => {
       setMenuPhase("closed");
     }, MENU_EXIT_FALLBACK_MS);
@@ -115,7 +115,7 @@ export function SiteHeader() {
       {menuMounted && (
         <div
           id="mobile-menu"
-          className={`mobileMenu ${menuOpen ? "isOpen" : "isClosing"}`}
+          className={`mobileMenu${menuOpen ? " isOpen" : ""}`}
           aria-hidden={!menuOpen}
           onTransitionEnd={handleMenuTransitionEnd}
         >
