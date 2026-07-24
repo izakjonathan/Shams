@@ -1,19 +1,91 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type TransitionEvent } from "react";
 import { event } from "../lib/content";
 
+type MenuPhase = "closed" | "opening" | "open" | "closing";
+
+const MENU_EXIT_FALLBACK_MS = 650;
+
 export function SiteHeader() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPhase, setMenuPhase] = useState<MenuPhase>("closed");
+  const enterFrameRef = useRef<number | null>(null);
+  const exitTimerRef = useRef<number | null>(null);
+
+  const menuMounted = menuPhase !== "closed";
+  const menuOpen = menuPhase === "opening" || menuPhase === "open";
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
+    if (menuPhase !== "opening") return;
+
+    // Mount the panel in its translated closed position first, then animate it
+    // into view on the next painted frame. This avoids an opening flash.
+    enterFrameRef.current = window.requestAnimationFrame(() => {
+      enterFrameRef.current = window.requestAnimationFrame(() => {
+        setMenuPhase("open");
+      });
+    });
+
+    return () => {
+      if (enterFrameRef.current !== null) {
+        window.cancelAnimationFrame(enterFrameRef.current);
+        enterFrameRef.current = null;
+      }
+    };
+  }, [menuPhase]);
+
+  useEffect(() => {
+    document.body.style.overflow = menuMounted ? "hidden" : "";
+
     return () => {
       document.body.style.overflow = "";
     };
-  }, [menuOpen]);
+  }, [menuMounted]);
 
-  const closeMenu = () => setMenuOpen(false);
+  useEffect(() => {
+    if (menuPhase !== "closing") return;
+
+    // transitionend is the primary close path. The timeout is only a safety
+    // net for interrupted transitions and reduced-motion environments.
+    exitTimerRef.current = window.setTimeout(() => {
+      setMenuPhase("closed");
+    }, MENU_EXIT_FALLBACK_MS);
+
+    return () => {
+      if (exitTimerRef.current !== null) {
+        window.clearTimeout(exitTimerRef.current);
+        exitTimerRef.current = null;
+      }
+    };
+  }, [menuPhase]);
+
+  const openMenu = () => {
+    if (menuPhase === "closed") setMenuPhase("opening");
+  };
+
+  const closeMenu = () => {
+    if (menuPhase === "opening" || menuPhase === "open") {
+      setMenuPhase("closing");
+    }
+  };
+
+  const toggleMenu = () => {
+    if (menuPhase === "closed") {
+      openMenu();
+    } else if (menuPhase !== "closing") {
+      closeMenu();
+    }
+  };
+
+  const handleMenuTransitionEnd = (event: TransitionEvent<HTMLDivElement>) => {
+    if (
+      menuPhase === "closing" &&
+      event.target === event.currentTarget &&
+      event.propertyName === "transform"
+    ) {
+      setMenuPhase("closed");
+    }
+  };
 
   return (
     <>
@@ -31,7 +103,7 @@ export function SiteHeader() {
         <button
           className="menuButton"
           type="button"
-          onClick={() => setMenuOpen((open) => !open)}
+          onClick={toggleMenu}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
         >
@@ -40,19 +112,22 @@ export function SiteHeader() {
         </button>
       </header>
 
-      <div
-        id="mobile-menu"
-        className={`mobileMenu ${menuOpen ? "isOpen" : ""}`}
-        aria-hidden={!menuOpen}
-      >
-        <nav>
-          <a onClick={closeMenu} href="#about">About <span>01</span></a>
-          <a onClick={closeMenu} href="#lineup">Artists <span>02</span></a>
-          <a onClick={closeMenu} href="#info">Event info <span>03</span></a>
-          <a onClick={closeMenu} href="#tickets">Tickets <span>04</span></a>
-        </nav>
-        <p>{event.city} · {event.date}</p>
-      </div>
+      {menuMounted && (
+        <div
+          id="mobile-menu"
+          className={`mobileMenu ${menuOpen ? "isOpen" : "isClosing"}`}
+          aria-hidden={!menuOpen}
+          onTransitionEnd={handleMenuTransitionEnd}
+        >
+          <nav>
+            <a onClick={closeMenu} href="#about">About <span>01</span></a>
+            <a onClick={closeMenu} href="#lineup">Artists <span>02</span></a>
+            <a onClick={closeMenu} href="#info">Event info <span>03</span></a>
+            <a onClick={closeMenu} href="#tickets">Tickets <span>04</span></a>
+          </nav>
+          <p>{event.city} · {event.date}</p>
+        </div>
+      )}
     </>
   );
 }

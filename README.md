@@ -34,3 +34,12 @@ This version restores the menu and browser-edge behavior from the uploaded origi
 - Updates the runtime theme-color from paper to black at the same completed-splash boundary.
 - Keeps all paper page sections and the original black translateY menu unchanged.
 - Strengthens every yellow radial wash/glow and raises the shared paper-glow opacity.
+
+## v0.1.53 — viewport-fit and real menu unmount
+
+- Added `viewport-fit=cover` to the Next.js viewport metadata.
+- Retained the explicit paper splash background and post-splash black `html`/`body` canvas.
+- Replaced the permanently mounted off-screen mobile menu with an explicit opening/open/closing/closed lifecycle.
+- The menu mounts in its translated closed position, enters on the next painted frame, exits with the original transform animation, and unmounts only after `transitionend`.
+- Added a short fallback timer for interrupted and reduced-motion transitions.
+- Body scrolling remains locked only while the menu is actually mounted.
