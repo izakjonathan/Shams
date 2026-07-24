@@ -54,3 +54,13 @@ The site now uses ordinary `100vh` sizing, static page backgrounds, and standard
 ## v0.1.49
 
 Removed the experimental curved yellow top and bottom gradient curtains introduced in v0.1.48. Restored the clean v0.1.47 page layering, header behavior, splash behavior, and full-screen menu without edge overlays.
+
+
+## v0.1.50 — Minimal yellow browser-edge fades
+
+- Keeps the root browser-adjacent canvas yellow.
+- Adds permanent mobile-only top and bottom fades just 14px deep, with only the first 3px fully opaque.
+- Keeps the fixed header above the top fade.
+- Keeps page content, the full-screen menu and the splash below the fades.
+- Changes the mobile menu to yellow with black typography and controls.
+- Preserves the existing menu motion and dark-section navigation behaviour outside the open menu.
