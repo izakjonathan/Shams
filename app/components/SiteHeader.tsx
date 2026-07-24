@@ -1,146 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { event } from "../lib/content";
-
-const MENU_EXIT_FALLBACK_MS = 620;
-const DARK_SURFACE_SELECTOR = ".manifesto, .tickets, footer";
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [menuMounted, setMenuMounted] = useState(false);
-  const [isOnDarkSurface, setIsOnDarkSurface] = useState(false);
-  const openFrame = useRef<number | null>(null);
-  const closeTimer = useRef<number | null>(null);
-  const darkSurfaceEls = useRef<HTMLElement[]>([]);
-  const headerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    darkSurfaceEls.current = Array.from(
-      document.querySelectorAll<HTMLElement>(DARK_SURFACE_SELECTOR),
-    );
-  }, []);
-
-  const updateHeaderSurface = useCallback(() => {
-    if (menuMounted) return;
-    const headerRect = headerRef.current?.getBoundingClientRect();
-    const sampleY = headerRect
-      ? Math.max(0, Math.min(window.innerHeight - 1, headerRect.bottom - 8))
-      : 36;
-
-    const isDark = darkSurfaceEls.current.some((element) => {
-      const rect = element.getBoundingClientRect();
-      return rect.top <= sampleY && rect.bottom >= sampleY;
-    });
-
-    setIsOnDarkSurface(isDark);
-  }, [menuMounted]);
-
-  const openMenu = () => {
-    if (closeTimer.current !== null) {
-      window.clearTimeout(closeTimer.current);
-      closeTimer.current = null;
-    }
-
-    setMenuMounted(true);
-    openFrame.current = window.requestAnimationFrame(() => {
-      openFrame.current = window.requestAnimationFrame(() => setMenuOpen(true));
-    });
-  };
-
-  const finishClosing = () => {
-    setMenuMounted(false);
-    window.requestAnimationFrame(updateHeaderSurface);
-  };
-
-  const closeMenu = () => {
-    setMenuOpen(false);
-    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
-    closeTimer.current = window.setTimeout(finishClosing, MENU_EXIT_FALLBACK_MS);
-  };
-
-  const toggleMenu = () => {
-    if (menuOpen || menuMounted) closeMenu();
-    else openMenu();
-  };
-
-  useEffect(() => {
-    const preventPointerScroll = (event: TouchEvent | WheelEvent) => {
-      event.preventDefault();
-    };
-
-    const preventKeyboardScroll = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (target?.closest("a, button, input, textarea, select, [contenteditable='true']")) return;
-      if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(event.key)) {
-        event.preventDefault();
-      }
-    };
-
-    if (menuMounted) {
-      document.addEventListener("touchmove", preventPointerScroll, { passive: false });
-      document.addEventListener("wheel", preventPointerScroll, { passive: false });
-      document.addEventListener("keydown", preventKeyboardScroll);
-    } else {
-      window.requestAnimationFrame(updateHeaderSurface);
-    }
-
+    document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => {
-      document.removeEventListener("touchmove", preventPointerScroll);
-      document.removeEventListener("wheel", preventPointerScroll);
-      document.removeEventListener("keydown", preventKeyboardScroll);
+      document.body.style.overflow = "";
     };
-  }, [menuMounted, updateHeaderSurface]);
+  }, [menuOpen]);
 
-  useEffect(() => {
-    let frame = 0;
-    const schedule = () => {
-      if (frame || menuMounted) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        updateHeaderSurface();
-      });
-    };
-
-    schedule();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
-
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    };
-  }, [menuMounted, updateHeaderSurface]);
-
-  useEffect(() => {
-    const desktopQuery = window.matchMedia("(min-width: 760px)");
-    const handleChange = (event: MediaQueryListEvent) => {
-      if (!event.matches) return;
-      setMenuOpen(false);
-      setMenuMounted(false);
-    };
-
-    desktopQuery.addEventListener("change", handleChange);
-    return () => desktopQuery.removeEventListener("change", handleChange);
-  }, []);
-
-  useEffect(
-    () => () => {
-      if (openFrame.current !== null) window.cancelAnimationFrame(openFrame.current);
-      if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
-    },
-    [],
-  );
-
-  const headerClass = [
-    "siteHeader",
-    menuMounted ? "isMenuActive" : isOnDarkSurface ? "isOnDarkSurface" : "isOnLightSurface",
-  ].join(" ");
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <>
-      <header ref={headerRef} className={headerClass}>
+      <header className="siteHeader">
         <a className="brand" href="#top" aria-label="Shams for Humanity home">
           <span className="brandMark" aria-hidden="true">✦</span>
           <span>SHAMS / HUMANITY</span>
@@ -154,7 +31,7 @@ export function SiteHeader() {
         <button
           className="menuButton"
           type="button"
-          onClick={toggleMenu}
+          onClick={() => setMenuOpen((open) => !open)}
           aria-expanded={menuOpen}
           aria-controls="mobile-menu"
         >
@@ -163,34 +40,19 @@ export function SiteHeader() {
         </button>
       </header>
 
-      {menuMounted && (
-        <div
-          id="mobile-menu"
-          className={`mobileMenu ${menuOpen ? "isOpen" : "isClosing"}`}
-          aria-hidden={!menuOpen}
-          inert={!menuOpen}
-          onTransitionEnd={(event) => {
-            if (event.target !== event.currentTarget || event.propertyName !== "opacity") return;
-            if (!menuOpen) {
-              if (closeTimer.current !== null) {
-                window.clearTimeout(closeTimer.current);
-                closeTimer.current = null;
-              }
-              finishClosing();
-            }
-          }}
-        >
-          <div className="mobileMenuInner">
-            <nav>
-              <a onClick={closeMenu} href="#about">About <span>01</span></a>
-              <a onClick={closeMenu} href="#lineup">Artists <span>02</span></a>
-              <a onClick={closeMenu} href="#info">Event info <span>03</span></a>
-              <a onClick={closeMenu} href="#tickets">Tickets <span>04</span></a>
-            </nav>
-            <p>{event.city} · {event.date}</p>
-          </div>
-        </div>
-      )}
+      <div
+        id="mobile-menu"
+        className={`mobileMenu ${menuOpen ? "isOpen" : ""}`}
+        aria-hidden={!menuOpen}
+      >
+        <nav>
+          <a onClick={closeMenu} href="#about">About <span>01</span></a>
+          <a onClick={closeMenu} href="#lineup">Artists <span>02</span></a>
+          <a onClick={closeMenu} href="#info">Event info <span>03</span></a>
+          <a onClick={closeMenu} href="#tickets">Tickets <span>04</span></a>
+        </nav>
+        <p>{event.city} · {event.date}</p>
+      </div>
     </>
   );
 }

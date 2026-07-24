@@ -1,8 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SplashScreen } from "./components/SplashScreen";
-import { EdgeFades } from "./components/EdgeFades";
 import { artists, event, tickets } from "./lib/content";
 
 const agilera = localFont({
@@ -52,6 +51,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#f4f0e8",
+};
+
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const jsonLd = {
@@ -94,7 +99,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={agilera.variable}>
       <body className="splashActive">
         <a className="skipLink" href="#main-content">Skip to content</a>
-        <EdgeFades />
         <SplashScreen />
         <div className="siteShell">{children}</div>
         <script
