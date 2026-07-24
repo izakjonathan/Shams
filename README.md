@@ -49,3 +49,12 @@ Removed:
 - overscroll color controllers and visual viewport listeners
 
 The site now uses ordinary `100vh` sizing, static page backgrounds, and standard fixed header/menu/splash positioning only.
+
+## v0.1.48 — curved yellow edge curtains
+
+- Sets the root and body canvas to the festival yellow so mobile browser-adjacent areas remain yellow.
+- Adds fixed curved yellow gradient curtains at the top and bottom on mobile.
+- Layers page content, the full-screen menu, and the splash beneath both curtains.
+- Keeps only the top navigation controls above the top curtain.
+- Removes dynamic dark/light header color detection; navigation remains dark on yellow.
+- Keeps the curtains decorative and non-interactive with `pointer-events: none`.

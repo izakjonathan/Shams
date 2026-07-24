@@ -1,40 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { event } from "../lib/content";
 
 const MENU_EXIT_FALLBACK_MS = 620;
-const DARK_SURFACE_SELECTOR = ".manifesto, .tickets, footer";
 
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuMounted, setMenuMounted] = useState(false);
-  const [isOnDarkSurface, setIsOnDarkSurface] = useState(false);
   const openFrame = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
-  const darkSurfaceEls = useRef<HTMLElement[]>([]);
-  const headerRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    darkSurfaceEls.current = Array.from(
-      document.querySelectorAll<HTMLElement>(DARK_SURFACE_SELECTOR),
-    );
-  }, []);
-
-  const updateHeaderSurface = useCallback(() => {
-    if (menuMounted) return;
-    const headerRect = headerRef.current?.getBoundingClientRect();
-    const sampleY = headerRect
-      ? Math.max(0, Math.min(window.innerHeight - 1, headerRect.bottom - 8))
-      : 36;
-
-    const isDark = darkSurfaceEls.current.some((element) => {
-      const rect = element.getBoundingClientRect();
-      return rect.top <= sampleY && rect.bottom >= sampleY;
-    });
-
-    setIsOnDarkSurface(isDark);
-  }, [menuMounted]);
 
   const openMenu = () => {
     if (closeTimer.current !== null) {
@@ -50,7 +25,6 @@ export function SiteHeader() {
 
   const finishClosing = () => {
     setMenuMounted(false);
-    window.requestAnimationFrame(updateHeaderSurface);
   };
 
   const closeMenu = () => {
@@ -81,8 +55,6 @@ export function SiteHeader() {
       document.addEventListener("touchmove", preventPointerScroll, { passive: false });
       document.addEventListener("wheel", preventPointerScroll, { passive: false });
       document.addEventListener("keydown", preventKeyboardScroll);
-    } else {
-      window.requestAnimationFrame(updateHeaderSurface);
     }
 
     return () => {
@@ -90,28 +62,7 @@ export function SiteHeader() {
       document.removeEventListener("wheel", preventPointerScroll);
       document.removeEventListener("keydown", preventKeyboardScroll);
     };
-  }, [menuMounted, updateHeaderSurface]);
-
-  useEffect(() => {
-    let frame = 0;
-    const schedule = () => {
-      if (frame || menuMounted) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        updateHeaderSurface();
-      });
-    };
-
-    schedule();
-    window.addEventListener("scroll", schedule, { passive: true });
-    window.addEventListener("resize", schedule, { passive: true });
-
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    };
-  }, [menuMounted, updateHeaderSurface]);
+  }, [menuMounted]);
 
   useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 760px)");
@@ -133,14 +84,9 @@ export function SiteHeader() {
     [],
   );
 
-  const headerClass = [
-    "siteHeader",
-    menuMounted ? "isMenuActive" : isOnDarkSurface ? "isOnDarkSurface" : "isOnLightSurface",
-  ].join(" ");
-
   return (
     <>
-      <header ref={headerRef} className={headerClass}>
+      <header className="siteHeader">
         <a className="brand" href="#top" aria-label="Shams for Humanity home">
           <span className="brandMark" aria-hidden="true">✦</span>
           <span>SHAMS / HUMANITY</span>
