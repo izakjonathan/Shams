@@ -20,6 +20,7 @@ export function SplashScreen() {
   const hasBegunExit = useRef(false);
 
   useEffect(() => {
+    const root = document.documentElement;
     const body = document.body;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const start = performance.now();
@@ -28,8 +29,12 @@ export function SplashScreen() {
     let exitTimer = 0;
     let doneTimer = 0;
 
+    root.classList.remove("splashComplete");
     body.classList.add("splashActive");
     body.classList.remove("splashExiting", "splashComplete");
+
+    const themeColorMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    themeColorMeta?.setAttribute("content", "#f4f0e8");
 
     // Two frames ensure the entering state is painted before transitioning in.
     if (reducedMotion) {
@@ -51,6 +56,8 @@ export function SplashScreen() {
         setStage("done");
         body.classList.remove("splashExiting");
         body.classList.add("splashComplete");
+        root.classList.add("splashComplete");
+        themeColorMeta?.setAttribute("content", "#090909");
       }, reducedMotion ? 50 : EXIT_DURATION_MS);
     };
 
@@ -78,7 +85,9 @@ export function SplashScreen() {
       window.clearTimeout(exitTimer);
       window.clearTimeout(doneTimer);
       window.removeEventListener("load", handleLoad);
+      root.classList.remove("splashComplete");
       body.classList.remove("splashActive", "splashExiting", "splashComplete");
+      themeColorMeta?.setAttribute("content", "#f4f0e8");
     };
   }, []);
 
