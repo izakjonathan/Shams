@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { useSafariUiColor } from "./SafariUiColorProvider";
 
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
@@ -17,7 +16,6 @@ type SplashStage = "entering" | "active" | "exiting" | "done";
  * 3. fades and gently expands away while the site enters underneath.
  */
 export function SplashScreen() {
-  const { setSplashActive } = useSafariUiColor();
   const [stage, setStage] = useState<SplashStage>("entering");
   const hasBegunExit = useRef(false);
 
@@ -32,7 +30,6 @@ export function SplashScreen() {
 
     body.classList.add("splashActive");
     body.classList.remove("splashExiting", "splashComplete");
-    setSplashActive(true);
 
     // Two frames ensure the entering state is painted before transitioning in.
     if (reducedMotion) {
@@ -54,7 +51,6 @@ export function SplashScreen() {
         setStage("done");
         body.classList.remove("splashExiting");
         body.classList.add("splashComplete");
-        setSplashActive(false);
       }, reducedMotion ? 50 : EXIT_DURATION_MS);
     };
 
@@ -83,9 +79,8 @@ export function SplashScreen() {
       window.clearTimeout(doneTimer);
       window.removeEventListener("load", handleLoad);
       body.classList.remove("splashActive", "splashExiting", "splashComplete");
-      setSplashActive(false);
     };
-  }, [setSplashActive]);
+  }, []);
 
   if (stage === "done") return null;
 

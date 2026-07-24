@@ -1,9 +1,7 @@
-import type { Metadata, Viewport } from "next";
+import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SplashScreen } from "./components/SplashScreen";
-import { OverscrollBackdrop } from "./components/OverscrollBackdrop";
-import { SafariUiColorProvider } from "./components/SafariUiColorProvider";
 import { artists, event, tickets } from "./lib/content";
 
 const agilera = localFont({
@@ -51,19 +49,8 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Shams for Humanity",
-  },
 };
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  viewportFit: "cover",
-  colorScheme: "light",
-};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const jsonLd = {
@@ -105,12 +92,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={agilera.variable}>
       <body className="splashActive">
-        <SafariUiColorProvider>
-          <a className="skipLink" href="#main-content">Skip to content</a>
-          <SplashScreen />
-          <OverscrollBackdrop />
-          <div className="siteShell">{children}</div>
-        </SafariUiColorProvider>
+        <a className="skipLink" href="#main-content">Skip to content</a>
+        <SplashScreen />
+        <div className="siteShell">{children}</div>
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger

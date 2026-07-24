@@ -2,13 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { event } from "../lib/content";
-import { useSafariUiColor } from "./SafariUiColorProvider";
 
 const MENU_EXIT_FALLBACK_MS = 620;
 const DARK_SURFACE_SELECTOR = ".manifesto, .tickets, footer";
 
 export function SiteHeader() {
-  const { setSurfaceTone, setMenuActive } = useSafariUiColor();
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuMounted, setMenuMounted] = useState(false);
   const [isOnDarkSurface, setIsOnDarkSurface] = useState(false);
@@ -18,31 +16,32 @@ export function SiteHeader() {
   const headerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    darkSurfaceEls.current = Array.from(document.querySelectorAll<HTMLElement>(DARK_SURFACE_SELECTOR));
+    darkSurfaceEls.current = Array.from(
+      document.querySelectorAll<HTMLElement>(DARK_SURFACE_SELECTOR),
+    );
   }, []);
 
   const updateHeaderSurface = useCallback(() => {
     if (menuMounted) return;
-    // Compare against cached section rects instead of document.elementsFromPoint,
-    // which forces a full hit-test of the render tree on every scroll frame and
-    // was a source of scroll jank.
     const headerRect = headerRef.current?.getBoundingClientRect();
     const sampleY = headerRect
       ? Math.max(0, Math.min(window.innerHeight - 1, headerRect.bottom - 8))
       : 36;
+
     const isDark = darkSurfaceEls.current.some((element) => {
       const rect = element.getBoundingClientRect();
       return rect.top <= sampleY && rect.bottom >= sampleY;
     });
+
     setIsOnDarkSurface(isDark);
-    setSurfaceTone(isDark ? "dark" : "light");
-  }, [menuMounted, setSurfaceTone]);
+  }, [menuMounted]);
 
   const openMenu = () => {
     if (closeTimer.current !== null) {
       window.clearTimeout(closeTimer.current);
       closeTimer.current = null;
     }
+
     setMenuMounted(true);
     openFrame.current = window.requestAnimationFrame(() => {
       openFrame.current = window.requestAnimationFrame(() => setMenuOpen(true));
@@ -78,8 +77,6 @@ export function SiteHeader() {
       }
     };
 
-    setMenuActive(menuMounted);
-
     if (menuMounted) {
       document.addEventListener("touchmove", preventPointerScroll, { passive: false });
       document.addEventListener("wheel", preventPointerScroll, { passive: false });
@@ -93,7 +90,7 @@ export function SiteHeader() {
       document.removeEventListener("wheel", preventPointerScroll);
       document.removeEventListener("keydown", preventKeyboardScroll);
     };
-  }, [menuMounted, setMenuActive, updateHeaderSurface]);
+  }, [menuMounted, updateHeaderSurface]);
 
   useEffect(() => {
     let frame = 0;
@@ -108,14 +105,11 @@ export function SiteHeader() {
     schedule();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule, { passive: true });
-    window.visualViewport?.addEventListener("resize", schedule, { passive: true });
-    window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
+
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
-      window.visualViewport?.removeEventListener("resize", schedule);
-      window.visualViewport?.removeEventListener("scroll", schedule);
     };
   }, [menuMounted, updateHeaderSurface]);
 
@@ -126,15 +120,18 @@ export function SiteHeader() {
       setMenuOpen(false);
       setMenuMounted(false);
     };
+
     desktopQuery.addEventListener("change", handleChange);
     return () => desktopQuery.removeEventListener("change", handleChange);
   }, []);
 
-  useEffect(() => () => {
-    if (openFrame.current !== null) window.cancelAnimationFrame(openFrame.current);
-    if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
-    setMenuActive(false);
-  }, [setMenuActive]);
+  useEffect(
+    () => () => {
+      if (openFrame.current !== null) window.cancelAnimationFrame(openFrame.current);
+      if (closeTimer.current !== null) window.clearTimeout(closeTimer.current);
+    },
+    [],
+  );
 
   const headerClass = [
     "siteHeader",
