@@ -47,7 +47,11 @@ export function SafariUiColorProvider({ children }: { children: ReactNode }) {
     const body = document.body;
     const color = resolvedTone === "dark" ? DARK : PAPER;
 
-    root.style.setProperty("--safari-ui-color", color);
+    // Safari 26 observes the actual inline backgroundColor on <body>.
+    // Updating a custom property inherited by body is not reliably detected,
+    // so set the concrete colors directly on both root elements.
+    root.style.backgroundColor = color;
+    body.style.backgroundColor = color;
     root.dataset.safariUiTone = resolvedTone;
     body.dataset.safariUiTone = resolvedTone;
   }, [resolvedTone]);
