@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
 const EXIT_DURATION_MS = 1150;
+const PAPER_COLOR = "#f5f2eb";
+const CANVAS_COLOR = "#090909";
 
 type SplashStage = "entering" | "active" | "exiting" | "done";
 
@@ -29,14 +31,13 @@ export function SplashScreen() {
     let exitTimer = 0;
     let doneTimer = 0;
 
-    root.classList.remove("splashComplete");
     body.classList.add("splashActive");
     body.classList.remove("splashExiting", "splashComplete");
-    root.style.backgroundColor = "#f5f2eb";
-    body.style.backgroundColor = "#f5f2eb";
+    root.style.backgroundColor = PAPER_COLOR;
+    body.style.backgroundColor = PAPER_COLOR;
 
     const themeColorMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    themeColorMeta?.setAttribute("content", "#f5f2eb");
+    themeColorMeta?.setAttribute("content", PAPER_COLOR);
 
     // Two frames ensure the entering state is painted before transitioning in.
     if (reducedMotion) {
@@ -58,10 +59,9 @@ export function SplashScreen() {
         setStage("done");
         body.classList.remove("splashExiting");
         body.classList.add("splashComplete");
-        root.classList.add("splashComplete");
-        root.style.backgroundColor = "#090909";
-        body.style.backgroundColor = "#090909";
-        themeColorMeta?.setAttribute("content", "#090909");
+        root.style.backgroundColor = CANVAS_COLOR;
+        body.style.backgroundColor = CANVAS_COLOR;
+        themeColorMeta?.setAttribute("content", CANVAS_COLOR);
       }, reducedMotion ? 50 : EXIT_DURATION_MS);
     };
 
@@ -89,11 +89,6 @@ export function SplashScreen() {
       window.clearTimeout(exitTimer);
       window.clearTimeout(doneTimer);
       window.removeEventListener("load", handleLoad);
-      root.classList.remove("splashComplete");
-      body.classList.remove("splashActive", "splashExiting", "splashComplete");
-      root.style.backgroundColor = "#f5f2eb";
-      body.style.backgroundColor = "#f5f2eb";
-      themeColorMeta?.setAttribute("content", "#f5f2eb");
     };
   }, []);
 

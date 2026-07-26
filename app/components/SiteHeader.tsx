@@ -147,6 +147,7 @@ export function SiteHeader() {
           id="mobile-menu"
           className={`mobileMenu${menuOpen ? " isOpen" : ""}`}
           aria-hidden={!menuOpen}
+          inert={!menuOpen}
           onTransitionEnd={handleMenuTransitionEnd}
         >
           <nav>

@@ -245,7 +245,6 @@ body.splashActive {
   flex-direction: column;
   justify-content: space-between;
   overscroll-behavior: none;
-  touch-action: none;
   transform: translateY(-100%);
   transition: transform var(--duration-menu) var(--ease-menu);
 }
@@ -419,54 +418,6 @@ body.splashActive {
   background: var(--color-ink);
 }
 
-.heroOrb {
-  position: absolute;
-  pointer-events: none;
-  filter: blur(44px);
-  background: var(--paper-orb-gradient);
-  opacity: 1;
-}
-
-/* ========================================================================== 
-   08 — Manifesto
-   ========================================================================== */
-
-.manifestoShape {
-  position: absolute;
-  filter: blur(20px);
-  background: var(--orb-gradient);
-}
-
-.orbOne {
-  width: 108vw;
-  height: 76vw;
-  max-width: 1280px;
-  max-height: 980px;
-  right: -34%;
-  top: -2%;
-  transform: rotate(18deg) scale(1.24, .82);
-}
-
-.orbTwo {
-  width: 84vw;
-  height: 94vw;
-  max-width: 980px;
-  max-height: 1120px;
-  left: -36%;
-  bottom: -8%;
-  transform: rotate(-30deg) scale(.96, 1.16);
-}
-
-.orbThree {
-  width: 66vw;
-  height: 52vw;
-  max-width: 860px;
-  max-height: 620px;
-  left: 28%;
-  bottom: 2%;
-  transform: rotate(24deg) scale(1.46, .5);
-  opacity: .92;
-}
 
 /* ========================================================================== 
    06 — Shared section foundations
@@ -517,45 +468,14 @@ body.splashActive {
   margin-top: 26px;
 }
 
-.statement,
-.lineup,
-.programme,
-.faq {
-  position: relative;
-  background-color: var(--color-paper);
-  background-repeat: no-repeat;
-}
-
-.statement {
-  background-image: radial-gradient(ellipse 86% 52% at 4% 14%, rgba(252, 198, 79, 0.62) 0, rgba(252, 198, 79, 0.365) 34%, rgba(252, 198, 79, 0.163) 56%, transparent 82%),
-    radial-gradient(ellipse 74% 46% at 100% 46%, rgba(252, 198, 79, 0.474) 0, rgba(252, 198, 79, 0.255) 34%, rgba(252, 198, 79, 0.109) 56%, transparent 80%),
-    radial-gradient(ellipse 82% 44% at 26% 94%, rgba(252, 198, 79, 0.328) 0, rgba(252, 198, 79, 0.182) 36%, rgba(252, 198, 79, 0.073) 58%, transparent 80%);
-}
-
-.lineup {
-  background-image: radial-gradient(ellipse 78% 46% at 96% 8%, rgba(252, 198, 79, 0.547) 0, rgba(252, 198, 79, 0.292) 34%, rgba(252, 198, 79, 0.128) 58%, transparent 82%),
-    radial-gradient(ellipse 64% 42% at 2% 48%, rgba(252, 198, 79, 0.365) 0, rgba(252, 198, 79, 0.201) 34%, rgba(252, 198, 79, 0.092) 56%, transparent 78%),
-    radial-gradient(ellipse 88% 46% at 56% 100%, rgba(252, 198, 79, 0.328) 0, rgba(252, 198, 79, 0.182) 36%, rgba(252, 198, 79, 0.073) 58%, transparent 80%);
-}
-
-.programme {
-  background-image: radial-gradient(ellipse 82% 48% at 16% 6%, rgba(252, 198, 79, 0.51) 0, rgba(252, 198, 79, 0.274) 34%, rgba(252, 198, 79, 0.128) 58%, transparent 80%),
-    radial-gradient(ellipse 86% 52% at 88% 34%, rgba(252, 198, 79, 0.437) 0, rgba(252, 198, 79, 0.238) 36%, rgba(252, 198, 79, 0.109) 58%, transparent 80%),
-    radial-gradient(ellipse 72% 42% at 42% 98%, rgba(252, 198, 79, 0.328) 0, rgba(252, 198, 79, 0.182) 34%, rgba(252, 198, 79, 0.073) 56%, transparent 78%);
-}
-
-.faq {
-  background-image: radial-gradient(ellipse 74% 44% at 94% 8%, rgba(252, 198, 79, 0.51) 0, rgba(252, 198, 79, 0.274) 34%, rgba(252, 198, 79, 0.109) 58%, transparent 80%),
-    radial-gradient(ellipse 62% 38% at 2% 56%, rgba(252, 198, 79, 0.328) 0, rgba(252, 198, 79, 0.182) 34%, rgba(252, 198, 79, 0.073) 56%, transparent 78%),
-    radial-gradient(ellipse 80% 44% at 72% 100%, rgba(252, 198, 79, 0.292) 0, rgba(252, 198, 79, 0.163) 36%, rgba(252, 198, 79, 0.073) 58%, transparent 80%);
-}
+/* ========================================================================== 
+   08 — Manifesto
+   ========================================================================== */
 
 .manifesto {
   min-height: 82vh;
   background: var(--color-dark);
   color: var(--color-white);
-  position: relative;
-  overflow: hidden;
   display: flex;
   align-items: center;
   padding: 100px var(--page-gutter);
@@ -581,22 +501,6 @@ body.splashActive {
   font-size: 20px;
 }
 
-.manifestoShape {
-  width: 70vw;
-  height: 70vw;
-  right: -25%;
-  bottom: -22%;
-  filter: blur(32px);
-  opacity: .95;
-}
-
-.shapeTwo {
-  width: 32vw;
-  height: 42vw;
-  left: -14%;
-  top: -12%;
-  opacity: .5;
-}
 
 .verticalText {
   display: none;
@@ -775,26 +679,11 @@ body.splashActive {
    ========================================================================== */
 
 .tickets {
-  position: relative;
-  overflow: hidden;
   background: var(--color-ticket-dark);
   color: var(--color-white);
 }
 
-.ticketGlow {
-  position: absolute;
-  width: 75vw;
-  height: 75vw;
-  right: -28%;
-  top: -30%;
-  background: var(--ticket-gradient);
-  filter: blur(25px);
-}
 
-.tickets>*:not(.ticketGlow) {
-  position: relative;
-  z-index: 2;
-}
 
 .ticketsHeader {
   display: flex;
@@ -972,8 +861,6 @@ body.splashActive {
 .newsletter {
   min-height: 72vh;
   background: var(--color-accent);
-  position: relative;
-  overflow: hidden;
   padding: var(--section-space-mobile) var(--page-gutter);
   display: grid;
   align-content: center;
@@ -987,8 +874,6 @@ body.splashActive {
 }
 
 .newsletter form {
-  position: relative;
-  z-index: 2;
   max-width: 650px;
 }
 
@@ -1379,7 +1264,6 @@ input:focus-visible {
 .tickets,
 .newsletter {
   position: relative;
-  overflow: hidden;
   overflow: clip;
   isolation: isolate;
 }
