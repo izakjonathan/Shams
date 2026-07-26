@@ -16,7 +16,7 @@ npm run lint
 npm run build
 ```
 
-## Current implementation — v0.1.54
+## Current implementation — v0.1.55
 
 - Full-screen splash with an animated entrance, hold, and exit.
 - Paper-colored root canvas during the splash; black root canvas after the splash completes.
@@ -27,5 +27,7 @@ npm run build
 - Fixed header uses the original difference-blend treatment.
 - Strengthened yellow gradients and glows remain part of the visual design.
 - No tint sentinels, edge curtains, overscroll controllers, visual-viewport listeners, backdrop-filter sampling hacks, safe-area CSS, or hidden permanently mounted menu remain.
+- `app/globals.css` is fully expanded, consistently formatted, and organized with a numbered table of contents and section dividers.
+- Multi-selector rules, transitions, and layered gradients are laid out across readable lines for easier editing.
 
 Set `NEXT_PUBLIC_SITE_URL` in Vercel to the production domain so canonical, social-preview, sitemap, and structured-data URLs are correct.
