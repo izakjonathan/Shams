@@ -1,6 +1,12 @@
 "use client";
 
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
+
+// This component only ever does anything in the browser (it queries the
+// DOM and sets up an IntersectionObserver), so on the server it can safely
+// fall back to useEffect, which avoids React's "useLayoutEffect does
+// nothing on the server" warning during server rendering.
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const REVEAL_GROUPS: Array<{ root: string; items: string }> = [
   { root: "#about", items: ".sectionIndex, .statementGrid > h2, .statementGrid > div > *" },
@@ -20,7 +26,7 @@ const REVEAL_GROUPS: Array<{ root: string; items: string }> = [
  * component so the rest of the page can stay server-rendered.
  */
 export function ScrollReveal() {
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const root = document.documentElement;
     const revealItems: HTMLElement[] = [];

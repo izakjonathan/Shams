@@ -4,7 +4,7 @@ import { FaqAccordion } from "./components/FaqAccordion";
 import { NewsletterForm } from "./components/NewsletterForm";
 import { ScrollReveal } from "./components/ScrollReveal";
 import { SiteHeader } from "./components/SiteHeader";
-import { artists, event, faqs, programme, tickets } from "./lib/content";
+import { artists, artistSlug, event, faqs, programme, tickets } from "./lib/content";
 
 export const metadata: Metadata = {
   title: `Shams for Humanity — ${event.city}, ${event.date}`,
@@ -13,13 +13,15 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const artistSlug = (name: string) =>
-  name
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map(({ question, answer }) => ({
+    "@type": "Question",
+    name: question,
+    acceptedAnswer: { "@type": "Answer", text: answer },
+  })),
+};
 
 export default function Home() {
   const ticketUrl = process.env.NEXT_PUBLIC_TICKET_URL?.trim();
@@ -166,6 +168,11 @@ export default function Home() {
         <div className="paperGlow glowThree" aria-hidden="true" />
         <div className="sectionHeading"><div><div className="sectionIndex">06 — PRACTICAL</div><h2>Good to know</h2></div></div>
         <FaqAccordion faqs={faqs} />
+        <script
+          type="application/ld+json"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
+        />
       </section>
 
       <section className="newsletter">

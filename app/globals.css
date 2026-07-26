@@ -1204,6 +1204,55 @@ input:focus-visible {
   margin-top: 12px;
 }
 
+.artistDetail {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: var(--page-gutter);
+  text-align: center;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.artistDetail h1 {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-tight);
+  font-size: clamp(36px, 7vw, 64px);
+  line-height: 1.05;
+  margin: 0;
+  max-width: 18ch;
+}
+
+.artistDetail p {
+  margin: 0;
+  max-width: 42ch;
+  color: var(--color-text-muted);
+}
+
+.artistDetailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 18px;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  font-size: 13px;
+  color: var(--color-text-subtle);
+}
+
+.artistDetailActions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px 28px;
+}
+
 /* ========================================================================== 
    19 — Centralized gradient system
    ========================================================================== */

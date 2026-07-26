@@ -94,6 +94,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={agilera.variable}>
       <body className="splashActive">
+        <noscript>
+          <style>{`
+            .splashScreen { display: none !important; }
+            .siteShell { opacity: 1 !important; transform: none !important; }
+            body.splashActive { overflow: visible !important; }
+            .splashActive .skipLink { opacity: 1 !important; pointer-events: auto !important; }
+          `}</style>
+        </noscript>
         <a className="skipLink" href="#main-content">Skip to content</a>
         <SplashScreen />
         <div className="siteShell">{children}</div>

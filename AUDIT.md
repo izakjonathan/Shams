@@ -104,3 +104,8 @@ CSS Modules are a valid alternative supported by Next.js and would provide local
 - The menu previously applied `.isOpen` during both `opening` and `open`. Because the element mounted with its final transform already applied, there was no rendered start state and therefore no entrance transition. `.isOpen` is now applied only after two animation frames.
 - Large `filter: blur(...)` layers on the Manifesto and Tickets sections were removed. Their softness is now encoded in the radial-gradient stops, preventing a transient rectangular compositor layer on WebKit while preserving a diffuse yellow glow.
 - Artist controls were restored as semantic links using stable name-derived slugs. Their destination pages are intentionally planned for a later version.
+
+
+## v0.1.61 follow-up
+
+The dark-section gradient edge was traced to CSS radial-gradient geometry: implicit `farthest-corner` sizing left non-zero alpha at the side boundary of the circular element. The gradients now use explicit 50% radii and become transparent before the element edge. No blur filter was reintroduced.

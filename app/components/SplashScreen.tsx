@@ -6,8 +6,28 @@ import { useEffect, useRef, useState } from "react";
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
 const EXIT_DURATION_MS = 1150;
+const REPEAT_HOLD_MS = 200;
 const PAPER_COLOR = "#f5f2eb";
 const CANVAS_COLOR = "#090909";
+const SESSION_KEY = "shf-splash-seen";
+
+function hasSeenSplashThisSession(): boolean {
+  try {
+    return window.sessionStorage.getItem(SESSION_KEY) === "1";
+  } catch {
+    // Storage can throw in private-browsing modes; fall back to always
+    // showing the full sequence rather than breaking the splash.
+    return false;
+  }
+}
+
+function markSplashSeen(): void {
+  try {
+    window.sessionStorage.setItem(SESSION_KEY, "1");
+  } catch {
+    // Ignore — non-fatal if the flag can't be persisted.
+  }
+}
 
 type SplashStage = "entering" | "active" | "exiting" | "done";
 
@@ -25,11 +45,15 @@ export function SplashScreen() {
     const root = document.documentElement;
     const body = document.body;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isRepeatVisit = hasSeenSplashThisSession();
+    const skipEnterAnimation = reducedMotion || isRepeatVisit;
     const start = performance.now();
     let hasLoaded = document.readyState === "complete";
     let enterFrame = 0;
     let exitTimer = 0;
     let doneTimer = 0;
+
+    markSplashSeen();
 
     body.classList.add("splashActive");
     body.classList.remove("splashExiting", "splashComplete");
@@ -40,7 +64,7 @@ export function SplashScreen() {
     themeColorMeta?.setAttribute("content", PAPER_COLOR);
 
     // Two frames ensure the entering state is painted before transitioning in.
-    if (reducedMotion) {
+    if (skipEnterAnimation) {
       setStage("active");
     } else {
       enterFrame = window.requestAnimationFrame(() => {
@@ -62,12 +86,16 @@ export function SplashScreen() {
         root.style.backgroundColor = CANVAS_COLOR;
         body.style.backgroundColor = CANVAS_COLOR;
         themeColorMeta?.setAttribute("content", CANVAS_COLOR);
-      }, reducedMotion ? 50 : EXIT_DURATION_MS);
+      }, skipEnterAnimation ? 50 : EXIT_DURATION_MS);
     };
 
     const maybeScheduleExit = () => {
       if (!hasLoaded || hasBegunExit.current) return;
-      const minimumTotal = reducedMotion ? 1000 : ENTER_DURATION_MS + MIN_HOLD_MS;
+      const minimumTotal = isRepeatVisit
+        ? REPEAT_HOLD_MS
+        : reducedMotion
+          ? 1000
+          : ENTER_DURATION_MS + MIN_HOLD_MS;
       const remaining = Math.max(0, minimumTotal - (performance.now() - start));
       window.clearTimeout(exitTimer);
       exitTimer = window.setTimeout(beginExit, remaining);

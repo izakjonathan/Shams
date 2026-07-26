@@ -1,10 +1,47 @@
 import type { NextConfig } from "next";
 
+// The newsletter form posts directly to an external provider, so its origin
+// (only) needs a form-action allowance. Ticket links are plain <a> tags, not
+// form submissions, so they aren't affected by CSP form-action.
+function externalFormOrigin(): string | null {
+  const action = process.env.NEXT_PUBLIC_NEWSLETTER_FORM_ACTION?.trim();
+  if (!action) return null;
+  try {
+    return new URL(action).origin;
+  } catch {
+    return null;
+  }
+}
+
+function contentSecurityPolicy(): string {
+  const formActionOrigins = ["'self'", externalFormOrigin()].filter(Boolean).join(" ");
+
+  return [
+    "default-src 'self'",
+    // 'unsafe-inline' covers the JSON-LD structured-data scripts and the
+    // inline style attributes next/image and a couple of client components
+    // set directly on DOM nodes; there is no user-supplied script or style
+    // on this site.
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data:",
+    "font-src 'self'",
+    "connect-src 'self'",
+    `form-action ${formActionOrigins}`,
+    "object-src 'none'",
+    "base-uri 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests",
+  ].join("; ");
+}
+
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  { key: "Content-Security-Policy", value: contentSecurityPolicy() },
 ];
 
 const nextConfig: NextConfig = {

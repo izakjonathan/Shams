@@ -92,22 +92,23 @@
   /* Soft-edged gradients avoid the temporary square raster layer that
      WebKit can show while compositing large filtered elements. */
   --orb-gradient: radial-gradient(
-    ellipse at 55% 45%,
+    ellipse 50% 50% at 55% 45%,
     #050505 0%,
     #050505 8%,
-    rgba(252, 198, 79, 0.96) 27%,
-    rgba(252, 198, 79, 0.52) 45%,
-    rgba(252, 198, 79, 0.2) 61%,
-    rgba(252, 198, 79, 0.06) 74%,
-    transparent 86%
+    rgba(252, 198, 79, 0.96) 25%,
+    rgba(252, 198, 79, 0.52) 43%,
+    rgba(252, 198, 79, 0.2) 58%,
+    rgba(252, 198, 79, 0.06) 69%,
+    transparent 78%
   );
   --ticket-gradient: radial-gradient(
-    ellipse at 50% 50%,
+    ellipse 50% 50% at 50% 50%,
     var(--color-accent) 0%,
     var(--color-accent) 10%,
-    rgba(252, 198, 79, 0.7) 30%,
-    rgba(252, 198, 79, 0.3) 49%,
-    rgba(252, 198, 79, 0.1) 65%,
-    transparent 82%
+    rgba(252, 198, 79, 0.7) 28%,
+    rgba(252, 198, 79, 0.3) 46%,
+    rgba(252, 198, 79, 0.1) 60%,
+    rgba(252, 198, 79, 0.025) 70%,
+    transparent 78%
   );
 }

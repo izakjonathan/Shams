@@ -19,6 +19,20 @@ export const artists: Artist[] = [
   { name: "Community Choir", type: "Opening", time: "17:00", stage: "Garden" },
 ];
 
+// Single source of truth for artist-name -> slug conversion, shared by the
+// lineup links on the home page and the /artists/[slug] route so the two
+// can never drift apart.
+export const artistSlug = (name: string) =>
+  name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+export const getArtistBySlug = (slug: string): Artist | undefined =>
+  artists.find((artist) => artistSlug(artist.name) === slug);
+
 export interface FaqEntry {
   question: string;
   answer: string;
