@@ -98,3 +98,9 @@ CSS Modules are a valid alternative supported by Next.js and would provide local
 - Social/contact destinations are intentionally non-interactive until real URLs are supplied.
 - No `package-lock.json` could be generated because the package registry timed out. A lockfile plus `npm ci` is the main remaining reproducibility improvement.
 - Device testing in actual Safari 26.x is still required; static analysis cannot reproduce browser-chrome heuristics.
+
+## v0.1.60 targeted corrections
+
+- The menu previously applied `.isOpen` during both `opening` and `open`. Because the element mounted with its final transform already applied, there was no rendered start state and therefore no entrance transition. `.isOpen` is now applied only after two animation frames.
+- Large `filter: blur(...)` layers on the Manifesto and Tickets sections were removed. Their softness is now encoded in the radial-gradient stops, preventing a transient rectangular compositor layer on WebKit while preserving a diffuse yellow glow.
+- Artist controls were restored as semantic links using stable name-derived slugs. Their destination pages are intentionally planned for a later version.

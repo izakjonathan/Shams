@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+const artistSlug = (name: string) =>
+  name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
 export default function Home() {
   const ticketUrl = process.env.NEXT_PUBLIC_TICKET_URL?.trim();
 
@@ -82,7 +90,13 @@ export default function Home() {
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
               <h3>{artist.name}</h3>
               <span>{artist.type}</span><span>{artist.time}</span><span>{artist.stage}</span>
-              <span className="artistArrow" aria-hidden="true"><ArrowIcon /></span>
+              <a
+                className="artistArrow"
+                href={`/artists/${artistSlug(artist.name)}`}
+                aria-label={`View ${artist.name} artist page`}
+              >
+                <ArrowIcon />
+              </a>
             </article>
           ))}
         </div>

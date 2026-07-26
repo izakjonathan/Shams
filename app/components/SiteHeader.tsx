@@ -24,7 +24,8 @@ export function SiteHeader() {
   const hasOpenedRef = useRef(false);
 
   const menuMounted = menuPhase !== "closed";
-  const menuOpen = menuPhase === "opening" || menuPhase === "open";
+  const menuExpanded = menuPhase === "opening" || menuPhase === "open";
+  const menuVisible = menuPhase === "open";
 
   useEffect(() => {
     if (menuPhase !== "opening") return;
@@ -51,12 +52,12 @@ export function SiteHeader() {
     if (!menu) return;
 
     const focusable = Array.from(menu.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
-    if (menuOpen) focusable[0]?.focus({ preventScroll: true });
+    if (menuVisible) focusable[0]?.focus({ preventScroll: true });
 
     const preventPointerScroll = (event: Event) => event.preventDefault();
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (menuOpen && event.key === "Escape") {
+      if (menuExpanded && event.key === "Escape") {
         event.preventDefault();
         setMenuPhase("closing");
         return;
@@ -73,7 +74,7 @@ export function SiteHeader() {
         if (!isEditable) event.preventDefault();
       }
 
-      if (!menuOpen || event.key !== "Tab" || focusable.length === 0) return;
+      if (!menuVisible || event.key !== "Tab" || focusable.length === 0) return;
 
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
@@ -97,7 +98,7 @@ export function SiteHeader() {
       menu.removeEventListener("wheel", preventPointerScroll);
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [menuMounted, menuOpen]);
+  }, [menuExpanded, menuMounted, menuVisible]);
 
   useEffect(() => {
     if (menuPhase !== "closing") return;
@@ -165,11 +166,11 @@ export function SiteHeader() {
           className="menuButton"
           type="button"
           onClick={toggleMenu}
-          aria-expanded={menuOpen}
+          aria-expanded={menuExpanded}
           aria-controls="mobile-menu"
         >
-          <span>{menuOpen ? "Close" : "Menu"}</span>
-          <span className="menuIcon" aria-hidden="true">{menuOpen ? "×" : "＋"}</span>
+          <span>{menuExpanded ? "Close" : "Menu"}</span>
+          <span className="menuIcon" aria-hidden="true">{menuExpanded ? "×" : "＋"}</span>
         </button>
       </header>
 
@@ -177,12 +178,12 @@ export function SiteHeader() {
         <div
           ref={menuRef}
           id="mobile-menu"
-          className={`mobileMenu${menuOpen ? " isOpen" : ""}`}
+          className={`mobileMenu${menuVisible ? " isOpen" : ""}`}
           role="dialog"
           aria-modal="true"
           aria-label="Site navigation"
-          aria-hidden={!menuOpen}
-          inert={!menuOpen}
+          aria-hidden={!menuVisible}
+          inert={!menuVisible}
           onTransitionEnd={handleMenuTransitionEnd}
         >
           <nav aria-label="Mobile navigation">
