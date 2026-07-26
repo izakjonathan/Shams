@@ -94,7 +94,7 @@ export function SplashScreen() {
       const minimumTotal = isRepeatVisit
         ? REPEAT_HOLD_MS
         : reducedMotion
-          ? 1000
+          ? REPEAT_HOLD_MS
           : ENTER_DURATION_MS + MIN_HOLD_MS;
       const remaining = Math.max(0, minimumTotal - (performance.now() - start));
       window.clearTimeout(exitTimer);

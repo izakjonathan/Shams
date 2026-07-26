@@ -40,6 +40,7 @@ html {
   height: 100%;
   min-height: 100%;
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height-mobile) + 16px);
   background: var(--color-paper);
 }
 
@@ -812,7 +813,7 @@ body.splashActive {
   cursor: pointer;
 }
 
-.faqList i {
+.faqToggleIcon {
   font-style: normal;
 }
 
@@ -991,6 +992,10 @@ footer {
    ========================================================================== */
 
 @media (min-width: 760px) {
+  html {
+    scroll-padding-top: calc(var(--header-height-desktop) + 16px);
+  }
+
   .siteHeader {
     height: var(--header-height-desktop);
   }
@@ -1138,6 +1143,10 @@ footer {
   --reveal-distance: var(--reveal-distance-small);
 }
 
+main:focus {
+  outline: none;
+}
+
 /* Accessibility: visible keyboard focus for interactive elements that don't
    already define their own focus-visible treatment above. */
 
@@ -1267,6 +1276,7 @@ input:focus-visible {
 .tickets,
 .newsletter {
   position: relative;
+  overflow: hidden;
   overflow: clip;
   isolation: isolate;
 }

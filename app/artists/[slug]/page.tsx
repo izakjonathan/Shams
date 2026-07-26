@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowIcon } from "../../components/ArrowIcon";
 import { artists, artistSlug, event, getArtistBySlug } from "../../lib/content";
@@ -37,7 +38,7 @@ export default async function ArtistPage({
   if (!artist) notFound();
 
   return (
-    <main className="artistDetail">
+    <main className="artistDetail" id="main-content" tabIndex={-1}>
       <p className="eyebrow">{artist.stage}</p>
       <h1>{artist.name}</h1>
       <div className="artistDetailMeta">
@@ -50,12 +51,12 @@ export default async function ArtistPage({
         rest of the first-wave lineup or secure your ticket.
       </p>
       <div className="artistDetailActions">
-        <a className="button buttonPrimary" href="/#tickets">
+        <Link className="button buttonPrimary" href="/#tickets">
           Get tickets <ArrowIcon />
-        </a>
-        <a className="textLink dark" href="/#lineup">
+        </Link>
+        <Link className="textLink dark" href="/#lineup">
           Back to lineup <ArrowIcon />
-        </a>
+        </Link>
       </div>
     </main>
   );

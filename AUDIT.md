@@ -1,168 +1,259 @@
-# Repository audit — v0.1.59
-
-Audit date: 26 July 2026
+# Shams for Humanity v0.1.72 — Full repository audit
 
 ## Scope
 
-Every file in the archive was inspected. All lines in TypeScript, TSX, CSS, JSON, Markdown, and SVG were reviewed. Binary assets were checked for type, dimensions, size, and active references.
+The audit covered all 29 files in the archive, including every line of TypeScript, TSX, CSS, JSON, configuration, documentation, and all four binary/static assets.
 
-## Changes made
+Validation included:
 
-1. Removed an older desktop gradient/orb block that duplicated and contradicted the later centralized gradient system.
-2. Added complete cleanup for scroll-reveal classes in reduced-motion and IntersectionObserver-fallback paths.
-3. Added mobile-menu focus management, focus return, Escape handling, Tab containment, dialog semantics, and scroll blocking through the whole closing phase.
-4. Removed non-functional artist buttons; their arrows are now explicitly decorative.
-5. Removed placeholder `href="#"` footer links; unavailable destinations are non-interactive text.
-6. Made ticket and newsletter controls configuration-driven instead of silently doing nothing.
-7. Added one normalized site-origin helper and removed three duplicate URL implementations.
-8. Removed volatile `new Date()` sitemap output that falsely changed on every generation.
-9. Escaped `<` in JSON-LD serialization as a defensive script-embedding measure.
-10. Renamed the misleading `lint` script to `typecheck`.
-11. Updated documentation to match only the active architecture.
+- TypeScript/TSX syntax transpilation for all 16 application source files plus `next.config.ts`
+- recursive CSS parsing for `globals.css` and `design-system.css`
+- duplicate selector and duplicate declaration checks
+- custom-property definition/use checks
+- JSON parsing
+- relative import resolution checks
+- route/metadata convention checks
+- asset existence, type, dimensions, and reference checks
+- keyboard, focus, modal, reduced-motion, and no-JavaScript behavior review
+- current Next.js, React, HTML accessibility, MDN, Vercel, and WebKit guidance review
 
-## File-by-file result
+## Executive assessment
 
-### Root files
+The project is now a strong small-event marketing site with good separation between server-rendered content and the limited interactive client components. The current architecture is appropriate for a mostly static festival website. The largest remaining engineering limitation is the absence of a committed dependency lockfile and the inability to complete a dependency-backed production build in this environment.
 
-- `package.json`: valid; exact production framework versions; type-check script accurately named. No lockfile is present because registry access was unavailable during this audit.
-- `tsconfig.json`: strict App Router-compatible configuration; no contradictory compiler flags found.
-- `next.config.ts`: security headers are active for every route. A CSP remains an optional future hardening step.
-- `vercel.json`: valid and minimal. The custom install command remains because it is part of the established deployment baseline, but reproducibility would improve with a committed lockfile and `npm ci`.
-- `next-env.d.ts`: standard generated Next.js declaration file; intentionally not edited.
-- `README.md`: rewritten to describe the current code only.
+## Changes made during this audit
 
-### App shell and metadata
+### Shared layout and navigation
 
-- `app/layout.tsx`: viewport and metadata use supported App Router exports. Structured data is derived from central content and safely serialized.
-- `app/robots.ts`: valid metadata route using the shared normalized origin.
-- `app/sitemap.ts`: valid metadata route; volatile generation-time modification date removed.
-- `app/icon.svg` and `app/apple-icon.png`: active Next.js metadata-convention assets.
-- `app/opengraph-image.tsx`: active dynamic Open Graph image route; no unused imports or unreachable styles.
-- `app/not-found.tsx`: active App Router not-found page with non-indexing metadata.
+- Moved `SiteHeader` from the homepage into `app/layout.tsx`.
+- The header and mobile menu now work consistently on `/`, `/artists/[slug]`, and the 404 route.
+- Converted site-wide and route-to-route navigation to `next/link`.
+- Changed mobile-menu hash destinations to absolute home routes (`/#about`, etc.), so they also work from artist pages.
+- Added fixed-header `scroll-padding-top` values for mobile and desktop anchor navigation.
 
-### Page and content
+### Skip link and landmarks
 
-- `app/page.tsx`: all imported components and content collections are used. Dead artist controls and fake footer links were removed. Ticket CTA behavior is now explicit when checkout is not configured.
-- `app/lib/content.ts`: central data source; date display duplication reduced with `numericDate` and `timeRange`.
-- `app/lib/site.ts`: single normalized public-origin source for metadata routes and structured data.
+- Added `id="main-content"` and `tabIndex={-1}` to every rendered `<main>`.
+- Added a focus-outline reset only for the programmatically focused main landmark.
+- The root skip link now resolves on the homepage, artist pages, and 404 page.
 
-### Client components
+### Mobile menu
 
-- `SiteHeader.tsx`: menu state machine has one opening path, one closing path, one fallback timer, focus containment, Escape support, focus restoration, local pointer/keyboard scroll blocking, and full unmount on close.
-- `SplashScreen.tsx`: one owner for splash classes, canvas colors, and runtime theme-color. No competing browser-tint controller exists.
-- `ScrollReveal.tsx`: one observer, one reveal-class system, and complete cleanup in every branch.
-- `FaqAccordion.tsx`: button/region relationships are explicit and closed answers are hidden from accessibility APIs.
-- `NewsletterForm.tsx`: server-rendered and configuration-driven; no client bundle or no-op submit handler remains.
-- `ArrowIcon.tsx`: shared decorative SVG; all usages valid.
+- Kept the proven custom fixed overlay rather than introducing a new browser-layout variable.
+- Made the active page `<main>` inert for the complete mounted menu lifecycle.
+- Made the brand and desktop navigation inert while the menu is mounted.
+- Included the visible menu toggle in the focus loop.
+- Kept Escape handling, initial keyboard focus, focus restoration, scroll containment, and exit-animation unmounting.
+- Detects keyboard and assistive-technology clicks through `MouseEvent.detail === 0`, not only keydown events.
+- Keeps the visible label as `Close` until the overlay has fully unmounted.
+- Uses `onNavigate` for mobile links so modifier-clicks do not unnecessarily close the menu.
 
-### CSS
+### Metadata and routing
 
-- `app/design-system.css`: every declared token is used. No undefined static token references were found; remaining dynamic variables are intentionally supplied by component selectors or runtime inline styles.
-- `app/globals.css`: parsed without errors. No obsolete tint sentinels, safe-area rules, visual-viewport listeners, backdrop-filter sampling exclusions, duplicate gradient implementation, or unused classes remain.
+- Corrected the homepage title so the root title template no longer repeats `Shams for Humanity`.
+- Added all statically generated artist pages to `sitemap.xml`.
+- Retained supported App Router conventions for viewport, manifest, icons, robots, sitemap, and generated Open Graph imagery.
+- Kept `viewport-fit=cover` and the intentional paper-to-black runtime theme transition.
 
-### Assets
+### URLs and integrations
 
-- `public/fonts/Agilera.woff`: actively loaded by `next/font/local`.
-- `public/images/splash-screen-edge-safe.png`: actively loaded by `next/image`; 1320×2868 RGB PNG, approximately 875 KB.
+- Added one `safeExternalUrl()` validator for site, ticket, and newsletter configuration.
+- Only HTTP and HTTPS URLs are accepted.
+- Invalid `NEXT_PUBLIC_SITE_URL` values fall back to the production domain.
+- Invalid ticket/newsletter URLs now resolve to the existing safe unavailable UI instead of producing malformed links or form actions.
+- The CSP newsletter `form-action` origin uses the same validator as the rendered form.
 
-## Researched implementation choices
+### Typography
 
-### Viewport and metadata
+- Changed the local Agilera font from `font-display: block` to `swap`.
+- Added a Times New Roman fallback and Next.js metric adjustment to reduce invisible text and layout shift.
+- Font remains locally hosted and preloaded by `next/font/local`.
 
-The static `viewport` export is the current Next.js App Router API for width, scale, viewport fit, and theme color. The existing implementation follows that API. Generated `robots.ts`, `sitemap.ts`, icons, and Open Graph image files also follow current metadata file conventions.
+### FAQ
 
-### Menu implementation
+- Replaced index-only global IDs with a component-specific `useId()` prefix.
+- Collapsed answer regions are now inert as well as `aria-hidden`.
+- Replaced the presentational `<i>` element with a named decorative span class.
 
-A native modal `<dialog>` is the standards-first alternative because `showModal()` provides top-layer placement, modal inertness, and focus behavior. It was not adopted here because the current project is specifically testing iOS Safari fixed/fullscreen behavior, and WebKit has had active iOS 26 reports involving full-viewport fixed/dialog painting. The custom overlay therefore remains, but now implements the missing keyboard and focus behavior explicitly.
+### Splash and motion
 
-### Safari fixed viewport behavior
+- Kept the established session-aware splash lifecycle and direct root/theme color transition required by the current Safari treatment.
+- Reduced the minimum wait for `prefers-reduced-motion` users from 1000 ms to the short repeat-visit hold.
+- Kept no-JavaScript recovery styles.
 
-WebKit reports confirm that iOS 26 introduced fixed-position and viewport-sized container problems. Safari 26.1 fixed one bottom-gap case, while later reports still describe intermittent bottom-fixed painting issues. Because of that, the code deliberately avoids visualViewport-driven correction loops, body-position locking, and stacked browser-tint heuristics. The root canvas plus mounted-only menu remains the least complicated testable baseline.
+### Configuration and security
 
-### Scroll locking
+- Removed explicit `reactStrictMode: true`; App Router already enables it by default.
+- Removed `X-Frame-Options: DENY`; CSP `frame-ancestors 'none'` is the current authoritative frame control.
+- Retained CSP, HSTS, permissions, referrer, MIME-sniffing, and powered-by protections.
 
-`body { overflow: hidden }` has a long history of inconsistent iOS behavior. The current menu leaves the root scroller untouched and prevents touch/wheel/scroll-key input only while the overlay exists. The tradeoff is more JavaScript than a body class, but fewer root viewport mutations.
+## Component quality review
 
-### CSS organization
+### `ArrowIcon.tsx` — Good
 
-CSS Modules are a valid alternative supported by Next.js and would provide local selector scoping. For this single-page design, keeping one organized global stylesheet avoids splitting tightly coupled responsive and gradient systems across many files. If the site gains routes or reusable feature modules, moving component styles to CSS Modules would be the next maintainability step.
+- Pure server-compatible presentational SVG.
+- Correctly hidden from assistive technology and removed from the tab order.
+- The exported artwork contains complex transforms, but only one path and no runtime cost beyond normal SVG rendering.
+- Alternative considered: simplifying the path with an SVG optimizer. Not changed because it risks altering the supplied artwork and offers negligible page-level benefit.
 
-### Font loading
+### `FaqAccordion.tsx` — Very good after audit
 
-`next/font/local` is the correct optimized local-font path. `display: block` intentionally prioritizes avoiding a visible fallback-font flash; the tradeoff is a short invisible text period. `swap` is the performance-oriented alternative but would reintroduce the font change the project previously sought to avoid.
+- Native buttons, `aria-expanded`, `aria-controls`, labelled regions, and keyboard behavior come from platform controls.
+- `useId()` makes the component safe if reused more than once.
+- Closed content is both accessibility-hidden and inert while CSS can still animate its grid row.
+- Alternative considered: native `<details>/<summary>`. That would reduce JavaScript but provides less control over the current one-open-at-a-time behavior and animation.
 
-## Remaining intentional limitations
+### `NewsletterForm.tsx` — Good, integration-dependent
 
-- Ticket checkout requires `NEXT_PUBLIC_TICKET_URL`.
-- Newsletter submission requires `NEXT_PUBLIC_NEWSLETTER_FORM_ACTION`.
-- Social/contact destinations are intentionally non-interactive until real URLs are supplied.
-- No `package-lock.json` could be generated because the package registry timed out. A lockfile plus `npm ci` is the main remaining reproducibility improvement.
-- Device testing in actual Safari 26.x is still required; static analysis cannot reproduce browser-chrome heuristics.
+- Remains a server component with no hydration cost.
+- Uses native email validation, autocomplete, labels, disabled states, and direct provider submission.
+- External action is validated before enabling the form.
+- Remaining provider-specific concern: some mailing providers require a field name other than `email` or additional hidden fields. Configure this when the final provider is selected.
+- Alternative considered: a Server Action or internal route handler. That would enable custom success/error UI but adds server processing, anti-spam, and privacy responsibilities that are unnecessary before a provider is chosen.
 
-## v0.1.60 targeted corrections
+### `ScrollReveal.tsx` — Good
 
-- The menu previously applied `.isOpen` during both `opening` and `open`. Because the element mounted with its final transform already applied, there was no rendered start state and therefore no entrance transition. `.isOpen` is now applied only after two animation frames.
-- Large `filter: blur(...)` layers on the Manifesto and Tickets sections were removed. Their softness is now encoded in the radial-gradient stops, preventing a transient rectangular compositor layer on WebKit while preserving a diffuse yellow glow.
-- Artist controls were restored as semantic links using stable name-derived slugs. Their destination pages are intentionally planned for a later version.
+- Isolates browser-only behavior in one small client component, leaving page content server-rendered.
+- Uses IntersectionObserver, reduced-motion fallback, observer cleanup, transition listener cleanup, and temporary `will-change` promotion.
+- Does not keep all page content permanently composited.
+- Alternative considered: CSS scroll-driven animations. IntersectionObserver remains the more conservative cross-browser choice for this production site.
 
+### `SiteHeader.tsx` — Good, intentionally complex
 
-## v0.1.61 follow-up
+- Correct opening and closing phases ensure both animations paint.
+- Full unmount after closing prevents an invisible fixed layer from affecting Safari.
+- Main content, brand, and desktop nav are inert during the modal state.
+- Handles pointer, keyboard, assistive activation, Escape, Tab cycling, focus restoration, touch/wheel containment, and reduced-motion fallback timing.
+- Alternative considered: native `<dialog>.showModal()`. Native dialog provides built-in top-layer and inert behavior, but changing to it would reintroduce a major full-viewport rendering variable while the site is actively working around current iOS fixed/modal behavior. The custom implementation is justified, but should continue to receive regression testing on VoiceOver and physical keyboards.
 
-The dark-section gradient edge was traced to CSS radial-gradient geometry: implicit `farthest-corner` sizing left non-zero alpha at the side boundary of the circular element. The gradients now use explicit 50% radii and become transparent before the element edge. No blur filter was reintroduced.
+### `SplashScreen.tsx` — Good for the chosen visual requirement
 
-## v0.1.63
+- Uses `next/image`, session storage guards, load synchronization, reduced-motion behavior, cleanup, no-JavaScript fallback, and a finite mounted lifecycle.
+- Direct `html`, `body`, and theme-color mutation is normally avoidable, but is intentional here because the site requires a paper launch canvas followed by a persistent black browser-adjacent canvas.
+- Remaining tradeoff: every new tab receives the full splash once because session storage is tab-scoped.
 
-- Removed pointer-triggered programmatic focus from the mobile menu lifecycle, preventing persistent focus outlines after touch open/close while retaining keyboard focus management.
-- Changed Manifesto and Tickets glows to the same solid-centre yellow radial-gradient construction used by the light sections.
+## Route and server-component review
 
-## v0.1.65 dark-section gradient correction
+### `app/layout.tsx` — Very good
 
-The Manifesto and Tickets gradients previously used oversized, border-radius-clipped oval elements whose centres were positioned outside the viewport. Their alpha was also multiplied by element opacity before compositing over black, which produced dull cropped spotlight shapes.
+- Correct root `html`/`body` structure.
+- Uses supported static Metadata and Viewport exports.
+- Site header is now truly shared.
+- JSON-LD is escaped before inline output.
+- Local font is optimized through `next/font/local`.
 
-The decorative elements and their geometry variables have been removed. Both dark sections now use layered, filter-free radial gradients directly on the section background. Each gradient reaches transparency within its own interpolation range, so there is no element edge to clip and no blurred compositor layer to flash as a square.
+### `app/page.tsx` — Very good
 
+- Remains a server component despite the page’s interactive islands.
+- Content comes from a central typed source.
+- Ticket URL is validated before rendering an active purchase link.
+- Internal artist routes now use `next/link`.
+- FAQ structured data matches rendered FAQ content.
 
-## v0.1.65 — Reduced dark-section gradient scale
+### `app/artists/[slug]/page.tsx` — Good scaffold
 
-- Reduced the Manifesto section washes so they remain edge accents rather than covering most of the section.
-- Reduced the Tickets top-right wash substantially and tightened the secondary bottom-left wash.
-- Preserved section-level, filter-free gradients and soft transparent edges.
+- Statically generates known artist routes.
+- Uses async Next.js 16 params correctly.
+- Has per-artist metadata, canonical URLs, and not-found handling.
+- Internal links use `next/link`.
+- Remaining product limitation: artist biography/media content is placeholder copy by design.
 
+### `app/not-found.tsx` — Good
 
-## v0.1.66 — Round black-section gradients
+- Correct non-indexing metadata.
+- Shared header and working skip target now apply.
+- Internal return navigation uses `next/link`.
 
-Root cause: the visible elongated shapes in the black sections came from the direct section backgrounds on `.manifesto` and `.tickets`. Those backgrounds were still defined with `radial-gradient(ellipse …)`, so the final rendered shapes were oval even though other recent gradient work had targeted different section systems.
+## Data and utility review
 
-Correction applied:
-- changed `.manifesto` background gradients from `ellipse` to `circle`
-- changed `.tickets` background gradients from `ellipse` to `circle`
-- kept the existing color stops, opacity balances, and placement logic
-- left the light-section paper-glow system unchanged
+### `app/lib/content.ts` — Good
 
+- One typed source for event, artists, FAQ, programme, and ticket data.
+- Shared slug function prevents route/link drift.
+- Remaining content-model limitation: artist slugs derive from names, so renaming an artist changes the URL. Add explicit stable slugs before artist pages are promoted publicly.
 
-## v0.1.67 — Restore circular dark gradients
+### `app/lib/site.ts` — Very good after audit
 
-The v0.1.66 syntax used percentage radii with the `circle` keyword, for example `radial-gradient(circle 38% at …)`. CSS only permits an explicit circle radius as a length, not a percentage, so Safari rejected the full `background-image` declaration. The gradients are now expressed as equal-radius ellipses (`ellipse 38% 38%`), which are valid CSS and visually circular.
+- Validates HTTP/HTTPS URLs.
+- Removes query/hash from the canonical site root.
+- Provides a safe production fallback.
+- Shared by metadata, rendered integrations, and CSP configuration.
 
+## CSS review
 
-## v0.1.68 — Softer, more diffused dark gradients
+### `app/design-system.css` — Very good
 
-The round geometry from v0.1.67 was retained. The visible harshness came from high-opacity centres and relatively abrupt transitions through the middle of each radial gradient. The Manifesto and Tickets gradients now use lower centre opacity, additional intermediate stops, and a gradual fade to full transparency at 100%, without blur filters or enlarged geometry.
+- All declared custom properties are used.
+- Tokens are grouped by purpose and components rely on semantic variables.
+- No undefined runtime token was found; the apparent `--font-agilera` reference is generated by `next/font`, while section positioning/reveal variables intentionally use CSS fallbacks or inline values.
 
+### `app/globals.css` — Good for a single-page visual system
 
-## v0.1.69 — Layered dark-section glows
+- Parses without errors.
+- No exact duplicate selectors were found.
+- No accidental duplicate declarations were found; the consecutive `overflow: hidden` / `overflow: clip` pair is an intentional compatibility fallback.
+- Sections remain clearly numbered and grouped.
+- Dark gradients remain filter-free, avoiding the previous Safari square-compositor flash.
+- Remaining maintainability tradeoff: the file is large. Splitting component-level rules into CSS Modules would improve local ownership but would also fragment the current centralized visual tuning workflow. Keeping one organized global file is reasonable while the design remains under active cross-section iteration.
 
-The black sections previously used only two isolated section-level radial backgrounds, while the white sections used three section washes plus three overlapping decorative glow elements. This structural mismatch made the dark gradients read as defined spotlights rather than soft atmospheric washes.
+## Metadata and static-file review
 
-Correction applied:
-- added three subtle background washes to both `.manifesto` and `.tickets`
-- added three reusable `.darkGlow` layers to each dark section
-- kept every dark glow circular by using equal width and height
-- used lower opacity than the paper-section glows to compensate for yellow compositing over black
-- avoided `filter: blur()` to prevent the earlier Safari rectangular compositor flash
-- ensured section content remains above all decorative layers via one shared stacking rule
+- `manifest.ts`: valid generated web manifest; SVG supplies scalable app imagery and the 180×180 PNG remains appropriate for Apple metadata.
+- `robots.ts`: valid allow-all policy with canonical sitemap URL.
+- `sitemap.ts`: now includes homepage and every generated artist page.
+- `opengraph-image.tsx`: valid generated 1200×630 image with an explicit edge runtime.
+- `icon.svg`: valid scalable icon.
+- `apple-icon.png`: valid 180×180 RGB PNG.
+- `splash-screen-edge-safe.png`: valid 1320×2868 RGB PNG; large but handled through `next/image` optimization.
+- `Agilera.woff`: valid WOFF/CFF font, approximately 106 KiB.
 
+## Configuration review
 
-## v0.1.71 — Edge-only diffused dark glows
+### `next.config.ts`
 
-The v0.1.70 circles remained visible because the glow still retained non-zero alpha close to its element boundary and too much of the element remained inside each section. The correction uses a substantially larger circular canvas, moves most of it outside the section, lowers the centre intensity, and reaches full transparency at 74% of the radius.
+- Security headers are centralized and type-safe.
+- External newsletter form origin is validated.
+- `poweredByHeader: false` remains useful.
+- Static CSP is appropriate for preserving static rendering. A nonce-based strict CSP was researched but not adopted because it would force dynamic rendering and complicate the current static deployment.
+
+### `vercel.json`
+
+- Explicit Next.js framework, install, and build commands match the existing deployment workflow.
+- Remaining quality limitation: `--no-package-lock` and the absence of a committed lockfile reduce reproducibility. This was not changed because the current environment could not reach the package registry to generate and verify a correct lockfile, and deployment behavior has historically been sensitive in this project.
+
+### `package.json`
+
+- Runtime dependencies are pinned exactly.
+- Node and npm engines are explicit.
+- Scripts are minimal and accurate.
+- Version updated to `0.1.72`.
+
+### `tsconfig.json`
+
+- Strict TypeScript, bundler resolution, isolated modules, and Next plugin settings are appropriate.
+- `skipLibCheck` matches common Next.js defaults and keeps third-party declaration noise out of application checks.
+
+## Researched alternatives not adopted
+
+1. **Native `<dialog>` for the menu** — better built-in modal behavior, but a risky change during ongoing iOS full-viewport testing.
+2. **Nonce-based strict CSP** — stronger than `unsafe-inline`, but requires per-request dynamic rendering and would give up the current fully static delivery model.
+3. **CSS scroll-driven reveal animations** — less JavaScript, but IntersectionObserver remains more conservative across the supported Safari range.
+4. **CSS Modules for every section** — stronger component ownership, but less convenient for the current centralized gradient and cross-section design tuning.
+5. **Server Action newsletter submission** — better inline success/error states, but unnecessary operational and anti-abuse responsibility before a provider is selected.
+6. **Removing the manifest or `viewport-fit=cover`** — not adopted because they remain intentional parts of the installed-app and Safari-edge behavior.
+
+## Remaining limitations
+
+- No dependency lockfile is present.
+- Dependency installation timed out in the audit environment, so a real `next build` and full TypeScript module-resolution check could not be completed.
+- The newsletter provider’s exact field contract is not yet known.
+- Artist pages are intentionally placeholders and should receive stable explicit slugs before launch.
+- Current iOS Safari fixed-position behavior should continue to be tested on physical devices after major browser updates.
+
+## Research sources
+
+- Next.js App Router, Metadata, Viewport, Font, Link, CSP, headers, sitemap, robots, icons, and version-16 documentation: https://nextjs.org/docs
+- React portal/modal accessibility guidance: https://react.dev/reference/react-dom/createPortal
+- MDN dialog, inert, aria-modal, keyboard, and live-region guidance: https://developer.mozilla.org/
+- Vercel package-manager and build-configuration guidance: https://vercel.com/docs
+- WebKit Safari 26.x release notes and fixed-position bug tracking: https://webkit.org/ and https://bugs.webkit.org/

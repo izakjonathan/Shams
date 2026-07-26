@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowIcon } from "./components/ArrowIcon";
 import { FaqAccordion } from "./components/FaqAccordion";
 import { NewsletterForm } from "./components/NewsletterForm";
 import { ScrollReveal } from "./components/ScrollReveal";
-import { SiteHeader } from "./components/SiteHeader";
 import { artists, artistSlug, event, faqs, programme, tickets } from "./lib/content";
+import { safeExternalUrl } from "./lib/site";
 
 export const metadata: Metadata = {
-  title: `Shams for Humanity — ${event.city}, ${event.date}`,
+  title: `${event.city} · ${event.date}`,
   description:
     "A one-day festival of music, art and collective care in Copenhagen. A transparent share of every ticket supports humanitarian and community-led initiatives.",
   alternates: { canonical: "/" },
@@ -24,13 +25,11 @@ const faqJsonLd = {
 };
 
 export default function Home() {
-  const ticketUrl = process.env.NEXT_PUBLIC_TICKET_URL?.trim();
+  const ticketUrl = safeExternalUrl(process.env.NEXT_PUBLIC_TICKET_URL);
 
   return (
-    <main id="main-content">
+    <main id="main-content" tabIndex={-1}>
       <ScrollReveal />
-
-      <SiteHeader />
 
       <section className="hero" id="top">
         <div className="heroOrb orbOne" aria-hidden="true" />
@@ -91,13 +90,13 @@ export default function Home() {
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
               <h3>{artist.name}</h3>
               <span>{artist.type}</span><span>{artist.time}</span><span>{artist.stage}</span>
-              <a
+              <Link
                 className="artistArrow"
                 href={`/artists/${artistSlug(artist.name)}`}
                 aria-label={`View ${artist.name} artist page`}
               >
                 <ArrowIcon />
-              </a>
+              </Link>
             </article>
           ))}
         </div>

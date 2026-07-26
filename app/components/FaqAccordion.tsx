@@ -1,17 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import type { FaqEntry } from "../lib/content";
 
-export function FaqAccordion({ faqs }: { faqs: FaqEntry[] }) {
+export function FaqAccordion({ faqs }: { faqs: readonly FaqEntry[] }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const idPrefix = useId();
 
   return (
     <div className="faqList">
       {faqs.map(({ question, answer }, index) => {
         const isOpen = openFaq === index;
-        const buttonId = `faq-button-${index}`;
-        const answerId = `faq-answer-${index}`;
+        const buttonId = `${idPrefix}-button-${index}`;
+        const answerId = `${idPrefix}-answer-${index}`;
+
         return (
           <article className={isOpen ? "open" : ""} key={question}>
             <button
@@ -22,7 +24,7 @@ export function FaqAccordion({ faqs }: { faqs: FaqEntry[] }) {
               aria-controls={answerId}
             >
               <span>{question}</span>
-              <i aria-hidden="true">{isOpen ? "−" : "+"}</i>
+              <span className="faqToggleIcon" aria-hidden="true">{isOpen ? "−" : "+"}</span>
             </button>
             <div
               id={answerId}
@@ -30,6 +32,7 @@ export function FaqAccordion({ faqs }: { faqs: FaqEntry[] }) {
               role="region"
               aria-labelledby={buttonId}
               aria-hidden={!isOpen}
+              inert={!isOpen}
             >
               <div className="faqAnswerInner">
                 <p>{answer}</p>

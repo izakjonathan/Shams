@@ -1,9 +1,11 @@
+import { safeExternalUrl } from "../lib/site";
+
 export function NewsletterForm() {
-  const formAction = process.env.NEXT_PUBLIC_NEWSLETTER_FORM_ACTION?.trim();
+  const formAction = safeExternalUrl(process.env.NEXT_PUBLIC_NEWSLETTER_FORM_ACTION);
   const isConfigured = Boolean(formAction);
 
   return (
-    <form action={formAction || undefined} method="post">
+    <form action={formAction} method="post">
       <label htmlFor="email">Email address</label>
       <div>
         <input

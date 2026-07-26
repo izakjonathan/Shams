@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { SiteHeader } from "./components/SiteHeader";
 import { SplashScreen } from "./components/SplashScreen";
 import { artists, event, tickets } from "./lib/content";
 import { siteUrl } from "./lib/site";
@@ -8,9 +9,10 @@ import { siteUrl } from "./lib/site";
 const agilera = localFont({
   src: "../public/fonts/Agilera.woff",
   variable: "--font-agilera",
-  display: "block",
+  display: "swap",
   preload: true,
-  adjustFontFallback: false,
+  fallback: ["Times New Roman", "serif"],
+  adjustFontFallback: "Times New Roman",
 });
 
 export const metadata: Metadata = {
@@ -104,7 +106,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </noscript>
         <a className="skipLink" href="#main-content">Skip to content</a>
         <SplashScreen />
-        <div className="siteShell">{children}</div>
+        <div className="siteShell">
+          <SiteHeader />
+          {children}
+        </div>
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
