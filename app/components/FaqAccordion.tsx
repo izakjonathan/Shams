@@ -10,10 +10,12 @@ export function FaqAccordion({ faqs }: { faqs: FaqEntry[] }) {
     <div className="faqList">
       {faqs.map(({ question, answer }, index) => {
         const isOpen = openFaq === index;
+        const buttonId = `faq-button-${index}`;
         const answerId = `faq-answer-${index}`;
         return (
           <article className={isOpen ? "open" : ""} key={question}>
             <button
+              id={buttonId}
               type="button"
               onClick={() => setOpenFaq(isOpen ? null : index)}
               aria-expanded={isOpen}
@@ -22,7 +24,13 @@ export function FaqAccordion({ faqs }: { faqs: FaqEntry[] }) {
               <span>{question}</span>
               <i aria-hidden="true">{isOpen ? "−" : "+"}</i>
             </button>
-            <div id={answerId} className="faqAnswer">
+            <div
+              id={answerId}
+              className="faqAnswer"
+              role="region"
+              aria-labelledby={buttonId}
+              aria-hidden={!isOpen}
+            >
               <div className="faqAnswerInner">
                 <p>{answer}</p>
               </div>

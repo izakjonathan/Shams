@@ -567,7 +567,7 @@ body.splashActive {
   font-size: 10px;
 }
 
-.artistRow button {
+.artistArrow {
   border: 1px solid var(--color-ink);
   background: transparent;
   border-radius: var(--radius-circle);
@@ -576,10 +576,9 @@ body.splashActive {
   padding: 8px;
   display: grid;
   place-items: center;
-  cursor: pointer;
 }
 
-.artistRow button .arrowIcon {
+.artistArrow .arrowIcon {
   width: 100%;
   height: 100%;
 }
@@ -744,6 +743,7 @@ body.splashActive {
   font: 12px var(--font-body);
 }
 
+.ticketAction,
 .ticketGrid button {
   height: var(--button-height-compact);
   border: var(--border-solid) var(--color-control-line);
@@ -771,6 +771,7 @@ body.splashActive {
   color: var(--color-feature-copy) !important;
 }
 
+.featuredTicket .ticketAction,
 .featuredTicket button {
   border-color: var(--color-ink);
   color: var(--color-ink);
@@ -918,6 +919,12 @@ body.splashActive {
   font-weight: var(--font-weight-bold);
 }
 
+
+.newsletter input:disabled,
+.newsletter button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
 .newsletter form p {
   font-size: 10px;
 }
@@ -957,7 +964,8 @@ footer {
   margin-bottom: 18px;
 }
 
-.footerLinks a {
+.footerLinks a,
+.footerPlaceholder {
   font-size: 15px;
   margin: 4px 0;
 }
@@ -979,56 +987,7 @@ footer {
    16 — Responsive layout
    ========================================================================== */
 
-@media (min-width:760px) {
-  .heroOrb {
-    filter: blur(54px);
-  }
-
-  .orbOne {
-    width: 92vw;
-    height: 64vw;
-    right: -24%;
-    top: -4%;
-  }
-
-  .orbTwo {
-    width: 72vw;
-    height: 82vw;
-    left: -22%;
-    bottom: -10%;
-  }
-
-  .orbThree {
-    width: 58vw;
-    height: 42vw;
-    left: 30%;
-    bottom: 4%;
-  }
-
-  .statement {
-    background-image: radial-gradient(ellipse 70% 42% at 8% 16%, rgba(252, 198, 79, 0.693) 0, rgba(252, 198, 79, 0.401) 34%, rgba(252, 198, 79, 0.182) 56%, transparent 82%),
-      radial-gradient(ellipse 58% 36% at 96% 52%, rgba(252, 198, 79, 0.51) 0, rgba(252, 198, 79, 0.274) 36%, rgba(252, 198, 79, 0.109) 56%, transparent 80%),
-      radial-gradient(ellipse 62% 36% at 28% 92%, rgba(252, 198, 79, 0.328) 0, rgba(252, 198, 79, 0.163) 36%, rgba(252, 198, 79, 0.073) 56%, transparent 78%);
-  }
-
-  .lineup {
-    background-image: radial-gradient(ellipse 62% 38% at 94% 10%, rgba(252, 198, 79, 0.62) 0, rgba(252, 198, 79, 0.328) 34%, rgba(252, 198, 79, 0.146) 56%, transparent 80%),
-      radial-gradient(ellipse 50% 30% at 6% 58%, rgba(252, 198, 79, 0.401) 0, rgba(252, 198, 79, 0.219) 34%, rgba(252, 198, 79, 0.092) 54%, transparent 76%),
-      radial-gradient(ellipse 64% 36% at 56% 96%, rgba(252, 198, 79, 0.328) 0, rgba(252, 198, 79, 0.163) 36%, rgba(252, 198, 79, 0.073) 56%, transparent 78%);
-  }
-
-  .programme {
-    background-image: radial-gradient(ellipse 66% 38% at 18% 6%, rgba(252, 198, 79, 0.547) 0, rgba(252, 198, 79, 0.292) 34%, rgba(252, 198, 79, 0.128) 56%, transparent 78%),
-      radial-gradient(ellipse 70% 40% at 88% 36%, rgba(252, 198, 79, 0.474) 0, rgba(252, 198, 79, 0.255) 36%, rgba(252, 198, 79, 0.109) 56%, transparent 78%),
-      radial-gradient(ellipse 54% 30% at 42% 96%, rgba(252, 198, 79, 0.328) 0, rgba(252, 198, 79, 0.163) 34%, rgba(252, 198, 79, 0.073) 54%, transparent 76%);
-  }
-
-  .faq {
-    background-image: radial-gradient(ellipse 60% 36% at 90% 10%, rgba(252, 198, 79, 0.547) 0, rgba(252, 198, 79, 0.292) 34%, rgba(252, 198, 79, 0.109) 56%, transparent 78%),
-      radial-gradient(ellipse 44% 26% at 6% 62%, rgba(252, 198, 79, 0.365) 0, rgba(252, 198, 79, 0.182) 34%, rgba(252, 198, 79, 0.073) 54%, transparent 74%),
-      radial-gradient(ellipse 60% 34% at 72% 94%, rgba(252, 198, 79, 0.292) 0, rgba(252, 198, 79, 0.146) 36%, rgba(252, 198, 79, 0.073) 56%, transparent 78%);
-  }
-
+@media (min-width: 760px) {
   .siteHeader {
     height: var(--header-height-desktop);
   }
@@ -1132,7 +1091,7 @@ footer {
   }
 }
 
-@media (min-width:1100px) {
+@media (min-width: 1100px) {
   .section {
     padding-top: var(--section-space-desktop);
     padding-bottom: var(--section-space-desktop);
@@ -1146,13 +1105,6 @@ footer {
     display: block;
   }
 
-  .orbOne {
-    right: -8%;
-  }
-
-  .orbTwo {
-    left: -8%;
-  }
 }
 
 /* ========================================================================== 

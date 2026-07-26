@@ -1,16 +1,9 @@
-"use client";
-
-import type { FormEvent } from "react";
-
 export function NewsletterForm() {
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    // No newsletter provider is wired up yet — swap this for a real POST
-    // (e.g. to an email service's API route) once one is chosen.
-  }
+  const formAction = process.env.NEXT_PUBLIC_NEWSLETTER_FORM_ACTION?.trim();
+  const isConfigured = Boolean(formAction);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form action={formAction || undefined} method="post">
       <label htmlFor="email">Email address</label>
       <div>
         <input
@@ -21,10 +14,17 @@ export function NewsletterForm() {
           autoComplete="email"
           inputMode="email"
           required
+          disabled={!isConfigured}
         />
-        <button type="submit">Join us</button>
+        <button type="submit" disabled={!isConfigured}>
+          {isConfigured ? "Join us" : "Coming soon"}
+        </button>
       </div>
-      <p>No noise. Only meaningful updates.</p>
+      <p>
+        {isConfigured
+          ? "No noise. Only meaningful updates."
+          : "Newsletter registration will open soon."}
+      </p>
     </form>
   );
 }

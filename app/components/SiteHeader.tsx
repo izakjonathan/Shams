@@ -6,12 +6,22 @@ import { event } from "../lib/content";
 type MenuPhase = "closed" | "opening" | "open" | "closing";
 
 const MENU_EXIT_FALLBACK_MS = 650;
+const FOCUSABLE_SELECTOR = [
+  "a[href]",
+  "button:not([disabled])",
+  "input:not([disabled])",
+  "select:not([disabled])",
+  "textarea:not([disabled])",
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
 
 export function SiteHeader() {
   const [menuPhase, setMenuPhase] = useState<MenuPhase>("closed");
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
   const enterFrameRef = useRef<number | null>(null);
   const exitTimerRef = useRef<number | null>(null);
+  const hasOpenedRef = useRef(false);
 
   const menuMounted = menuPhase !== "closed";
   const menuOpen = menuPhase === "opening" || menuPhase === "open";
@@ -19,8 +29,7 @@ export function SiteHeader() {
   useEffect(() => {
     if (menuPhase !== "opening") return;
 
-    // Mount the panel in its translated closed position first, then animate it
-    // into view on the next painted frame. This avoids an opening flash.
+    // Paint the translated starting state before beginning the opening motion.
     enterFrameRef.current = window.requestAnimationFrame(() => {
       enterFrameRef.current = window.requestAnimationFrame(() => {
         setMenuPhase("open");
@@ -41,41 +50,59 @@ export function SiteHeader() {
     const menu = menuRef.current;
     if (!menu) return;
 
-    const preventScroll = (event: Event) => {
-      event.preventDefault();
-    };
+    const focusable = Array.from(menu.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+    if (menuOpen) focusable[0]?.focus({ preventScroll: true });
 
-    const preventScrollKeys = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null;
-      const isEditable =
-        target?.isContentEditable ||
-        target?.tagName === "INPUT" ||
-        target?.tagName === "TEXTAREA" ||
-        target?.tagName === "SELECT";
+    const preventPointerScroll = (event: Event) => event.preventDefault();
 
-      if (isEditable) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (menuOpen && event.key === "Escape") {
+        event.preventDefault();
+        setMenuPhase("closing");
+        return;
+      }
 
       if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(event.key)) {
+        const target = event.target as HTMLElement | null;
+        const isEditable =
+          target?.isContentEditable ||
+          target?.tagName === "INPUT" ||
+          target?.tagName === "TEXTAREA" ||
+          target?.tagName === "SELECT";
+
+        if (!isEditable) event.preventDefault();
+      }
+
+      if (!menuOpen || event.key !== "Tab" || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey && active === first) {
         event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
 
-    menu.addEventListener("touchmove", preventScroll, { passive: false });
-    menu.addEventListener("wheel", preventScroll, { passive: false });
-    document.addEventListener("keydown", preventScrollKeys);
+    menu.addEventListener("touchmove", preventPointerScroll, { passive: false });
+    menu.addEventListener("wheel", preventPointerScroll, { passive: false });
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      menu.removeEventListener("touchmove", preventScroll);
-      menu.removeEventListener("wheel", preventScroll);
-      document.removeEventListener("keydown", preventScrollKeys);
+      menu.removeEventListener("touchmove", preventPointerScroll);
+      menu.removeEventListener("wheel", preventPointerScroll);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [menuMounted]);
+  }, [menuMounted, menuOpen]);
 
   useEffect(() => {
     if (menuPhase !== "closing") return;
 
-    // `transitionend` is the primary close path; the timeout covers interrupted
-    // transitions and reduced-motion environments.
+    // transitionend is primary; this covers interrupted/reduced-motion exits.
     exitTimerRef.current = window.setTimeout(() => {
       setMenuPhase("closed");
     }, MENU_EXIT_FALLBACK_MS);
@@ -88,9 +115,13 @@ export function SiteHeader() {
     };
   }, [menuPhase]);
 
-  const openMenu = () => {
-    if (menuPhase === "closed") setMenuPhase("opening");
-  };
+  useEffect(() => {
+    if (menuPhase === "open") hasOpenedRef.current = true;
+
+    if (menuPhase === "closed" && hasOpenedRef.current) {
+      menuButtonRef.current?.focus({ preventScroll: true });
+    }
+  }, [menuPhase]);
 
   const closeMenu = () => {
     if (menuPhase === "opening" || menuPhase === "open") {
@@ -100,7 +131,7 @@ export function SiteHeader() {
 
   const toggleMenu = () => {
     if (menuPhase === "closed") {
-      openMenu();
+      setMenuPhase("opening");
     } else if (menuPhase !== "closing") {
       closeMenu();
     }
@@ -130,6 +161,7 @@ export function SiteHeader() {
           <a href="#tickets">Tickets</a>
         </nav>
         <button
+          ref={menuButtonRef}
           className="menuButton"
           type="button"
           onClick={toggleMenu}
@@ -146,11 +178,14 @@ export function SiteHeader() {
           ref={menuRef}
           id="mobile-menu"
           className={`mobileMenu${menuOpen ? " isOpen" : ""}`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
           aria-hidden={!menuOpen}
           inert={!menuOpen}
           onTransitionEnd={handleMenuTransitionEnd}
         >
-          <nav>
+          <nav aria-label="Mobile navigation">
             <a onClick={closeMenu} href="#about">About <span>01</span></a>
             <a onClick={closeMenu} href="#lineup">Artists <span>02</span></a>
             <a onClick={closeMenu} href="#info">Event info <span>03</span></a>

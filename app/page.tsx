@@ -7,13 +7,15 @@ import { SiteHeader } from "./components/SiteHeader";
 import { artists, event, faqs, programme, tickets } from "./lib/content";
 
 export const metadata: Metadata = {
-  title: "Shams for Humanity — Copenhagen, 06 September 2026",
+  title: `Shams for Humanity — ${event.city}, ${event.date}`,
   description:
     "A one-day festival of music, art and collective care in Copenhagen. A transparent share of every ticket supports humanitarian and community-led initiatives.",
   alternates: { canonical: "/" },
 };
 
 export default function Home() {
+  const ticketUrl = process.env.NEXT_PUBLIC_TICKET_URL?.trim();
+
   return (
     <main id="main-content">
       <ScrollReveal />
@@ -25,7 +27,7 @@ export default function Home() {
         <div className="heroOrb orbTwo" aria-hidden="true" />
         <div className="heroOrb orbThree" aria-hidden="true" />
         <div className="heroMeta topLeft"><span>01 / FIRST EDITION</span><span>MUSIC · ART · SOLIDARITY</span></div>
-        <div className="heroMeta topRight"><span>{event.date.slice(0, 2)}.09.2026</span><span>{event.city.toUpperCase()}</span></div>
+        <div className="heroMeta topRight"><span>{event.numericDate}</span><span>{event.city.toUpperCase()}</span></div>
         <div className="heroCenter">
           <p className="eyebrow">A gathering in support of collective care</p>
           <h1>Shams for<br/>Humanity</h1>
@@ -80,7 +82,7 @@ export default function Home() {
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
               <h3>{artist.name}</h3>
               <span>{artist.type}</span><span>{artist.time}</span><span>{artist.stage}</span>
-              <button type="button" aria-label={`View ${artist.name}`}><ArrowIcon /></button>
+              <span className="artistArrow" aria-hidden="true"><ArrowIcon /></span>
             </article>
           ))}
         </div>
@@ -94,7 +96,7 @@ export default function Home() {
           <p>Designed to feel easy from arrival to the final track.</p>
         </div>
         <div className="infoCards">
-          <article><span>01</span><h3>Date & time</h3><p>Sunday<br/>06 September 2026<br/>16:00—02:00</p></article>
+          <article><span>01</span><h3>Date & time</h3><p>Sunday<br/>{event.date}<br/>{event.timeRange}</p></article>
           <article><span>02</span><h3>Location</h3><p>Copenhagen<br/>Venue revealed soon<br/>Easy public transport</p></article>
           <article><span>03</span><h3>Experience</h3><p>2 stages<br/>Food & drinks<br/>Art installations</p></article>
           <article><span>04</span><h3>Access</h3><p>18+ event<br/>Step-free routes<br/>Quiet space available</p></article>
@@ -129,9 +131,15 @@ export default function Home() {
               </div>
               <p>{ticket.description}</p>
               <strong>{ticket.price} <small>{ticket.currency}</small></strong>
-              <button type="button" disabled={!ticket.available}>
-                {ticket.available ? <>Get ticket <ArrowIcon /></> : "Sold out"}
-              </button>
+              {ticket.available && ticketUrl ? (
+                <a className="ticketAction" href={ticketUrl}>
+                  Get ticket <ArrowIcon />
+                </a>
+              ) : (
+                <button type="button" disabled>
+                  {ticket.available ? "Tickets soon" : "Sold out"}
+                </button>
+              )}
             </article>
           ))}
         </div>
@@ -155,7 +163,7 @@ export default function Home() {
         <a className="footerLogo" href="#top">Shams for<br/>Humanity</a>
         <div className="footerLinks">
           <div><span>EXPLORE</span><a href="#about">About</a><a href="#lineup">Artists</a><a href="#tickets">Tickets</a></div>
-          <div><span>FOLLOW</span><a href="#">Instagram</a><a href="#">Facebook</a><a href="#">Contact</a></div>
+          <div><span>FOLLOW</span><span className="footerPlaceholder">Instagram</span><span className="footerPlaceholder">Facebook</span><span className="footerPlaceholder">Contact</span></div>
         </div>
         <div className="footerBottom"><span>© 2026 SHAMS FOR HUMANITY</span><span>MADE WITH PURPOSE IN COPENHAGEN</span><a href="#top">BACK TO TOP ↑</a></div>
       </footer>

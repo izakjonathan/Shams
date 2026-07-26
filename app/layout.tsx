@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { SplashScreen } from "./components/SplashScreen";
 import { artists, event, tickets } from "./lib/content";
+import { siteUrl } from "./lib/site";
 
 const agilera = localFont({
   src: "../public/fonts/Agilera.woff",
@@ -11,11 +12,6 @@ const agilera = localFont({
   preload: true,
   adjustFontFallback: false,
 });
-
-// Set NEXT_PUBLIC_SITE_URL in the Vercel project's environment variables to
-// the production domain once it's live — this backs canonical URLs and the
-// absolute URLs used in Open Graph / Twitter previews.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://shamsforhumanity.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -104,7 +100,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
         />
       </body>
     </html>

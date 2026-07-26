@@ -36,11 +36,20 @@ export function ScrollReveal() {
       });
     });
 
+    const resetRevealItems = () => {
+      root.classList.remove("scrollRevealEnabled");
+      revealItems.forEach((item) => {
+        item.classList.remove("revealItem", "isRevealed");
+        item.style.removeProperty("--reveal-order");
+        item.style.removeProperty("will-change");
+      });
+    };
+
     if (!revealItems.length) return;
 
     if (reducedMotion || !("IntersectionObserver" in window)) {
       revealItems.forEach((item) => item.classList.add("isRevealed"));
-      return;
+      return resetRevealItems;
     }
 
     root.classList.add("scrollRevealEnabled");
@@ -80,13 +89,10 @@ export function ScrollReveal() {
     return () => {
       window.cancelAnimationFrame(frame);
       observer.disconnect();
-      root.classList.remove("scrollRevealEnabled");
       revealItems.forEach((item) => {
-        item.classList.remove("revealItem", "isRevealed");
-        item.style.removeProperty("--reveal-order");
-        item.style.removeProperty("will-change");
         item.removeEventListener("transitionend", clearWillChange as EventListener);
       });
+      resetRevealItems();
     };
   }, []);
 
