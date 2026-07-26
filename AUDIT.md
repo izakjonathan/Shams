@@ -143,3 +143,8 @@ Correction applied:
 ## v0.1.67 — Restore circular dark gradients
 
 The v0.1.66 syntax used percentage radii with the `circle` keyword, for example `radial-gradient(circle 38% at …)`. CSS only permits an explicit circle radius as a length, not a percentage, so Safari rejected the full `background-image` declaration. The gradients are now expressed as equal-radius ellipses (`ellipse 38% 38%`), which are valid CSS and visually circular.
+
+
+## v0.1.68 — Softer, more diffused dark gradients
+
+The round geometry from v0.1.67 was retained. The visible harshness came from high-opacity centres and relatively abrupt transitions through the middle of each radial gradient. The Manifesto and Tickets gradients now use lower centre opacity, additional intermediate stops, and a gradual fade to full transparency at 100%, without blur filters or enlarged geometry.

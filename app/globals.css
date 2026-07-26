@@ -477,16 +477,19 @@ body.splashActive {
   background-color: var(--color-dark);
   background-image:
     radial-gradient(ellipse 38% 38% at 94% 92%,
-      rgba(252, 198, 79, 1) 0%,
-      rgba(252, 198, 79, 0.92) 22%,
-      rgba(252, 198, 79, 0.58) 46%,
-      rgba(252, 198, 79, 0.22) 68%,
-      transparent 90%),
+      rgba(252, 198, 79, 0.82) 0%,
+      rgba(252, 198, 79, 0.62) 20%,
+      rgba(252, 198, 79, 0.38) 42%,
+      rgba(252, 198, 79, 0.18) 64%,
+      rgba(252, 198, 79, 0.06) 82%,
+      transparent 100%),
     radial-gradient(ellipse 24% 24% at 0% 7%,
-      rgba(252, 198, 79, 0.88) 0%,
-      rgba(252, 198, 79, 0.56) 32%,
-      rgba(252, 198, 79, 0.20) 60%,
-      transparent 88%);
+      rgba(252, 198, 79, 0.68) 0%,
+      rgba(252, 198, 79, 0.46) 24%,
+      rgba(252, 198, 79, 0.25) 48%,
+      rgba(252, 198, 79, 0.10) 70%,
+      rgba(252, 198, 79, 0.03) 86%,
+      transparent 100%);
   background-repeat: no-repeat;
   color: var(--color-white);
   display: flex;
@@ -697,15 +700,18 @@ body.splashActive {
   background-color: var(--color-ticket-dark);
   background-image:
     radial-gradient(ellipse 36% 36% at 96% 3%,
-      rgba(252, 198, 79, 1) 0%,
-      rgba(252, 198, 79, 0.94) 22%,
-      rgba(252, 198, 79, 0.56) 46%,
-      rgba(252, 198, 79, 0.20) 68%,
-      transparent 88%),
+      rgba(252, 198, 79, 0.82) 0%,
+      rgba(252, 198, 79, 0.60) 20%,
+      rgba(252, 198, 79, 0.36) 42%,
+      rgba(252, 198, 79, 0.16) 64%,
+      rgba(252, 198, 79, 0.05) 82%,
+      transparent 100%),
     radial-gradient(ellipse 20% 20% at 0% 98%,
-      rgba(252, 198, 79, 0.62) 0%,
-      rgba(252, 198, 79, 0.28) 42%,
-      transparent 84%);
+      rgba(252, 198, 79, 0.48) 0%,
+      rgba(252, 198, 79, 0.30) 28%,
+      rgba(252, 198, 79, 0.14) 54%,
+      rgba(252, 198, 79, 0.05) 76%,
+      transparent 100%);
   background-repeat: no-repeat;
   color: var(--color-white);
 }

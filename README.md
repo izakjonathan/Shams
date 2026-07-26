@@ -1,6 +1,14 @@
-# Shams for Humanity — v0.1.67
+# Shams for Humanity — v0.1.68
 
 Mobile-first Next.js festival website.
+
+## v0.1.68 — Softer dark-section gradients
+
+- Softened the round yellow gradients in Manifesto and Tickets.
+- Reduced centre intensity and added more gradual intermediate opacity stops.
+- Extended each fade smoothly to full transparency at 100%.
+- Kept the existing round dimensions and section-level, filter-free rendering.
+
 
 ## v0.1.67
 
