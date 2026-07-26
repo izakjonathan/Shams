@@ -127,3 +127,14 @@ The decorative elements and their geometry variables have been removed. Both dar
 - Reduced the Manifesto section washes so they remain edge accents rather than covering most of the section.
 - Reduced the Tickets top-right wash substantially and tightened the secondary bottom-left wash.
 - Preserved section-level, filter-free gradients and soft transparent edges.
+
+
+## v0.1.66 — Round black-section gradients
+
+Root cause: the visible elongated shapes in the black sections came from the direct section backgrounds on `.manifesto` and `.tickets`. Those backgrounds were still defined with `radial-gradient(ellipse …)`, so the final rendered shapes were oval even though other recent gradient work had targeted different section systems.
+
+Correction applied:
+- changed `.manifesto` background gradients from `ellipse` to `circle`
+- changed `.tickets` background gradients from `ellipse` to `circle`
+- kept the existing color stops, opacity balances, and placement logic
+- left the light-section paper-glow system unchanged
