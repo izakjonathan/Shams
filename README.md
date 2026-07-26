@@ -1,6 +1,12 @@
-# Shams for Humanity — v0.1.66
+# Shams for Humanity — v0.1.67
 
 Mobile-first Next.js festival website.
+
+## v0.1.67
+
+- Fixed invalid percentage-radius `circle` gradients that caused Safari to drop the entire dark-section background image.
+- Replaced them with valid equal-radius ellipses (`ellipse X% X%`), which render as true circles.
+- Restored the Manifesto and Tickets yellow gradients.
 
 ## v0.1.66
 

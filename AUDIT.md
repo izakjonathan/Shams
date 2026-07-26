@@ -138,3 +138,8 @@ Correction applied:
 - changed `.tickets` background gradients from `ellipse` to `circle`
 - kept the existing color stops, opacity balances, and placement logic
 - left the light-section paper-glow system unchanged
+
+
+## v0.1.67 — Restore circular dark gradients
+
+The v0.1.66 syntax used percentage radii with the `circle` keyword, for example `radial-gradient(circle 38% at …)`. CSS only permits an explicit circle radius as a length, not a percentage, so Safari rejected the full `background-image` declaration. The gradients are now expressed as equal-radius ellipses (`ellipse 38% 38%`), which are valid CSS and visually circular.
