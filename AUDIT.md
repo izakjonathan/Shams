@@ -161,3 +161,8 @@ Correction applied:
 - used lower opacity than the paper-section glows to compensate for yellow compositing over black
 - avoided `filter: blur()` to prevent the earlier Safari rectangular compositor flash
 - ensured section content remains above all decorative layers via one shared stacking rule
+
+
+## v0.1.71 — Edge-only diffused dark glows
+
+The v0.1.70 circles remained visible because the glow still retained non-zero alpha close to its element boundary and too much of the element remained inside each section. The correction uses a substantially larger circular canvas, moves most of it outside the section, lowers the centre intensity, and reaches full transparency at 74% of the radius.

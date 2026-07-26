@@ -1,6 +1,15 @@
-# Shams for Humanity — v0.1.70
+# Shams for Humanity — v0.1.71
 
 Mobile-first Next.js festival website.
+
+## v0.1.71 — Edge-only diffused dark glows
+
+- Expanded the Manifesto and Tickets glow canvases substantially.
+- Moved most of each glow outside its section so the circular perimeter is no longer visible.
+- Reduced centre opacity and completed the fade by 74% of the radius.
+- Moved the Tickets glow upward into the section while keeping its centre below the content area.
+- Kept one glow per black section and retained filter-free rendering.
+
 
 ## v0.1.70 — Larger dark glows and hotspot cleanup
 

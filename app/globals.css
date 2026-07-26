@@ -1313,12 +1313,12 @@ input:focus-visible {
   z-index: 1;
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(252, 198, 79, 0.68) 0%,
-    rgba(252, 198, 79, 0.50) 24%,
-    rgba(252, 198, 79, 0.28) 48%,
-    rgba(252, 198, 79, 0.12) 68%,
-    rgba(252, 198, 79, 0.04) 82%,
-    transparent 94%
+    rgba(252, 198, 79, 0.50) 0%,
+    rgba(252, 198, 79, 0.36) 18%,
+    rgba(252, 198, 79, 0.20) 36%,
+    rgba(252, 198, 79, 0.09) 52%,
+    rgba(252, 198, 79, 0.025) 66%,
+    transparent 74%
   );
   background-repeat: no-repeat;
 }
@@ -1528,34 +1528,34 @@ input:focus-visible {
    Each dark section now uses one larger primary glow only.
    The two small legacy hotspot layers were removed. */
 .manifesto .darkGlowOne {
-  --glow-w: clamp(360px, 84vw, 900px);
-  --glow-h: clamp(360px, 84vw, 900px);
-  --glow-left: -34%;
-  --glow-top: -12%;
-  --glow-opacity: 0.72;
+  --glow-w: clamp(520px, 132vw, 1240px);
+  --glow-h: clamp(520px, 132vw, 1240px);
+  --glow-left: -72%;
+  --glow-top: -34%;
+  --glow-opacity: 0.62;
 }
 
 .tickets .darkGlowOne {
-  --glow-w: clamp(400px, 96vw, 980px);
-  --glow-h: clamp(400px, 96vw, 980px);
-  --glow-left: -34%;
-  --glow-bottom: -18%;
-  --glow-opacity: 0.74;
+  --glow-w: clamp(600px, 150vw, 1380px);
+  --glow-h: clamp(600px, 150vw, 1380px);
+  --glow-left: -68%;
+  --glow-bottom: -46%;
+  --glow-opacity: 0.64;
 }
 
 @media (min-width: 760px) {
   .manifesto .darkGlowOne {
-    --glow-w: clamp(560px, 58vw, 980px);
-    --glow-h: clamp(560px, 58vw, 980px);
-    --glow-left: -18%;
-    --glow-top: -16%;
+    --glow-w: clamp(760px, 82vw, 1400px);
+    --glow-h: clamp(760px, 82vw, 1400px);
+    --glow-left: -42%;
+    --glow-top: -40%;
   }
 
   .tickets .darkGlowOne {
-    --glow-w: clamp(620px, 64vw, 1080px);
-    --glow-h: clamp(620px, 64vw, 1080px);
-    --glow-left: -10%;
-    --glow-bottom: -18%;
+    --glow-w: clamp(820px, 92vw, 1520px);
+    --glow-h: clamp(820px, 92vw, 1520px);
+    --glow-left: -38%;
+    --glow-bottom: -48%;
   }
 
   .heroOrb {
