@@ -476,20 +476,20 @@ body.splashActive {
   min-height: 82vh;
   background-color: var(--color-dark);
   background-image:
-    radial-gradient(ellipse 38% 38% at 94% 92%,
-      rgba(252, 198, 79, 0.82) 0%,
-      rgba(252, 198, 79, 0.62) 20%,
-      rgba(252, 198, 79, 0.38) 42%,
-      rgba(252, 198, 79, 0.18) 64%,
-      rgba(252, 198, 79, 0.06) 82%,
-      transparent 100%),
-    radial-gradient(ellipse 24% 24% at 0% 7%,
-      rgba(252, 198, 79, 0.68) 0%,
-      rgba(252, 198, 79, 0.46) 24%,
-      rgba(252, 198, 79, 0.25) 48%,
-      rgba(252, 198, 79, 0.10) 70%,
-      rgba(252, 198, 79, 0.03) 86%,
-      transparent 100%);
+    radial-gradient(ellipse 42% 42% at 94% 92%,
+      rgba(252, 198, 79, 0.24) 0%,
+      rgba(252, 198, 79, 0.13) 34%,
+      rgba(252, 198, 79, 0.05) 60%,
+      transparent 88%),
+    radial-gradient(ellipse 28% 28% at 2% 8%,
+      rgba(252, 198, 79, 0.19) 0%,
+      rgba(252, 198, 79, 0.09) 38%,
+      rgba(252, 198, 79, 0.03) 66%,
+      transparent 90%),
+    radial-gradient(ellipse 24% 24% at 54% 46%,
+      rgba(252, 198, 79, 0.09) 0%,
+      rgba(252, 198, 79, 0.035) 48%,
+      transparent 88%);
   background-repeat: no-repeat;
   color: var(--color-white);
   display: flex;
@@ -699,19 +699,20 @@ body.splashActive {
 .tickets {
   background-color: var(--color-ticket-dark);
   background-image:
-    radial-gradient(ellipse 36% 36% at 96% 3%,
-      rgba(252, 198, 79, 0.82) 0%,
-      rgba(252, 198, 79, 0.60) 20%,
-      rgba(252, 198, 79, 0.36) 42%,
-      rgba(252, 198, 79, 0.16) 64%,
-      rgba(252, 198, 79, 0.05) 82%,
-      transparent 100%),
-    radial-gradient(ellipse 20% 20% at 0% 98%,
-      rgba(252, 198, 79, 0.48) 0%,
-      rgba(252, 198, 79, 0.30) 28%,
-      rgba(252, 198, 79, 0.14) 54%,
-      rgba(252, 198, 79, 0.05) 76%,
-      transparent 100%);
+    radial-gradient(ellipse 34% 34% at 96% 4%,
+      rgba(252, 198, 79, 0.22) 0%,
+      rgba(252, 198, 79, 0.11) 36%,
+      rgba(252, 198, 79, 0.04) 64%,
+      transparent 90%),
+    radial-gradient(ellipse 22% 22% at 2% 98%,
+      rgba(252, 198, 79, 0.15) 0%,
+      rgba(252, 198, 79, 0.065) 42%,
+      rgba(252, 198, 79, 0.02) 70%,
+      transparent 92%),
+    radial-gradient(ellipse 18% 18% at 62% 58%,
+      rgba(252, 198, 79, 0.07) 0%,
+      rgba(252, 198, 79, 0.025) 50%,
+      transparent 90%);
   background-repeat: no-repeat;
   color: var(--color-white);
 }
@@ -1289,9 +1290,9 @@ input:focus-visible {
    ========================================================================== */
 
 /* Centralized section-gradient system.
-   Light sections use section washes plus reusable decorative layers.
-   Dark sections own layered radial backgrounds directly, avoiding clipped
-   oval elements, offscreen centres and mobile compositing artefacts. */
+   Light and dark sections combine subtle section washes with reusable,
+   filter-free decorative glow layers. Dark glows remain circular and use
+   lower opacity to stay soft when composited over black. */
 
 .paperGlowSection,
 .manifesto,
@@ -1311,15 +1312,15 @@ input:focus-visible {
 }
 
 .paperGlowSection > :not(.paperGlow),
-.manifesto > *,
-.tickets > *,
+.darkGlowSection > :not(.darkGlow),
 .newsletter > * {
   position: relative;
   z-index: 2;
 }
 
 .heroOrb,
-.paperGlow {
+.paperGlow,
+.darkGlow {
   position: absolute;
   pointer-events: none;
   border-radius: 50%;
@@ -1337,6 +1338,20 @@ input:focus-visible {
 .heroOrb,
 .paperGlow {
   background: var(--paper-orb-gradient);
+  background-repeat: no-repeat;
+}
+
+.darkGlow {
+  z-index: 1;
+  background: radial-gradient(
+    ellipse 50% 50% at 50% 50%,
+    rgba(252, 198, 79, 0.76) 0%,
+    rgba(252, 198, 79, 0.54) 20%,
+    rgba(252, 198, 79, 0.30) 42%,
+    rgba(252, 198, 79, 0.12) 62%,
+    rgba(252, 198, 79, 0.035) 76%,
+    transparent 88%
+  );
   background-repeat: no-repeat;
 }
 
@@ -1539,6 +1554,55 @@ input:focus-visible {
   --section-glow-3-scale-x: 1.36;
   --section-glow-3-scale-y: 0.6;
   --section-glow-3-opacity: 0.64;
+}
+
+/* Dark section glow geometry. Each layer is round and filter-free. */
+.manifesto .darkGlowOne {
+  --glow-w: clamp(250px, 58vw, 620px);
+  --glow-h: clamp(250px, 58vw, 620px);
+  --glow-right: -24%;
+  --glow-bottom: -22%;
+  --glow-opacity: 0.72;
+}
+
+.manifesto .darkGlowTwo {
+  --glow-w: clamp(170px, 36vw, 400px);
+  --glow-h: clamp(170px, 36vw, 400px);
+  --glow-left: -19%;
+  --glow-top: -12%;
+  --glow-opacity: 0.52;
+}
+
+.manifesto .darkGlowThree {
+  --glow-w: clamp(130px, 27vw, 300px);
+  --glow-h: clamp(130px, 27vw, 300px);
+  --glow-left: 42%;
+  --glow-top: 36%;
+  --glow-opacity: 0.24;
+}
+
+.tickets .darkGlowOne {
+  --glow-w: clamp(220px, 46vw, 520px);
+  --glow-h: clamp(220px, 46vw, 520px);
+  --glow-right: -20%;
+  --glow-top: -16%;
+  --glow-opacity: 0.66;
+}
+
+.tickets .darkGlowTwo {
+  --glow-w: clamp(140px, 29vw, 320px);
+  --glow-h: clamp(140px, 29vw, 320px);
+  --glow-left: -16%;
+  --glow-bottom: -12%;
+  --glow-opacity: 0.40;
+}
+
+.tickets .darkGlowThree {
+  --glow-w: clamp(110px, 23vw, 250px);
+  --glow-h: clamp(110px, 23vw, 250px);
+  --glow-right: 22%;
+  --glow-bottom: 18%;
+  --glow-opacity: 0.20;
 }
 
 @media (min-width: 760px) {

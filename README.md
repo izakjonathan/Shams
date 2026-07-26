@@ -1,6 +1,15 @@
-# Shams for Humanity — v0.1.68
+# Shams for Humanity — v0.1.69
 
 Mobile-first Next.js festival website.
+
+## v0.1.69 — Layered dark-section glows
+
+- Rebuilt Manifesto and Tickets with the same layered visual method used by the white sections.
+- Each black section now combines three subtle section washes with three separate circular glow layers.
+- Dark glows use lower opacity tuned for black backgrounds.
+- All dark glow layers remain round, filter-free, and clipped by the section rather than blurred by the compositor.
+- Preserved the existing menu, splash, artist pages, and browser tint behavior.
+
 
 ## v0.1.68 — Softer dark-section gradients
 

@@ -148,3 +148,16 @@ The v0.1.66 syntax used percentage radii with the `circle` keyword, for example 
 ## v0.1.68 — Softer, more diffused dark gradients
 
 The round geometry from v0.1.67 was retained. The visible harshness came from high-opacity centres and relatively abrupt transitions through the middle of each radial gradient. The Manifesto and Tickets gradients now use lower centre opacity, additional intermediate stops, and a gradual fade to full transparency at 100%, without blur filters or enlarged geometry.
+
+
+## v0.1.69 — Layered dark-section glows
+
+The black sections previously used only two isolated section-level radial backgrounds, while the white sections used three section washes plus three overlapping decorative glow elements. This structural mismatch made the dark gradients read as defined spotlights rather than soft atmospheric washes.
+
+Correction applied:
+- added three subtle background washes to both `.manifesto` and `.tickets`
+- added three reusable `.darkGlow` layers to each dark section
+- kept every dark glow circular by using equal width and height
+- used lower opacity than the paper-section glows to compensate for yellow compositing over black
+- avoided `filter: blur()` to prevent the earlier Safari rectangular compositor flash
+- ensured section content remains above all decorative layers via one shared stacking rule

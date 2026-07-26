@@ -67,7 +67,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="manifesto" id="mission">
+      <section className="manifesto darkGlowSection" id="mission">
+        <div className="darkGlow darkGlowOne" aria-hidden="true" />
+        <div className="darkGlow darkGlowTwo" aria-hidden="true" />
+        <div className="darkGlow darkGlowThree" aria-hidden="true" />
         <p className="verticalText">SHAMS MEANS SUN</p>
         <div className="manifestoContent">
           <span className="kicker">OUR GUIDING IDEA</span>
@@ -132,7 +135,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="tickets section" id="tickets">
+      <section className="tickets section darkGlowSection" id="tickets">
+        <div className="darkGlow darkGlowOne" aria-hidden="true" />
+        <div className="darkGlow darkGlowTwo" aria-hidden="true" />
+        <div className="darkGlow darkGlowThree" aria-hidden="true" />
         <div className="ticketsHeader"><div className="sectionIndex">05 — TICKETS</div><span>Limited capacity</span></div>
         <h2>Choose your way in.</h2>
         <div className="ticketGrid">
