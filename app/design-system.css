@@ -89,9 +89,4 @@
   --paper-glow-opacity: 0.94;
   --hero-glow-blur-mobile: 44px;
   --hero-glow-blur-desktop: 54px;
-  /* Dark-section glows use the same solid-centre yellow construction as the
-     paper-section glows. Opacity fades to zero before the element boundary,
-     avoiding both hollow centres and clipped hard edges. */
-  --orb-gradient: var(--paper-orb-gradient);
-  --ticket-gradient: var(--paper-orb-gradient);
 }

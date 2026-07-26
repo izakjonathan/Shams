@@ -474,7 +474,20 @@ body.splashActive {
 
 .manifesto {
   min-height: 82vh;
-  background: var(--color-dark);
+  background-color: var(--color-dark);
+  background-image:
+    radial-gradient(ellipse 88% 62% at 92% 90%,
+      rgba(252, 198, 79, 1) 0%,
+      rgba(252, 198, 79, 0.94) 24%,
+      rgba(252, 198, 79, 0.66) 48%,
+      rgba(252, 198, 79, 0.28) 70%,
+      transparent 92%),
+    radial-gradient(ellipse 58% 42% at 0% 8%,
+      rgba(252, 198, 79, 0.92) 0%,
+      rgba(252, 198, 79, 0.68) 34%,
+      rgba(252, 198, 79, 0.30) 62%,
+      transparent 90%);
+  background-repeat: no-repeat;
   color: var(--color-white);
   display: flex;
   align-items: center;
@@ -681,7 +694,19 @@ body.splashActive {
    ========================================================================== */
 
 .tickets {
-  background: var(--color-ticket-dark);
+  background-color: var(--color-ticket-dark);
+  background-image:
+    radial-gradient(ellipse 82% 54% at 94% 2%,
+      rgba(252, 198, 79, 1) 0%,
+      rgba(252, 198, 79, 0.96) 25%,
+      rgba(252, 198, 79, 0.67) 50%,
+      rgba(252, 198, 79, 0.28) 72%,
+      transparent 92%),
+    radial-gradient(ellipse 48% 34% at 4% 100%,
+      rgba(252, 198, 79, 0.72) 0%,
+      rgba(252, 198, 79, 0.40) 44%,
+      transparent 88%);
+  background-repeat: no-repeat;
   color: var(--color-white);
 }
 
@@ -1258,10 +1283,9 @@ input:focus-visible {
    ========================================================================== */
 
 /* Centralized section-gradient system.
-   Paper sections and non-hero decorative gradients now share one structure:
-   - an optional section wash controlled by section variables
-   - reusable glow layers controlled by size/position/transform variables
-   This keeps all gradient controls in one place while allowing per-section composition. */
+   Light sections use section washes plus reusable decorative layers.
+   Dark sections own layered radial backgrounds directly, avoiding clipped
+   oval elements, offscreen centres and mobile compositing artefacts. */
 
 .paperGlowSection,
 .manifesto,
@@ -1281,17 +1305,15 @@ input:focus-visible {
 }
 
 .paperGlowSection > :not(.paperGlow),
-.manifesto > :not(.manifestoShape),
-.tickets > :not(.ticketGlow),
+.manifesto > *,
+.tickets > *,
 .newsletter > * {
   position: relative;
   z-index: 2;
 }
 
 .heroOrb,
-.paperGlow,
-.manifestoShape,
-.ticketGlow {
+.paperGlow {
   position: absolute;
   pointer-events: none;
   border-radius: 50%;
@@ -1319,17 +1341,6 @@ input:focus-visible {
 .paperGlow {
   z-index: 1;
   opacity: var(--glow-opacity, var(--paper-glow-opacity));
-}
-
-.manifestoShape,
-.ticketGlow {
-  z-index: 1;
-  background: var(--glow-fill, var(--orb-gradient));
-  background-repeat: no-repeat;
-}
-
-.ticketGlow {
-  --glow-fill: var(--ticket-gradient);
 }
 
 .orbOne {
@@ -1524,35 +1535,6 @@ input:focus-visible {
   --section-glow-3-opacity: 0.64;
 }
 
-/* Dark and accent section decorative glow controls (mobile-first). */
-
-.manifestoShape {
-  --glow-opacity: 0.92;
-}
-
-.shapeOne {
-  --glow-w: 96vw;
-  --glow-h: 96vw;
-  --glow-right: -30vw;
-  --glow-bottom: -30vw;
-}
-
-.shapeTwo {
-  --glow-w: 52vw;
-  --glow-h: 66vw;
-  --glow-left: -22vw;
-  --glow-top: -18vw;
-  --glow-opacity: 0.56;
-}
-
-.ticketGlow {
-  --glow-w: 112vw;
-  --glow-h: 112vw;
-  --glow-right: -42vw;
-  --glow-top: -42vw;
-  --glow-opacity: 1;
-}
-
 @media (min-width: 760px) {
   .heroOrb {
     filter: blur(var(--hero-glow-blur-desktop));
@@ -1615,27 +1597,6 @@ input:focus-visible {
     --section-glow-3-h: 38vw;
   }
 
-
-  .shapeOne {
-    --glow-w: 76vw;
-    --glow-h: 76vw;
-    --glow-right: -24vw;
-    --glow-bottom: -24vw;
-  }
-
-  .shapeTwo {
-    --glow-w: 34vw;
-    --glow-h: 44vw;
-    --glow-left: -14vw;
-    --glow-top: -12vw;
-  }
-
-  .ticketGlow {
-    --glow-w: 84vw;
-    --glow-h: 84vw;
-    --glow-right: -28vw;
-    --glow-top: -30vw;
-  }
 }
 
 /* ========================================================================== 
