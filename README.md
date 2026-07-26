@@ -1,6 +1,15 @@
-# Shams for Humanity — v0.1.69
+# Shams for Humanity — v0.1.70
 
 Mobile-first Next.js festival website.
+
+## v0.1.70 — Larger dark glows and hotspot cleanup
+
+- Removed the legacy built-in dark-section background-image gradients from Manifesto and Tickets.
+- Removed the two small extra dark glow layers from each black section.
+- Increased the radius of the remaining dark-section glow in both Manifesto and Tickets.
+- Softened the remaining dark glow with a more gradual radial fade.
+- Kept the light-section gradient system unchanged.
+
 
 ## v0.1.69 — Layered dark-section glows
 
