@@ -109,3 +109,8 @@ CSS Modules are a valid alternative supported by Next.js and would provide local
 ## v0.1.61 follow-up
 
 The dark-section gradient edge was traced to CSS radial-gradient geometry: implicit `farthest-corner` sizing left non-zero alpha at the side boundary of the circular element. The gradients now use explicit 50% radii and become transparent before the element edge. No blur filter was reintroduced.
+
+## v0.1.63
+
+- Removed pointer-triggered programmatic focus from the mobile menu lifecycle, preventing persistent focus outlines after touch open/close while retaining keyboard focus management.
+- Changed Manifesto and Tickets glows to the same solid-centre yellow radial-gradient construction used by the light sections.

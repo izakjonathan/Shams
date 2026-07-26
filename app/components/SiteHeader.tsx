@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState, type TransitionEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type TransitionEvent,
+} from "react";
 import { event } from "../lib/content";
 
 type MenuPhase = "closed" | "opening" | "open" | "closing";
@@ -22,6 +28,7 @@ export function SiteHeader() {
   const enterFrameRef = useRef<number | null>(null);
   const exitTimerRef = useRef<number | null>(null);
   const hasOpenedRef = useRef(false);
+  const keyboardMenuInteractionRef = useRef(false);
 
   const menuMounted = menuPhase !== "closed";
   const menuExpanded = menuPhase === "opening" || menuPhase === "open";
@@ -52,7 +59,9 @@ export function SiteHeader() {
     if (!menu) return;
 
     const focusable = Array.from(menu.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
-    if (menuVisible) focusable[0]?.focus({ preventScroll: true });
+    if (menuVisible && keyboardMenuInteractionRef.current) {
+      focusable[0]?.focus({ preventScroll: true });
+    }
 
     const preventPointerScroll = (event: Event) => event.preventDefault();
 
@@ -119,18 +128,40 @@ export function SiteHeader() {
   useEffect(() => {
     if (menuPhase === "open") hasOpenedRef.current = true;
 
-    if (menuPhase === "closed" && hasOpenedRef.current) {
+    if (
+      menuPhase === "closed" &&
+      hasOpenedRef.current &&
+      keyboardMenuInteractionRef.current
+    ) {
       menuButtonRef.current?.focus({ preventScroll: true });
     }
   }, [menuPhase]);
 
   const closeMenu = () => {
+    if (!keyboardMenuInteractionRef.current) {
+      (document.activeElement as HTMLElement | null)?.blur();
+    }
+
     if (menuPhase === "opening" || menuPhase === "open") {
       setMenuPhase("closing");
     }
   };
 
+  const handleMenuPointerDown = () => {
+    keyboardMenuInteractionRef.current = false;
+  };
+
+  const handleMenuButtonKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      keyboardMenuInteractionRef.current = true;
+    }
+  };
+
   const toggleMenu = () => {
+    if (!keyboardMenuInteractionRef.current) {
+      window.requestAnimationFrame(() => menuButtonRef.current?.blur());
+    }
+
     if (menuPhase === "closed") {
       setMenuPhase("opening");
     } else if (menuPhase !== "closing") {
@@ -165,6 +196,8 @@ export function SiteHeader() {
           ref={menuButtonRef}
           className="menuButton"
           type="button"
+          onPointerDown={handleMenuPointerDown}
+          onKeyDown={handleMenuButtonKeyDown}
           onClick={toggleMenu}
           aria-expanded={menuExpanded}
           aria-controls="mobile-menu"
@@ -184,6 +217,7 @@ export function SiteHeader() {
           aria-label="Site navigation"
           aria-hidden={!menuVisible}
           inert={!menuVisible}
+          onPointerDown={handleMenuPointerDown}
           onTransitionEnd={handleMenuTransitionEnd}
         >
           <nav aria-label="Mobile navigation">

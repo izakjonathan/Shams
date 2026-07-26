@@ -89,26 +89,9 @@
   --paper-glow-opacity: 0.94;
   --hero-glow-blur-mobile: 44px;
   --hero-glow-blur-desktop: 54px;
-  /* Soft-edged gradients avoid the temporary square raster layer that
-     WebKit can show while compositing large filtered elements. */
-  --orb-gradient: radial-gradient(
-    ellipse 50% 50% at 55% 45%,
-    #050505 0%,
-    #050505 8%,
-    rgba(252, 198, 79, 0.96) 25%,
-    rgba(252, 198, 79, 0.52) 43%,
-    rgba(252, 198, 79, 0.2) 58%,
-    rgba(252, 198, 79, 0.06) 69%,
-    transparent 78%
-  );
-  --ticket-gradient: radial-gradient(
-    ellipse 50% 50% at 50% 50%,
-    var(--color-accent) 0%,
-    var(--color-accent) 10%,
-    rgba(252, 198, 79, 0.7) 28%,
-    rgba(252, 198, 79, 0.3) 46%,
-    rgba(252, 198, 79, 0.1) 60%,
-    rgba(252, 198, 79, 0.025) 70%,
-    transparent 78%
-  );
+  /* Dark-section glows use the same solid-centre yellow construction as the
+     paper-section glows. Opacity fades to zero before the element boundary,
+     avoiding both hollow centres and clipped hard edges. */
+  --orb-gradient: var(--paper-orb-gradient);
+  --ticket-gradient: var(--paper-orb-gradient);
 }

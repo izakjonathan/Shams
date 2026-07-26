@@ -47,3 +47,8 @@ See `AUDIT.md` for the repository-wide audit and researched alternatives.
 - Replaced implicit `farthest-corner` sizing on the Manifesto and Tickets radial gradients with explicit `ellipse 50% 50%` sizing.
 - Moved the final transparent stops inward so each gradient reaches zero opacity before the decorative element boundary.
 - Preserved the filter-free implementation, avoiding the previous WebKit square compositor flash.
+
+## v0.1.63
+
+- Removed pointer-triggered programmatic focus from the mobile menu lifecycle, preventing persistent focus outlines after touch open/close while retaining keyboard focus management.
+- Changed Manifesto and Tickets glows to the same solid-centre yellow radial-gradient construction used by the light sections.
