@@ -1,4 +1,4 @@
-# Shams for Humanity — v0.1.72
+# Shams for Humanity — v0.1.73
 
 Mobile-first Next.js festival website using the App Router, React 19, a local display font, static metadata routes, accessible navigation, and configurable ticket/newsletter integrations.
 

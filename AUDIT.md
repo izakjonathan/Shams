@@ -257,3 +257,10 @@ The project is now a strong small-event marketing site with good separation betw
 - MDN dialog, inert, aria-modal, keyboard, and live-region guidance: https://developer.mozilla.org/
 - Vercel package-manager and build-configuration guidance: https://vercel.com/docs
 - WebKit Safari 26.x release notes and fixed-position bug tracking: https://webkit.org/ and https://bugs.webkit.org/
+
+
+## v0.1.73 — Splash visual-strength update
+
+- Increased the splash artwork scale to make the central logo figure noticeably larger.
+- Added two non-interactive radial gradient overlays to strengthen the existing yellow top-left and bottom-right washes.
+- Kept the original PNG unchanged and retained the paper fallback background, session lifecycle, reduced-motion timing, and Safari paper-to-black transition.
