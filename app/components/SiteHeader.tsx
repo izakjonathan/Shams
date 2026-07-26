@@ -9,6 +9,7 @@ const MENU_EXIT_FALLBACK_MS = 650;
 
 export function SiteHeader() {
   const [menuPhase, setMenuPhase] = useState<MenuPhase>("closed");
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const enterFrameRef = useRef<number | null>(null);
   const exitTimerRef = useRef<number | null>(null);
 
@@ -35,10 +36,38 @@ export function SiteHeader() {
   }, [menuPhase]);
 
   useEffect(() => {
-    document.body.style.overflow = menuMounted ? "hidden" : "";
+    if (!menuMounted) return;
+
+    const menu = menuRef.current;
+    if (!menu) return;
+
+    const preventScroll = (event: Event) => {
+      event.preventDefault();
+    };
+
+    const preventScrollKeys = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      const isEditable =
+        target?.isContentEditable ||
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.tagName === "SELECT";
+
+      if (isEditable) return;
+
+      if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(event.key)) {
+        event.preventDefault();
+      }
+    };
+
+    menu.addEventListener("touchmove", preventScroll, { passive: false });
+    menu.addEventListener("wheel", preventScroll, { passive: false });
+    document.addEventListener("keydown", preventScrollKeys);
 
     return () => {
-      document.body.style.overflow = "";
+      menu.removeEventListener("touchmove", preventScroll);
+      menu.removeEventListener("wheel", preventScroll);
+      document.removeEventListener("keydown", preventScrollKeys);
     };
   }, [menuMounted]);
 
@@ -114,6 +143,7 @@ export function SiteHeader() {
 
       {menuMounted && (
         <div
+          ref={menuRef}
           id="mobile-menu"
           className={`mobileMenu${menuOpen ? " isOpen" : ""}`}
           aria-hidden={!menuOpen}

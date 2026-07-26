@@ -33,7 +33,7 @@ npm run build
 Set `NEXT_PUBLIC_SITE_URL` in Vercel to the production domain so canonical, social-preview, sitemap, and structured-data URLs are correct.
 
 
-## v0.1.56 — Stable Safari tint baseline
+## v0.1.57 — Stable Safari tint baseline
 
 - Keeps the document canvas paper-colored during the splash, then directly sets both `html` and `body` to `#090909` when the splash is fully complete.
 - Keeps the runtime `theme-color` synchronized with that paper-to-black transition.
@@ -41,3 +41,14 @@ Set `NEXT_PUBLIC_SITE_URL` in Vercel to the production domain so canonical, soci
 - Retains explicit backgrounds on all visible page sections.
 - Retains a directly black full-screen menu with no sampling-exclusion filters.
 - Retains the smooth menu enter/exit animation and fully removes the fixed menu from the DOM after closing.
+
+
+## v0.1.57 — menu-local scroll lock test
+
+- Removed all menu-time mutation of `document.body.style.overflow`.
+- The root scrolling container is left untouched while the menu opens and closes.
+- Scroll gestures are blocked only on the mounted full-screen menu using non-passive `touchmove` and `wheel` listeners.
+- Scroll keys are blocked only while the menu is mounted, without interfering with editable controls.
+- Added `overscroll-behavior: none` and `touch-action: none` to the menu itself.
+- Confirmed the fixed header has no background or backdrop-filter.
+- Retained `viewport-fit=cover`, the post-splash black root canvas, direct black menu background, and menu unmount after its exit transition.

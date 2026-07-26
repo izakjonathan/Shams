@@ -244,6 +244,8 @@ body.splashActive {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overscroll-behavior: none;
+  touch-action: none;
   transform: translateY(-100%);
   transition: transform var(--duration-menu) var(--ease-menu);
 }
