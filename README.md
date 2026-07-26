@@ -1,8 +1,8 @@
-# Shams for Humanity — v0.1.64
+# Shams for Humanity — v0.1.65
 
 Mobile-first Next.js festival website.
 
-## v0.1.64
+## v0.1.65
 
 - Replaced the Manifesto and Tickets oval glow elements with layered radial backgrounds owned directly by each section.
 - Removed obsolete `manifestoShape`, `shapeOne`, `shapeTwo`, and `ticketGlow` markup and CSS.
@@ -18,3 +18,10 @@ npm run dev
 npm run typecheck
 npm run build
 ```
+
+
+## v0.1.65 — Reduced dark-section gradient scale
+
+- Reduced the Manifesto section washes so they remain edge accents rather than covering most of the section.
+- Reduced the Tickets top-right wash substantially and tightened the secondary bottom-left wash.
+- Preserved section-level, filter-free gradients and soft transparent edges.

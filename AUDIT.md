@@ -115,8 +115,15 @@ The dark-section gradient edge was traced to CSS radial-gradient geometry: impli
 - Removed pointer-triggered programmatic focus from the mobile menu lifecycle, preventing persistent focus outlines after touch open/close while retaining keyboard focus management.
 - Changed Manifesto and Tickets glows to the same solid-centre yellow radial-gradient construction used by the light sections.
 
-## v0.1.64 dark-section gradient correction
+## v0.1.65 dark-section gradient correction
 
 The Manifesto and Tickets gradients previously used oversized, border-radius-clipped oval elements whose centres were positioned outside the viewport. Their alpha was also multiplied by element opacity before compositing over black, which produced dull cropped spotlight shapes.
 
 The decorative elements and their geometry variables have been removed. Both dark sections now use layered, filter-free radial gradients directly on the section background. Each gradient reaches transparency within its own interpolation range, so there is no element edge to clip and no blurred compositor layer to flash as a square.
+
+
+## v0.1.65 — Reduced dark-section gradient scale
+
+- Reduced the Manifesto section washes so they remain edge accents rather than covering most of the section.
+- Reduced the Tickets top-right wash substantially and tightened the secondary bottom-left wash.
+- Preserved section-level, filter-free gradients and soft transparent edges.

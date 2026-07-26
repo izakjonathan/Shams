@@ -476,17 +476,17 @@ body.splashActive {
   min-height: 82vh;
   background-color: var(--color-dark);
   background-image:
-    radial-gradient(ellipse 88% 62% at 92% 90%,
+    radial-gradient(ellipse 66% 46% at 94% 92%,
       rgba(252, 198, 79, 1) 0%,
-      rgba(252, 198, 79, 0.94) 24%,
-      rgba(252, 198, 79, 0.66) 48%,
-      rgba(252, 198, 79, 0.28) 70%,
-      transparent 92%),
-    radial-gradient(ellipse 58% 42% at 0% 8%,
-      rgba(252, 198, 79, 0.92) 0%,
-      rgba(252, 198, 79, 0.68) 34%,
-      rgba(252, 198, 79, 0.30) 62%,
-      transparent 90%);
+      rgba(252, 198, 79, 0.92) 22%,
+      rgba(252, 198, 79, 0.58) 46%,
+      rgba(252, 198, 79, 0.22) 68%,
+      transparent 90%),
+    radial-gradient(ellipse 40% 29% at 0% 7%,
+      rgba(252, 198, 79, 0.88) 0%,
+      rgba(252, 198, 79, 0.56) 32%,
+      rgba(252, 198, 79, 0.20) 60%,
+      transparent 88%);
   background-repeat: no-repeat;
   color: var(--color-white);
   display: flex;
@@ -696,16 +696,16 @@ body.splashActive {
 .tickets {
   background-color: var(--color-ticket-dark);
   background-image:
-    radial-gradient(ellipse 82% 54% at 94% 2%,
+    radial-gradient(ellipse 52% 34% at 96% 3%,
       rgba(252, 198, 79, 1) 0%,
-      rgba(252, 198, 79, 0.96) 25%,
-      rgba(252, 198, 79, 0.67) 50%,
-      rgba(252, 198, 79, 0.28) 72%,
-      transparent 92%),
-    radial-gradient(ellipse 48% 34% at 4% 100%,
-      rgba(252, 198, 79, 0.72) 0%,
-      rgba(252, 198, 79, 0.40) 44%,
-      transparent 88%);
+      rgba(252, 198, 79, 0.94) 22%,
+      rgba(252, 198, 79, 0.56) 46%,
+      rgba(252, 198, 79, 0.20) 68%,
+      transparent 88%),
+    radial-gradient(ellipse 30% 22% at 0% 98%,
+      rgba(252, 198, 79, 0.62) 0%,
+      rgba(252, 198, 79, 0.28) 42%,
+      transparent 84%);
   background-repeat: no-repeat;
   color: var(--color-white);
 }
