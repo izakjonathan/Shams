@@ -31,3 +31,13 @@ npm run build
 - Multi-selector rules, transitions, and layered gradients are laid out across readable lines for easier editing.
 
 Set `NEXT_PUBLIC_SITE_URL` in Vercel to the production domain so canonical, social-preview, sitemap, and structured-data URLs are correct.
+
+
+## v0.1.56 — Stable Safari tint baseline
+
+- Keeps the document canvas paper-colored during the splash, then directly sets both `html` and `body` to `#090909` when the splash is fully complete.
+- Keeps the runtime `theme-color` synchronized with that paper-to-black transition.
+- Makes `.siteShell` transparent so the black root canvas remains the true browser-area fallback instead of being covered by a permanent paper wrapper.
+- Retains explicit backgrounds on all visible page sections.
+- Retains a directly black full-screen menu with no sampling-exclusion filters.
+- Retains the smooth menu enter/exit animation and fully removes the fixed menu from the DOM after closing.

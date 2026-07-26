@@ -32,6 +32,8 @@ export function SplashScreen() {
     root.classList.remove("splashComplete");
     body.classList.add("splashActive");
     body.classList.remove("splashExiting", "splashComplete");
+    root.style.backgroundColor = "#f5f2eb";
+    body.style.backgroundColor = "#f5f2eb";
 
     const themeColorMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     themeColorMeta?.setAttribute("content", "#f5f2eb");
@@ -57,6 +59,8 @@ export function SplashScreen() {
         body.classList.remove("splashExiting");
         body.classList.add("splashComplete");
         root.classList.add("splashComplete");
+        root.style.backgroundColor = "#090909";
+        body.style.backgroundColor = "#090909";
         themeColorMeta?.setAttribute("content", "#090909");
       }, reducedMotion ? 50 : EXIT_DURATION_MS);
     };
@@ -87,6 +91,8 @@ export function SplashScreen() {
       window.removeEventListener("load", handleLoad);
       root.classList.remove("splashComplete");
       body.classList.remove("splashActive", "splashExiting", "splashComplete");
+      root.style.backgroundColor = "#f5f2eb";
+      body.style.backgroundColor = "#f5f2eb";
       themeColorMeta?.setAttribute("content", "#f5f2eb");
     };
   }, []);
