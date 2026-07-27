@@ -33,8 +33,8 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "0.9.1") {
-  errors.push(`package.json version must be 0.9.1 for this release candidate (found ${pkg.version}).`);
+if (pkg.version !== "1.1.0") {
+  errors.push(`package.json version must be 1.1.0 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [
@@ -42,6 +42,10 @@ for (const path of [
   "app/global-error.tsx",
   "RELEASE_CHECKLIST.md",
   ".env.example",
+  "app/privacy/page.tsx",
+  "app/terms/page.tsx",
+  "app/accessibility/page.tsx",
+  "app/contact/page.tsx",
 ]) {
   if (!existsSync(resolve(root, path))) errors.push(`Missing required release file: ${path}`);
 }

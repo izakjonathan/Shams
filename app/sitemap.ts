@@ -9,6 +9,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 1,
     },
+    ...["privacy", "terms", "accessibility", "contact"].map((route) => ({
+      url: `${siteUrl}/${route}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.4,
+    })),
     ...artists.map((artist) => ({
       url: `${siteUrl}/artists/${artistSlug(artist.name)}`,
       changeFrequency: "monthly" as const,

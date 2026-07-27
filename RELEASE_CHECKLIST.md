@@ -1,8 +1,8 @@
-# Shams for Humanity — v1.0 release checklist
+# Shams for Humanity — v1.1.0 release record
 
-This checklist deliberately separates work that can be completed now from the final-domain step.
+The accepted v1.0.0 baseline has been extended into v1.1.0 with artist and information-page systems. This document remains the operational verification record for redeployments and the later custom-domain launch.
 
-## Release candidate checks
+## Deployment checks
 
 - [ ] Run `npm install` from a clean checkout.
 - [ ] Run `npm run release:check` successfully.
@@ -35,11 +35,11 @@ Verify on each relevant device:
 
 - [ ] Confirm final event date, times, venue wording and accessibility details.
 - [ ] Confirm lineup names, artist slugs, performance types, times and stages.
-- [ ] Add final artist biographies, images and approved social links.
+- [ ] Replace placeholder artist biographies, artwork and external links with approved material.
 - [ ] Configure `NEXT_PUBLIC_TICKET_URL` and complete a real checkout-link test.
 - [ ] Configure `NEXT_PUBLIC_NEWSLETTER_FORM_ACTION` and complete a real form submission test.
 - [ ] Add final Instagram, Facebook and contact destinations.
-- [ ] Add privacy/newsletter consent wording required by the chosen provider.
+- [ ] Review and finalize the draft Privacy, Terms, Accessibility and Contact pages with confirmed organizer/provider details.
 
 ## Final domain — deferred
 
@@ -56,10 +56,10 @@ When the domain is ready:
 - [ ] Test the social-sharing preview.
 - [ ] Verify HTTPS and host redirects.
 
-## v1.0 sign-off
+## v1.1.0 release status
 
 - [ ] Production build passed from a clean checkout.
 - [ ] Real-device test matrix passed.
 - [ ] All public controls have real destinations or honest unavailable states.
 - [ ] No placeholder copy remains that could mislead visitors.
-- [ ] Release version changed from `0.9.x` to `1.0.0`.
+- [x] Release version changed from `1.0.0` to `1.1.0`.

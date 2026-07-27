@@ -1,4 +1,4 @@
-# Shams for Humanity v0.1.72 — Full repository audit
+# Shams for Humanity — repository audit and release history
 
 ## Scope
 
@@ -295,3 +295,38 @@ The corrected lifecycle uses:
 - Tightened `safeExternalUrl()` so production integrations require HTTPS while localhost development may use HTTP.
 - Stopped noindex preview deployments from advertising a sitemap in `robots.txt`.
 - Updated `release:check` so configuration validation runs before type checking and production build.
+
+
+## v1.0.0 — Stable production baseline
+
+- Promoted the user-confirmed working v0.9.1 release candidate to v1.0.0.
+- No visual, routing, animation or integration behavior was changed during promotion.
+- Updated package metadata, release validation and documentation to treat 1.0.0 as the current stable baseline.
+- The custom domain remains intentionally deferred; Vercel deployment URL fallback and no-index defaults remain active until launch configuration is supplied.
+
+## v1.1.0 implementation audit
+
+### Artist pages
+- Replaced the minimal centered placeholder with a full editorial page system.
+- Added complete structured artist fields in `app/lib/content/artists.ts`.
+- Added accessible placeholder artwork, performance facts, biography, quote, highlights, links and next-artist navigation.
+- Placeholder links are rendered as disabled text rather than false working anchors.
+- Responsive layouts were reviewed for narrow mobile, tablet and desktop widths.
+
+### Information pages
+- Added Privacy, Terms, Accessibility and Contact routes.
+- Copy is explicitly marked as draft where organizer, provider or venue facts are not confirmed.
+- Privacy text covers controller identity, purpose, data categories, legal bases, retention, recipients, international transfers, user rights and session-storage use.
+- Terms text avoids presenting provisional refund or liability wording as final policy.
+- Accessibility copy separates current website behavior from venue-dependent commitments.
+
+### Content architecture
+- Split the single content file into artists, event, FAQ, programme and tickets modules.
+- Kept `app/lib/content.ts` as a compatibility barrel so existing imports remain stable.
+- Shared footer moved into the root layout to remove route inconsistency.
+
+### Deferred by request
+- Ticket section and provider integration.
+- Newsletter provider integration.
+- Social and sharing integration.
+- Final event details and approved artist assets.

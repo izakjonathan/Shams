@@ -178,14 +178,6 @@ export default function Home() {
         <NewsletterForm />
       </section>
 
-      <footer>
-        <a className="footerLogo" href="#top">Shams for<br/>Humanity</a>
-        <div className="footerLinks">
-          <div><span>EXPLORE</span><a href="#about">About</a><a href="#lineup">Artists</a><a href="#tickets">Tickets</a></div>
-          <div><span>FOLLOW</span><span className="footerPlaceholder">Instagram</span><span className="footerPlaceholder">Facebook</span><span className="footerPlaceholder">Contact</span></div>
-        </div>
-        <div className="footerBottom"><span>© 2026 SHAMS FOR HUMANITY</span><span>MADE WITH PURPOSE IN COPENHAGEN</span><a href="#top">BACK TO TOP ↑</a></div>
-      </footer>
     </main>
   );
 }

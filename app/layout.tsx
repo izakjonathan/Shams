@@ -4,6 +4,7 @@ import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "./components/SiteHeader";
 import { SplashScreen } from "./components/SplashScreen";
+import { SiteFooter } from "./components/SiteFooter";
 import { artists, event, tickets } from "./lib/content";
 import { allowIndexing, siteUrl } from "./lib/site";
 
@@ -121,6 +122,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <div className="siteShell">
           <SiteHeader />
           {children}
+          <SiteFooter />
         </div>
         <script
           type="application/ld+json"
