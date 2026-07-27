@@ -17,7 +17,9 @@ function contentSecurityPolicy(): string {
     // 'unsafe-inline' covers the JSON-LD structured-data scripts and the
     // inline style attributes next/image and a couple of client components
     // set directly on DOM nodes; there is no user-supplied script or style
-    // on this site.
+    // on this site. (A per-request nonce would remove this, but it would
+    // also force every page into dynamic rendering, which is the wrong
+    // trade-off for what is otherwise a fully static festival site.)
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data:",
@@ -34,19 +36,29 @@ function contentSecurityPolicy(): string {
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=()",
+  },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
   { key: "Content-Security-Policy", value: contentSecurityPolicy() },
 ];
+
+// Fonts and artist photography are content-hashed-in-name-only (the file
+// itself never changes without a code change), so they can be cached by
+// browsers and Vercel's edge network for a full year.
+const immutableCacheHeader = {
+  key: "Cache-Control",
+  value: "public, max-age=31536000, immutable",
+};
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async headers() {
     return [
-      {
-        source: "/:path*",
-        headers: securityHeaders,
-      },
+      { source: "/:path*", headers: securityHeaders },
+      { source: "/fonts/:path*", headers: [immutableCacheHeader] },
+      { source: "/images/:path*", headers: [immutableCacheHeader] },
     ];
   },
 };
