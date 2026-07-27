@@ -264,3 +264,15 @@ The project is now a strong small-event marketing site with good separation betw
 - Increased the splash artwork scale to make the central logo figure noticeably larger.
 - Added two non-interactive radial gradient overlays to strengthen the existing yellow top-left and bottom-right washes.
 - Kept the original PNG unchanged and retained the paper fallback background, session lifecycle, reduced-motion timing, and Safari paper-to-black transition.
+
+
+## v0.1.74 — Splash session lifecycle
+
+The earlier implementation persisted `shf-splash-seen` in `sessionStorage`, but still intentionally displayed a shortened 200 ms repeat splash. That caused the splash to reappear on route returns and could create a visible hydration flash on full navigations.
+
+The corrected lifecycle uses:
+- `sessionStorage` as the page-session source of truth
+- a `beforeInteractive` root-layout script that applies `splashSessionSeen` before hydration
+- CSS that immediately exposes the site and hides the splash when that class is present
+- an in-memory fallback for client-side navigation if storage access fails
+- immediate cleanup in the React component with no repeat hold or exit animation

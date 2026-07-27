@@ -6,26 +6,28 @@ import { useEffect, useRef, useState } from "react";
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
 const EXIT_DURATION_MS = 1150;
-const REPEAT_HOLD_MS = 200;
 const PAPER_COLOR = "#f5f2eb";
 const CANVAS_COLOR = "#090909";
 const SESSION_KEY = "shf-splash-seen";
+let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {
+  if (hasShownSplashInMemory) return true;
+
   try {
     return window.sessionStorage.getItem(SESSION_KEY) === "1";
   } catch {
-    // Storage can throw in private-browsing modes; fall back to always
-    // showing the full sequence rather than breaking the splash.
     return false;
   }
 }
 
 function markSplashSeen(): void {
+  hasShownSplashInMemory = true;
+
   try {
     window.sessionStorage.setItem(SESSION_KEY, "1");
   } catch {
-    // Ignore — non-fatal if the flag can't be persisted.
+    // The in-memory fallback still prevents repeats during client navigation.
   }
 }
 
@@ -46,12 +48,26 @@ export function SplashScreen() {
     const body = document.body;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isRepeatVisit = hasSeenSplashThisSession();
-    const skipEnterAnimation = reducedMotion || isRepeatVisit;
+    const skipEnterAnimation = reducedMotion;
     const start = performance.now();
     let hasLoaded = document.readyState === "complete";
     let enterFrame = 0;
     let exitTimer = 0;
     let doneTimer = 0;
+
+    if (isRepeatVisit) {
+      hasShownSplashInMemory = true;
+      setStage("done");
+      root.classList.add("splashSessionSeen");
+      body.classList.remove("splashActive", "splashExiting");
+      body.classList.add("splashComplete");
+      root.style.backgroundColor = CANVAS_COLOR;
+      body.style.backgroundColor = CANVAS_COLOR;
+      document
+        .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+        ?.setAttribute("content", CANVAS_COLOR);
+      return;
+    }
 
     markSplashSeen();
 
@@ -83,6 +99,7 @@ export function SplashScreen() {
         setStage("done");
         body.classList.remove("splashExiting");
         body.classList.add("splashComplete");
+        root.classList.add("splashSessionSeen");
         root.style.backgroundColor = CANVAS_COLOR;
         body.style.backgroundColor = CANVAS_COLOR;
         themeColorMeta?.setAttribute("content", CANVAS_COLOR);
@@ -91,11 +108,7 @@ export function SplashScreen() {
 
     const maybeScheduleExit = () => {
       if (!hasLoaded || hasBegunExit.current) return;
-      const minimumTotal = isRepeatVisit
-        ? REPEAT_HOLD_MS
-        : reducedMotion
-          ? REPEAT_HOLD_MS
-          : ENTER_DURATION_MS + MIN_HOLD_MS;
+      const minimumTotal = reducedMotion ? 0 : ENTER_DURATION_MS + MIN_HOLD_MS;
       const remaining = Math.max(0, minimumTotal - (performance.now() - start));
       window.clearTimeout(exitTimer);
       exitTimer = window.setTimeout(beginExit, remaining);

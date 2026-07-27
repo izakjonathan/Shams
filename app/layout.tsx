@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "./components/SiteHeader";
 import { SplashScreen } from "./components/SplashScreen";
@@ -96,6 +97,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={agilera.variable}>
       <body className="splashActive">
+        <Script
+          id="splash-session-gate"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem("shf-splash-seen")==="1"){document.documentElement.classList.add("splashSessionSeen");var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#090909");}}catch{}`,
+          }}
+        />
         <noscript>
           <style>{`
             .splashScreen { display: none !important; }

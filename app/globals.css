@@ -91,6 +91,32 @@ button {
    02 — Splash and site entry
    ========================================================================== */
 
+
+/* A pre-hydration session flag prevents repeat-route flashes. */
+html.splashSessionSeen,
+html.splashSessionSeen body {
+  background-color: #090909;
+}
+
+html.splashSessionSeen body.splashActive {
+  overflow: visible;
+}
+
+html.splashSessionSeen .splashScreen {
+  display: none !important;
+}
+
+html.splashSessionSeen .siteShell {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html.splashSessionSeen .skipLink {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 .splashActive .siteShell {
   opacity: 0;
   transform: translate3d(0, 22px, 0) scale(.99);

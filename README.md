@@ -1,4 +1,4 @@
-# Shams for Humanity — v0.1.73
+# Shams for Humanity — v0.1.74
 
 Mobile-first Next.js festival website using the App Router, React 19, a local display font, static metadata routes, accessible navigation, and configurable ticket/newsletter integrations.
 
@@ -40,3 +40,11 @@ npm run dev
 npm run typecheck
 npm run build
 ```
+
+## v0.1.74 — Session-only splash
+
+- The splash now runs only once per browser tab/session.
+- Repeat route visits and reloads skip the splash completely rather than showing a shortened sequence.
+- Added a pre-hydration `sessionStorage` gate to prevent a one-frame splash flash on artist-page navigation or browser back.
+- Added an in-memory fallback for client-side navigation when Web Storage is unavailable.
+
