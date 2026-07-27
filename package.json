@@ -1,12 +1,15 @@
 {
   "name": "shams-for-humanity",
-  "version": "0.1.74",
+  "version": "0.9.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run build",
+    "release:check": "npm run release:validate && npm run typecheck && npm run build",
+    "release:validate": "node scripts/validate-release.mjs"
   },
   "dependencies": {
     "next": "16.2.10",

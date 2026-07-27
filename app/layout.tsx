@@ -5,7 +5,7 @@ import "./globals.css";
 import { SiteHeader } from "./components/SiteHeader";
 import { SplashScreen } from "./components/SplashScreen";
 import { artists, event, tickets } from "./lib/content";
-import { siteUrl } from "./lib/site";
+import { allowIndexing, siteUrl } from "./lib/site";
 
 const agilera = localFont({
   src: "../public/fonts/Agilera.woff",
@@ -45,8 +45,12 @@ export const metadata: Metadata = {
     description: event.tagline,
   },
   robots: {
-    index: true,
-    follow: true,
+    index: allowIndexing,
+    follow: allowIndexing,
+    googleBot: {
+      index: allowIndexing,
+      follow: allowIndexing,
+    },
   },
 };
 

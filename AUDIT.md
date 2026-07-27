@@ -276,3 +276,22 @@ The corrected lifecycle uses:
 - CSS that immediately exposes the site and hides the splash when that class is present
 - an in-memory fallback for client-side navigation if storage access fails
 - immediate cleanup in the React component with no repeat hold or exit animation
+
+
+## v0.9.0 — Release-candidate preparation
+
+- Removed the hard-coded placeholder production origin as the metadata fallback.
+- Canonical metadata now resolves from `NEXT_PUBLIC_SITE_URL`, then the current Vercel deployment URL, then local development.
+- Added explicit opt-in search indexing so preview deployments cannot be indexed accidentally.
+- Added a checked-in environment template and a complete v1.0 release checklist.
+- Added one release verification command: `npm run release:check`.
+- The eventual custom domain remains a deployment configuration task and does not require another architectural rewrite.
+
+## v0.9.1 — Production hardening
+
+- Added `app/error.tsx` for recoverable route/render errors with retry and home actions.
+- Added `app/global-error.tsx` as a dependency-light fallback when the root layout itself fails.
+- Added `scripts/validate-release.mjs` to detect invalid URLs, unsafe protocols, embedded credentials, missing required release files and unsafe indexing configuration.
+- Tightened `safeExternalUrl()` so production integrations require HTTPS while localhost development may use HTTP.
+- Stopped noindex preview deployments from advertising a sitemap in `robots.txt`.
+- Updated `release:check` so configuration validation runs before type checking and production build.
