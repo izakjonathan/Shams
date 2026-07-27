@@ -1,6 +1,12 @@
-# Shams for Humanity — v1.1.2
+# Shams for Humanity — v1.1.3
 
 Mobile-first Next.js festival website.
+
+## v1.1.3 — Agilera artist titles
+
+- Updated every artist-page name heading to use the Agilera display font.
+- Preserved the existing artist photography, layout, sizing, spacing, and responsive behavior.
+
 
 ## v1.1.2 — Artist photography
 

@@ -1826,6 +1826,7 @@ input:focus-visible {
 .artistHeroCopy h1 {
   margin: 12px 0 28px;
   max-width: 10ch;
+  font-family: var(--font-display);
   font-size: clamp(68px, 18vw, 174px);
   line-height: .78;
   overflow-wrap: anywhere;

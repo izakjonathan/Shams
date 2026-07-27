@@ -345,3 +345,8 @@ The corrected lifecycle uses:
 - Added per-artist crop positioning and descriptive alternative text.
 - Added each artist image to route-specific Open Graph metadata.
 - The first group photograph is intentionally reused for the sixth Community Choir route because the content model contains six artists and five source images were supplied.
+
+
+## v1.1.3 implementation note
+
+- Added `font-family: var(--font-display)` to `.artistHeroCopy h1`, applying the bundled Agilera font to all artist names while leaving supporting copy in the existing body typeface.

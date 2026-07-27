@@ -1,4 +1,4 @@
-# Shams for Humanity — v1.1.2 release record
+# Shams for Humanity — v1.1.3 release record
 
 The accepted v1.0.0 baseline has been extended into v1.1.0 with artist and information-page systems. This document remains the operational verification record for redeployments and the later custom-domain launch.
 
@@ -82,3 +82,9 @@ When the domain is ready:
 - [x] Alternative text included.
 - [x] Artist Open Graph metadata references the assigned image.
 - [ ] Replace or reassign images when final artist-image ownership is confirmed.
+
+
+## v1.1.3 artist-title typography verification
+
+- Confirm every artist-page `<h1>` renders with `var(--font-display)` / Agilera.
+- Confirm long artist names still wrap correctly on mobile and desktop.
