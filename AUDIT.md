@@ -330,3 +330,18 @@ The corrected lifecycle uses:
 - Newsletter provider integration.
 - Social and sharing integration.
 - Final event details and approved artist assets.
+
+
+## v1.1.1 implementation note
+
+- Added one reusable `PageCloseButton` component to the four standalone information routes.
+- The control uses a Next.js `Link` to `/#top`, remains visible while scrolling, includes an explicit accessible label, and supports keyboard focus and reduced-motion preferences.
+
+
+## v1.1.2 implementation note
+
+- Added five user-supplied artist photographs as optimized WebP assets.
+- Replaced the generated placeholder artwork in the shared artist template with responsive `next/image` media.
+- Added per-artist crop positioning and descriptive alternative text.
+- Added each artist image to route-specific Open Graph metadata.
+- The first group photograph is intentionally reused for the sixth Community Choir route because the content model contains six artists and five source images were supplied.

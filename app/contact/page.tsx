@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PageCloseButton } from "../components/PageCloseButton";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -17,6 +18,7 @@ const contacts = [
 export default function ContactPage() {
   return (
     <main className="contactPage" id="main-content" tabIndex={-1}>
+      <PageCloseButton />
       <section className="contactHero darkGlowSection">
         <div className="darkGlow darkGlowOne" aria-hidden="true" />
         <span className="sectionIndex light">04 — CONTACT</span>

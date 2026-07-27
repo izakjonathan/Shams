@@ -1,6 +1,21 @@
-# Shams for Humanity — v1.1.0
+# Shams for Humanity — v1.1.2
 
 Mobile-first Next.js festival website.
+
+## v1.1.2 — Artist photography
+
+- Replaced placeholder artist artwork with the five supplied event photographs.
+- Added optimized WebP assets under `public/images/artists`.
+- Added artist-specific image crops and accessible alternative text.
+- Added responsive `next/image` rendering, subtle image treatment, and artist Open Graph images.
+- Reused the group photograph for the Community Choir page because five photographs were supplied for six artist routes.
+
+## v1.1.1 — Information-page close controls
+
+- Added a persistent close button to Privacy, Terms, Accessibility and Contact.
+- The close control returns visitors directly to the main homepage.
+- Added shared accessible markup, keyboard focus styling, safe-area positioning and reduced-motion support.
+- Kept all page content, ticket behavior and visual systems unchanged.
 
 ## v1.1.0 — Artist editorial system and information pages
 

@@ -1,4 +1,4 @@
-# Shams for Humanity — v1.1.0 release record
+# Shams for Humanity — v1.1.2 release record
 
 The accepted v1.0.0 baseline has been extended into v1.1.0 with artist and information-page systems. This document remains the operational verification record for redeployments and the later custom-domain launch.
 
@@ -63,3 +63,22 @@ When the domain is ready:
 - [ ] All public controls have real destinations or honest unavailable states.
 - [ ] No placeholder copy remains that could mislead visitors.
 - [x] Release version changed from `1.0.0` to `1.1.0`.
+
+
+## v1.1.1 close-control verification
+
+- [x] Privacy page includes the shared close control.
+- [x] Terms page includes the shared close control.
+- [x] Accessibility page includes the shared close control.
+- [x] Contact page includes the shared close control.
+- [x] Close control returns to `/#top`.
+
+
+## v1.1.2 artist-image verification
+
+- [x] Five source photographs converted to optimized WebP.
+- [x] Every artist route has a responsive hero image.
+- [x] Image crops configured per route.
+- [x] Alternative text included.
+- [x] Artist Open Graph metadata references the assigned image.
+- [ ] Replace or reassign images when final artist-image ownership is confirmed.

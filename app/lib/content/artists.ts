@@ -17,6 +17,9 @@ export interface Artist {
   setDescription: string;
   highlights: string[];
   links: ArtistLink[];
+  image: string;
+  imageAlt: string;
+  imagePosition?: string;
 }
 
 export const artists: Artist[] = [
@@ -36,6 +39,9 @@ export const artists: Artist[] = [
     quote: "I want the room to feel like somewhere we can arrive together.",
     setDescription: "A full live performance created for the opening arc of the evening, moving from quiet detail to expansive rhythm.",
     highlights: ["New live arrangement", "Visual collaboration", "Festival premiere"],
+    image: "/images/artists/artist-02.webp",
+    imageAlt: "Artist portrait in a nighttime event setting.",
+    imagePosition: "center 42%",
     links: [{ label: "Instagram", href: "#" }, { label: "Listen", href: "#" }, { label: "Website", href: "#" }],
   },
   {
@@ -54,6 +60,9 @@ export const artists: Artist[] = [
     quote: "The best dance floors make room for many histories at once.",
     setDescription: "A two-hour DJ set moving through percussive club music, left-field electronics and shared musical references.",
     highlights: ["Extended set", "Cross-genre selection", "Orbit Stage debut"],
+    image: "/images/artists/artist-03.webp",
+    imageAlt: "Artist performing in a colorful club environment.",
+    imagePosition: "center 48%",
     links: [{ label: "Instagram", href: "#" }, { label: "SoundCloud", href: "#" }, { label: "Website", href: "#" }],
   },
   {
@@ -72,6 +81,9 @@ export const artists: Artist[] = [
     quote: "Sound can dissolve the border between the individual and the room.",
     setDescription: "A concentrated audiovisual live show combining processed voice, low-frequency electronics and responsive visual design.",
     highlights: ["Full A/V production", "Immersive sound", "One-off festival presentation"],
+    image: "/images/artists/artist-04.webp",
+    imageAlt: "Artist portrait photographed at an event.",
+    imagePosition: "center 36%",
     links: [{ label: "Instagram", href: "#" }, { label: "Listen", href: "#" }, { label: "Website", href: "#" }],
   },
   {
@@ -90,6 +102,9 @@ export const artists: Artist[] = [
     quote: "A powerful room is built through trust between the artist and the crowd.",
     setDescription: "A peak-time techno set with an extended progression, clean transitions and a strong physical arc.",
     highlights: ["Peak-time set", "Extended progression", "Orbit Stage headline"],
+    image: "/images/artists/artist-05.webp",
+    imageAlt: "Artist portrait in a warm, atmospheric interior.",
+    imagePosition: "center 40%",
     links: [{ label: "Instagram", href: "#" }, { label: "Listen", href: "#" }, { label: "Website", href: "#" }],
   },
   {
@@ -107,6 +122,9 @@ export const artists: Artist[] = [
     quote: "Discovery matters most when the stories behind the music travel with it.",
     setDescription: "A late-night vinyl-led journey through funk, soul, disco and overlooked regional recordings.",
     highlights: ["Vinyl selection", "Archive discoveries", "Sun Stage closing set"],
+    image: "/images/artists/artist-01.webp",
+    imageAlt: "Two artists beside DJ equipment at a live event.",
+    imagePosition: "center center",
     links: [{ label: "Instagram", href: "#" }, { label: "Bandcamp", href: "#" }, { label: "Website", href: "#" }],
   },
   {
@@ -124,6 +142,9 @@ export const artists: Artist[] = [
     quote: "No single voice has to carry the whole song.",
     setDescription: "A welcoming outdoor performance combining prepared material, spoken text and a simple audience participation moment.",
     highlights: ["Community-led", "Open rehearsals", "Festival opening"],
+    image: "/images/artists/artist-01.webp",
+    imageAlt: "Artists and guests gathered around a DJ booth.",
+    imagePosition: "center center",
     links: [{ label: "Join the choir", href: "#" }, { label: "Project notes", href: "#" }],
   },
 ];

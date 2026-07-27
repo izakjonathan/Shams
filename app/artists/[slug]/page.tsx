@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowIcon } from "../../components/ArrowIcon";
@@ -18,6 +19,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: artist.name,
     description: `${artist.shortBio} ${artist.name} performs at ${event.name}, ${artist.stage} at ${artist.time}.`,
     alternates: { canonical: `/artists/${artistSlug(artist.name)}` },
+    openGraph: {
+      title: artist.name,
+      description: artist.shortBio,
+      images: [{ url: artist.image, alt: artist.imageAlt }],
+    },
   };
 }
 
@@ -28,12 +34,6 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
 
   const artistIndex = artists.findIndex((entry) => entry.name === artist.name);
   const nextArtist = artists[(artistIndex + 1) % artists.length];
-  const initials = artist.name
-    .split(/\s+/)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 3)
-    .toUpperCase();
 
   return (
     <main className="artistPage" id="main-content" tabIndex={-1}>
@@ -51,10 +51,18 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
             <h1>{artist.name}</h1>
             <p className="artistStandfirst">{artist.shortBio}</p>
           </div>
-          <div className="artistPortrait" role="img" aria-label={`Placeholder artwork for ${artist.name}`}>
-            <span>{initials}</span>
-            <small>ARTWORK<br/>COMING SOON</small>
-          </div>
+          <figure className="artistPortrait">
+            <Image
+              className="artistPortraitImage"
+              src={artist.image}
+              alt={artist.imageAlt}
+              fill
+              priority
+              sizes="(min-width: 760px) 38vw, 100vw"
+              style={{ objectPosition: artist.imagePosition ?? "center" }}
+            />
+            <figcaption>{artist.name} · Artist image</figcaption>
+          </figure>
         </div>
         <div className="artistFactBar">
           <div><span>FORMAT</span><strong>{artist.type}</strong></div>

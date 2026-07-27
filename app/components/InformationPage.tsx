@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageCloseButton } from "./PageCloseButton";
 
 export interface InformationSection {
   heading: string;
@@ -21,6 +22,7 @@ export function InformationPage({
 }) {
   return (
     <main className="informationPage" id="main-content" tabIndex={-1}>
+      <PageCloseButton />
       <header className="informationHero paperGlowSection">
         <div className="paperGlow glowOne" aria-hidden="true" />
         <div className="paperGlow glowTwo" aria-hidden="true" />
