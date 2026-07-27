@@ -350,3 +350,29 @@ The corrected lifecycle uses:
 ## v1.1.3 implementation note
 
 - Added `font-family: var(--font-display)` to `.artistHeroCopy h1`, applying the bundled Agilera font to all artist names while leaving supporting copy in the existing body typeface.
+
+## v1.1.4 — Full cleanup pass
+
+### Repository hygiene
+
+- Removed `tsconfig.tsbuildinfo`, which is generated locally and should not be distributed.
+- Added `.gitignore` coverage for dependencies, Next.js output, TypeScript caches, local environment files, logs and operating-system metadata.
+- Removed the obsolete `app/lib/content.ts` compatibility barrel. Existing imports now resolve directly through `app/lib/content/index.ts`.
+
+### Content and routing
+
+- Added explicit immutable slugs to every artist record.
+- Removed runtime slug generation from artist names, preventing future editorial name changes from silently changing public URLs.
+- Added `dynamicParams = false` to the artist route so unknown slugs are not generated dynamically.
+- Updated homepage links, metadata, static parameters, next-artist navigation and sitemap entries to use the canonical stored slugs.
+- Marked artist records, links, biographies, highlights and information-page sections as readonly data.
+
+### Shared utilities
+
+- Consolidated the duplicated structured-data escaping logic into `serializeJsonLd()` in `app/lib/site.ts`.
+- Both MusicEvent and FAQ structured data now use the same serializer.
+
+### Styling and behavior
+
+- Removed stale legacy wording from current gradient-system comments.
+- No approved layout, typography, photography, animation, menu, splash, Safari canvas or information-page behavior was changed.

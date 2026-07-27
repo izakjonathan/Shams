@@ -6,7 +6,7 @@ import { SiteHeader } from "./components/SiteHeader";
 import { SplashScreen } from "./components/SplashScreen";
 import { SiteFooter } from "./components/SiteFooter";
 import { artists, event, tickets } from "./lib/content";
-import { allowIndexing, siteUrl } from "./lib/site";
+import { allowIndexing, serializeJsonLd, siteUrl } from "./lib/site";
 
 const agilera = localFont({
   src: "../public/fonts/Agilera.woff",
@@ -127,7 +127,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       </body>
     </html>

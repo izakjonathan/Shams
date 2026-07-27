@@ -1,6 +1,16 @@
-node_modules
-.next
-out
-.vercel
-.DS_Store
+# Dependencies and Next.js output
+node_modules/
+.next/
+out/
+
+# TypeScript incremental cache
+*.tsbuildinfo
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Logs and operating-system files
 *.log
+.DS_Store

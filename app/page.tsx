@@ -4,8 +4,8 @@ import { ArrowIcon } from "./components/ArrowIcon";
 import { FaqAccordion } from "./components/FaqAccordion";
 import { NewsletterForm } from "./components/NewsletterForm";
 import { ScrollReveal } from "./components/ScrollReveal";
-import { artists, artistSlug, event, faqs, programme, tickets } from "./lib/content";
-import { safeExternalUrl } from "./lib/site";
+import { artists, event, faqs, programme, tickets } from "./lib/content";
+import { safeExternalUrl, serializeJsonLd } from "./lib/site";
 
 export const metadata: Metadata = {
   title: `${event.city} · ${event.date}`,
@@ -92,7 +92,7 @@ export default function Home() {
               <span>{artist.type}</span><span>{artist.time}</span><span>{artist.stage}</span>
               <Link
                 className="artistArrow"
-                href={`/artists/${artistSlug(artist.name)}`}
+                href={`/artists/${artist.slug}`}
                 aria-label={`View ${artist.name} artist page`}
               >
                 <ArrowIcon />
@@ -169,7 +169,7 @@ export default function Home() {
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd).replace(/</g, "\\u003c") }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
         />
       </section>
 

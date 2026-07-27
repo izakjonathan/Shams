@@ -3,10 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowIcon } from "../../components/ArrowIcon";
-import { artists, artistSlug, event, getArtistBySlug } from "../../lib/content";
+import { artists, event, getArtistBySlug } from "../../lib/content";
+
+export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return artists.map((artist) => ({ slug: artistSlug(artist.name) }));
+  return artists.map((artist) => ({ slug: artist.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -18,7 +20,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: artist.name,
     description: `${artist.shortBio} ${artist.name} performs at ${event.name}, ${artist.stage} at ${artist.time}.`,
-    alternates: { canonical: `/artists/${artistSlug(artist.name)}` },
+    alternates: { canonical: `/artists/${artist.slug}` },
     openGraph: {
       title: artist.name,
       description: artist.shortBio,
@@ -132,7 +134,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
 
       <nav className="nextArtist" aria-label="Continue through the lineup">
         <span>NEXT ARTIST</span>
-        <Link href={`/artists/${artistSlug(nextArtist.name)}`}>
+        <Link href={`/artists/${nextArtist.slug}`}>
           <strong>{nextArtist.name}</strong><ArrowIcon />
         </Link>
       </nav>

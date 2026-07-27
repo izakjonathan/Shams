@@ -1,29 +1,31 @@
 export interface ArtistLink {
-  label: string;
-  href: string;
+  readonly label: string;
+  readonly href: string;
 }
 
 export interface Artist {
-  name: string;
-  type: string;
-  time: string;
-  stage: string;
-  origin: string;
-  genre: string;
-  pronouns?: string;
-  shortBio: string;
-  biography: string[];
-  quote: string;
-  setDescription: string;
-  highlights: string[];
-  links: ArtistLink[];
-  image: string;
-  imageAlt: string;
-  imagePosition?: string;
+  readonly slug: string;
+  readonly name: string;
+  readonly type: string;
+  readonly time: string;
+  readonly stage: string;
+  readonly origin: string;
+  readonly genre: string;
+  readonly pronouns?: string;
+  readonly shortBio: string;
+  readonly biography: readonly string[];
+  readonly quote: string;
+  readonly setDescription: string;
+  readonly highlights: readonly string[];
+  readonly links: readonly ArtistLink[];
+  readonly image: string;
+  readonly imageAlt: string;
+  readonly imagePosition?: string;
 }
 
-export const artists: Artist[] = [
+export const artists = [
   {
+    slug: "nour",
     name: "Nour",
     type: "Live",
     time: "18:30",
@@ -45,6 +47,7 @@ export const artists: Artist[] = [
     links: [{ label: "Instagram", href: "#" }, { label: "Listen", href: "#" }, { label: "Website", href: "#" }],
   },
   {
+    slug: "maya-al-khalil",
     name: "Maya Al Khalil",
     type: "DJ Set",
     time: "20:00",
@@ -66,6 +69,7 @@ export const artists: Artist[] = [
     links: [{ label: "Instagram", href: "#" }, { label: "SoundCloud", href: "#" }, { label: "Website", href: "#" }],
   },
   {
+    slug: "aisha-devi",
     name: "Aïsha Devi",
     type: "Live A/V",
     time: "21:30",
@@ -87,6 +91,7 @@ export const artists: Artist[] = [
     links: [{ label: "Instagram", href: "#" }, { label: "Listen", href: "#" }, { label: "Website", href: "#" }],
   },
   {
+    slug: "sama-abdulhadi",
     name: "Sama' Abdulhadi",
     type: "DJ Set",
     time: "23:00",
@@ -108,6 +113,7 @@ export const artists: Artist[] = [
     links: [{ label: "Instagram", href: "#" }, { label: "Listen", href: "#" }, { label: "Website", href: "#" }],
   },
   {
+    slug: "habibi-funk",
     name: "Habibi Funk",
     type: "DJ Set",
     time: "00:30",
@@ -128,6 +134,7 @@ export const artists: Artist[] = [
     links: [{ label: "Instagram", href: "#" }, { label: "Bandcamp", href: "#" }, { label: "Website", href: "#" }],
   },
   {
+    slug: "community-choir",
     name: "Community Choir",
     type: "Opening",
     time: "17:00",
@@ -147,15 +154,7 @@ export const artists: Artist[] = [
     imagePosition: "center center",
     links: [{ label: "Join the choir", href: "#" }, { label: "Project notes", href: "#" }],
   },
-];
-
-export const artistSlug = (name: string) =>
-  name
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+] as const satisfies readonly Artist[];
 
 export const getArtistBySlug = (slug: string): Artist | undefined =>
-  artists.find((artist) => artistSlug(artist.name) === slug);
+  artists.find((artist) => artist.slug === slug);

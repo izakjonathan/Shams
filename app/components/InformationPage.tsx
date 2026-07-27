@@ -2,9 +2,9 @@ import Link from "next/link";
 import { PageCloseButton } from "./PageCloseButton";
 
 export interface InformationSection {
-  heading: string;
-  paragraphs?: string[];
-  items?: string[];
+  readonly heading: string;
+  readonly paragraphs?: readonly string[];
+  readonly items?: readonly string[];
 }
 
 export function InformationPage({
@@ -18,7 +18,7 @@ export function InformationPage({
   title: string;
   intro: string;
   updated: string;
-  sections: InformationSection[];
+  sections: readonly InformationSection[];
 }) {
   return (
     <main className="informationPage" id="main-content" tabIndex={-1}>

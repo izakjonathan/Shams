@@ -61,3 +61,9 @@ export const siteUrl = normalizeSiteUrl(
  */
 export const allowIndexing =
   process.env.NEXT_PUBLIC_ALLOW_INDEXING?.trim().toLowerCase() === "true";
+
+/** Serialize trusted structured data while preventing a literal closing tag
+ * sequence from appearing in the inline script payload. */
+export function serializeJsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}

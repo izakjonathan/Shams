@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { artists, artistSlug } from "./lib/content";
+import { artists } from "./lib/content";
 import { siteUrl } from "./lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.4,
     })),
     ...artists.map((artist) => ({
-      url: `${siteUrl}/artists/${artistSlug(artist.name)}`,
+      url: `${siteUrl}/artists/${artist.slug}`,
       changeFrequency: "monthly" as const,
       priority: 0.7,
     })),

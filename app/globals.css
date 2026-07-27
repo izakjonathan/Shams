@@ -1289,7 +1289,7 @@ input:focus-visible {
 /* Centralized section-gradient system.
    Light sections combine subtle section washes with reusable glow layers.
    Dark sections use large, circular, filter-free glow layers only, so they
-   stay soft on black without the extra tiny hotspots from legacy washes. */
+   stay soft on black without introducing additional concentrated hotspots. */
 
 .paperGlowSection,
 .manifesto,
@@ -1556,7 +1556,7 @@ input:focus-visible {
 
 /* Dark section glow geometry.
    Each dark section now uses one larger primary glow only.
-   The two small legacy hotspot layers were removed. */
+   Each dark section uses one deliberately oversized primary glow. */
 .manifesto .darkGlowOne {
   --glow-w: clamp(520px, 132vw, 1240px);
   --glow-h: clamp(520px, 132vw, 1240px);
