@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import type { ProgrammeCategory, ProgrammeEntry } from "../lib/content/programme";
-import { StatusLabel } from "./StatusLabel";
 
 const filters: ReadonlyArray<{ value: ProgrammeCategory; label: string }> = [
   { value: "all", label: "All" },
@@ -42,12 +41,8 @@ export function ProgrammeExplorer({ entries }: ProgrammeExplorerProps) {
         {visibleEntries.map((entry, index) => (
           <article className="programmeEntry" key={`${entry.time}-${entry.label}`}>
             <div className="programmeEntryNumber">{String(index + 1).padStart(2, "0")}</div>
-            <time dateTime={entry.time}>{entry.time}</time>
             <div className="programmeEntryContent">
-              <div className="programmeEntryHeading">
-                <h3>{entry.label}</h3>
-                <StatusLabel status={entry.status} />
-              </div>
+              <h3>{entry.label}</h3>
               <p>{entry.description}</p>
             </div>
             <div className="programmeEntryMeta">

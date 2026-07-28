@@ -1,4 +1,4 @@
-# Release checklist — v1.3.1
+# Release checklist — v1.3.2
 
 ## Automated checks
 
@@ -30,3 +30,12 @@ npm run build
 - Mobile menu opens, closes, scrolls, and restores focus.
 - Artist cards and artist routes remain functional.
 - Information-page close controls return home.
+
+
+## v1.3.2 checks
+
+- [ ] Programme rows contain no confirmation/development labels.
+- [ ] Programme titles are not preceded by a standalone time value.
+- [ ] Homepage artists render as the compact list rather than image cards.
+- [ ] Artist, information, contact, and home navigation fade out and in without vertical movement.
+- [ ] Same-page anchor links remain immediate and are not delayed by the route transition.

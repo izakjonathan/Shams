@@ -5,6 +5,7 @@ import "./globals.css";
 import { SiteHeader } from "./components/SiteHeader";
 import { SplashScreen } from "./components/SplashScreen";
 import { SiteFooter } from "./components/SiteFooter";
+import { RouteFade } from "./components/RouteFade";
 import { artists, event, tickets } from "./lib/content";
 import { allowIndexing, serializeJsonLd, siteUrl } from "./lib/site";
 
@@ -123,9 +124,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a className="skipLink" href="#main-content">Skip to content</a>
         <SplashScreen />
         <div className="siteShell">
-          <SiteHeader />
-          {children}
-          <SiteFooter />
+          <RouteFade>
+            <SiteHeader />
+            {children}
+            <SiteFooter />
+          </RouteFade>
         </div>
         <script
           type="application/ld+json"

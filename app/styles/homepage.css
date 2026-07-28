@@ -631,3 +631,57 @@ footer {
   justify-self: start;
 }
 
+
+/* v1.3.2 — restored compact artist list */
+.artistList {
+  border-top: 1px solid var(--color-line);
+}
+
+.artistRow {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--color-line);
+  transition: padding var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.artistRow h3 {
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(36px, 8.5vw, 72px);
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: .9;
+}
+
+.artistRow > span:not(.artistNumber) {
+  display: none;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.artistNumber {
+  font-size: 10px;
+}
+
+.artistArrow {
+  display: grid;
+  width: var(--icon-button-size);
+  height: var(--icon-button-size);
+  padding: 8px;
+  place-items: center;
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-circle);
+  background: transparent;
+  color: inherit;
+  text-decoration: none;
+}
+
+.artistArrow .arrowIcon {
+  width: 100%;
+  height: 100%;
+}

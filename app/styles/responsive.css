@@ -206,3 +206,21 @@
     margin-left: auto;
   }
 }
+
+@media (min-width: 760px) {
+  .artistRow {
+    grid-template-columns: 45px minmax(0, 1fr) 100px 80px 100px 40px;
+  }
+
+  .artistRow > span:not(.artistNumber) {
+    display: block;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .artistRow:hover {
+    padding-right: 12px;
+    padding-left: 12px;
+    background: var(--color-overlay-hover);
+  }
+}

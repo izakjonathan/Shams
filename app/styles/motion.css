@@ -39,3 +39,21 @@
   }
 }
 
+
+/* Route changes use opacity only. There is deliberately no vertical movement. */
+.routeFade {
+  min-height: 100%;
+  opacity: 1;
+  transition: opacity 220ms var(--ease-standard);
+}
+
+.routeFade.isFading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .routeFade {
+    transition: none;
+  }
+}

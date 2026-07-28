@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowIcon } from "./components/ArrowIcon";
-import { ArtistCard } from "./components/ArtistCard";
 import { FaqAccordion } from "./components/FaqAccordion";
 import { NewsletterForm } from "./components/NewsletterForm";
 import { ProgrammeExplorer } from "./components/ProgrammeExplorer";
@@ -88,9 +88,22 @@ export default function Home() {
           title="First wave"
           description="Live performances, boundary-pushing selectors and collaborative moments across two stages."
         />
-        <div className="artistCardGrid">
+        <div className="artistList">
           {artists.map((artist, index) => (
-            <ArtistCard artist={artist} index={index} key={artist.slug} />
+            <article className="artistRow" id={`artist-${artist.slug}`} key={artist.slug}>
+              <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
+              <h3>{artist.name}</h3>
+              <span>{artist.type}</span>
+              <span>{artist.time}</span>
+              <span>{artist.stage}</span>
+              <Link
+                className="artistArrow"
+                href={`/artists/${artist.slug}`}
+                aria-label={`View ${artist.name} artist page`}
+              >
+                <ArrowIcon />
+              </Link>
+            </article>
           ))}
         </div>
         <p className="lineupNote">More artists, talks and installations to be announced.</p>

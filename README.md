@@ -1,16 +1,16 @@
-# Shams for Humanity — v1.3.1
+# Shams for Humanity — v1.3.2
 
-Mobile-first Next.js festival website. This release develops the programme and ticket experience while retaining placeholder content.
+Mobile-first Next.js festival website. This release refines the programme layout, restores the compact artist list, and introduces consistent fade-only page transitions while retaining placeholder content.
 
-## v1.3.1 — Programme and ticket experience
+## v1.3.2 — Programme layout and route fades
 
-- Added an interactive programme explorer with category filters.
-- Expanded programme entries with stage, category, description, and confirmation status.
-- Redesigned the schedule into accessible responsive event rows.
-- Added a reusable ticket-section component with tier inclusions, availability states, and placeholder labels.
-- Improved ticket-section hierarchy, explanatory copy, disabled states, and external ticket handling.
-- Added responsive and reduced-motion behavior for the new components.
-- Preserved the approved artist system, splash, menu, gradients, photography, and Safari behavior.
+- Removed programme confirmation and development-status labels.
+- Removed the standalone programme time column above each title.
+- Shifted programme content left to use the former time-column space.
+- Restored the compact text-only artist list used in the earlier baseline.
+- Added consistent opacity-only fade-out and fade-in transitions for internal page navigation.
+- Removed vertical movement from page opening and closing transitions.
+- Preserved the programme filters, developed ticket section, artist pages, splash, menu, gradients, photography, and Safari behavior.
 
 ## Commands
 
