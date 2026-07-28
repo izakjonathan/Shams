@@ -4,4 +4,3 @@ export * from "./faq";
 export * from "./programme";
 export * from "./tickets";
 
-export * from "./status";

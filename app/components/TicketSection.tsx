@@ -1,5 +1,4 @@
 import { ArrowIcon } from "./ArrowIcon";
-import { StatusLabel } from "./StatusLabel";
 import type { TicketTier } from "../lib/content/tickets";
 
 interface TicketSectionProps {
@@ -38,7 +37,6 @@ export function TicketSection({ tickets, ticketUrl }: TicketSectionProps) {
                 <span className="ticketType">{ticket.type}</span>
                 <span className="badge">{ticket.badge}</span>
               </div>
-              <StatusLabel status={ticket.status} />
               <p>{ticket.description}</p>
               <ul className="ticketIncludes">
                 {ticket.includes.map((item) => <li key={item}>{item}</li>)}

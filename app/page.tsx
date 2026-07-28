@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { FadeLink } from "./components/FadeLink";
 import { ArrowIcon } from "./components/ArrowIcon";
 import { FaqAccordion } from "./components/FaqAccordion";
 import { NewsletterForm } from "./components/NewsletterForm";
@@ -96,13 +96,13 @@ export default function Home() {
               <span>{artist.type}</span>
               <span>{artist.time}</span>
               <span>{artist.stage}</span>
-              <Link
+              <FadeLink
                 className="artistArrow"
                 href={`/artists/${artist.slug}`}
                 aria-label={`View ${artist.name} artist page`}
               >
                 <ArrowIcon />
-              </Link>
+              </FadeLink>
             </article>
           ))}
         </div>

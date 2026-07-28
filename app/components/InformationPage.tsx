@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { FadeLink } from "./FadeLink";
 import { PageCloseButton } from "./PageCloseButton";
 
 export interface InformationSection {
@@ -36,7 +36,7 @@ export function InformationPage({
         <aside>
           <span>SHAMS FOR HUMANITY</span>
           <p>Draft information for the first edition. Organizer details and final operational information will be confirmed before launch.</p>
-          <Link className="textLink dark" href="/contact">Contact us →</Link>
+          <FadeLink className="textLink dark" href="/contact">Contact us →</FadeLink>
         </aside>
         <article>
           {sections.map((section, indexNumber) => (

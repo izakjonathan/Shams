@@ -113,6 +113,15 @@
   color: var(--color-white);
 }
 
+
+.contactHero .darkGlowOne {
+  --glow-w: clamp(680px, 160vw, 1200px);
+  --glow-h: clamp(680px, 160vw, 1200px);
+  --glow-left: -82%;
+  --glow-top: -44%;
+  --glow-opacity: .58;
+}
+
 .contactHero h1 {
   position: relative;
   z-index: 2;
@@ -187,6 +196,12 @@
   --section-glow-3-opacity: 0;
 }
 
+.organizerBlock h2 {
+  margin: 18px 0 0;
+  font-size: clamp(50px, 11vw, 108px);
+  line-height: .84;
+}
+
 .organizerBlock p {
   padding: 14px 0;
   margin: 0;
@@ -204,7 +219,6 @@
 }
 
 @media (hover: hover) {
-  .artistExternalLink,
   .footerLinks a {
     transition: opacity var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
   }
@@ -213,9 +227,6 @@
     opacity: .62;
   }
 
-  .artistExternalLink:not(.isPlaceholder):hover {
-    transform: translateX(8px);
-  }
 }
 
 @media (min-width: 760px) {

@@ -14,12 +14,11 @@ function contentSecurityPolicy(): string {
 
   return [
     "default-src 'self'",
-    // 'unsafe-inline' covers the JSON-LD structured-data scripts and the
-    // inline style attributes next/image and a couple of client components
-    // set directly on DOM nodes; there is no user-supplied script or style
-    // on this site. (A per-request nonce would remove this, but it would
-    // also force every page into dynamic rendering, which is the wrong
-    // trade-off for what is otherwise a fully static festival site.)
+    // The pre-hydration splash-session gate requires an inline executable script.
+    // Inline styles are also emitted by next/image and a small number of trusted
+    // components. No user-supplied script, style, or HTML is rendered. A nonce
+    // would require request-time rendering, which is not justified for this
+    // otherwise static festival site.
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data:",
@@ -29,7 +28,7 @@ function contentSecurityPolicy(): string {
     "object-src 'none'",
     "base-uri 'self'",
     "frame-ancestors 'none'",
-    "upgrade-insecure-requests",
+    ...(process.env.NODE_ENV === "production" ? ["upgrade-insecure-requests"] : []),
   ].join("; ");
 }
 

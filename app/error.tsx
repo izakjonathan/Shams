@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { FadeLink } from "./components/FadeLink";
 import { useEffect } from "react";
 import { ArrowIcon } from "./components/ArrowIcon";
 
@@ -24,9 +24,9 @@ export default function ErrorPage({
         <button className="button buttonPrimary" type="button" onClick={reset}>
           Try again <ArrowIcon />
         </button>
-        <Link className="textLink dark" href="/">
+        <FadeLink className="textLink dark" href="/">
           Return home <ArrowIcon />
-        </Link>
+        </FadeLink>
       </div>
     </main>
   );

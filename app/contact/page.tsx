@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { FadeLink } from "../components/FadeLink";
 import { PageCloseButton } from "../components/PageCloseButton";
 
 export const metadata: Metadata = {
@@ -47,7 +47,7 @@ export default function ContactPage() {
           <p><strong>CVR number:</strong> To be confirmed</p>
           <p><strong>Postal address:</strong> To be confirmed</p>
           <p><strong>Responsible contact:</strong> To be confirmed</p>
-          <Link className="textLink dark" href="/privacy">Read our privacy draft →</Link>
+          <FadeLink className="textLink dark" href="/privacy">Read our privacy draft →</FadeLink>
         </div>
       </section>
     </main>

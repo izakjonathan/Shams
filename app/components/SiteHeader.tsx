@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { FadeLink } from "./FadeLink";
 import {
   useEffect,
   useRef,
@@ -31,6 +31,7 @@ export function SiteHeader() {
   const exitTimerRef = useRef<number | null>(null);
   const hasOpenedRef = useRef(false);
   const keyboardMenuInteractionRef = useRef(false);
+  const suppressFocusRestoreRef = useRef(false);
 
   const menuMounted = menuPhase !== "closed";
   const menuExpanded = menuPhase === "opening" || menuPhase === "open";
@@ -132,11 +133,22 @@ export function SiteHeader() {
     if (
       menuPhase === "closed" &&
       hasOpenedRef.current &&
-      keyboardMenuInteractionRef.current
+      keyboardMenuInteractionRef.current &&
+      !suppressFocusRestoreRef.current
     ) {
       menuButtonRef.current?.focus({ preventScroll: true });
     }
   }, [menuPhase]);
+
+  const closeMenuForNavigation = () => {
+    suppressFocusRestoreRef.current = true;
+    keyboardMenuInteractionRef.current = false;
+    if (enterFrameRef.current !== null) window.cancelAnimationFrame(enterFrameRef.current);
+    if (exitTimerRef.current !== null) window.clearTimeout(exitTimerRef.current);
+    enterFrameRef.current = null;
+    exitTimerRef.current = null;
+    setMenuPhase("closed");
+  };
 
   const closeMenu = () => {
     if (!keyboardMenuInteractionRef.current) {
@@ -167,6 +179,7 @@ export function SiteHeader() {
     }
 
     if (menuPhase === "closed") {
+      suppressFocusRestoreRef.current = false;
       setMenuPhase("opening");
     } else if (menuPhase !== "closing") {
       closeMenu();
@@ -186,7 +199,7 @@ export function SiteHeader() {
   return (
     <>
       <header className="siteHeader">
-        <Link
+        <FadeLink
           className="brand"
           href="/#top"
           aria-label="Shams for Humanity home"
@@ -194,12 +207,12 @@ export function SiteHeader() {
         >
           <span className="brandMark" aria-hidden="true">✦</span>
           <span>SHAMS / HUMANITY</span>
-        </Link>
+        </FadeLink>
         <nav className="desktopNav" aria-label="Primary navigation" inert={menuMounted}>
-          <Link href="/#about">About</Link>
-          <Link href="/#lineup">Artists</Link>
-          <Link href="/#info">Info</Link>
-          <Link href="/#tickets">Tickets</Link>
+          <FadeLink href="/#about">About</FadeLink>
+          <FadeLink href="/#lineup">Artists</FadeLink>
+          <FadeLink href="/#info">Info</FadeLink>
+          <FadeLink href="/#tickets">Tickets</FadeLink>
         </nav>
         <button
           ref={menuButtonRef}
@@ -231,10 +244,10 @@ export function SiteHeader() {
           onTransitionEnd={handleMenuTransitionEnd}
         >
           <nav aria-label="Mobile navigation">
-            <Link onNavigate={closeMenu} href="/#about">About <span>01</span></Link>
-            <Link onNavigate={closeMenu} href="/#lineup">Artists <span>02</span></Link>
-            <Link onNavigate={closeMenu} href="/#info">Event info <span>03</span></Link>
-            <Link onNavigate={closeMenu} href="/#tickets">Tickets <span>04</span></Link>
+            <FadeLink onBeforeNavigate={closeMenuForNavigation} href="/#about">About <span>01</span></FadeLink>
+            <FadeLink onBeforeNavigate={closeMenuForNavigation} href="/#lineup">Artists <span>02</span></FadeLink>
+            <FadeLink onBeforeNavigate={closeMenuForNavigation} href="/#info">Event info <span>03</span></FadeLink>
+            <FadeLink onBeforeNavigate={closeMenuForNavigation} href="/#tickets">Tickets <span>04</span></FadeLink>
           </nav>
           <p>{event.city} · {event.date}</p>
         </div>

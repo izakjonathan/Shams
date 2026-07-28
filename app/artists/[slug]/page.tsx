@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ArrowIcon } from "../../components/ArrowIcon";
 import { ArtistNavigation } from "../../components/ArtistNavigation";
 import { PageCloseButton } from "../../components/PageCloseButton";
-import { StatusLabel } from "../../components/StatusLabel";
 import { artists, event, getArtistBySlug } from "../../lib/content";
 
 export const dynamicParams = false;
@@ -56,7 +55,6 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
         </div>
         <div className="artistHeroGrid">
           <div className="artistHeroCopy">
-            <StatusLabel status={artist.status} />
             <p className="eyebrow">{artist.stage} · {artist.time}</p>
             <h1>{artist.name}</h1>
             <p className="artistStandfirst">{artist.shortBio}</p>

@@ -1,27 +1,42 @@
-# Shams for Humanity — v1.3.2
+# Shams for Humanity — v1.3.4
 
-Mobile-first Next.js festival website. This release refines the programme layout, restores the compact artist list, and introduces consistent fade-only page transitions while retaining placeholder content.
+Mobile-first Next.js festival website using placeholder content while the design and interaction system are developed.
 
-## v1.3.2 — Programme layout and route fades
+## Current release
 
-- Removed programme confirmation and development-status labels.
-- Removed the standalone programme time column above each title.
-- Shifted programme content left to use the former time-column space.
-- Restored the compact text-only artist list used in the earlier baseline.
-- Added consistent opacity-only fade-out and fade-in transitions for internal page navigation.
-- Removed vertical movement from page opening and closing transitions.
-- Preserved the programme filters, developed ticket section, artist pages, splash, menu, gradients, photography, and Safari behavior.
+v1.3.4 is a transition, accessibility, and repository-consistency correction release.
 
-## Commands
+### Navigation
+
+- Site-controlled cross-page links fade out before navigation and fade in after the destination has been positioned.
+- Same-page section links scroll explicitly; global smooth scrolling is disabled.
+- Artist close controls return to the corresponding artist row without a visible route scroll.
+- Mobile-menu navigation unmounts the menu before route fading begins.
+- Native browser Back/Forward and Safari swipe gestures retain browser-controlled gesture behavior; the destination is normalised and faded in after the history route commits.
+
+### Programme and artists
+
+- Homepage artists use the compact list layout.
+- Programme rows omit public time and development-status labels.
+- Artist and ticket development-status fields have been removed from both the public interface and active content model.
+- Programme filters include a visible mobile overflow affordance.
+
+### Quality controls
 
 ```bash
 npm install
-npm run dev
+npm run release:validate
+npm run quality:check
 npm run typecheck
 npm run build
-npm run release:validate
 ```
 
-## Production configuration
+`quality:check` rejects reintroduction of removed artist-card code, public status-label code, the obsolete ticket boolean, and global CSS smooth scrolling.
 
-Copy `.env.example` and configure values through Vercel when available. Placeholder content is intentional and indexing remains disabled by default.
+## Environment
+
+Copy `.env.example` to `.env.local` when integrations are ready. Preview deployments remain noindex by default.
+
+## Deployment
+
+The project currently uses `npm install` because a lockfile could not be generated in the offline build environment. Generate and commit `package-lock.json` in a networked environment, then switch Vercel to `npm ci --no-audit --no-fund`.

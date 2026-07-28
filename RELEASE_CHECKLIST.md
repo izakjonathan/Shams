@@ -1,41 +1,40 @@
-# Release checklist — v1.3.2
+# v1.3.4 Release Checklist
 
-## Automated checks
+## Automated
 
 ```bash
-npm install
 npm run release:validate
+npm run quality:check
 npm run typecheck
 npm run build
 ```
 
-## Programme
+## Navigation
 
-- Verify all filter buttons update the visible schedule.
-- Verify keyboard focus remains visible.
-- Verify the schedule remains readable on small phones and landscape screens.
-- Verify reduced-motion mode removes unnecessary movement.
+- Homepage → artist fades out and artist page fades in.
+- Artist close fades out and returns to the matching compact-list row without visible scrolling.
+- Previous/next artist navigation fades correctly.
+- Information pages open and close using fades.
+- Mobile-menu navigation removes the menu before the destination appears.
+- Rapid repeated taps do not retarget an active transition.
+- Failed navigation restores page visibility.
+- Keyboard activation focuses the destination main content or anchor.
+- Reduced-motion mode removes transition animation.
 
-## Tickets
+## Browser history
 
-- Verify sold-out and unavailable actions are disabled.
-- Verify available actions show “Tickets soon” when no URL is configured.
-- Verify a configured HTTPS ticket URL opens correctly.
-- Replace placeholder ticket information later without changing component markup.
+- Back and Forward restore the expected destination and scroll position without smooth route scrolling.
+- Safari swipe-back is accepted as a native browser gesture; verify the committed destination fades in cleanly.
 
-## Regression checks
+## Layout
 
-- Splash appears once per tab session.
-- Safari loading area retains the approved behavior.
-- Mobile menu opens, closes, scrolls, and restores focus.
-- Artist cards and artist routes remain functional.
-- Information-page close controls return home.
+- Compact artist list is present; no image-card grid remains.
+- Programme has no public time or development-status labels.
+- Programme filters show a continuation hint on narrow screens.
+- No public placeholder/confirmed labels appear on artists or tickets.
 
+## Deployment
 
-## v1.3.2 checks
-
-- [ ] Programme rows contain no confirmation/development labels.
-- [ ] Programme titles are not preceded by a standalone time value.
-- [ ] Homepage artists render as the compact list rather than image cards.
-- [ ] Artist, information, contact, and home navigation fade out and in without vertical movement.
-- [ ] Same-page anchor links remain immediate and are not delayed by the route transition.
+- Generate and commit `package-lock.json` in a networked environment.
+- Change Vercel install command to `npm ci --no-audit --no-fund` after the lockfile is committed.
+- Keep indexing disabled while placeholder public information remains.

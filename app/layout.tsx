@@ -7,7 +7,7 @@ import { SplashScreen } from "./components/SplashScreen";
 import { SiteFooter } from "./components/SiteFooter";
 import { RouteFade } from "./components/RouteFade";
 import { artists, event, tickets } from "./lib/content";
-import { allowIndexing, serializeJsonLd, siteUrl } from "./lib/site";
+import { allowIndexing, safeExternalUrl, serializeJsonLd, siteUrl } from "./lib/site";
 
 const agilera = localFont({
   src: "../public/fonts/Agilera.woff",
@@ -64,6 +64,7 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const configuredTicketUrl = safeExternalUrl(process.env.NEXT_PUBLIC_TICKET_URL);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "MusicEvent",
@@ -88,19 +89,23 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       "@type": "PerformingGroup",
       name: artist.name,
     })),
-    offers: tickets.map((ticket) => ({
-      "@type": "Offer",
-      name: ticket.type,
-      price: ticket.price,
-      priceCurrency: ticket.currency,
-      availability:
-        ticket.availability === "available"
-          ? "https://schema.org/InStock"
-          : ticket.availability === "sold-out"
-            ? "https://schema.org/SoldOut"
-            : "https://schema.org/PreOrder",
-      url: `${siteUrl}/#tickets`,
-    })),
+    ...(configuredTicketUrl
+      ? {
+          offers: tickets.map((ticket) => ({
+            "@type": "Offer",
+            name: ticket.type,
+            price: ticket.price,
+            priceCurrency: ticket.currency,
+            availability:
+              ticket.availability === "available"
+                ? "https://schema.org/InStock"
+                : ticket.availability === "sold-out"
+                  ? "https://schema.org/SoldOut"
+                  : "https://schema.org/PreOrder",
+            url: configuredTicketUrl,
+          })),
+        }
+      : {}),
   };
 
   return (

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { FadeLink } from "./components/FadeLink";
 import { ArrowIcon } from "./components/ArrowIcon";
 
 export const metadata: Metadata = {
@@ -13,9 +13,9 @@ export default function NotFound() {
       <p className="eyebrow">404</p>
       <h1>This page has wandered off.</h1>
       <p>The page you're looking for doesn't exist, or has moved.</p>
-      <Link className="button buttonPrimary" href="/">
+      <FadeLink className="button buttonPrimary" href="/">
         Back to Shams for Humanity <ArrowIcon />
-      </Link>
+      </FadeLink>
     </main>
   );
 }

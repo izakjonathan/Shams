@@ -1,44 +1,37 @@
-# Shams for Humanity v1.3.2 — Release Audit
+# v1.3.4 Current-State Audit
 
-## Scope
+## Corrected in this release
 
-This release is built from the confirmed v1.2.1 baseline. It adds programme interaction and develops the ticket section without requiring real event information or live integrations.
+- Removed the unused `ArtistCard` component and all artist-card CSS.
+- Removed public placeholder/confirmed labels and their unused content-model fields from artist and ticket data.
+- Removed the artist loading route that could create a double fade.
+- Removed unused programme times and programme development statuses from the public programme model.
+- Rebuilt route transition lifecycle with timer cleanup, failure recovery, duplicate-click protection, search-aware route identity, `aria-busy`, a live loading status, and keyboard-focused destination handling.
+- Coordinated mobile-menu navigation by unmounting the menu before route fading begins.
+- Disabled automatic browser scroll restoration and normalised history destinations after commit.
+- Revealed the complete lineup before returning to an artist anchor, preventing nearby vertical reveal movement.
+- Added a mobile programme-filter continuation affordance.
+- Moved responsive CSS to the final import position.
+- Removed cross-page selectors from artist stylesheet ownership.
+- Updated release validation and added dependency-free repository quality checks.
+- Rewrote current documentation without stale artist-card or earlier-version claims.
 
-## Programme system
+## Native browser limitation
 
-- Programme data now contains explicit categories, stage labels, descriptions, and content status.
-- `ProgrammeExplorer` owns filtering state while the homepage remains server-rendered outside this isolated client component.
-- The filter controls use native buttons and `aria-pressed`.
-- Filtered results are announced through an `aria-live` programme list.
-- Programme content remains available without requiring external services.
+Safari's interactive swipe-back animation and browser-owned history gestures cannot be fully replaced by a JavaScript exit fade. Site controls use the complete fade-out/fade-in lifecycle. Native history destinations are hidden, positioned, and faded in after the browser commits the route.
 
-## Ticket system
+## Remaining release-environment limitation
 
-- `TicketSection` centralizes ticket rendering and state behavior.
-- Ticket tiers use an explicit availability union rather than independent booleans.
-- Available tickets link externally only when a validated URL exists.
-- Missing URLs, coming-soon tiers, and sold-out tiers use disabled button states.
-- Placeholder status is visible and controlled by the shared content-status model.
+A dependency lockfile could not be generated because the package registry was unavailable in the build environment. Source validation passes, but a networked environment must run `npm install`, commit `package-lock.json`, and then use `npm ci` for fully reproducible deployments.
 
-## Compatibility
+## Verification completed
 
-- Existing visual direction and section gradient systems are unchanged.
-- New layouts include mobile, tablet, desktop, hover, keyboard-focus, and reduced-motion behavior.
-- The current deploy-friendly dependency set is unchanged.
+- TypeScript/TSX syntax transpilation
+- CSS brace and import validation
+- relative import resolution
+- JSON validation
+- repository contradiction checks
+- release configuration validation
+- archive structure and ZIP integrity
 
-## Validation
-
-- Source structure, imports, CSS balance, JSON, release metadata, and ZIP integrity were checked.
-- A dependency-backed Next.js build still requires package installation in a networked environment.
-
-## v1.3.2 deployment correction
-
-The v1.3.0 ticket model replaced the legacy `available` boolean with the `availability` union, but the event JSON-LD mapping in `app/layout.tsx` still referenced `ticket.available`. The mapping now exhaustively handles all three current values and produces valid Schema.org availability URLs.
-
-
-## v1.3.2 interaction revision
-
-- Programme rows no longer expose status labels or a separate time column.
-- Programme copy begins in the second grid column directly after the row index.
-- Homepage artist discovery has returned to the compact list presentation from the earlier baseline.
-- Internal route navigation now uses a shared opacity-only transition with no translate or scroll-style movement.
+A dependency-backed `next build` was not run in this environment.

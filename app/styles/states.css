@@ -18,7 +18,6 @@
   transition-delay: calc(var(--reveal-order, 0) * var(--reveal-stagger));
 }
 
-.scrollRevealEnabled .artistCard.revealItem,
 .scrollRevealEnabled .infoCards > article.revealItem,
 .scrollRevealEnabled .programmeEntry.revealItem,
 .scrollRevealEnabled .ticketGrid > article.revealItem,
@@ -119,7 +118,6 @@ input:focus-visible {
 
 .button:active,
 .ticketAction:active,
-.artistCardLink:active,
 .artistNavigationLink:active {
   transform: scale(.985);
 }

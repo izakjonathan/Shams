@@ -113,10 +113,6 @@
     font-size: 8px;
   }
 
-  .artistCardBody {
-    min-height: 210px;
-  }
-
   .artistFactBar strong,
   .artistSetCard strong {
     font-size: 13px;
@@ -159,8 +155,6 @@
 }
 
 @media (forced-colors: active) {
-  .artistCard,
-  .artistCardArrow,
   .artistPortrait,
   .pageCloseButton,
   .ticketGrid article {
@@ -172,15 +166,6 @@
 /* v1.2.1 narrow-view and zoom resilience */
 @media (max-width: 360px) {
   :root { --page-gutter: 15px; }
-
-  .artistCardMeta {
-    display: grid;
-    gap: 6px;
-  }
-
-  .artistCard h3 {
-    font-size: clamp(42px, 15vw, 58px);
-  }
 
   .artistNavigationLink {
     min-height: 220px;
@@ -200,11 +185,6 @@
 }
 
 @media (min-width: 1800px) {
-  .artistCardGrid {
-    max-width: 1680px;
-    margin-right: auto;
-    margin-left: auto;
-  }
 }
 
 @media (min-width: 760px) {

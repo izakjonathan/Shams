@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { FadeLink } from "./FadeLink";
 
 interface PageCloseButtonProps {
   readonly href?: string;
@@ -12,12 +12,12 @@ export function PageCloseButton({
   className = "",
 }: PageCloseButtonProps) {
   return (
-    <Link
+    <FadeLink
       className={`pageCloseButton${className ? ` ${className}` : ""}`}
       href={href}
       aria-label={label}
     >
       <span aria-hidden="true">×</span>
-    </Link>
+    </FadeLink>
   );
 }

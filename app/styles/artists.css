@@ -52,9 +52,6 @@
   padding: 58px 0 42px;
 }
 
-.artistHeroCopy .statusLabel {
-  margin-bottom: 18px;
-}
 
 .artistHeroCopy h1 {
   margin: 12px 0 28px;
@@ -157,9 +154,7 @@
 
 .artistEditorialLead h2,
 .artistSet h2,
-.artistLinks h2,
-.informationBody h2,
-.organizerBlock h2 {
+.artistLinks h2 {
   margin: 18px 0 0;
   font-size: clamp(50px, 11vw, 108px);
   line-height: .84;
@@ -188,8 +183,7 @@
   color: var(--color-white);
 }
 
-.artistQuote .darkGlowOne,
-.contactHero .darkGlowOne {
+.artistQuote .darkGlowOne {
   --glow-w: clamp(680px, 160vw, 1200px);
   --glow-h: clamp(680px, 160vw, 1200px);
   --glow-left: -82%;
@@ -514,5 +508,11 @@
   .artistLoadingFacts span {
     animation: none;
     background: rgba(9, 9, 9, .09);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .artistExternalLink:not(.isPlaceholder):hover {
+    transform: translateX(8px);
   }
 }
