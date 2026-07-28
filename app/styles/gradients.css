@@ -211,9 +211,9 @@
 }
 
 .programme {
-  --section-wash-1: radial-gradient(ellipse 86% 50% at 16% 6%, rgba(252, 198, 79, 0.405) 0%, rgba(252, 198, 79, 0.216) 34%, rgba(252, 198, 79, 0.095) 58%, transparent 80%);
-  --section-wash-2: radial-gradient(ellipse 90% 54% at 90% 34%, rgba(252, 198, 79, 0.351) 0%, rgba(252, 198, 79, 0.189) 36%, rgba(252, 198, 79, 0.081) 58%, transparent 80%);
-  --section-wash-3: radial-gradient(ellipse 76% 44% at 42% 100%, rgba(252, 198, 79, 0.243) 0%, rgba(252, 198, 79, 0.135) 34%, rgba(252, 198, 79, 0.054) 56%, transparent 78%);
+  --section-wash-1: radial-gradient(ellipse 86% 50% at 16% 6%, rgba(193, 85, 44, 0.34) 0%, rgba(193, 85, 44, 0.18) 34%, rgba(193, 85, 44, 0.08) 58%, transparent 80%);
+  --section-wash-2: radial-gradient(ellipse 90% 54% at 90% 34%, rgba(193, 85, 44, 0.29) 0%, rgba(193, 85, 44, 0.16) 36%, rgba(193, 85, 44, 0.07) 58%, transparent 80%);
+  --section-wash-3: radial-gradient(ellipse 76% 44% at 42% 100%, rgba(193, 85, 44, 0.2) 0%, rgba(193, 85, 44, 0.11) 34%, rgba(193, 85, 44, 0.045) 56%, transparent 78%);
   --section-glow-1-w: 114vw;
   --section-glow-1-h: 84vw;
   --section-glow-1-left: -50vw;
@@ -270,6 +270,10 @@
   --section-glow-3-opacity: 0.64;
 }
 
+.programme .paperGlow {
+  background: var(--ember-orb-gradient);
+}
+
 /* Dark section glow geometry.
    Each dark section now uses one larger primary glow only.
    Each dark section uses one deliberately oversized primary glow. */
@@ -287,6 +291,18 @@
   --glow-left: -68%;
   --glow-bottom: -46%;
   --glow-opacity: 0.64;
+}
+
+.tickets .darkGlow {
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(193, 85, 44, 0.50) 0%,
+    rgba(193, 85, 44, 0.36) 18%,
+    rgba(193, 85, 44, 0.20) 36%,
+    rgba(193, 85, 44, 0.09) 52%,
+    rgba(193, 85, 44, 0.025) 66%,
+    transparent 74%
+  );
 }
 
 @media (min-width: 760px) {
