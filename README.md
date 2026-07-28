@@ -1,8 +1,8 @@
-# Shams for Humanity — v1.3.0
+# Shams for Humanity — v1.3.1
 
 Mobile-first Next.js festival website. This release develops the programme and ticket experience while retaining placeholder content.
 
-## v1.3.0 — Programme and ticket experience
+## v1.3.1 — Programme and ticket experience
 
 - Added an interactive programme explorer with category filters.
 - Expanded programme entries with stage, category, description, and confirmation status.

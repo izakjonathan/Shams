@@ -92,9 +92,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       name: ticket.type,
       price: ticket.price,
       priceCurrency: ticket.currency,
-      availability: ticket.available
-        ? "https://schema.org/InStock"
-        : "https://schema.org/SoldOut",
+      availability:
+        ticket.availability === "available"
+          ? "https://schema.org/InStock"
+          : ticket.availability === "sold-out"
+            ? "https://schema.org/SoldOut"
+            : "https://schema.org/PreOrder",
       url: `${siteUrl}/#tickets`,
     })),
   };

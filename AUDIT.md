@@ -1,4 +1,4 @@
-# Shams for Humanity v1.3.0 — Release Audit
+# Shams for Humanity v1.3.1 — Release Audit
 
 ## Scope
 
@@ -30,3 +30,7 @@ This release is built from the confirmed v1.2.1 baseline. It adds programme inte
 
 - Source structure, imports, CSS balance, JSON, release metadata, and ZIP integrity were checked.
 - A dependency-backed Next.js build still requires package installation in a networked environment.
+
+## v1.3.1 deployment correction
+
+The v1.3.0 ticket model replaced the legacy `available` boolean with the `availability` union, but the event JSON-LD mapping in `app/layout.tsx` still referenced `ticket.available`. The mapping now exhaustively handles all three current values and produces valid Schema.org availability URLs.
