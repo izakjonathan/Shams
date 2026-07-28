@@ -194,7 +194,6 @@
    ========================================================================== */
 
 .manifesto {
-  position: relative;
   min-height: 82vh;
   background-color: var(--color-dark);
   color: var(--color-white);
@@ -221,18 +220,16 @@
   flex-wrap: wrap;
   font-family: var(--font-display);
   font-size: 20px;
-  color: var(--color-ember);
 }
 
+
 .verticalText {
-  display: block;
-  position: relative;
-  z-index: 3;
-  margin-bottom: 28px;
+  display: none;
+  position: absolute;
+  left: 20px;
+  writing-mode: vertical-rl;
   font-size: 9px;
   letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--color-light-muted);
 }
 
 /* ========================================================================== 
@@ -258,76 +255,6 @@
   color: var(--color-ink);
 }
 
-.artistList {
-  border-top: 1px solid var(--color-line);
-}
-
-.artistRow {
-  display: grid;
-  grid-template-columns: 32px 1fr 34px;
-  grid-template-areas:
-    "num name arrow"
-    "meta meta meta";
-  column-gap: 12px;
-  row-gap: 10px;
-  align-items: center;
-  border-bottom: 1px solid var(--color-line);
-  padding: 22px 0;
-  transition: padding var(--duration-fast),
-    background var(--duration-fast);
-}
-
-.artistRow h3 {
-  grid-area: name;
-  font-family: var(--font-display);
-  font-size: clamp(36px, 8.5vw, 72px);
-  font-weight: var(--font-weight-display);
-  letter-spacing: var(--tracking-display);
-  margin: 0;
-}
-
-.artistMeta {
-  grid-area: meta;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  font-size: 11px;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-}
-
-.artistMeta span + span::before {
-  content: "\00B7";
-  margin-right: 8px;
-  color: var(--color-line-strong);
-}
-
-.artistNumber {
-  grid-area: num;
-  font-size: 10px;
-  color: var(--color-ember);
-}
-
-.artistArrow {
-  grid-area: arrow;
-  border: 1px solid var(--color-ink);
-  background: transparent;
-  border-radius: var(--radius-circle);
-  width: var(--icon-button-size);
-  height: var(--icon-button-size);
-  padding: 8px;
-  display: grid;
-  place-items: center;
-  color: inherit;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.artistArrow .arrowIcon {
-  width: 100%;
-  height: 100%;
-}
-
 .lineupNote {
   font-size: 11px;
   text-transform: uppercase;
@@ -340,17 +267,8 @@
    ========================================================================== */
 
 .eventInfo {
-  position: relative;
-  overflow: hidden;
-  background-color: var(--color-accent);
-  background-image: radial-gradient(ellipse 76% 54% at 90% 104%, var(--color-ember-glow) 0%, var(--color-ember-soft) 40%, transparent 74%);
-  background-repeat: no-repeat;
+  background: var(--color-accent);
   padding: var(--section-space-mobile) var(--page-gutter);
-}
-
-.eventInfo > * {
-  position: relative;
-  z-index: 1;
 }
 
 .sectionIndex.light {
@@ -405,27 +323,7 @@
    11 — Programme
    ========================================================================== */
 
-.timeline {
-  display: grid;
-  border-top: 1px solid var(--color-line);
-}
-
-.timeline div {
-  display: grid;
-  grid-template-columns: 80px 1fr;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--color-line);
-}
-
-.timeline span {
-  font-size: 12px;
-}
-
-.timeline strong {
-  font-family: var(--font-display);
-  font-size: 26px;
-  font-weight: var(--font-weight-display);
-}
+/* Programme interaction styles live in programme-tickets.css. */
 
 /* ========================================================================== 
    12 — Tickets
@@ -476,8 +374,7 @@
 
 .badge {
   font-size: 9px;
-  color: var(--color-ember);
-  border: var(--border-solid) var(--color-ember);
+  border: var(--border-solid) var(--color-control-line);
   border-radius: 20px;
   padding: 5px 8px;
 }
@@ -532,10 +429,6 @@
   color: var(--color-ink);
 }
 
-.ticketFootnote {
-  font-size: 10px;
-  color: var(--color-ticket-footnote);
-}
 
 /* ========================================================================== 
    13 — FAQ

@@ -204,52 +204,22 @@
 }
 
 @media (hover: hover) {
-  .artistHeroTopline a,
   .artistExternalLink,
-  .nextArtist a,
   .footerLinks a {
     transition: opacity var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
   }
 
-  .artistHeroTopline a:hover,
   .footerLinks a:hover {
     opacity: .62;
   }
 
-  .artistExternalLink:not(.isPlaceholder):hover,
-  .nextArtist a:hover {
+  .artistExternalLink:not(.isPlaceholder):hover {
     transform: translateX(8px);
   }
 }
 
 @media (min-width: 760px) {
-  .artistHeroGrid {
-    grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
-    gap: clamp(60px, 8vw, 130px);
-  }
 
-  .artistPortrait {
-    min-height: 520px;
-  }
-
-  .artistFactBar {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .artistEditorial {
-    grid-template-columns: minmax(280px, .8fr) minmax(420px, 1.2fr);
-    gap: 8vw;
-  }
-
-  .artistSet {
-    grid-template-columns: minmax(300px, .85fr) minmax(420px, 1.15fr);
-  }
-
-  .artistSetIntro {
-    grid-row: span 2;
-  }
-
-  .artistLinks,
   .organizerBlock {
     grid-template-columns: minmax(300px, .8fr) minmax(420px, 1.2fr);
     gap: 8vw;
@@ -278,7 +248,7 @@
     padding-left: clamp(28px, 5vw, 70px);
   }
 
-  .artistQuote .darkGlowOne,
+
   .contactHero .darkGlowOne {
     --glow-w: clamp(900px, 94vw, 1500px);
     --glow-h: clamp(900px, 94vw, 1500px);

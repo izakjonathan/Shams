@@ -18,9 +18,9 @@
   transition-delay: calc(var(--reveal-order, 0) * var(--reveal-stagger));
 }
 
-.scrollRevealEnabled .artistRow.revealItem,
+.scrollRevealEnabled .artistCard.revealItem,
 .scrollRevealEnabled .infoCards > article.revealItem,
-.scrollRevealEnabled .timeline > div.revealItem,
+.scrollRevealEnabled .programmeEntry.revealItem,
 .scrollRevealEnabled .ticketGrid > article.revealItem,
 .scrollRevealEnabled .faqList > article.revealItem {
   --reveal-distance: var(--reveal-distance-small);
@@ -60,3 +60,71 @@ input:focus-visible {
   top: 16px;
 }
 
+
+/* Complete interaction states */
+.button,
+.ticketAction,
+.newsletter button,
+.faqList button,
+.footerLinks a,
+.footerBottom a,
+.textLink {
+  transition: color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    opacity var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.ticketAction,
+.newsletter button {
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .buttonPrimary:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-ink);
+    transform: translateY(-2px);
+  }
+
+  .textLink:hover,
+  .footerLinks a:hover,
+  .footerBottom a:hover {
+    opacity: .64;
+  }
+
+  .ticketAction:hover {
+    background: var(--color-white);
+    border-color: var(--color-white);
+    color: var(--color-ink);
+  }
+
+  .featuredTicket .ticketAction:hover {
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  .faqList button:hover {
+    padding-right: 10px;
+    padding-left: 10px;
+    background: var(--color-overlay-hover) !important;
+  }
+
+  .newsletter button:not(:disabled):hover {
+    transform: translateX(3px);
+  }
+}
+
+.button:active,
+.ticketAction:active,
+.artistCardLink:active,
+.artistNavigationLink:active {
+  transform: scale(.985);
+}
+
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}

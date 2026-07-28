@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowIcon } from "./components/ArrowIcon";
+import { ArtistCard } from "./components/ArtistCard";
 import { FaqAccordion } from "./components/FaqAccordion";
 import { NewsletterForm } from "./components/NewsletterForm";
+import { ProgrammeExplorer } from "./components/ProgrammeExplorer";
 import { ScrollReveal } from "./components/ScrollReveal";
+import { SectionHeader } from "./components/SectionHeader";
+import { TicketSection } from "./components/TicketSection";
 import { artists, event, faqs, programme, tickets } from "./lib/content";
 import { safeExternalUrl, serializeJsonLd } from "./lib/site";
 
@@ -80,26 +83,14 @@ export default function Home() {
         <div className="paperGlow glowOne" aria-hidden="true" />
         <div className="paperGlow glowTwo" aria-hidden="true" />
         <div className="paperGlow glowThree" aria-hidden="true" />
-        <div className="sectionHeading">
-          <div><div className="sectionIndex">02 — ARTISTS</div><h2>First wave</h2></div>
-          <p>Live performances, boundary-pushing selectors and collaborative moments across two stages.</p>
-        </div>
-        <div className="artistList">
+        <SectionHeader
+          index="02 — ARTISTS"
+          title="First wave"
+          description="Live performances, boundary-pushing selectors and collaborative moments across two stages."
+        />
+        <div className="artistCardGrid">
           {artists.map((artist, index) => (
-            <article className="artistRow" key={artist.name}>
-              <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
-              <h3>{artist.name}</h3>
-              <div className="artistMeta">
-                <span>{artist.type}</span><span>{artist.time}</span><span>{artist.stage}</span>
-              </div>
-              <Link
-                className="artistArrow"
-                href={`/artists/${artist.slug}`}
-                aria-label={`View ${artist.name} artist page`}
-              >
-                <ArrowIcon />
-              </Link>
-            </article>
+            <ArtistCard artist={artist} index={index} key={artist.slug} />
           ))}
         </div>
         <p className="lineupNote">More artists, talks and installations to be announced.</p>
@@ -123,54 +114,24 @@ export default function Home() {
         <div className="paperGlow glowOne" aria-hidden="true" />
         <div className="paperGlow glowTwo" aria-hidden="true" />
         <div className="paperGlow glowThree" aria-hidden="true" />
-        <div className="sectionHeading">
-          <div><div className="sectionIndex">04 — PROGRAMME</div><h2>A day in motion</h2></div>
-          <p>Move between sound, food, ideas and collective experiences at your own pace.</p>
-        </div>
-        <div className="timeline">
-          {programme.map(({ time, label }) => (
-            <div key={time}><span>{time}</span><strong>{label}</strong></div>
-          ))}
-        </div>
+        <SectionHeader
+          index="04 — PROGRAMME"
+          title="A day in motion"
+          description="Move between sound, food, ideas and collective experiences at your own pace."
+        />
+        <ProgrammeExplorer entries={programme} />
       </section>
 
-      <section className="tickets section darkGlowSection" id="tickets">
-        <div className="darkGlow darkGlowOne" aria-hidden="true" />
-        <div className="ticketsHeader"><div className="sectionIndex">05 — TICKETS</div><span>Limited capacity</span></div>
-        <h2>Choose your way in.</h2>
-        <div className="ticketGrid">
-          {tickets.map((ticket) => (
-            <article className={ticket.featured ? "featuredTicket" : ""} key={ticket.type}>
-              <div>
-                <span className="ticketType">{ticket.type}</span>
-                <span className="badge">{ticket.badge}</span>
-              </div>
-              <p>{ticket.description}</p>
-              <strong>{ticket.price} <small>{ticket.currency}</small></strong>
-              {ticket.available && ticketUrl ? (
-                <a className="ticketAction" href={ticketUrl}>
-                  Get ticket <ArrowIcon />
-                </a>
-              ) : (
-                <button type="button" disabled>
-                  {ticket.available ? "Tickets soon" : "Sold out"}
-                </button>
-              )}
-            </article>
-          ))}
-        </div>
-        <p className="ticketFootnote">All prices include fees. A portion of each ticket is donated.</p>
-      </section>
+      <TicketSection tickets={tickets} ticketUrl={ticketUrl} />
 
       <section className="faq section paperGlowSection">
         <div className="paperGlow glowOne" aria-hidden="true" />
         <div className="paperGlow glowTwo" aria-hidden="true" />
         <div className="paperGlow glowThree" aria-hidden="true" />
-        <div className="sectionHeading"><div><div className="sectionIndex">06 — PRACTICAL</div><h2>Good to know</h2></div></div>
+        <SectionHeader index="06 — PRACTICAL" title="Good to know" />
         <FaqAccordion faqs={faqs} />
         <script
           type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
         />
       </section>

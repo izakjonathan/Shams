@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowIcon } from "../../components/ArrowIcon";
+import { ArtistNavigation } from "../../components/ArtistNavigation";
+import { PageCloseButton } from "../../components/PageCloseButton";
+import { StatusLabel } from "../../components/StatusLabel";
 import { artists, event, getArtistBySlug } from "../../lib/content";
 
 export const dynamicParams = false;
@@ -34,21 +36,27 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
   const artist = getArtistBySlug(slug);
   if (!artist) notFound();
 
-  const artistIndex = artists.findIndex((entry) => entry.name === artist.name);
+  const artistIndex = artists.findIndex((entry) => entry.slug === artist.slug);
+  const previousArtist = artists[(artistIndex - 1 + artists.length) % artists.length];
   const nextArtist = artists[(artistIndex + 1) % artists.length];
 
   return (
     <main className="artistPage" id="main-content" tabIndex={-1}>
+      <PageCloseButton
+        href={`/#artist-${artist.slug}`}
+        label="Close the artist page and return to the lineup"
+        className="artistPageClose"
+      />
       <section className="artistHero paperGlowSection">
         <div className="paperGlow glowOne" aria-hidden="true" />
         <div className="paperGlow glowTwo" aria-hidden="true" />
         <div className="paperGlow glowThree" aria-hidden="true" />
         <div className="artistHeroTopline">
           <span>ARTIST {String(artistIndex + 1).padStart(2, "0")} / {String(artists.length).padStart(2, "0")}</span>
-          <Link href="/#lineup">Back to lineup ↑</Link>
         </div>
         <div className="artistHeroGrid">
           <div className="artistHeroCopy">
+            <StatusLabel status={artist.status} />
             <p className="eyebrow">{artist.stage} · {artist.time}</p>
             <h1>{artist.name}</h1>
             <p className="artistStandfirst">{artist.shortBio}</p>
@@ -60,7 +68,8 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               alt={artist.imageAlt}
               fill
               priority
-              sizes="(min-width: 760px) 38vw, 100vw"
+              placeholder="blur"
+              sizes="(min-width: 1400px) 580px, (min-width: 760px) 38vw, calc(100vw - 36px)"
               style={{ objectPosition: artist.imagePosition ?? "center" }}
             />
             <figcaption>{artist.name} · Artist image</figcaption>
@@ -132,12 +141,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
         </div>
       </section>
 
-      <nav className="nextArtist" aria-label="Continue through the lineup">
-        <span>NEXT ARTIST</span>
-        <Link href={`/artists/${nextArtist.slug}`}>
-          <strong>{nextArtist.name}</strong><ArrowIcon />
-        </Link>
-      </nav>
+      <ArtistNavigation previous={previousArtist} next={nextArtist} />
     </main>
   );
 }

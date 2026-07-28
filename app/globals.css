@@ -4,6 +4,8 @@
 @import "./styles/navigation.css";
 @import "./styles/mobile-menu.css";
 @import "./styles/homepage.css";
+@import "./styles/programme-tickets.css";
+@import "./styles/components.css";
 @import "./styles/responsive.css";
 @import "./styles/states.css";
 @import "./styles/errors.css";

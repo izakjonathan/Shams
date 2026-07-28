@@ -1,4 +1,5 @@
 import type { StaticImageData } from "next/image";
+import type { ContentStatus } from "./status";
 import artist01 from "../../../public/images/artists/artist-01.webp";
 import artist02 from "../../../public/images/artists/artist-02.webp";
 import artist03 from "../../../public/images/artists/artist-03.webp";
@@ -12,6 +13,7 @@ export interface ArtistLink {
 
 export interface Artist {
   readonly slug: string;
+  readonly status: ContentStatus;
   readonly name: string;
   readonly type: string;
   readonly time: string;
@@ -33,6 +35,7 @@ export interface Artist {
 export const artists = [
   {
     slug: "nour",
+    status: "placeholder",
     name: "Nour",
     type: "Live",
     time: "18:30",
@@ -55,6 +58,7 @@ export const artists = [
   },
   {
     slug: "maya-al-khalil",
+    status: "placeholder",
     name: "Maya Al Khalil",
     type: "DJ Set",
     time: "20:00",
@@ -77,6 +81,7 @@ export const artists = [
   },
   {
     slug: "aisha-devi",
+    status: "placeholder",
     name: "Aïsha Devi",
     type: "Live A/V",
     time: "21:30",
@@ -99,6 +104,7 @@ export const artists = [
   },
   {
     slug: "sama-abdulhadi",
+    status: "placeholder",
     name: "Sama' Abdulhadi",
     type: "DJ Set",
     time: "23:00",
@@ -121,6 +127,7 @@ export const artists = [
   },
   {
     slug: "habibi-funk",
+    status: "placeholder",
     name: "Habibi Funk",
     type: "DJ Set",
     time: "00:30",
@@ -142,6 +149,7 @@ export const artists = [
   },
   {
     slug: "community-choir",
+    status: "placeholder",
     name: "Community Choir",
     type: "Opening",
     time: "17:00",

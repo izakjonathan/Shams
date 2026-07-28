@@ -1,0 +1,284 @@
+/* ========================================================================== 
+   Reusable content and interaction components
+   ========================================================================== */
+
+.statusLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  font-size: 9px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: var(--tracking-label);
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.statusLabel > span {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
+.statusLabel.is-confirmed > span {
+  background: currentColor;
+}
+
+.statusLabel.is-placeholder {
+  color: var(--color-text-muted);
+}
+
+.artistCardGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+}
+
+.artistCard {
+  min-width: 0;
+  border: 1px solid var(--color-ink);
+  background: rgba(245, 242, 235, .66);
+}
+
+.artistCardLink {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  outline: none;
+}
+
+.artistCardImage {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-dark);
+}
+
+.artistCardImage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 62%, rgba(9, 9, 9, .52));
+}
+
+.artistCardImage img {
+  object-fit: cover;
+  filter: saturate(.92) contrast(1.02);
+  transform: scale(1.001);
+  transition: transform var(--duration-medium) var(--ease-standard),
+    filter var(--duration-medium) var(--ease-standard);
+}
+
+.artistCardImage figcaption {
+  position: absolute;
+  z-index: 2;
+  right: 16px;
+  bottom: 14px;
+  color: var(--color-white);
+  font-size: 10px;
+  letter-spacing: .14em;
+}
+
+.artistCardBody {
+  display: flex;
+  min-height: 230px;
+  flex: 1;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.artistCardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 9px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.artistCard h3 {
+  margin: 28px 0 36px;
+  font-family: var(--font-display);
+  font-size: clamp(46px, 13vw, 76px);
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: .82;
+  overflow-wrap: anywhere;
+}
+
+.artistCardFooter {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: auto;
+}
+
+.artistCardArrow {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--color-ink);
+  border-radius: 50%;
+  transition: transform var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.artistCardArrow svg {
+  width: 17px;
+  height: 17px;
+}
+
+.artistNavigation {
+  display: grid;
+  background: var(--color-dark);
+  color: var(--color-white);
+}
+
+.artistNavigationLink {
+  display: flex;
+  min-width: 0;
+  min-height: 260px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 36px;
+  padding: 52px var(--page-gutter);
+  border-top: 1px solid var(--color-dark-line);
+  transition: background-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard);
+}
+
+.artistNavigationDirection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 9px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.artistNavigationDirection svg {
+  width: 16px;
+  height: 16px;
+}
+
+.artistNavigationLink.isPrevious .artistNavigationDirection svg {
+  transform: rotate(180deg);
+}
+
+.artistNavigationLink.isNext {
+  text-align: right;
+}
+
+.artistNavigationLink.isNext .artistNavigationDirection {
+  justify-content: flex-end;
+}
+
+.artistNavigationLink strong {
+  font-family: var(--font-display);
+  font-size: clamp(46px, 12vw, 104px);
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-display);
+  line-height: .82;
+  overflow-wrap: anywhere;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .artistCardLink:hover .artistCardImage img {
+    transform: scale(1.035);
+    filter: saturate(1) contrast(1.02);
+  }
+
+  .artistCardLink:hover .artistCardArrow {
+    transform: rotate(-8deg) scale(1.06);
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  .artistNavigationLink:hover {
+    background: var(--color-accent);
+    color: var(--color-ink);
+  }
+}
+
+.artistCardLink:focus-visible,
+.artistNavigationLink:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: -3px;
+}
+
+@media (min-width: 700px) {
+  .artistCardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+  }
+
+  .artistNavigation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .artistNavigationLink + .artistNavigationLink {
+    border-left: 1px solid var(--color-dark-line);
+  }
+}
+
+@media (min-width: 1200px) {
+  .artistCardGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+  }
+
+  .artistCardBody {
+    min-height: 260px;
+    padding: 24px;
+  }
+
+  .artistCard h3 {
+    font-size: clamp(54px, 5vw, 86px);
+  }
+}
+
+
+/* v1.2.1 artist-card performance and input refinement */
+.artistCard {
+  scroll-margin-top: calc(var(--header-height-mobile) + 18px);
+}
+
+.artistCard:nth-child(n + 3) {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 680px;
+}
+
+.artistCardLink,
+.artistNavigationLink {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.artistCardArrow {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@media (min-width: 760px) {
+  .artistCard {
+    scroll-margin-top: calc(var(--header-height-desktop) + 18px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .artistCardImage img,
+  .artistCardLink:hover .artistCardImage img,
+  .artistCardLink:active,
+  .artistNavigationLink:active {
+    transform: none !important;
+  }
+}

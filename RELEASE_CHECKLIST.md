@@ -1,40 +1,32 @@
-# Release checklist
+# Release checklist — v1.3.0
 
 ## Automated checks
 
-- [ ] Generate and commit `package-lock.json`.
-- [ ] Switch deployment install command to `npm ci --no-audit --no-fund` after the lockfile exists.
-- [ ] Run `npm run release:check` successfully.
-- [ ] Run `npm run test:e2e:chromium` successfully.
-- [ ] Run the mobile WebKit Playwright project after installing Playwright browsers.
-- [ ] Confirm there are no console, hydration, route, image or font errors.
+```bash
+npm install
+npm run release:validate
+npm run typecheck
+npm run build
+```
 
-## Content and integrations
+## Programme
 
-- [ ] Replace all `.example` addresses and provisional organizer details.
-- [ ] Confirm artist biographies, credits, images, links, times and stages.
-- [ ] Confirm venue, access information and event schedule.
-- [ ] Configure ticket and newsletter environment variables when ready.
-- [ ] Review Privacy, Terms, Accessibility and Contact copy.
+- Verify all filter buttons update the visible schedule.
+- Verify keyboard focus remains visible.
+- Verify the schedule remains readable on small phones and landscape screens.
+- Verify reduced-motion mode removes unnecessary movement.
 
-## Device verification
+## Tickets
 
-- [ ] iPhone Safari: first splash, repeat navigation, browser chrome, menu and gradients.
-- [ ] iPhone Safari landscape and zoomed text: menu remains scrollable.
-- [ ] Android Chrome.
-- [ ] Desktop Safari, Chrome and Firefox.
-- [ ] Keyboard-only navigation and visible focus.
-- [ ] VoiceOver or another screen reader on the homepage, menu and one artist page.
+- Verify sold-out and unavailable actions are disabled.
+- Verify available actions show “Tickets soon” when no URL is configured.
+- Verify a configured HTTPS ticket URL opens correctly.
+- Replace placeholder ticket information later without changing component markup.
 
-## Indexing and domain
+## Regression checks
 
-- [ ] Keep `NEXT_PUBLIC_ALLOW_INDEXING=false` while public information is provisional.
-- [ ] Add the final site URL when the domain is ready.
-- [ ] Enable indexing only after `npm run release:validate` passes with final public content.
-- [ ] Verify canonical URLs, robots, sitemap and sharing previews.
-
-
-## Vercel installation
-
-- Confirm the deployment reaches `npm run build` after the dependency installation step.
-- Do not add ESLint or Playwright back to the deployable package without a committed lockfile and a verified clean install.
+- Splash appears once per tab session.
+- Safari loading area retains the approved behavior.
+- Mobile menu opens, closes, scrolls, and restores focus.
+- Artist cards and artist routes remain functional.
+- Information-page close controls return home.

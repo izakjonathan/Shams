@@ -11,10 +11,10 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 const REVEAL_GROUPS: Array<{ root: string; items: string }> = [
   { root: "#about", items: ".sectionIndex, .statementGrid > h2, .statementGrid > div > *" },
   { root: "#mission", items: ".verticalText, .kicker, h2, .manifestoTags > span" },
-  { root: "#lineup", items: ".sectionHeading .sectionIndex, .sectionHeading h2, .sectionHeading > p, .artistRow, .lineupNote" },
+  { root: "#lineup", items: ".sectionHeading .sectionIndex, .sectionHeading h2, .sectionHeading > p, .artistCard, .lineupNote" },
   { root: "#info", items: ".infoIntro > *, .infoCards > article" },
-  { root: ".programme", items: ".sectionHeading .sectionIndex, .sectionHeading h2, .sectionHeading > p, .timeline > div" },
-  { root: "#tickets", items: ".ticketsHeader > *, h2, .ticketGrid > article, .ticketFootnote" },
+  { root: ".programme", items: ".sectionHeading .sectionIndex, .sectionHeading h2, .sectionHeading > p, .programmeFilters, .programmeEntry" },
+  { root: "#tickets", items: ".ticketsHeader > *, h2, .ticketIntro > *, .ticketGrid > article, .ticketFooter > *" },
   { root: ".faq", items: ".sectionHeading .sectionIndex, .sectionHeading h2, .faqList > article" },
   { root: ".newsletter", items: ".kicker, h2, form > *" },
   { root: "footer", items: ".footerLogo, .footerLinks > div, .footerBottom > *" },

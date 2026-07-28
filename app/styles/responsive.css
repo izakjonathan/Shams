@@ -42,27 +42,6 @@
     align-items: end;
   }
 
-  .artistRow {
-    grid-template-columns: 45px 1fr auto 40px;
-    grid-template-areas: "num name meta arrow";
-  }
-
-  .artistMeta {
-    display: grid;
-    grid-template-columns: 100px 80px 100px;
-    gap: 0;
-  }
-
-  .artistMeta span + span::before {
-    content: none;
-  }
-
-  .artistRow:hover {
-    padding-left: 12px;
-    padding-right: 12px;
-    background: var(--color-overlay-hover);
-  }
-
   .infoCards {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -72,21 +51,6 @@
     border-right: 1px solid var(--color-line-strong);
   }
 
-  .timeline {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .timeline div {
-    display: flex;
-    flex-direction: column;
-    min-height: 190px;
-    border-right: 1px solid var(--color-line);
-    padding: 20px;
-  }
-
-  .timeline strong {
-    margin-top: auto;
-  }
 
   .ticketGrid {
     grid-template-columns: repeat(3, 1fr);
@@ -128,13 +92,117 @@
   }
 
   .verticalText {
-    position: absolute;
-    left: 20px;
-    top: 50%;
-    margin-bottom: 0;
-    transform: translateY(-50%);
-    writing-mode: vertical-rl;
+    display: block;
   }
 
 }
 
+
+/* v1.2 responsive refinement */
+@media (max-width: 420px) {
+  :root {
+    --page-gutter: 18px;
+    --section-space-mobile: 78px;
+  }
+
+  .hero h1 {
+    font-size: clamp(58px, 18vw, 78px);
+  }
+
+  .heroMeta {
+    font-size: 8px;
+  }
+
+  .artistCardBody {
+    min-height: 210px;
+  }
+
+  .artistFactBar strong,
+  .artistSetCard strong {
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 1400px) {
+  .statementGrid,
+  .sectionHeading,
+  .infoIntro,
+  .infoCards,
+  .programmeExplorer,
+  .ticketGrid,
+  .faqList,
+  .newsletter > *,
+  .footerInner {
+    width: min(100%, 1540px);
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .sectionHeading p {
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .hero {
+    min-height: 680px;
+  }
+
+  .mobileMenu {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobileMenu nav {
+    padding-top: 96px;
+  }
+}
+
+@media (forced-colors: active) {
+  .artistCard,
+  .artistCardArrow,
+  .artistPortrait,
+  .pageCloseButton,
+  .ticketGrid article {
+    forced-color-adjust: auto;
+  }
+}
+
+
+/* v1.2.1 narrow-view and zoom resilience */
+@media (max-width: 360px) {
+  :root { --page-gutter: 15px; }
+
+  .artistCardMeta {
+    display: grid;
+    gap: 6px;
+  }
+
+  .artistCard h3 {
+    font-size: clamp(42px, 15vw, 58px);
+  }
+
+  .artistNavigationLink {
+    min-height: 220px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+}
+
+@media (max-width: 699px) {
+  .artistNavigationLink {
+    min-height: 220px;
+  }
+
+  .artistNavigationLink strong {
+    font-size: clamp(44px, 15vw, 74px);
+  }
+}
+
+@media (min-width: 1800px) {
+  .artistCardGrid {
+    max-width: 1680px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}

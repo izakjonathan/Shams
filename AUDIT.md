@@ -1,30 +1,32 @@
-# v1.1.7 current-state audit
+# Shams for Humanity v1.3.0 — Release Audit
 
-## Changes completed
+## Scope
 
-- Split the 2,466-line global stylesheet into focused style files while preserving the exact import and cascade order.
-- Added ESLint with Next.js Core Web Vitals and TypeScript rules.
-- Added Playwright smoke journeys for splash lifecycle, modal menu behavior, and artist navigation.
-- Made the footer and skip link inert together with main content while the mobile modal is mounted.
-- Removed blanket touch/wheel suppression and made the mobile overlay vertically scrollable.
-- Reconciled manifest loading chrome with the paper/transparent loading policy.
-- Removed the obsolete `interest-cohort` Permissions-Policy directive.
-- Replaced placeholder `href="#"` values with optional artist-link URLs.
-- Strengthened release validation so indexing cannot be enabled while draft public contact/legal information remains.
-- Cleaned current release documentation and separated it from historical version notes.
+This release is built from the confirmed v1.2.1 baseline. It adds programme interaction and develops the ticket section without requiring real event information or live integrations.
 
-## Validation limitation
+## Programme system
 
-The package registry was unavailable in this environment. A lockfile, dependency-backed Next.js build, ESLint execution and Playwright execution could therefore not be completed here. The repository includes the configuration and tests, and the release validator warns until a lockfile is generated.
+- Programme data now contains explicit categories, stage labels, descriptions, and content status.
+- `ProgrammeExplorer` owns filtering state while the homepage remains server-rendered outside this isolated client component.
+- The filter controls use native buttons and `aria-pressed`.
+- Filtered results are announced through an `aria-live` programme list.
+- Programme content remains available without requiring external services.
 
-## Remaining launch work
+## Ticket system
 
-- Generate and commit `package-lock.json`, then use `npm ci` in deployment.
-- Install dependencies and run the full release and browser test commands.
-- Replace provisional public content before enabling indexing.
-- Confirm the final custom-domain configuration when available.
+- `TicketSection` centralizes ticket rendering and state behavior.
+- Ticket tiers use an explicit availability union rather than independent booleans.
+- Available tickets link externally only when a validated URL exists.
+- Missing URLs, coming-soon tiers, and sold-out tiers use disabled button states.
+- Placeholder status is visible and controlled by the shared content-status model.
 
+## Compatibility
 
-## v1.1.9 deployment repair
+- Existing visual direction and section gradient systems are unchanged.
+- New layouts include mobile, tablet, desktop, hover, keyboard-focus, and reduced-motion behavior.
+- The current deploy-friendly dependency set is unchanged.
 
-The attached design-improvements archive was internally still versioned as 1.1.7 and included ESLint, eslint-config-next, Playwright, and their release-file requirements without a lockfile. This caused Vercel to spend the deployment resolving development-tool peer dependencies before the application build began. The deployable package now contains only the dependencies required to build and run the Next.js application.
+## Validation
+
+- Source structure, imports, CSS balance, JSON, release metadata, and ZIP integrity were checked.
+- A dependency-backed Next.js build still requires package installation in a networked environment.

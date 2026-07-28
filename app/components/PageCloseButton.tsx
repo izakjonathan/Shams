@@ -1,11 +1,21 @@
 import Link from "next/link";
 
-export function PageCloseButton() {
+interface PageCloseButtonProps {
+  readonly href?: string;
+  readonly label?: string;
+  readonly className?: string;
+}
+
+export function PageCloseButton({
+  href = "/#top",
+  label = "Close this page and return to the Shams for Humanity homepage",
+  className = "",
+}: PageCloseButtonProps) {
   return (
     <Link
-      className="pageCloseButton"
-      href="/#top"
-      aria-label="Close this page and return to the Shams for Humanity homepage"
+      className={`pageCloseButton${className ? ` ${className}` : ""}`}
+      href={href}
+      aria-label={label}
     >
       <span aria-hidden="true">×</span>
     </Link>
