@@ -1,24 +1,15 @@
-# Shams for Humanity v1.5.0
+# Shams for Humanity v1.5.1
 
-Production-oriented Next.js App Router site for Shams for Humanity.
+## v1.5.1 — Menu-style page transitions
 
-## v1.5.0 — Immediate editorial navigation
+This release continues from v1.5.0 and replaces the opacity veil with the same full-screen movement used by the mobile menu.
 
-The route transition system has been redesigned around a fixed compositor-friendly veil rather than holding a native View Transition open while Next.js waits for a route commit.
+- A solid black panel enters from the top immediately after navigation is activated.
+- The route commits while the panel fully covers the viewport.
+- Destination scroll position is applied while covered.
+- The panel exits back toward the top using the menu duration and easing.
+- The live page is not faded, scaled, blurred or moved.
+- The fixed header remains visually stable.
+- Existing navigation locking, prefetching, reduced-motion handling and watchdog recovery remain.
 
-- Immediate visual response on every internal navigation
-- Shorter close transitions than open transitions
-- Destination scroll positioning while fully covered
-- Route prefetching on pointer, focus and touch intent
-- Stable fixed header above the transition layer
-- No blur, directional slide or prolonged DOM lock
-- Reduced-motion bypass and bounded watchdog recovery
-
-## Commands
-
-```bash
-npm install
-npm run typecheck
-npm run build
-npm run release:check
-```
+Run `npm run release:check` before deployment once dependencies are installed.

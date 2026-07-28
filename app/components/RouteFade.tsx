@@ -30,9 +30,8 @@ interface RouteTransitionContextValue {
 
 const RouteTransitionContext = createContext<RouteTransitionContextValue | null>(null);
 
-const OPEN_COVER_MS = 170;
-const CLOSE_COVER_MS = 135;
-const REVEAL_MS = 300;
+const COVER_MS = 550;
+const REVEAL_MS = 550;
 const WATCHDOG_MS = 4500;
 
 function routeFamily(pathname: string) {
@@ -55,10 +54,6 @@ function inferTransitionKind(currentPath: string, destinationPath: string): Tran
 
 function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
-function isCloseTransition(kind: TransitionKind) {
-  return kind === "artist-close" || kind === "page-close";
 }
 
 export function useRouteTransition() {
@@ -199,7 +194,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     document.documentElement.classList.add("routeTransitionActive");
     setTransitionPhase("covering");
 
-    const coverDuration = reducedMotion() ? 0 : isCloseTransition(kind) ? CLOSE_COVER_MS : OPEN_COVER_MS;
+    const coverDuration = reducedMotion() ? 0 : COVER_MS;
 
     timer(() => {
       setTransitionPhase("covered");
@@ -251,9 +246,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       <div className={`routeFade routeFade--${phase}`} data-transition-kind={transitionKindRef.current} aria-busy={transitioning}>
         {children}
       </div>
-      <div className="routeTransitionVeil" aria-hidden="true">
-        <span className="routeTransitionMark">Shams for Humanity</span>
-      </div>
+      <div className="routeTransitionVeil" aria-hidden="true" />
       <span className="srOnly" aria-live="polite" aria-atomic="true">
         {transitioning ? "Loading page" : ""}
       </span>

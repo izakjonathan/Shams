@@ -1,56 +1,34 @@
 /* ========================================================================== 
-   22 — Immediate editorial route transitions
+   22 — Menu-style route transitions
    ========================================================================== */
 
 :root {
-  --route-cover-open: 170ms;
-  --route-cover-close: 135ms;
-  --route-reveal: 300ms;
-  --route-ease-cover: cubic-bezier(.65, 0, .35, 1);
-  --route-ease-reveal: cubic-bezier(.22, 1, .36, 1);
+  --route-panel-duration: var(--duration-menu);
+  --route-panel-ease: var(--ease-menu);
 }
 
 /*
-  This system deliberately does not hold a native View Transition open while
-  Next.js fetches and commits a route. A live, fixed veil responds immediately,
-  hides scroll restoration, and reveals the committed page in a bounded time.
+  Route changes now use the same movement as the mobile navigation: a solid
+  black panel enters from above, the route commits while it covers the screen,
+  and the panel exits back toward the top. The page itself is never faded,
+  scaled, blurred or moved.
 */
 .routeFade {
   min-height: 100%;
-  opacity: 1;
-  transform: scale(1);
-  transform-origin: 50% 22%;
-  will-change: auto;
 }
 
 .routeTransitionVeil {
   position: fixed;
   z-index: 40;
   inset: 0;
-  display: grid;
-  place-items: center;
-  padding: var(--page-gutter);
-  background: var(--color-ink);
-  opacity: 0;
+  background: var(--color-dark);
   visibility: hidden;
   pointer-events: none;
-  transform: translateZ(0);
+  transform: translate3d(0, -100%, 0);
   transition:
-    opacity var(--route-cover-open) var(--route-ease-cover),
-    visibility 0s linear var(--route-cover-open);
-}
-
-.routeTransitionMark {
-  color: var(--color-white);
-  font-family: var(--font-agilera), "Times New Roman", serif;
-  font-size: clamp(26px, 6vw, 72px);
-  line-height: .9;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 120ms ease,
-    transform 220ms var(--route-ease-reveal);
+    transform var(--route-panel-duration) var(--route-panel-ease),
+    visibility 0s linear var(--route-panel-duration);
+  will-change: transform;
 }
 
 :root.routeTransitionActive .routeTransitionVeil {
@@ -58,80 +36,40 @@
   transition-delay: 0s;
 }
 
-:root[data-route-phase="covering"] .routeFade {
-  opacity: .35;
-  transform: scale(.996);
-  transition:
-    opacity var(--route-cover-open) var(--route-ease-cover),
-    transform var(--route-cover-open) var(--route-ease-cover);
+:root[data-route-phase="covering"] .routeFade,
+:root[data-route-phase="covered"] .routeFade,
+:root[data-route-phase="revealing"] .routeFade,
+:root[data-route-phase="revealing-active"] .routeFade {
   pointer-events: none;
-}
-
-:root[data-route-transition="artist-close"][data-route-phase="covering"] .routeFade,
-:root[data-route-transition="page-close"][data-route-phase="covering"] .routeFade {
-  transition-duration: var(--route-cover-close);
 }
 
 :root[data-route-phase="covering"] .routeTransitionVeil,
-:root[data-route-phase="covered"] .routeTransitionVeil {
-  opacity: 1;
+:root[data-route-phase="covered"] .routeTransitionVeil,
+:root[data-route-phase="revealing"] .routeTransitionVeil {
+  transform: translate3d(0, 0, 0);
   pointer-events: auto;
-}
-
-:root[data-route-phase="covered"] .routeTransitionMark {
-  opacity: .9;
-  transform: translateY(0);
-}
-
-:root[data-route-phase="covered"] .routeFade,
-:root[data-route-phase="revealing"] .routeFade {
-  opacity: .42;
-  transform: scale(.992);
-  transition: none;
-  pointer-events: none;
 }
 
 :root[data-route-phase="revealing"] .routeTransitionVeil {
-  opacity: 1;
-  pointer-events: auto;
   transition: none;
 }
 
 :root[data-route-phase="revealing-active"] .routeTransitionVeil {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  transform: translate3d(0, -100%, 0);
+  pointer-events: auto;
   transition:
-    opacity var(--route-reveal) var(--route-ease-reveal),
-    visibility 0s linear var(--route-reveal);
+    transform var(--route-panel-duration) var(--route-panel-ease),
+    visibility 0s linear var(--route-panel-duration);
 }
 
-:root[data-route-phase="revealing-active"] .routeTransitionMark {
-  opacity: 0;
-  transform: translateY(-6px);
-  transition-duration: 130ms;
-}
-
-:root[data-route-phase="revealing-active"] .routeFade {
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: none;
-  transition:
-    opacity var(--route-reveal) var(--route-ease-reveal),
-    transform var(--route-reveal) var(--route-ease-reveal);
-}
-
-/* The fixed header remains live above the veil. */
+/* The fixed site header uses the same stable layer relationship as the menu. */
 .siteHeader {
   isolation: isolate;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .routeFade,
-  .routeTransitionVeil,
-  .routeTransitionMark {
+  .routeTransitionVeil {
     transition-duration: .01ms !important;
     transition-delay: 0ms !important;
-    transform: none !important;
   }
 }

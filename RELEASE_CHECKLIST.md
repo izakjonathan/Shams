@@ -1,12 +1,12 @@
-# Release checklist — v1.5.0
+# Release checklist — v1.5.1
 
-- [x] Flat Vercel deployment structure
-- [x] Version set to 1.5.0
-- [x] Immediate transition feedback
-- [x] Artist open and close links use the same bounded controller
-- [x] Destination scroll is applied while covered
-- [x] Internal routes prefetch on interaction intent
-- [x] Fixed header remains stable
-- [x] Reduced motion supported
+- [x] Version set to 1.5.1
+- [x] Built from the confirmed v1.5.0 working baseline
+- [x] Page transition visually matches mobile-menu movement
+- [x] Black panel covers before route push
+- [x] Destination position is set before reveal
+- [x] No fade, scale or blur on page content
+- [x] Reduced-motion bypass retained
 - [x] Static architecture audit passes
-- [ ] Run `npm install`, `npm run typecheck`, and `npm run build` in a networked environment before production deployment
+- [x] Release configuration validation passes
+- [ ] Run dependency-backed TypeScript and production build in deployment environment

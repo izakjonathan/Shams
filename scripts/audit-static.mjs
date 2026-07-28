@@ -31,7 +31,7 @@ for (const required of ["WATCHDOG_MS", "scrollRestoration", "aria-busy", "router
 }
 
 const viewTransitions = readFileSync(resolve(root, "app/styles/view-transitions.css"), "utf8");
-for (const required of ["routeTransitionVeil", "data-route-phase", "route-reveal", "prefers-reduced-motion"]) {
+for (const required of ["routeTransitionVeil", "data-route-phase", "route-panel-duration", "prefers-reduced-motion"]) {
   if (!viewTransitions.includes(required)) errors.push(`View transition stylesheet is missing: ${required}`);
 }
 
