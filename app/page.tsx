@@ -89,9 +89,7 @@ export default function Home() {
             <article className="artistRow" key={artist.name}>
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
               <h3>{artist.name}</h3>
-              <div className="artistMeta">
-                <span>{artist.type}</span><span>{artist.time}</span><span>{artist.stage}</span>
-              </div>
+              <span>{artist.type}</span><span>{artist.time}</span><span>{artist.stage}</span>
               <Link
                 className="artistArrow"
                 href={`/artists/${artist.slug}`}
@@ -170,7 +168,6 @@ export default function Home() {
         <FaqAccordion faqs={faqs} />
         <script
           type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
         />
       </section>

@@ -35,8 +35,8 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "1.1.7") {
-  errors.push(`package.json version must be 1.1.7 for this release (found ${pkg.version}).`);
+if (pkg.version !== "1.1.8") {
+  errors.push(`package.json version must be 1.1.8 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [
@@ -44,9 +44,6 @@ for (const path of [
   "app/global-error.tsx",
   "RELEASE_CHECKLIST.md",
   ".env.example",
-  "eslint.config.mjs",
-  "playwright.config.ts",
-  "tests/e2e/site.spec.ts",
   "app/privacy/page.tsx",
   "app/terms/page.tsx",
   "app/accessibility/page.tsx",

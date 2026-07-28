@@ -126,7 +126,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </div>
         <script
           type="application/ld+json"
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
       </body>
