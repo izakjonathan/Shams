@@ -26,12 +26,12 @@ if (globals.indexOf('responsive.css') < globals.indexOf('artists.css')) {
 }
 
 const routeFade = readFileSync(resolve(root, "app/components/RouteFade.tsx"), "utf8");
-for (const required of ["NAVIGATION_WATCHDOG_MS", "scrollRestoration", "aria-busy", "popstate", "startViewTransition", "routeTransitionActive"]) {
+for (const required of ["WATCHDOG_MS", "scrollRestoration", "aria-busy", "router.prefetch", "routeTransitionActive", "routeTransitionVeil"]) {
   if (!routeFade.includes(required)) errors.push(`RouteFade is missing required hardening: ${required}`);
 }
 
 const viewTransitions = readFileSync(resolve(root, "app/styles/view-transitions.css"), "utf8");
-for (const required of ["::view-transition-old(root)", "editorial-page-in", "prefers-reduced-motion"]) {
+for (const required of ["routeTransitionVeil", "data-route-phase", "route-reveal", "prefers-reduced-motion"]) {
   if (!viewTransitions.includes(required)) errors.push(`View transition stylesheet is missing: ${required}`);
 }
 

@@ -13,14 +13,8 @@ import {
   useState,
 } from "react";
 
-const FALLBACK_EXIT_MS = 330;
-const FALLBACK_ENTER_MS = 450;
-const NATIVE_COMMIT_TIMEOUT_MS = 2200;
-const NAVIGATION_WATCHDOG_MS = 4200;
-
-type TransitionPhase = "visible" | "exiting" | "entering";
 type TransitionKind = "artist-open" | "artist-close" | "artist-switch" | "page-open" | "page-close" | "page-switch";
-type TransitionEngine = "native" | "fallback";
+type TransitionPhase = "idle" | "covering" | "covered" | "revealing";
 
 interface NavigateOptions {
   readonly replace?: boolean;
@@ -30,26 +24,16 @@ interface NavigateOptions {
 
 interface RouteTransitionContextValue {
   navigate: (href: string, options?: NavigateOptions) => void;
+  prefetch: (href: string) => void;
   transitioning: boolean;
 }
 
-interface ViewTransitionLike {
-  readonly ready: Promise<void>;
-  readonly finished: Promise<void>;
-  readonly updateCallbackDone: Promise<void>;
-  skipTransition: () => void;
-}
-
-type ViewTransitionDocument = Document & {
-  startViewTransition?: (updateCallback: () => void | Promise<void>) => ViewTransitionLike;
-  activeViewTransition?: ViewTransitionLike | null;
-};
-
 const RouteTransitionContext = createContext<RouteTransitionContextValue | null>(null);
 
-export function useRouteTransition() {
-  return useContext(RouteTransitionContext);
-}
+const OPEN_COVER_MS = 170;
+const CLOSE_COVER_MS = 135;
+const REVEAL_MS = 300;
+const WATCHDOG_MS = 4500;
 
 function routeFamily(pathname: string) {
   if (pathname.startsWith("/artists/")) return "artist";
@@ -69,65 +53,80 @@ function inferTransitionKind(currentPath: string, destinationPath: string): Tran
   return "page-switch";
 }
 
-function prefersReducedMotion() {
+function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function isCloseTransition(kind: TransitionKind) {
+  return kind === "artist-close" || kind === "page-close";
+}
+
+export function useRouteTransition() {
+  return useContext(RouteTransitionContext);
 }
 
 export function RouteFade({ children, header }: { readonly children: ReactNode; readonly header?: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [phase, setPhase] = useState<TransitionPhase>("visible");
+  const [phase, setPhase] = useState<TransitionPhase>("idle");
   const [transitioning, setTransitioning] = useState(false);
-  const phaseRef = useRef<TransitionPhase>("visible");
+  const phaseRef = useRef<TransitionPhase>("idle");
   const lockRef = useRef(false);
-  const engineRef = useRef<TransitionEngine | null>(null);
-  const transitionKindRef = useRef<TransitionKind>("page-switch");
+  const previousPathRef = useRef(pathname);
   const timersRef = useRef<number[]>([]);
   const framesRef = useRef<number[]>([]);
-  const previousPathRef = useRef(pathname);
-  const routeCommitResolverRef = useRef<(() => void) | null>(null);
-  const activeViewTransitionRef = useRef<ViewTransitionLike | null>(null);
-  const pendingTargetRef = useRef<{
+  const transitionKindRef = useRef<TransitionKind>("page-switch");
+  const pendingRef = useRef<{
+    href: string;
     hash: string | null;
     focusOnArrival: boolean;
   } | null>(null);
 
-  const clearAsyncWork = useCallback(() => {
-    timersRef.current.forEach((timer) => window.clearTimeout(timer));
+  const clearAsync = useCallback(() => {
+    timersRef.current.forEach(window.clearTimeout);
+    framesRef.current.forEach(window.cancelAnimationFrame);
     timersRef.current = [];
-    framesRef.current.forEach((frame) => window.cancelAnimationFrame(frame));
     framesRef.current = [];
   }, []);
 
-  const scheduleTimer = useCallback((callback: () => void, delay: number) => {
-    const timer = window.setTimeout(callback, delay);
-    timersRef.current.push(timer);
-    return timer;
+  const timer = useCallback((callback: () => void, delay: number) => {
+    const id = window.setTimeout(callback, delay);
+    timersRef.current.push(id);
+    return id;
   }, []);
 
-  const updatePhase = useCallback((next: TransitionPhase) => {
+  const frame = useCallback((callback: FrameRequestCallback) => {
+    const id = window.requestAnimationFrame(callback);
+    framesRef.current.push(id);
+    return id;
+  }, []);
+
+  const setTransitionPhase = useCallback((next: TransitionPhase) => {
     phaseRef.current = next;
     setPhase(next);
+    document.documentElement.dataset.routePhase = next;
   }, []);
 
-  const resetDocumentTransitionState = useCallback(() => {
+  const unlock = useCallback(() => {
+    clearAsync();
+    pendingRef.current = null;
+    lockRef.current = false;
+    setTransitioning(false);
+    setTransitionPhase("idle");
     delete document.documentElement.dataset.routeTransition;
-    delete document.documentElement.dataset.routeTransitionEngine;
+    delete document.documentElement.dataset.routePhase;
     document.documentElement.classList.remove("routeTransitionActive");
-  }, []);
+  }, [clearAsync, setTransitionPhase]);
 
   const positionDestination = useCallback(() => {
-    const pending = pendingTargetRef.current;
+    const pending = pendingRef.current;
     const hash = pending?.hash ?? (window.location.hash || null);
     let target: HTMLElement | null = null;
 
     if (hash && hash !== "#top") {
       target = document.getElementById(decodeURIComponent(hash.slice(1)));
-      if (target) {
-        target.scrollIntoView({ behavior: "auto", block: "start" });
-      } else {
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-      }
+      if (target) target.scrollIntoView({ behavior: "auto", block: "start" });
+      else window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 
       if (hash.startsWith("#artist-")) {
         document.querySelectorAll<HTMLElement>("#lineup .revealItem").forEach((item) => {
@@ -139,201 +138,124 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
 
-    return { target, focusOnArrival: Boolean(pending?.focusOnArrival) };
+    return target;
   }, []);
 
-  const focusDestination = useCallback((target: HTMLElement | null, shouldFocus: boolean) => {
-    if (!shouldFocus) return;
-    const focusTarget = target ?? document.querySelector<HTMLElement>("main#main-content");
-    focusTarget?.focus({ preventScroll: true });
-  }, []);
+  const revealDestination = useCallback(() => {
+    const target = positionDestination();
+    setTransitionPhase("revealing");
 
-  const finishTransition = useCallback(() => {
-    clearAsyncWork();
-    routeCommitResolverRef.current?.();
-    routeCommitResolverRef.current = null;
-    pendingTargetRef.current = null;
-    activeViewTransitionRef.current = null;
-    engineRef.current = null;
-    lockRef.current = false;
-    setTransitioning(false);
-    updatePhase("visible");
-    resetDocumentTransitionState();
-    try { sessionStorage.removeItem("shf-route-target"); } catch {}
-  }, [clearAsyncWork, resetDocumentTransitionState, updatePhase]);
+    frame(() => {
+      document.documentElement.dataset.routePhase = "revealing-active";
+      frame(() => {
+        if (pendingRef.current?.focusOnArrival) {
+          (target ?? document.querySelector<HTMLElement>("main#main-content"))?.focus({ preventScroll: true });
+        }
+        timer(unlock, reducedMotion() ? 20 : REVEAL_MS);
+      });
+    });
+  }, [frame, positionDestination, setTransitionPhase, timer, unlock]);
 
-  const recoverTransition = useCallback(() => {
-    try { activeViewTransitionRef.current?.skipTransition(); } catch {}
-    finishTransition();
-  }, [finishTransition]);
-
-  const performRouterNavigation = useCallback((href: string, replace?: boolean) => {
-    if (replace) router.replace(href, { scroll: false });
-    else router.push(href, { scroll: false });
+  const prefetch = useCallback((href: string) => {
+    try {
+      const destination = new URL(href, window.location.href);
+      if (destination.origin !== window.location.origin) return;
+      router.prefetch(`${destination.pathname}${destination.search}`);
+    } catch {
+      // Leave malformed or external URLs to the browser.
+    }
   }, [router]);
 
   const navigate = useCallback((href: string, options?: NavigateOptions) => {
-    const viewDocument = document as ViewTransitionDocument;
-    if (lockRef.current || phaseRef.current !== "visible" || activeViewTransitionRef.current || viewDocument.activeViewTransition) return;
+    if (lockRef.current) return;
 
     const destination = new URL(href, window.location.href);
     const current = new URL(window.location.href);
-    const sameRoute = destination.pathname === current.pathname && destination.search === current.search;
+    const sameDocumentRoute = destination.pathname === current.pathname && destination.search === current.search;
 
-    if (sameRoute) {
+    if (sameDocumentRoute) {
       const hash = destination.hash || "#top";
       const target = hash === "#top" ? null : document.getElementById(decodeURIComponent(hash.slice(1)));
-      if (target) target.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
-      else window.scrollTo({ top: 0, left: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" });
       window.history.pushState(window.history.state, "", hash);
+      if (target) target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
+      else window.scrollTo({ top: 0, left: 0, behavior: reducedMotion() ? "auto" : "smooth" });
       if (options?.focusOnArrival) (target ?? document.querySelector<HTMLElement>("main#main-content"))?.focus({ preventScroll: true });
       return;
     }
 
-    clearAsyncWork();
+    clearAsync();
     lockRef.current = true;
     setTransitioning(true);
 
-    const transitionKind = options?.transitionKind ?? inferTransitionKind(current.pathname, destination.pathname);
-    transitionKindRef.current = transitionKind;
-    pendingTargetRef.current = {
+    const kind = options?.transitionKind ?? inferTransitionKind(current.pathname, destination.pathname);
+    transitionKindRef.current = kind;
+    pendingRef.current = {
+      href: `${destination.pathname}${destination.search}${destination.hash}`,
       hash: destination.hash || null,
       focusOnArrival: Boolean(options?.focusOnArrival),
     };
 
-    try { sessionStorage.setItem("shf-route-target", destination.hash || "#top"); } catch {}
-
-    const nextHref = `${destination.pathname}${destination.search}${destination.hash}`;
-    const nativeTransition = viewDocument.startViewTransition;
-    const canUseNative = Boolean(nativeTransition) && !prefersReducedMotion();
-
-    document.documentElement.dataset.routeTransition = transitionKind;
-    document.documentElement.dataset.routeTransitionEngine = canUseNative ? "native" : "fallback";
+    document.documentElement.dataset.routeTransition = kind;
     document.documentElement.classList.add("routeTransitionActive");
-    scheduleTimer(recoverTransition, NAVIGATION_WATCHDOG_MS);
+    setTransitionPhase("covering");
 
-    if (canUseNative && nativeTransition) {
-      engineRef.current = "native";
-      const routeCommitted = new Promise<void>((resolve) => {
-        let resolved = false;
-        const resolveOnce = () => {
-          if (resolved) return;
-          resolved = true;
-          resolve();
-        };
-        routeCommitResolverRef.current = resolveOnce;
-        scheduleTimer(resolveOnce, NATIVE_COMMIT_TIMEOUT_MS);
-      });
+    const coverDuration = reducedMotion() ? 0 : isCloseTransition(kind) ? CLOSE_COVER_MS : OPEN_COVER_MS;
 
-      try {
-        const transition = nativeTransition.call(document, async () => {
-          performRouterNavigation(nextHref, options?.replace);
-          await routeCommitted;
-        });
-        activeViewTransitionRef.current = transition;
+    timer(() => {
+      setTransitionPhase("covered");
+      const nextHref = pendingRef.current?.href;
+      if (!nextHref) return unlock();
+      if (options?.replace) router.replace(nextHref, { scroll: false });
+      else router.push(nextHref, { scroll: false });
+    }, coverDuration);
 
-        transition.finished
-          .then(() => {
-            const { target, focusOnArrival } = positionDestination();
-            focusDestination(target, focusOnArrival);
-          })
-          .catch(() => {})
-          .finally(finishTransition);
-      } catch {
-        engineRef.current = "fallback";
-        activeViewTransitionRef.current = null;
-        updatePhase("exiting");
-        scheduleTimer(() => performRouterNavigation(nextHref, options?.replace), FALLBACK_EXIT_MS);
-      }
-      return;
-    }
-
-    engineRef.current = "fallback";
-    updatePhase("exiting");
-    scheduleTimer(() => performRouterNavigation(nextHref, options?.replace), FALLBACK_EXIT_MS);
-  }, [clearAsyncWork, finishTransition, focusDestination, performRouterNavigation, positionDestination, recoverTransition, scheduleTimer, updatePhase]);
+    timer(unlock, WATCHDOG_MS);
+  }, [clearAsync, router, setTransitionPhase, timer, unlock]);
 
   useEffect(() => {
-    const previousRestoration = window.history.scrollRestoration;
+    const previous = window.history.scrollRestoration;
     window.history.scrollRestoration = "manual";
-
-    const handlePopState = () => {
-      if (lockRef.current) return;
-      const destination = new URL(window.location.href);
-      lockRef.current = true;
-      setTransitioning(true);
-      engineRef.current = "fallback";
-      transitionKindRef.current = inferTransitionKind(previousPathRef.current, destination.pathname);
-      pendingTargetRef.current = {
-        hash: destination.hash || null,
-        focusOnArrival: false,
-      };
-      document.documentElement.dataset.routeTransition = transitionKindRef.current;
-      document.documentElement.dataset.routeTransitionEngine = "fallback";
-      document.documentElement.classList.add("routeTransitionActive");
-      updatePhase("entering");
-      scheduleTimer(recoverTransition, NAVIGATION_WATCHDOG_MS);
-    };
-
-    window.addEventListener("popstate", handlePopState);
     return () => {
-      window.removeEventListener("popstate", handlePopState);
-      window.history.scrollRestoration = previousRestoration;
-      try { activeViewTransitionRef.current?.skipTransition(); } catch {}
-      clearAsyncWork();
-      resetDocumentTransitionState();
+      window.history.scrollRestoration = previous;
+      clearAsync();
+      delete document.documentElement.dataset.routeTransition;
+      delete document.documentElement.dataset.routePhase;
+      document.documentElement.classList.remove("routeTransitionActive");
     };
-  }, [clearAsyncWork, recoverTransition, resetDocumentTransitionState, scheduleTimer, updatePhase]);
+  }, [clearAsync]);
 
   useLayoutEffect(() => {
     if (previousPathRef.current === pathname) return;
     previousPathRef.current = pathname;
 
-    if (!lockRef.current) {
-      const frame = window.requestAnimationFrame(() => positionDestination());
-      framesRef.current.push(frame);
+    if (lockRef.current) {
+      revealDestination();
       return;
     }
 
-    if (engineRef.current === "native") {
-      const firstFrame = window.requestAnimationFrame(() => {
-        positionDestination();
-        const secondFrame = window.requestAnimationFrame(() => {
-          routeCommitResolverRef.current?.();
-        });
-        framesRef.current.push(secondFrame);
-      });
-      framesRef.current.push(firstFrame);
-      return;
-    }
-
-    updatePhase("entering");
-    const firstFrame = window.requestAnimationFrame(() => {
-      const { target, focusOnArrival } = positionDestination();
-      const secondFrame = window.requestAnimationFrame(() => {
-        updatePhase("visible");
-        focusDestination(target, focusOnArrival);
-        scheduleTimer(finishTransition, FALLBACK_ENTER_MS);
-      });
-      framesRef.current.push(secondFrame);
+    // Browser back/forward navigation cannot be covered before the URL change,
+    // so make the committed page settle immediately and visibly.
+    positionDestination();
+    setTransitionPhase("revealing");
+    frame(() => {
+      document.documentElement.dataset.routePhase = "revealing-active";
+      timer(unlock, reducedMotion() ? 20 : 220);
     });
-    framesRef.current.push(firstFrame);
-  }, [finishTransition, focusDestination, pathname, positionDestination, scheduleTimer, updatePhase]);
+  }, [frame, pathname, positionDestination, revealDestination, setTransitionPhase, timer, unlock]);
 
-  const contextValue = useMemo<RouteTransitionContextValue>(() => ({ navigate, transitioning }), [navigate, transitioning]);
+  const value = useMemo<RouteTransitionContextValue>(() => ({ navigate, prefetch, transitioning }), [navigate, prefetch, transitioning]);
 
   return (
-    <RouteTransitionContext.Provider value={contextValue}>
+    <RouteTransitionContext.Provider value={value}>
       {header}
-      <div
-        className={`routeFade is-${phase}`}
-        data-transition-kind={transitionKindRef.current}
-        aria-busy={transitioning || phase !== "visible"}
-      >
+      <div className={`routeFade routeFade--${phase}`} data-transition-kind={transitionKindRef.current} aria-busy={transitioning}>
         {children}
       </div>
+      <div className="routeTransitionVeil" aria-hidden="true">
+        <span className="routeTransitionMark">Shams for Humanity</span>
+      </div>
       <span className="srOnly" aria-live="polite" aria-atomic="true">
-        {transitioning || phase !== "visible" ? "Loading page" : ""}
+        {transitioning ? "Loading page" : ""}
       </span>
     </RouteTransitionContext.Provider>
   );

@@ -12,9 +12,21 @@ type FadeLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
   readonly transitionKind?: TransitionKind;
 };
 
-export function FadeLink({ href, onClick, onBeforeNavigate, transitionKind, target, ...props }: FadeLinkProps) {
+export function FadeLink({
+  href,
+  onClick,
+  onBeforeNavigate,
+  transitionKind,
+  target,
+  onPointerEnter,
+  onFocus,
+  onTouchStart,
+  ...props
+}: FadeLinkProps) {
   const routeTransition = useRouteTransition();
   const transitioning = routeTransition?.transitioning ?? false;
+
+  const warmRoute = () => routeTransition?.prefetch(href);
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);
@@ -29,9 +41,7 @@ export function FadeLink({ href, onClick, onBeforeNavigate, transitionKind, targ
     ) return;
 
     const destination = new URL(href, window.location.href);
-    if (destination.origin !== window.location.origin) return;
-
-    if (!routeTransition) return;
+    if (destination.origin !== window.location.origin || !routeTransition) return;
 
     event.preventDefault();
     if (transitioning) return;
@@ -48,6 +58,18 @@ export function FadeLink({ href, onClick, onBeforeNavigate, transitionKind, targ
       href={href}
       target={target}
       aria-disabled={transitioning || props["aria-disabled"] ? true : undefined}
+      onPointerEnter={(event) => {
+        onPointerEnter?.(event);
+        warmRoute();
+      }}
+      onFocus={(event) => {
+        onFocus?.(event);
+        warmRoute();
+      }}
+      onTouchStart={(event) => {
+        onTouchStart?.(event);
+        warmRoute();
+      }}
       onClick={handleClick}
     />
   );
