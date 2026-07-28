@@ -1,4 +1,4 @@
-# Shams for Humanity — v1.4.0
+# Shams for Humanity — v1.4.2
 
 Mobile-first Next.js festival website using placeholder content, static artist pages, interactive programme filtering, ticket states, information pages, and progressive editorial page transitions.
 
@@ -16,7 +16,7 @@ Mobile-first Next.js festival website using placeholder content, static artist p
 - manual route positioning while destination content is hidden
 - reduced-motion bypass and navigation recovery safeguards
 
-## v1.4.0 changes
+## v1.4.2 changes
 
 - upgraded the simple route fade into an editorial transition system
 - added distinct artist-open, artist-close, artist-switch, page-open, page-close and page-switch transition types

@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { Suspense } from "react";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
@@ -125,22 +124,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a className="skipLink" href="#main-content">Skip to content</a>
         <SplashScreen />
         <div className="siteShell">
-          <Suspense
-            fallback={(
-              <>
-                <SiteHeader />
-                <div className="routeFade is-visible">
-                  {children}
-                  <SiteFooter />
-                </div>
-              </>
-            )}
-          >
-            <RouteFade header={<SiteHeader />}>
-              {children}
-              <SiteFooter />
-            </RouteFade>
-          </Suspense>
+          <RouteFade header={<SiteHeader />}>
+            {children}
+            <SiteFooter />
+          </RouteFade>
         </div>
         <script
           type="application/ld+json"

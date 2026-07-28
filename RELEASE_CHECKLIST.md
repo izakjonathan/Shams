@@ -1,4 +1,4 @@
-# v1.4.0 Release Checklist
+# v1.4.2 Release Checklist
 
 ## Transition behavior
 

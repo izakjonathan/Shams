@@ -1,4 +1,4 @@
-# Shams for Humanity v1.4.0 — Release Audit
+# Shams for Humanity v1.4.2 — Release Audit
 
 ## Scope
 
