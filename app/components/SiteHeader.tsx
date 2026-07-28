@@ -138,17 +138,9 @@ export function SiteHeader() {
     ) {
       menuButtonRef.current?.focus({ preventScroll: true });
     }
-  }, [menuPhase]);
 
-  const closeMenuForNavigation = () => {
-    suppressFocusRestoreRef.current = true;
-    keyboardMenuInteractionRef.current = false;
-    if (enterFrameRef.current !== null) window.cancelAnimationFrame(enterFrameRef.current);
-    if (exitTimerRef.current !== null) window.clearTimeout(exitTimerRef.current);
-    enterFrameRef.current = null;
-    exitTimerRef.current = null;
-    setMenuPhase("closed");
-  };
+    if (menuPhase === "closed") suppressFocusRestoreRef.current = false;
+  }, [menuPhase]);
 
   const closeMenu = () => {
     if (!keyboardMenuInteractionRef.current) {
@@ -158,6 +150,17 @@ export function SiteHeader() {
     if (menuPhase === "opening" || menuPhase === "open") {
       setMenuPhase("closing");
     }
+  };
+
+
+  const closeMenuForNavigation = () => {
+    suppressFocusRestoreRef.current = true;
+    if (enterFrameRef.current !== null) window.cancelAnimationFrame(enterFrameRef.current);
+    if (exitTimerRef.current !== null) window.clearTimeout(exitTimerRef.current);
+    enterFrameRef.current = null;
+    exitTimerRef.current = null;
+    (document.activeElement as HTMLElement | null)?.blur();
+    setMenuPhase("closed");
   };
 
   const handleMenuPointerDown = () => {
@@ -179,7 +182,6 @@ export function SiteHeader() {
     }
 
     if (menuPhase === "closed") {
-      suppressFocusRestoreRef.current = false;
       setMenuPhase("opening");
     } else if (menuPhase !== "closing") {
       closeMenu();

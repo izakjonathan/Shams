@@ -4,12 +4,15 @@ import Link from "next/link";
 import type { ComponentProps, MouseEvent } from "react";
 import { useRouteTransition } from "./RouteFade";
 
+type TransitionKind = "artist-open" | "artist-close" | "artist-switch" | "page-open" | "page-close" | "page-switch";
+
 type FadeLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
   readonly href: string;
   readonly onBeforeNavigate?: () => void;
+  readonly transitionKind?: TransitionKind;
 };
 
-export function FadeLink({ href, onClick, onBeforeNavigate, target, ...props }: FadeLinkProps) {
+export function FadeLink({ href, onClick, onBeforeNavigate, transitionKind, target, ...props }: FadeLinkProps) {
   const { navigate, transitioning } = useRouteTransition();
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
@@ -30,7 +33,10 @@ export function FadeLink({ href, onClick, onBeforeNavigate, target, ...props }: 
     event.preventDefault();
     if (transitioning) return;
     onBeforeNavigate?.();
-    navigate(href, { focusDestination: event.detail === 0 });
+    navigate(href, {
+      focusOnArrival: event.detail === 0,
+      transitionKind,
+    });
   };
 
   return (

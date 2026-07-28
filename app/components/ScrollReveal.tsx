@@ -30,6 +30,9 @@ export function ScrollReveal() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const root = document.documentElement;
     const revealItems: HTMLElement[] = [];
+    let routeTarget = "";
+    try { routeTarget = sessionStorage.getItem("shf-route-target") ?? ""; } catch {}
+    const suppressLineupMotion = routeTarget.startsWith("#artist-");
 
     REVEAL_GROUPS.forEach(({ root: rootSelector, items }) => {
       const groupRoot = document.querySelector<HTMLElement>(rootSelector);
@@ -38,6 +41,7 @@ export function ScrollReveal() {
       Array.from(groupRoot.querySelectorAll<HTMLElement>(items)).forEach((item, index) => {
         item.classList.add("revealItem");
         item.style.setProperty("--reveal-order", String(index % 4));
+        if (suppressLineupMotion && rootSelector === "#lineup") item.classList.add("isRevealed");
         revealItems.push(item);
       });
     });
@@ -89,7 +93,9 @@ export function ScrollReveal() {
 
     // Let the concealed state settle for one frame, then observe each content item.
     const frame = window.requestAnimationFrame(() => {
-      revealItems.forEach((item) => observer.observe(item));
+      revealItems.forEach((item) => {
+        if (!item.classList.contains("isRevealed")) observer.observe(item);
+      });
     });
 
     return () => {

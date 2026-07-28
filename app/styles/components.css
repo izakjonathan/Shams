@@ -1,5 +1,5 @@
 /* ========================================================================== 
-   Reusable content and interaction components
+   Reusable navigation components
    ========================================================================== */
 
 .artistNavigation {
@@ -19,6 +19,8 @@
   border-top: 1px solid var(--color-dark-line);
   transition: background-color var(--duration-fast) var(--ease-standard),
     color var(--duration-fast) var(--ease-standard);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .artistNavigationDirection {
@@ -78,7 +80,8 @@
   }
 }
 
-.artistNavigationLink {
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+@media (prefers-reduced-motion: reduce) {
+  .artistNavigationLink:active {
+    transform: none !important;
+  }
 }

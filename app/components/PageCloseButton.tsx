@@ -15,6 +15,7 @@ export function PageCloseButton({
     <FadeLink
       className={`pageCloseButton${className ? ` ${className}` : ""}`}
       href={href}
+      transitionKind={href.startsWith("/#artist-") ? "artist-close" : "page-close"}
       aria-label={label}
     >
       <span aria-hidden="true">×</span>

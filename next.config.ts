@@ -14,11 +14,12 @@ function contentSecurityPolicy(): string {
 
   return [
     "default-src 'self'",
-    // The pre-hydration splash-session gate requires an inline executable script.
-    // Inline styles are also emitted by next/image and a small number of trusted
-    // components. No user-supplied script, style, or HTML is rendered. A nonce
-    // would require request-time rendering, which is not justified for this
-    // otherwise static festival site.
+    // 'unsafe-inline' is currently required by the pre-hydration splash gate,
+    // framework-emitted inline styles, JSON-LD data blocks, and the few
+    // component-level style attributes. No user-supplied HTML is rendered.
+    // on this site. (A per-request nonce would remove this, but it would
+    // also force every page into dynamic rendering, which is the wrong
+    // trade-off for what is otherwise a fully static festival site.)
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data:",

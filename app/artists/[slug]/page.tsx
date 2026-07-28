@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -56,7 +57,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
         <div className="artistHeroGrid">
           <div className="artistHeroCopy">
             <p className="eyebrow">{artist.stage} · {artist.time}</p>
-            <h1>{artist.name}</h1>
+            <h1 style={{ viewTransitionName: `artist-title-${artist.slug}` } as CSSProperties}>{artist.name}</h1>
             <p className="artistStandfirst">{artist.shortBio}</p>
           </div>
           <figure className="artistPortrait">

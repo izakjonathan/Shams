@@ -1,40 +1,35 @@
-# v1.3.4 Release Checklist
+# v1.4.0 Release Checklist
 
-## Automated
+## Transition behavior
 
-```bash
-npm run release:validate
-npm run quality:check
-npm run typecheck
-npm run build
-```
+- [ ] Homepage artist → artist page uses a matched artist-title transition
+- [ ] Artist close → matching lineup row uses the shorter close transition
+- [ ] Previous/next artist uses the artist-switch transition
+- [ ] Information pages use the editorial page transition
+- [ ] Fixed header remains stable during page changes
+- [ ] Artist image enters without blur or directional sliding
+- [ ] Unsupported browsers use the fallback scale-and-opacity transition
+- [ ] Reduced-motion mode removes meaningful animation
+- [ ] Repeated taps do not start competing transitions
+- [ ] Failed navigation restores the visible page
 
-## Navigation
+## Navigation and accessibility
 
-- Homepage → artist fades out and artist page fades in.
-- Artist close fades out and returns to the matching compact-list row without visible scrolling.
-- Previous/next artist navigation fades correctly.
-- Information pages open and close using fades.
-- Mobile-menu navigation removes the menu before the destination appears.
-- Rapid repeated taps do not retarget an active transition.
-- Failed navigation restores page visibility.
-- Keyboard activation focuses the destination main content or anchor.
-- Reduced-motion mode removes transition animation.
+- [ ] Destination positioning occurs while hidden
+- [ ] Keyboard navigation places focus on the destination main content or hash target
+- [ ] Route wrapper reports `aria-busy` while transitioning
+- [ ] Loading state is announced through the live region
+- [ ] Mobile-menu navigation does not leave the destination inert
+- [ ] Browser Back/Forward completes without automatic smooth scrolling
 
-## Browser history
+## Build and deployment
 
-- Back and Forward restore the expected destination and scroll position without smooth route scrolling.
-- Safari swipe-back is accepted as a native browser gesture; verify the committed destination fades in cleanly.
-
-## Layout
-
-- Compact artist list is present; no image-card grid remains.
-- Programme has no public time or development-status labels.
-- Programme filters show a continuation hint on narrow screens.
-- No public placeholder/confirmed labels appear on artists or tickets.
-
-## Deployment
-
-- Generate and commit `package-lock.json` in a networked environment.
-- Change Vercel install command to `npm ci --no-audit --no-fund` after the lockfile is committed.
-- Keep indexing disabled while placeholder public information remains.
+- [ ] `npm run release:validate`
+- [ ] `npm run audit:static`
+- [ ] `npm run typecheck`
+- [ ] `npm run build`
+- [ ] Generate and commit `package-lock.json` in a networked environment
+- [ ] Change Vercel install command to `npm ci --no-audit --no-fund` after the lockfile is committed
+- [ ] Test on current iPhone Safari
+- [ ] Test on current Chrome and Firefox
+- [ ] Verify preview deployments remain noindex

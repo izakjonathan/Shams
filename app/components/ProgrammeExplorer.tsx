@@ -23,10 +23,9 @@ export function ProgrammeExplorer({ entries }: ProgrammeExplorerProps) {
 
   return (
     <div className="programmeExplorer">
-      <div className="programmeFilterViewport">
-        <div className="programmeFilters" role="group" aria-label="Filter programme">
-          {filters.map((filter) => (
-            <button
+      <div className="programmeFilters" role="group" aria-label="Filter programme">
+        {filters.map((filter) => (
+          <button
             className="programmeFilter"
             type="button"
             aria-pressed={activeFilter === filter.value}
@@ -34,15 +33,13 @@ export function ProgrammeExplorer({ entries }: ProgrammeExplorerProps) {
             key={filter.value}
           >
             {filter.label}
-            </button>
-          ))}
-        </div>
-        <span className="programmeFilterHint" aria-hidden="true">→</span>
+          </button>
+        ))}
       </div>
 
       <div className="programmeList" aria-live="polite">
         {visibleEntries.map((entry, index) => (
-          <article className="programmeEntry" key={entry.label}>
+          <article className="programmeEntry" key={`${entry.time ?? "untimed"}-${entry.label}`}>
             <div className="programmeEntryNumber">{String(index + 1).padStart(2, "0")}</div>
             <div className="programmeEntryContent">
               <h3>{entry.label}</h3>

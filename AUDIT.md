@@ -1,37 +1,43 @@
-# v1.3.4 Current-State Audit
+# Shams for Humanity v1.4.0 — Release Audit
 
-## Corrected in this release
+## Scope
 
-- Removed the unused `ArtistCard` component and all artist-card CSS.
-- Removed public placeholder/confirmed labels and their unused content-model fields from artist and ticket data.
-- Removed the artist loading route that could create a double fade.
-- Removed unused programme times and programme development statuses from the public programme model.
-- Rebuilt route transition lifecycle with timer cleanup, failure recovery, duplicate-click protection, search-aware route identity, `aria-busy`, a live loading status, and keyboard-focused destination handling.
-- Coordinated mobile-menu navigation by unmounting the menu before route fading begins.
-- Disabled automatic browser scroll restoration and normalised history destinations after commit.
-- Revealed the complete lineup before returning to an artist anchor, preventing nearby vertical reveal movement.
-- Added a mobile programme-filter continuation affordance.
-- Moved responsive CSS to the final import position.
-- Removed cross-page selectors from artist stylesheet ownership.
-- Updated release validation and added dependency-free repository quality checks.
-- Rewrote current documentation without stale artist-card or earlier-version claims.
+This release upgrades the route-transition layer without changing the approved page designs or placeholder-content strategy.
 
-## Native browser limitation
+## Transition architecture
 
-Safari's interactive swipe-back animation and browser-owned history gestures cannot be fully replaced by a JavaScript exit fade. Site controls use the complete fade-out/fade-in lifecycle. Native history destinations are hidden, positioned, and faded in after the browser commits the route.
+- Site-controlled internal navigation is routed through `FadeLink` and `RouteFade`.
+- Supported browsers use `document.startViewTransition`.
+- Unsupported browsers use the hardened scale-and-opacity fallback.
+- Transition kinds distinguish artist opening, artist closing, artist switching, information-page opening, information-page closing and page switching.
+- The fixed header is assigned its own transition name so it remains visually stable.
+- Artist names use stable per-slug transition names on both the homepage lineup and detail pages.
+- Artist portraits use a separate named transition.
+- Destination scroll positioning happens before the native new snapshot is released.
+- Keyboard-triggered navigation restores focus on the destination.
+- Reduced-motion users bypass meaningful animation.
 
-## Remaining release-environment limitation
+## Contradiction review
 
-A dependency lockfile could not be generated because the package registry was unavailable in the build environment. Source validation passes, but a networked environment must run `npm install`, commit `package-lock.json`, and then use `npm ci` for fully reproducible deployments.
+- No global smooth scrolling is active for cross-page routes.
+- No document-level click interceptor competes with Next.js links.
+- No route loading skeleton creates a second page transition.
+- Mobile-menu navigation unmounts the menu before route navigation.
+- The obsolete artist-card system is absent.
+- View-transition CSS is imported after other motion styles and before final responsive overrides.
+- Native and fallback engines share one transition controller and one navigation lock.
 
-## Verification completed
+## Known platform boundary
 
-- TypeScript/TSX syntax transpilation
-- CSS brace and import validation
-- relative import resolution
-- JSON validation
-- repository contradiction checks
-- release configuration validation
-- archive structure and ZIP integrity
+Interactive browser gestures, particularly Safari swipe-back, are browser-owned. They cannot be guaranteed to use the site’s custom exit animation. Normal site controls use the editorial transition system.
 
-A dependency-backed `next build` was not run in this environment.
+## Validation
+
+- release configuration validator passed
+- static architecture audit passed
+- source syntax transpilation passed
+- CSS and JSON structural checks passed
+- archive structure is flat
+- generated build folders and dependency folders are excluded
+
+A dependency-backed `next build` was not completed in this environment because registry installation timed out.

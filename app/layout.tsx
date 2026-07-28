@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
@@ -7,7 +8,7 @@ import { SplashScreen } from "./components/SplashScreen";
 import { SiteFooter } from "./components/SiteFooter";
 import { RouteFade } from "./components/RouteFade";
 import { artists, event, tickets } from "./lib/content";
-import { allowIndexing, safeExternalUrl, serializeJsonLd, siteUrl } from "./lib/site";
+import { allowIndexing, serializeJsonLd, siteUrl } from "./lib/site";
 
 const agilera = localFont({
   src: "../public/fonts/Agilera.woff",
@@ -64,7 +65,6 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const configuredTicketUrl = safeExternalUrl(process.env.NEXT_PUBLIC_TICKET_URL);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "MusicEvent",
@@ -89,23 +89,19 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       "@type": "PerformingGroup",
       name: artist.name,
     })),
-    ...(configuredTicketUrl
-      ? {
-          offers: tickets.map((ticket) => ({
-            "@type": "Offer",
-            name: ticket.type,
-            price: ticket.price,
-            priceCurrency: ticket.currency,
-            availability:
-              ticket.availability === "available"
-                ? "https://schema.org/InStock"
-                : ticket.availability === "sold-out"
-                  ? "https://schema.org/SoldOut"
-                  : "https://schema.org/PreOrder",
-            url: configuredTicketUrl,
-          })),
-        }
-      : {}),
+    offers: tickets.map((ticket) => ({
+      "@type": "Offer",
+      name: ticket.type,
+      price: ticket.price,
+      priceCurrency: ticket.currency,
+      availability:
+        ticket.availability === "available"
+          ? "https://schema.org/InStock"
+          : ticket.availability === "sold-out"
+            ? "https://schema.org/SoldOut"
+            : "https://schema.org/PreOrder",
+      url: `${siteUrl}/#tickets`,
+    })),
   };
 
   return (
@@ -129,11 +125,22 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <a className="skipLink" href="#main-content">Skip to content</a>
         <SplashScreen />
         <div className="siteShell">
-          <RouteFade>
-            <SiteHeader />
-            {children}
-            <SiteFooter />
-          </RouteFade>
+          <Suspense
+            fallback={(
+              <>
+                <SiteHeader />
+                <div className="routeFade is-visible">
+                  {children}
+                  <SiteFooter />
+                </div>
+              </>
+            )}
+          >
+            <RouteFade header={<SiteHeader />}>
+              {children}
+              <SiteFooter />
+            </RouteFade>
+          </Suspense>
         </div>
         <script
           type="application/ld+json"

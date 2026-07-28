@@ -1,42 +1,51 @@
-# Shams for Humanity — v1.3.4
+# Shams for Humanity — v1.4.0
 
-Mobile-first Next.js festival website using placeholder content while the design and interaction system are developed.
+Mobile-first Next.js festival website using placeholder content, static artist pages, interactive programme filtering, ticket states, information pages, and progressive editorial page transitions.
 
-## Current release
+## Current architecture
 
-v1.3.4 is a transition, accessibility, and repository-consistency correction release.
+- Next.js App Router and React 19
+- local Agilera display font through `next/font/local`
+- structured content files for artists, programme, tickets, event details and FAQs
+- static artist routes with explicit slugs
+- shared header, footer, splash and information-page components
+- native View Transition API for supported browsers
+- coordinated scale-and-opacity fallback for unsupported browsers
+- matched artist-title transitions between the lineup and artist pages
+- separately timed artist-image transitions
+- manual route positioning while destination content is hidden
+- reduced-motion bypass and navigation recovery safeguards
 
-### Navigation
+## v1.4.0 changes
 
-- Site-controlled cross-page links fade out before navigation and fade in after the destination has been positioned.
-- Same-page section links scroll explicitly; global smooth scrolling is disabled.
-- Artist close controls return to the corresponding artist row without a visible route scroll.
-- Mobile-menu navigation unmounts the menu before route fading begins.
-- Native browser Back/Forward and Safari swipe gestures retain browser-controlled gesture behavior; the destination is normalised and faded in after the history route commits.
+- upgraded the simple route fade into an editorial transition system
+- added distinct artist-open, artist-close, artist-switch, page-open, page-close and page-switch transition types
+- added shared artist-title transitions using stable per-artist transition names
+- added a separate artist-portrait transition
+- kept the fixed header visually stable while page content changes beneath it
+- added asymmetric opening and closing timings
+- retained the hardened fallback transition from v1.3.4
+- retained repeated-click protection, timeout recovery, focus placement and manual scroll restoration
+- preserved instant reduced-motion navigation
+- avoided blur filters and directional page slides
 
-### Programme and artists
-
-- Homepage artists use the compact list layout.
-- Programme rows omit public time and development-status labels.
-- Artist and ticket development-status fields have been removed from both the public interface and active content model.
-- Programme filters include a visible mobile overflow affordance.
-
-### Quality controls
+## Commands
 
 ```bash
 npm install
-npm run release:validate
-npm run quality:check
+npm run dev
 npm run typecheck
+npm run audit:static
 npm run build
+npm run release:check
 ```
 
-`quality:check` rejects reintroduction of removed artist-card code, public status-label code, the obsolete ticket boolean, and global CSS smooth scrolling.
+## Environment variables
 
-## Environment
+Copy `.env.example` to `.env.local` when configuring integrations.
 
-Copy `.env.example` to `.env.local` when integrations are ready. Preview deployments remain noindex by default.
+Search indexing remains disabled unless `NEXT_PUBLIC_ALLOW_INDEXING=true` is set with launch-ready public information.
 
-## Deployment
+## Transition support
 
-The project currently uses `npm install` because a lockfile could not be generated in the offline build environment. Generate and commit `package-lock.json` in a networked environment, then switch Vercel to `npm ci --no-audit --no-fund`.
+Modern browsers that expose `document.startViewTransition` receive the native editorial transition. Other browsers use the coordinated CSS fallback. Browser-native interactive gestures such as Safari swipe-back remain controlled by the browser; the application does not attempt to replace the operating system’s interactive gesture animation.

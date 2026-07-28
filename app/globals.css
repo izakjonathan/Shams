@@ -6,13 +6,14 @@
 @import "./styles/homepage.css";
 @import "./styles/programme-tickets.css";
 @import "./styles/components.css";
-@import "./styles/errors.css";
 @import "./styles/gradients.css";
-@import "./styles/splash-states.css";
-@import "./styles/recoverable-error.css";
 @import "./styles/artists.css";
 @import "./styles/information.css";
 @import "./styles/close-control.css";
+@import "./styles/errors.css";
+@import "./styles/recoverable-error.css";
 @import "./styles/states.css";
+@import "./styles/splash-states.css";
 @import "./styles/motion.css";
+@import "./styles/view-transitions.css";
 @import "./styles/responsive.css";

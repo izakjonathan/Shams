@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   createContext,
   type ReactNode,
@@ -13,19 +13,35 @@ import {
   useState,
 } from "react";
 
-const FADE_DURATION_MS = 220;
-const NAVIGATION_WATCHDOG_MS = 3000;
-type FadePhase = "visible" | "exiting" | "entering";
+const FALLBACK_EXIT_MS = 330;
+const FALLBACK_ENTER_MS = 450;
+const NAVIGATION_WATCHDOG_MS = 3500;
+
+type TransitionPhase = "visible" | "exiting" | "entering";
+type TransitionKind = "artist-open" | "artist-close" | "artist-switch" | "page-open" | "page-close" | "page-switch";
+type TransitionEngine = "native" | "fallback";
 
 interface NavigateOptions {
   readonly replace?: boolean;
-  readonly focusDestination?: boolean;
+  readonly focusOnArrival?: boolean;
+  readonly transitionKind?: TransitionKind;
 }
 
 interface RouteTransitionContextValue {
-  readonly navigate: (href: string, options?: NavigateOptions) => void;
-  readonly transitioning: boolean;
+  navigate: (href: string, options?: NavigateOptions) => void;
+  transitioning: boolean;
 }
+
+interface ViewTransitionLike {
+  readonly ready: Promise<void>;
+  readonly finished: Promise<void>;
+  readonly updateCallbackDone: Promise<void>;
+  skipTransition: () => void;
+}
+
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (updateCallback: () => void | Promise<void>) => ViewTransitionLike;
+};
 
 const RouteTransitionContext = createContext<RouteTransitionContextValue | null>(null);
 
@@ -35,28 +51,51 @@ export function useRouteTransition() {
   return context;
 }
 
-function decodeHash(hash: string | null) {
-  if (!hash) return null;
-  try {
-    return decodeURIComponent(hash.replace(/^#/, ""));
-  } catch {
-    return hash.replace(/^#/, "");
-  }
+function routeFamily(pathname: string) {
+  if (pathname.startsWith("/artists/")) return "artist";
+  if (pathname === "/") return "home";
+  return "page";
 }
 
-export function RouteFade({ children }: { readonly children: ReactNode }) {
+function inferTransitionKind(currentPath: string, destinationPath: string): TransitionKind {
+  const currentFamily = routeFamily(currentPath);
+  const destinationFamily = routeFamily(destinationPath);
+
+  if (currentFamily === "home" && destinationFamily === "artist") return "artist-open";
+  if (currentFamily === "artist" && destinationFamily === "home") return "artist-close";
+  if (currentFamily === "artist" && destinationFamily === "artist") return "artist-switch";
+  if (currentFamily === "home" && destinationFamily === "page") return "page-open";
+  if (currentFamily === "page" && destinationFamily === "home") return "page-close";
+  return "page-switch";
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function RouteFade({ children, header }: { readonly children: ReactNode; readonly header?: ReactNode }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const routeKey = pathname;
-  const [phase, setPhase] = useState<FadePhase>("visible");
-  const phaseRef = useRef<FadePhase>("visible");
+  const [phase, setPhase] = useState<TransitionPhase>("visible");
+  const [transitioning, setTransitioning] = useState(false);
+  const phaseRef = useRef<TransitionPhase>("visible");
+  const engineRef = useRef<TransitionEngine | null>(null);
+  const transitionKindRef = useRef<TransitionKind>("page-switch");
   const navigationTimerRef = useRef<number | null>(null);
   const watchdogRef = useRef<number | null>(null);
   const framesRef = useRef<number[]>([]);
-  const previousRouteRef = useRef(routeKey);
-  const pendingTargetRef = useRef<{ hash: string | null; focus: boolean } | null>(null);
+  const routeRef = useRef("");
+  const routeCommitResolverRef = useRef<(() => void) | null>(null);
+  const activeViewTransitionRef = useRef<ViewTransitionLike | null>(null);
+  const pendingTargetRef = useRef<{
+    hash: string | null;
+    focusOnArrival: boolean;
+    sourcePath: string;
+  } | null>(null);
+  const routeKey = `${pathname}?${searchParams.toString()}`;
 
-  const clearAsyncWork = useCallback(() => {
+  const clearTimersAndFrames = useCallback(() => {
     if (navigationTimerRef.current !== null) window.clearTimeout(navigationTimerRef.current);
     if (watchdogRef.current !== null) window.clearTimeout(watchdogRef.current);
     navigationTimerRef.current = null;
@@ -65,18 +104,27 @@ export function RouteFade({ children }: { readonly children: ReactNode }) {
     framesRef.current = [];
   }, []);
 
-  const setTransitionPhase = useCallback((next: FadePhase) => {
+  const updatePhase = useCallback((next: TransitionPhase) => {
     phaseRef.current = next;
     setPhase(next);
   }, []);
 
-  const positionAndFocusDestination = useCallback((hash: string | null, shouldFocus: boolean) => {
-    const targetId = decodeHash(hash);
-    const target = targetId ? document.getElementById(targetId) : null;
+  const resetDocumentTransitionState = useCallback(() => {
+    delete document.documentElement.dataset.routeTransition;
+    delete document.documentElement.dataset.routeTransitionEngine;
+    document.documentElement.classList.remove("routeTransitionActive");
+  }, []);
 
-    if (target) {
-      target.scrollIntoView({ behavior: "auto", block: "start" });
-      if (target.closest("#lineup")) {
+  const positionDestination = useCallback(() => {
+    const pending = pendingTargetRef.current;
+    const hash = pending?.hash ?? (window.location.hash || null);
+    let target: HTMLElement | null = null;
+
+    if (hash && hash !== "#top") {
+      target = document.getElementById(decodeURIComponent(hash.slice(1)));
+      target?.scrollIntoView({ behavior: "auto", block: "start" });
+
+      if (hash.startsWith("#artist-")) {
         document.querySelectorAll<HTMLElement>("#lineup .revealItem").forEach((item) => {
           item.classList.add("isRevealed");
           item.style.willChange = "auto";
@@ -86,21 +134,39 @@ export function RouteFade({ children }: { readonly children: ReactNode }) {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
 
-    if (shouldFocus) {
-      const focusTarget = target ?? document.querySelector<HTMLElement>("main#main-content");
-      if (focusTarget) {
-        const hadTabIndex = focusTarget.hasAttribute("tabindex");
-        if (!hadTabIndex) focusTarget.setAttribute("tabindex", "-1");
-        focusTarget.focus({ preventScroll: true });
-        if (!hadTabIndex) {
-          focusTarget.addEventListener("blur", () => focusTarget.removeAttribute("tabindex"), { once: true });
-        }
-      }
-    }
+    return { target, focusOnArrival: Boolean(pending?.focusOnArrival) };
   }, []);
 
+  const focusDestination = useCallback((target: HTMLElement | null, shouldFocus: boolean) => {
+    if (!shouldFocus) return;
+    const focusTarget = target ?? document.querySelector<HTMLElement>("main#main-content");
+    focusTarget?.focus({ preventScroll: true });
+  }, []);
+
+  const finishTransition = useCallback(() => {
+    setTransitioning(false);
+    pendingTargetRef.current = null;
+    routeCommitResolverRef.current = null;
+    activeViewTransitionRef.current = null;
+    engineRef.current = null;
+    clearTimersAndFrames();
+    updatePhase("visible");
+    resetDocumentTransitionState();
+    try { sessionStorage.removeItem("shf-route-target"); } catch {}
+  }, [clearTimersAndFrames, resetDocumentTransitionState, updatePhase]);
+
+  const recoverTransition = useCallback(() => {
+    activeViewTransitionRef.current?.skipTransition();
+    finishTransition();
+  }, [finishTransition]);
+
+  const performRouterNavigation = useCallback((href: string, replace?: boolean) => {
+    if (replace) router.replace(href, { scroll: false });
+    else router.push(href, { scroll: false });
+  }, [router]);
+
   const navigate = useCallback((href: string, options?: NavigateOptions) => {
-    if (phaseRef.current !== "visible") return;
+    if (phaseRef.current !== "visible" || activeViewTransitionRef.current) return;
 
     const destination = new URL(href, window.location.href);
     const current = new URL(window.location.href);
@@ -108,107 +174,144 @@ export function RouteFade({ children }: { readonly children: ReactNode }) {
 
     if (sameDocument) {
       if (destination.hash) {
-        const target = document.getElementById(decodeHash(destination.hash) ?? "");
-        target?.scrollIntoView({ behavior: "smooth", block: "start" });
+        const target = document.getElementById(decodeURIComponent(destination.hash.slice(1)));
+        target?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
         window.history.pushState(window.history.state, "", destination.hash);
-        if (options?.focusDestination && target) {
-          const hadTabIndex = target.hasAttribute("tabindex");
-          if (!hadTabIndex) target.setAttribute("tabindex", "-1");
-          target.focus({ preventScroll: true });
-          if (!hadTabIndex) target.addEventListener("blur", () => target.removeAttribute("tabindex"), { once: true });
-        }
+        if (options?.focusOnArrival) target?.focus({ preventScroll: true });
       }
       return;
     }
 
-    clearAsyncWork();
+    clearTimersAndFrames();
+    const transitionKind = options?.transitionKind ?? inferTransitionKind(current.pathname, destination.pathname);
+    transitionKindRef.current = transitionKind;
     pendingTargetRef.current = {
       hash: destination.hash || null,
-      focus: Boolean(options?.focusDestination),
+      focusOnArrival: Boolean(options?.focusOnArrival),
+      sourcePath: current.pathname,
     };
-    setTransitionPhase("exiting");
 
-    watchdogRef.current = window.setTimeout(() => {
-      pendingTargetRef.current = null;
-      setTransitionPhase("visible");
-    }, NAVIGATION_WATCHDOG_MS);
+    try { sessionStorage.setItem("shf-route-target", destination.hash || "#top"); } catch {}
 
+    const nextHref = `${destination.pathname}${destination.search}${destination.hash}`;
+    const nativeTransition = (document as ViewTransitionDocument).startViewTransition;
+    const canUseNative = Boolean(nativeTransition) && !prefersReducedMotion();
+
+    setTransitioning(true);
+    document.documentElement.dataset.routeTransition = transitionKind;
+    document.documentElement.dataset.routeTransitionEngine = canUseNative ? "native" : "fallback";
+    document.documentElement.classList.add("routeTransitionActive");
+
+    watchdogRef.current = window.setTimeout(recoverTransition, NAVIGATION_WATCHDOG_MS);
+
+    if (canUseNative && nativeTransition) {
+      engineRef.current = "native";
+      const routeCommitted = new Promise<void>((resolve) => {
+        routeCommitResolverRef.current = resolve;
+      });
+
+      const transition = nativeTransition.call(document, async () => {
+        performRouterNavigation(nextHref, options?.replace);
+        await routeCommitted;
+      });
+
+      activeViewTransitionRef.current = transition;
+      transition.finished
+        .then(() => {
+          const { target, focusOnArrival } = positionDestination();
+          focusDestination(target, focusOnArrival);
+        })
+        .catch(() => {})
+        .finally(finishTransition);
+      return;
+    }
+
+    engineRef.current = "fallback";
+    updatePhase("exiting");
     navigationTimerRef.current = window.setTimeout(() => {
-      const nextHref = `${destination.pathname}${destination.search}${destination.hash}`;
-      try {
-        if (options?.replace) router.replace(nextHref, { scroll: false });
-        else router.push(nextHref, { scroll: false });
-      } catch {
-        pendingTargetRef.current = null;
-        setTransitionPhase("visible");
-      }
-    }, FADE_DURATION_MS);
-  }, [clearAsyncWork, router, setTransitionPhase]);
+      performRouterNavigation(nextHref, options?.replace);
+    }, FALLBACK_EXIT_MS);
+  }, [clearTimersAndFrames, finishTransition, focusDestination, performRouterNavigation, positionDestination, recoverTransition, updatePhase]);
 
   useEffect(() => {
-    const previous = window.history.scrollRestoration;
+    const previousRestoration = window.history.scrollRestoration;
     window.history.scrollRestoration = "manual";
 
     const handlePopState = () => {
-      pendingTargetRef.current = { hash: window.location.hash || null, focus: false };
-      setTransitionPhase("entering");
+      clearTimersAndFrames();
+      pendingTargetRef.current = {
+        hash: window.location.hash || null,
+        focusOnArrival: false,
+        sourcePath: pathname,
+      };
+      engineRef.current = "fallback";
+      transitionKindRef.current = inferTransitionKind(pathname, window.location.pathname);
+      document.documentElement.dataset.routeTransition = transitionKindRef.current;
+      document.documentElement.dataset.routeTransitionEngine = "fallback";
+      document.documentElement.classList.add("routeTransitionActive");
+      updatePhase("entering");
     };
 
     window.addEventListener("popstate", handlePopState);
     return () => {
       window.removeEventListener("popstate", handlePopState);
-      window.history.scrollRestoration = previous;
+      window.history.scrollRestoration = previousRestoration;
+      clearTimersAndFrames();
+      activeViewTransitionRef.current?.skipTransition();
+      resetDocumentTransitionState();
     };
-  }, [setTransitionPhase]);
+  }, [clearTimersAndFrames, pathname, resetDocumentTransitionState, updatePhase]);
 
   useLayoutEffect(() => {
-    if (previousRouteRef.current === routeKey) return;
-    previousRouteRef.current = routeKey;
+    if (!routeRef.current) {
+      routeRef.current = routeKey;
+      return;
+    }
+    if (routeRef.current === routeKey) return;
 
-    if (navigationTimerRef.current !== null) window.clearTimeout(navigationTimerRef.current);
-    if (watchdogRef.current !== null) window.clearTimeout(watchdogRef.current);
-    navigationTimerRef.current = null;
-    watchdogRef.current = null;
-    setTransitionPhase("entering");
+    routeRef.current = routeKey;
+    clearTimersAndFrames();
 
+    if (engineRef.current === "native") {
+      const frame = window.requestAnimationFrame(() => {
+        positionDestination();
+        routeCommitResolverRef.current?.();
+      });
+      framesRef.current.push(frame);
+      return;
+    }
+
+    updatePhase("entering");
     const firstFrame = window.requestAnimationFrame(() => {
-      const pending = pendingTargetRef.current ?? {
-        hash: window.location.hash || null,
-        focus: false,
-      };
-      positionAndFocusDestination(pending.hash, pending.focus);
-      pendingTargetRef.current = null;
-
-      const secondFrame = window.requestAnimationFrame(() => setTransitionPhase("visible"));
+      const { target, focusOnArrival } = positionDestination();
+      const secondFrame = window.requestAnimationFrame(() => {
+        updatePhase("visible");
+        focusDestination(target, focusOnArrival);
+        navigationTimerRef.current = window.setTimeout(finishTransition, FALLBACK_ENTER_MS);
+      });
       framesRef.current.push(secondFrame);
     });
     framesRef.current.push(firstFrame);
+  }, [clearTimersAndFrames, finishTransition, focusDestination, positionDestination, routeKey, updatePhase]);
 
-    return () => {
-      framesRef.current.forEach((frame) => window.cancelAnimationFrame(frame));
-      framesRef.current = [];
-    };
-  }, [positionAndFocusDestination, routeKey, setTransitionPhase]);
-
-  useEffect(() => clearAsyncWork, [clearAsyncWork]);
-
-  const context = useMemo<RouteTransitionContextValue>(() => ({
+  const contextValue = useMemo<RouteTransitionContextValue>(() => ({
     navigate,
-    transitioning: phase !== "visible",
-  }), [navigate, phase]);
+    transitioning,
+  }), [navigate, transitioning]);
 
   return (
-    <RouteTransitionContext.Provider value={context}>
+    <RouteTransitionContext.Provider value={contextValue}>
+      {header}
       <div
         className={`routeFade is-${phase}`}
-        aria-busy={phase !== "visible"}
-        data-route-transition={phase}
+        data-transition-kind={transitionKindRef.current}
+        aria-busy={transitioning || phase !== "visible"}
       >
-        <span className="routeTransitionStatus" aria-live="polite">
-          {phase === "visible" ? "" : "Loading page"}
-        </span>
         {children}
       </div>
+      <span className="srOnly" aria-live="polite" aria-atomic="true">
+        {transitioning || phase !== "visible" ? "Loading page" : ""}
+      </span>
     </RouteTransitionContext.Provider>
   );
 }

@@ -113,6 +113,7 @@
     font-size: 8px;
   }
 
+
   .artistFactBar strong,
   .artistSetCard strong {
     font-size: 13px;
@@ -155,6 +156,7 @@
 }
 
 @media (forced-colors: active) {
+
   .artistPortrait,
   .pageCloseButton,
   .ticketGrid article {
@@ -166,6 +168,8 @@
 /* v1.2.1 narrow-view and zoom resilience */
 @media (max-width: 360px) {
   :root { --page-gutter: 15px; }
+
+
 
   .artistNavigationLink {
     min-height: 220px;
