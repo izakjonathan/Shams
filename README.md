@@ -1,7 +1,7 @@
-# Shams for Humanity v1.6.1
+# Shams for Humanity v1.6.2
 
-## Artist morph compositor fix
+## Deterministic artist morph transitions
 
-This build keeps the mobile menu transition unchanged and repairs the artist morph transition. The v1.6.0 root snapshots faded simultaneously over an intentionally transparent Safari document canvas, exposing the browser compositor's black backing layer. v1.6.1 keeps the outgoing root opaque while the destination dissolves above it, forces an opaque paper canvas only while the morph is active, and limits portrait matching to artist-to-artist navigation.
+This release replaces the browser-native root View Transition used by artist routes with a deterministic DOM/FLIP morph. The outgoing page remains visibly cloned while Next.js loads the artist destination. The selected artist title moves from its measured source position into the destination heading while the old page dissolves and the new page appears beneath it.
 
-Artist home/open/close navigation now morphs the artist title without a black interstitial. Information pages continue to use the menu-style black curtain.
+The mobile menu and information-page black curtain remain unchanged.

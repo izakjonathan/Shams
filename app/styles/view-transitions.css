@@ -5,15 +5,15 @@
 :root {
   --route-panel-duration: var(--duration-menu);
   --route-panel-ease: var(--ease-menu);
-  --artist-morph-duration: 620ms;
+  --artist-morph-duration: 520ms;
   --artist-morph-ease: cubic-bezier(.22, 1, .36, 1);
 }
 
-/* Utility and information pages keep the menu-style black curtain. */
 .routeFade {
   min-height: 100%;
 }
 
+/* Utility and information pages retain the menu-style black curtain. */
 .routeTransitionVeil {
   position: fixed;
   z-index: 40;
@@ -37,7 +37,7 @@
 :root[data-route-phase="covered"] .routeFade,
 :root[data-route-phase="revealing"] .routeFade,
 :root[data-route-phase="revealing-active"] .routeFade,
-:root.artistMorphActive .routeFade {
+:root.manualArtistMorphActive .routeFade {
   pointer-events: none;
 }
 
@@ -61,115 +61,50 @@
 }
 
 /*
-  Artist routes use a native matched-title transition. The v1.6.0 root
-  snapshots were both faded toward transparency while the repeat-visit Safari
-  canvas is intentionally transparent. Safari composites that transparent gap
-  against black, which produced the reported black screen.
-
-  Keep an opaque paper canvas for the transition and layer the new root above
-  the old root. The old page remains fully visible until the incoming page has
-  dissolved over it, so there is never a frame where both root snapshots are
-  transparent. Only the title morphs on home ↔ artist navigation. Portraits
-  receive a matched layer only for artist ↔ artist switches.
+  Artist routes use a deterministic DOM/FLIP morph instead of the browser
+  View Transition root snapshot. The live outgoing page is cloned before
+  navigation and held above the app while Next.js commits the destination.
+  This prevents Safari from exposing its black/white compositor canvas and
+  makes route latency invisible. The selected title is rendered as a separate
+  fixed layer and transformed into the destination title's measured bounds.
 */
-:root.artistMorphActive,
-:root.artistMorphActive body {
-  background-color: var(--color-paper) !important;
-}
-
-.siteHeader {
-  isolation: isolate;
-  view-transition-name: site-header;
-}
-
-::view-transition {
-  background: var(--color-paper);
-}
-
-::view-transition-group(root),
-::view-transition-image-pair(root) {
-  background: var(--color-paper);
-  animation-duration: var(--artist-morph-duration);
-  animation-timing-function: var(--artist-morph-ease);
-}
-
-:root[data-route-transition^="artist-"]::view-transition-old(root) {
-  z-index: 1;
-  animation: none;
+.artistMorphSnapshot {
+  position: fixed;
+  z-index: 55;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
   opacity: 1;
+  background: transparent;
 }
 
-:root[data-route-transition^="artist-"]::view-transition-new(root) {
-  z-index: 2;
-  animation: artist-root-dissolve-in 420ms 40ms var(--artist-morph-ease) both;
+.artistMorphFloatingTitle {
+  position: fixed;
+  z-index: 70;
+  display: block;
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+  pointer-events: none;
+  transform-origin: top left;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+  will-change: transform;
 }
 
-::view-transition-group(artist-morph-title) {
-  z-index: 80;
-  animation-duration: var(--artist-morph-duration);
-  animation-timing-function: var(--artist-morph-ease);
+:root.manualArtistMorphActive .routeFade {
+  opacity: 0;
 }
 
-::view-transition-image-pair(artist-morph-title) {
-  isolation: isolate;
-}
-
-::view-transition-old(artist-morph-title),
-::view-transition-new(artist-morph-title) {
-  mix-blend-mode: normal;
-  animation-duration: var(--artist-morph-duration);
-  animation-timing-function: var(--artist-morph-ease);
-}
-
-::view-transition-group(artist-morph-image) {
-  z-index: 65;
-  animation-duration: 560ms;
-  animation-timing-function: var(--artist-morph-ease);
-}
-
-::view-transition-old(artist-morph-image) {
-  animation: artist-image-out 260ms cubic-bezier(.65, 0, .35, 1) both;
-}
-
-::view-transition-new(artist-morph-image) {
-  animation: artist-image-in 440ms 45ms var(--artist-morph-ease) both;
-}
-
-::view-transition-group(site-header) {
-  z-index: 100;
-  animation: none;
-}
-
-::view-transition-old(site-header),
-::view-transition-new(site-header) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-
-@keyframes artist-root-dissolve-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes artist-image-out {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(.99); }
-}
-
-@keyframes artist-image-in {
-  from { opacity: 0; transform: scale(1.02); }
-  to { opacity: 1; transform: scale(1); }
+:root[data-route-phase="morph-revealing-active"] .routeFade {
+  opacity: 1;
+  transition: opacity 420ms var(--artist-morph-ease);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .routeTransitionVeil {
-    transition-duration: .01ms !important;
-    transition-delay: 0ms !important;
-  }
-
-  ::view-transition-group(root),
-  ::view-transition-group(artist-morph-title),
-  ::view-transition-group(artist-morph-image) {
-    animation-duration: .01ms !important;
+  .routeTransitionVeil,
+  :root[data-route-phase="morph-revealing-active"] .routeFade {
+    transition-duration: 1ms !important;
   }
 }

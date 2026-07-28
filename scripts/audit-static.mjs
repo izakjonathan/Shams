@@ -26,12 +26,12 @@ if (globals.indexOf('responsive.css') < globals.indexOf('artists.css')) {
 }
 
 const routeFade = readFileSync(resolve(root, "app/components/RouteFade.tsx"), "utf8");
-for (const required of ["WATCHDOG_MS", "ARTIST_WATCHDOG_MS", "startViewTransition", "scrollRestoration", "aria-busy", "router.prefetch", "routeTransitionActive", "artistMorphActive", "routeTransitionVeil"]) {
+for (const required of ["WATCHDOG_MS", "MORPH_WATCHDOG_MS", "createMorphLayer", "scrollRestoration", "aria-busy", "router.prefetch", "routeTransitionActive", "manualArtistMorphActive", "routeTransitionVeil"]) {
   if (!routeFade.includes(required)) errors.push(`RouteFade is missing required hardening: ${required}`);
 }
 
 const viewTransitions = readFileSync(resolve(root, "app/styles/view-transitions.css"), "utf8");
-for (const required of ["routeTransitionVeil", "data-route-phase", "route-panel-duration", "artist-morph-title", "artist-morph-image", "prefers-reduced-motion"]) {
+for (const required of ["routeTransitionVeil", "data-route-phase", "route-panel-duration", "artistMorphSnapshot", "artistMorphFloatingTitle", "manualArtistMorphActive", "prefers-reduced-motion"]) {
   if (!viewTransitions.includes(required)) errors.push(`View transition stylesheet is missing: ${required}`);
 }
 

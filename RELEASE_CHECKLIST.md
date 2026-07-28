@@ -1,12 +1,12 @@
-# Release checklist — v1.6.1
+# Release checklist — v1.6.2
 
-- [x] Version set to 1.6.1
-- [x] Mobile menu transition unchanged
-- [x] Information-page curtain unchanged
-- [x] Artist root snapshots never fade simultaneously
-- [x] Opaque transition canvas prevents Safari black backing exposure
-- [x] Artist title remains the shared morph element
-- [x] Portrait matching limited to artist-to-artist navigation
-- [x] Reduced-motion and unsupported-browser fallback retained
-- [x] Static release validation passed
-- [x] Static architecture audit passed
+- [x] Version set to 1.6.2
+- [x] Browser-native root View Transition removed from artist routing
+- [x] Outgoing route is retained as a fixed DOM snapshot during loading
+- [x] Artist title uses measured source/destination FLIP geometry
+- [x] Destination title is hidden only during the floating-title morph
+- [x] Destination scroll is positioned before reveal
+- [x] Header remains outside the route snapshot
+- [x] Information pages retain the menu-style black curtain
+- [x] Reduced-motion fallback retained
+- [x] Watchdog cleanup retained
