@@ -1,38 +1,50 @@
-# Shams for Humanity — v1.1.4
+# Shams for Humanity — v1.1.7
 
-Mobile-first Next.js festival website.
+Production-oriented, mobile-first Next.js festival website.
 
-## v1.1.4 — Full cleanup pass
+## Current release
 
-- Replaced generated artist slugs with explicit, stable route slugs.
-- Made artist and information-page content definitions readonly.
-- Removed the obsolete content compatibility file.
-- Consolidated JSON-LD serialization into one shared helper.
-- Disabled unknown dynamic artist routes so only approved artist pages are generated.
-- Removed TypeScript build cache output from the release archive.
-- Added a repository `.gitignore` for build output, local environments, logs and OS files.
-- Cleaned stale implementation comments while preserving the approved visual design.
-- Preserved the splash lifecycle, Safari behavior, gradients, menu, artist photography, Agilera artist titles and information-page close controls.
+v1.1.7 is a repository-quality hardening release. It preserves the approved visual design while improving maintainability, accessibility, testing, security policy, and release validation.
 
-## Development
+### Included
+
+- Shared responsive homepage, artist pages, information pages, footer, menu and error states.
+- Session-only splash screen with repeat-paint suppression.
+- Stable statically generated artist routes and responsive static image imports.
+- Preview-safe metadata and search-indexing controls.
+- Modular CSS files imported in the original cascade order.
+- ESLint configuration and Playwright smoke journeys.
+- Stronger launch validation for placeholder public information.
+- Scrollable mobile menu with inert background regions.
+
+## Commands
 
 ```bash
 npm install
 npm run dev
-```
-
-## Verification
-
-```bash
-npm run release:validate
+npm run lint
 npm run typecheck
 npm run build
-```
-
-Or run the complete release check:
-
-```bash
+npm run test:e2e:chromium
 npm run release:check
 ```
 
-Copy `.env.example` to `.env.local` when configuring ticket, newsletter, indexing or public-site URLs.
+## Reproducible installs
+
+This archive does not include a generated `package-lock.json` because the package registry was unavailable in the build environment. Generate and commit the lockfile in a networked environment:
+
+```bash
+npm install --package-lock-only
+```
+
+After the lockfile is committed, change Vercel's install command to:
+
+```bash
+npm ci --no-audit --no-fund
+```
+
+## Production configuration
+
+Copy `.env.example` and configure production values in Vercel. Search indexing remains disabled unless explicitly enabled.
+
+See `RELEASE_CHECKLIST.md` and `AUDIT.md` before launch.

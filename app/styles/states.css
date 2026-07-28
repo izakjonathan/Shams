@@ -1,0 +1,62 @@
+/* ========================================================================== 
+   17 — Scroll reveal and accessibility
+   ========================================================================== */
+
+/* Progressive, content-level scroll reveal. */
+
+.scrollRevealEnabled .revealItem {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-distance), 0);
+  transition: opacity var(--duration-reveal) var(--ease-reveal),
+    transform var(--duration-reveal) var(--ease-reveal);
+  transition-delay: 0ms;
+}
+
+.scrollRevealEnabled .revealItem.isRevealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition-delay: calc(var(--reveal-order, 0) * var(--reveal-stagger));
+}
+
+.scrollRevealEnabled .artistRow.revealItem,
+.scrollRevealEnabled .infoCards > article.revealItem,
+.scrollRevealEnabled .timeline > div.revealItem,
+.scrollRevealEnabled .ticketGrid > article.revealItem,
+.scrollRevealEnabled .faqList > article.revealItem {
+  --reveal-distance: var(--reveal-distance-small);
+}
+
+main:focus {
+  outline: none;
+}
+
+/* Accessibility: visible keyboard focus for interactive elements that don't
+   already define their own focus-visible treatment above. */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* Accessibility: skip link, hidden until keyboard-focused. */
+
+.skipLink {
+  position: absolute;
+  z-index: 100;
+  top: -100%;
+  left: var(--page-gutter);
+  padding: 12px 20px;
+  background: var(--color-ink);
+  color: var(--color-white);
+  font-size: 13px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  transition: top var(--duration-fast) var(--ease-standard);
+}
+
+.skipLink:focus {
+  top: 16px;
+}
+

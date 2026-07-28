@@ -1,0 +1,128 @@
+/* ========================================================================== 
+   16 — Responsive layout
+   ========================================================================== */
+
+@media (min-width: 760px) {
+  html {
+    scroll-padding-top: calc(var(--header-height-desktop) + 16px);
+  }
+
+  .siteHeader {
+    height: var(--header-height-desktop);
+  }
+
+  .desktopNav {
+    display: flex;
+  }
+
+  .menuButton {
+    display: none;
+  }
+
+  .heroMeta {
+    top: 112px;
+  }
+
+  .scrollCue {
+    display: flex;
+  }
+
+  .heroActions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .statementGrid {
+    grid-template-columns: 1.4fr .6fr;
+    align-items: end;
+  }
+
+  .sectionHeading {
+    grid-template-columns: 1fr 360px;
+    align-items: end;
+  }
+
+  .artistRow {
+    grid-template-columns: 45px 1fr 100px 80px 100px 40px;
+  }
+
+  .artistRow>span:not(.artistNumber) {
+    display: block;
+  }
+
+  .artistRow:hover {
+    padding-left: 12px;
+    padding-right: 12px;
+    background: var(--color-overlay-hover);
+  }
+
+  .infoCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .infoCards article {
+    padding: 20px;
+    border-right: 1px solid var(--color-line-strong);
+  }
+
+  .timeline {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .timeline div {
+    display: flex;
+    flex-direction: column;
+    min-height: 190px;
+    border-right: 1px solid var(--color-line);
+    padding: 20px;
+  }
+
+  .timeline strong {
+    margin-top: auto;
+  }
+
+  .ticketGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ticketGrid article+article {
+    border-top: var(--border-solid) var(--color-ticket-line);
+    border-left: 0;
+  }
+
+  .newsletter {
+    grid-template-columns: 1fr .7fr;
+    align-items: end;
+  }
+
+  .footerLinks {
+    grid-template-columns: 180px 180px;
+    justify-content: end;
+    margin-top: -30px;
+  }
+
+  .footerBottom {
+    grid-template-columns: 1fr 1fr auto;
+  }
+
+  .footerBottom a {
+    justify-self: end;
+  }
+}
+
+@media (min-width: 1100px) {
+  .section {
+    padding-top: var(--section-space-desktop);
+    padding-bottom: var(--section-space-desktop);
+  }
+
+  .infoCards {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .verticalText {
+    display: block;
+  }
+
+}
+

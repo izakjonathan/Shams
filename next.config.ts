@@ -38,28 +38,16 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
     key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), interest-cohort=(), browsing-topics=()",
+    value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
   },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
   { key: "Content-Security-Policy", value: contentSecurityPolicy() },
 ];
 
-// Fonts and artist photography are content-hashed-in-name-only (the file
-// itself never changes without a code change), so they can be cached by
-// browsers and Vercel's edge network for a full year.
-const immutableCacheHeader = {
-  key: "Cache-Control",
-  value: "public, max-age=31536000, immutable",
-};
-
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   async headers() {
-    return [
-      { source: "/:path*", headers: securityHeaders },
-      { source: "/fonts/:path*", headers: [immutableCacheHeader] },
-      { source: "/images/:path*", headers: [immutableCacheHeader] },
-    ];
+    return [{ source: "/:path*", headers: securityHeaders }];
   },
 };
 

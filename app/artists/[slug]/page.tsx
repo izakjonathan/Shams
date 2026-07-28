@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: artist.name,
       description: artist.shortBio,
-      images: [{ url: artist.image, alt: artist.imageAlt }],
+      images: [{ url: artist.image.src, alt: artist.imageAlt }],
     },
   };
 }
@@ -119,7 +119,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
         </div>
         <div className="artistLinkList">
           {artist.links.map((link) => (
-            link.href === "#" ? (
+            !link.href ? (
               <span className="artistExternalLink isPlaceholder" key={link.label} aria-disabled="true">
                 {link.label}<small>Link coming soon</small>
               </span>

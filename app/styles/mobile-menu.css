@@ -1,0 +1,50 @@
+/* ========================================================================== 
+   04 — Mobile menu
+   ========================================================================== */
+
+.mobileMenu {
+  position: fixed;
+  z-index: 45;
+  inset: 0;
+  background: var(--color-dark);
+  color: var(--color-white);
+  padding: 110px var(--page-gutter) 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  transform: translateY(-100%);
+  transition: transform var(--duration-menu) var(--ease-menu);
+}
+
+.mobileMenu.isOpen {
+  transform: translateY(0);
+}
+
+.mobileMenu nav {
+  display: grid;
+}
+
+.mobileMenu nav a {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 14vw, 76px);
+  line-height: 1.05;
+  border-bottom: 1px solid var(--color-dark-line);
+  padding: 8px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mobileMenu nav span {
+  font: 11px var(--font-body);
+  margin-top: 10px;
+}
+
+.mobileMenu p {
+  font-size: 12px;
+  letter-spacing: var(--tracking-label);
+}
+

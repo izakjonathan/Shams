@@ -1,0 +1,37 @@
+/* ========================================================================== 
+   18 — 404 page
+   ========================================================================== */
+
+.notFound {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: var(--page-gutter);
+  text-align: center;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.notFound h1 {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-tight);
+  font-size: clamp(32px, 6vw, 56px);
+  line-height: 1.05;
+  margin: 0;
+  max-width: 18ch;
+}
+
+.notFound p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.notFound .button {
+  margin-top: 12px;
+}
+
+

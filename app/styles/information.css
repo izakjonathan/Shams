@@ -1,0 +1,293 @@
+/* ========================================================================== 
+   23 — Information, legal and contact pages
+   ========================================================================== */
+
+.informationHero {
+  min-height: 72svh;
+  padding: clamp(130px, 18vh, 190px) var(--page-gutter) 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  --section-wash-1: radial-gradient(ellipse 95% 65% at 3% 5%, rgba(252, 198, 79, .52), transparent 82%);
+  --section-wash-2: radial-gradient(ellipse 75% 48% at 100% 72%, rgba(252, 198, 79, .30), transparent 82%);
+  --section-wash-3: none;
+  --section-glow-1-w: 120vw;
+  --section-glow-1-h: 92vw;
+  --section-glow-1-left: -62vw;
+  --section-glow-1-top: -28vw;
+  --section-glow-1-opacity: .74;
+  --section-glow-2-w: 102vw;
+  --section-glow-2-h: 96vw;
+  --section-glow-2-right: -68vw;
+  --section-glow-2-bottom: -38vw;
+  --section-glow-2-opacity: .52;
+  --section-glow-3-w: 1px;
+  --section-glow-3-h: 1px;
+  --section-glow-3-opacity: 0;
+}
+
+.informationHero h1 {
+  max-width: 10ch;
+  margin: 28px 0;
+  font-size: clamp(62px, 15vw, 150px);
+  line-height: .78;
+}
+
+.informationHero > p {
+  max-width: 62ch;
+  margin: 0;
+  font-size: clamp(17px, 3.5vw, 23px);
+  line-height: 1.45;
+}
+
+.informationHero small {
+  margin-top: 30px;
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.informationBody {
+  padding: var(--section-space-mobile) var(--page-gutter);
+  display: grid;
+  gap: 72px;
+}
+
+.informationBody aside {
+  align-self: start;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-ink);
+}
+
+.informationBody aside > span {
+  font-size: 9px;
+  letter-spacing: var(--tracking-label);
+}
+
+.informationBody aside p {
+  max-width: 38ch;
+  line-height: 1.5;
+}
+
+.informationBody article > section {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 18px;
+  padding: 0 0 58px;
+  margin-bottom: 58px;
+  border-bottom: 1px solid var(--color-ink);
+}
+
+.informationNumber {
+  padding-top: 8px;
+  font-size: 9px;
+  letter-spacing: .12em;
+}
+
+.informationBody h2 {
+  margin-top: 0;
+  font-size: clamp(38px, 8vw, 72px);
+}
+
+.informationBody article p,
+.informationBody article li {
+  max-width: 68ch;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.informationBody article ul {
+  padding-left: 1.2em;
+}
+
+.contactHero {
+  position: relative;
+  min-height: 88svh;
+  padding: clamp(130px, 18vh, 190px) var(--page-gutter) 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: clip;
+  isolation: isolate;
+  background: var(--color-dark);
+  color: var(--color-white);
+}
+
+.contactHero h1 {
+  position: relative;
+  z-index: 2;
+  margin: 26px 0;
+  font-size: clamp(70px, 17vw, 170px);
+  line-height: .76;
+}
+
+.contactHero p {
+  position: relative;
+  z-index: 2;
+  max-width: 55ch;
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.contactGrid {
+  display: grid;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.contactGrid article {
+  padding: 42px 0;
+  border-bottom: 1px solid var(--color-ink);
+}
+
+.contactGrid article > span:first-child,
+.contactPlaceholder {
+  font-size: 9px;
+  letter-spacing: var(--tracking-label);
+}
+
+.contactGrid h2 {
+  margin: 24px 0 18px;
+  font-size: clamp(28px, 7vw, 58px);
+  line-height: .95;
+  overflow-wrap: anywhere;
+}
+
+.contactGrid p {
+  max-width: 48ch;
+  line-height: 1.5;
+}
+
+.contactPlaceholder {
+  display: inline-block;
+  margin-top: 18px;
+  color: var(--color-text-subtle);
+}
+
+.organizerBlock {
+  padding: var(--section-space-mobile) var(--page-gutter);
+  display: grid;
+  gap: 48px;
+  --section-wash-1: radial-gradient(ellipse 94% 62% at 100% 10%, rgba(252, 198, 79, .44), transparent 82%);
+  --section-wash-2: radial-gradient(ellipse 76% 44% at 0% 90%, rgba(252, 198, 79, .24), transparent 80%);
+  --section-wash-3: none;
+  --section-glow-1-w: 112vw;
+  --section-glow-1-h: 90vw;
+  --section-glow-1-right: -62vw;
+  --section-glow-1-top: -28vw;
+  --section-glow-1-opacity: .65;
+  --section-glow-2-w: 96vw;
+  --section-glow-2-h: 96vw;
+  --section-glow-2-left: -64vw;
+  --section-glow-2-bottom: -42vw;
+  --section-glow-2-opacity: .48;
+  --section-glow-3-w: 1px;
+  --section-glow-3-h: 1px;
+  --section-glow-3-opacity: 0;
+}
+
+.organizerBlock p {
+  padding: 14px 0;
+  margin: 0;
+  border-bottom: 1px solid rgba(9, 9, 9, .45);
+}
+
+/* Footer now serves every route. */
+.siteFooter {
+  position: relative;
+  z-index: 2;
+}
+
+.footerLinks {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (hover: hover) {
+  .artistHeroTopline a,
+  .artistExternalLink,
+  .nextArtist a,
+  .footerLinks a {
+    transition: opacity var(--duration-fast) var(--ease-standard), transform var(--duration-fast) var(--ease-standard);
+  }
+
+  .artistHeroTopline a:hover,
+  .footerLinks a:hover {
+    opacity: .62;
+  }
+
+  .artistExternalLink:not(.isPlaceholder):hover,
+  .nextArtist a:hover {
+    transform: translateX(8px);
+  }
+}
+
+@media (min-width: 760px) {
+  .artistHeroGrid {
+    grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
+    gap: clamp(60px, 8vw, 130px);
+  }
+
+  .artistPortrait {
+    min-height: 520px;
+  }
+
+  .artistFactBar {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .artistEditorial {
+    grid-template-columns: minmax(280px, .8fr) minmax(420px, 1.2fr);
+    gap: 8vw;
+  }
+
+  .artistSet {
+    grid-template-columns: minmax(300px, .85fr) minmax(420px, 1.15fr);
+  }
+
+  .artistSetIntro {
+    grid-row: span 2;
+  }
+
+  .artistLinks,
+  .organizerBlock {
+    grid-template-columns: minmax(300px, .8fr) minmax(420px, 1.2fr);
+    gap: 8vw;
+  }
+
+  .informationBody {
+    grid-template-columns: minmax(220px, .42fr) minmax(520px, 1.58fr);
+    gap: 8vw;
+  }
+
+  .informationBody aside {
+    position: sticky;
+    top: 110px;
+  }
+
+  .contactGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .contactGrid article:nth-child(odd) {
+    padding-right: clamp(28px, 5vw, 70px);
+    border-right: 1px solid var(--color-ink);
+  }
+
+  .contactGrid article:nth-child(even) {
+    padding-left: clamp(28px, 5vw, 70px);
+  }
+
+  .artistQuote .darkGlowOne,
+  .contactHero .darkGlowOne {
+    --glow-w: clamp(900px, 94vw, 1500px);
+    --glow-h: clamp(900px, 94vw, 1500px);
+    --glow-left: -32%;
+    --glow-top: -68%;
+  }
+
+  .footerLinks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+

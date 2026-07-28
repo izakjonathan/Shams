@@ -1,6 +1,13 @@
+import type { StaticImageData } from "next/image";
+import artist01 from "../../../public/images/artists/artist-01.webp";
+import artist02 from "../../../public/images/artists/artist-02.webp";
+import artist03 from "../../../public/images/artists/artist-03.webp";
+import artist04 from "../../../public/images/artists/artist-04.webp";
+import artist05 from "../../../public/images/artists/artist-05.webp";
+
 export interface ArtistLink {
   readonly label: string;
-  readonly href: string;
+  readonly href?: string;
 }
 
 export interface Artist {
@@ -18,7 +25,7 @@ export interface Artist {
   readonly setDescription: string;
   readonly highlights: readonly string[];
   readonly links: readonly ArtistLink[];
-  readonly image: string;
+  readonly image: StaticImageData;
   readonly imageAlt: string;
   readonly imagePosition?: string;
 }
@@ -41,10 +48,10 @@ export const artists = [
     quote: "I want the room to feel like somewhere we can arrive together.",
     setDescription: "A full live performance created for the opening arc of the evening, moving from quiet detail to expansive rhythm.",
     highlights: ["New live arrangement", "Visual collaboration", "Festival premiere"],
-    image: "/images/artists/artist-02.webp",
+    image: artist02,
     imageAlt: "Artist portrait in a nighttime event setting.",
     imagePosition: "center 42%",
-    links: [{ label: "Instagram", href: "#" }, { label: "Listen", href: "#" }, { label: "Website", href: "#" }],
+    links: [{ label: "Instagram" }, { label: "Listen" }, { label: "Website" }],
   },
   {
     slug: "maya-al-khalil",
@@ -63,10 +70,10 @@ export const artists = [
     quote: "The best dance floors make room for many histories at once.",
     setDescription: "A two-hour DJ set moving through percussive club music, left-field electronics and shared musical references.",
     highlights: ["Extended set", "Cross-genre selection", "Orbit Stage debut"],
-    image: "/images/artists/artist-03.webp",
+    image: artist03,
     imageAlt: "Artist performing in a colorful club environment.",
     imagePosition: "center 48%",
-    links: [{ label: "Instagram", href: "#" }, { label: "SoundCloud", href: "#" }, { label: "Website", href: "#" }],
+    links: [{ label: "Instagram" }, { label: "SoundCloud" }, { label: "Website" }],
   },
   {
     slug: "aisha-devi",
@@ -85,10 +92,10 @@ export const artists = [
     quote: "Sound can dissolve the border between the individual and the room.",
     setDescription: "A concentrated audiovisual live show combining processed voice, low-frequency electronics and responsive visual design.",
     highlights: ["Full A/V production", "Immersive sound", "One-off festival presentation"],
-    image: "/images/artists/artist-04.webp",
+    image: artist04,
     imageAlt: "Artist portrait photographed at an event.",
     imagePosition: "center 36%",
-    links: [{ label: "Instagram", href: "#" }, { label: "Listen", href: "#" }, { label: "Website", href: "#" }],
+    links: [{ label: "Instagram" }, { label: "Listen" }, { label: "Website" }],
   },
   {
     slug: "sama-abdulhadi",
@@ -107,10 +114,10 @@ export const artists = [
     quote: "A powerful room is built through trust between the artist and the crowd.",
     setDescription: "A peak-time techno set with an extended progression, clean transitions and a strong physical arc.",
     highlights: ["Peak-time set", "Extended progression", "Orbit Stage headline"],
-    image: "/images/artists/artist-05.webp",
+    image: artist05,
     imageAlt: "Artist portrait in a warm, atmospheric interior.",
     imagePosition: "center 40%",
-    links: [{ label: "Instagram", href: "#" }, { label: "Listen", href: "#" }, { label: "Website", href: "#" }],
+    links: [{ label: "Instagram" }, { label: "Listen" }, { label: "Website" }],
   },
   {
     slug: "habibi-funk",
@@ -128,10 +135,10 @@ export const artists = [
     quote: "Discovery matters most when the stories behind the music travel with it.",
     setDescription: "A late-night vinyl-led journey through funk, soul, disco and overlooked regional recordings.",
     highlights: ["Vinyl selection", "Archive discoveries", "Sun Stage closing set"],
-    image: "/images/artists/artist-01.webp",
+    image: artist01,
     imageAlt: "Two artists beside DJ equipment at a live event.",
     imagePosition: "center center",
-    links: [{ label: "Instagram", href: "#" }, { label: "Bandcamp", href: "#" }, { label: "Website", href: "#" }],
+    links: [{ label: "Instagram" }, { label: "Bandcamp" }, { label: "Website" }],
   },
   {
     slug: "community-choir",
@@ -149,10 +156,10 @@ export const artists = [
     quote: "No single voice has to carry the whole song.",
     setDescription: "A welcoming outdoor performance combining prepared material, spoken text and a simple audience participation moment.",
     highlights: ["Community-led", "Open rehearsals", "Festival opening"],
-    image: "/images/artists/artist-01.webp",
+    image: artist01,
     imageAlt: "Artists and guests gathered around a DJ booth.",
     imagePosition: "center center",
-    links: [{ label: "Join the choir", href: "#" }, { label: "Project notes", href: "#" }],
+    links: [{ label: "Join the choir" }, { label: "Project notes" }],
   },
 ] as const satisfies readonly Artist[];
 

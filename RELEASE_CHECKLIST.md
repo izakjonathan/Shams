@@ -1,31 +1,34 @@
-# Shams for Humanity — v1.1.4 release record
-
-This patch is a code and repository cleanup of the confirmed working v1.1.3 design.
+# Release checklist
 
 ## Automated checks
 
-- [ ] `npm run release:validate`
-- [ ] `npm run typecheck`
-- [ ] `npm run build`
-- [ ] No browser console errors on the deployed preview
+- [ ] Generate and commit `package-lock.json`.
+- [ ] Switch deployment install command to `npm ci --no-audit --no-fund` after the lockfile exists.
+- [ ] Run `npm run release:check` successfully.
+- [ ] Run `npm run test:e2e:chromium` successfully.
+- [ ] Run the mobile WebKit Playwright project after installing Playwright browsers.
+- [ ] Confirm there are no console, hydration, route, image or font errors.
 
-## Regression checks
+## Content and integrations
 
-- [ ] Splash appears once per tab session only
-- [ ] Safari top and bottom canvas behavior is unchanged
-- [ ] Mobile menu opens, closes, traps keyboard focus and unmounts correctly
-- [ ] Homepage anchor navigation works
-- [ ] All six artist routes load from their stable slugs
-- [ ] Artist names use Agilera
-- [ ] Artist images retain their intended crops
-- [ ] Privacy, Terms, Accessibility and Contact close controls return home
-- [ ] FAQ, ticket and newsletter disabled states remain correct
+- [ ] Replace all `.example` addresses and provisional organizer details.
+- [ ] Confirm artist biographies, credits, images, links, times and stages.
+- [ ] Confirm venue, access information and event schedule.
+- [ ] Configure ticket and newsletter environment variables when ready.
+- [ ] Review Privacy, Terms, Accessibility and Contact copy.
 
-## Deferred launch configuration
+## Device verification
 
-- [ ] Final public domain
-- [ ] `NEXT_PUBLIC_SITE_URL`
-- [ ] `NEXT_PUBLIC_ALLOW_INDEXING=true`
-- [ ] Final ticket URL
-- [ ] Final newsletter endpoint
-- [ ] Final legal, contact and artist copy
+- [ ] iPhone Safari: first splash, repeat navigation, browser chrome, menu and gradients.
+- [ ] iPhone Safari landscape and zoomed text: menu remains scrollable.
+- [ ] Android Chrome.
+- [ ] Desktop Safari, Chrome and Firefox.
+- [ ] Keyboard-only navigation and visible focus.
+- [ ] VoiceOver or another screen reader on the homepage, menu and one artist page.
+
+## Indexing and domain
+
+- [ ] Keep `NEXT_PUBLIC_ALLOW_INDEXING=false` while public information is provisional.
+- [ ] Add the final site URL when the domain is ready.
+- [ ] Enable indexing only after `npm run release:validate` passes with final public content.
+- [ ] Verify canonical URLs, robots, sitemap and sharing previews.

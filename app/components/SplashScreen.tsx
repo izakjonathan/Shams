@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import splashArtwork from "../../public/images/splash-screen-edge-safe.png";
 
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
@@ -63,9 +64,6 @@ export function SplashScreen() {
       body.classList.add("splashComplete");
       root.style.backgroundColor = CANVAS_COLOR;
       body.style.backgroundColor = CANVAS_COLOR;
-      document
-        .querySelector<HTMLMetaElement>('meta[name="theme-color"]')
-        ?.setAttribute("content", CANVAS_COLOR);
       return;
     }
 
@@ -75,9 +73,6 @@ export function SplashScreen() {
     body.classList.remove("splashExiting", "splashComplete");
     root.style.backgroundColor = PAPER_COLOR;
     body.style.backgroundColor = PAPER_COLOR;
-
-    const themeColorMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    themeColorMeta?.setAttribute("content", PAPER_COLOR);
 
     // Two frames ensure the entering state is painted before transitioning in.
     if (skipEnterAnimation) {
@@ -102,7 +97,6 @@ export function SplashScreen() {
         root.classList.add("splashSessionSeen");
         root.style.backgroundColor = CANVAS_COLOR;
         body.style.backgroundColor = CANVAS_COLOR;
-        themeColorMeta?.setAttribute("content", CANVAS_COLOR);
       }, skipEnterAnimation ? 50 : EXIT_DURATION_MS);
     };
 
@@ -142,7 +136,7 @@ export function SplashScreen() {
     >
       <div className="splashScreenArtWrap">
         <Image
-          src="/images/splash-screen-edge-safe.png"
+          src={splashArtwork}
           alt=""
           fill
           priority

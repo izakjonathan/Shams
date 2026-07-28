@@ -55,11 +55,14 @@ export function SiteHeader() {
   }, [menuPhase]);
 
   useEffect(() => {
-    const main = document.querySelector<HTMLElement>("main");
-    if (main) main.inert = menuMounted;
+    const backgroundRegions = Array.from(
+      document.querySelectorAll<HTMLElement>("main, .siteFooter, .skipLink")
+    );
+
+    for (const region of backgroundRegions) region.inert = menuMounted;
 
     return () => {
-      if (main) main.inert = false;
+      for (const region of backgroundRegions) region.inert = false;
     };
   }, [menuMounted]);
 
@@ -78,24 +81,11 @@ export function SiteHeader() {
       menuFocusable[0]?.focus({ preventScroll: true });
     }
 
-    const preventPointerScroll = (event: Event) => event.preventDefault();
-
     const handleKeyDown = (event: KeyboardEvent) => {
       if (menuExpanded && event.key === "Escape") {
         event.preventDefault();
         setMenuPhase("closing");
         return;
-      }
-
-      if (["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(event.key)) {
-        const target = event.target as HTMLElement | null;
-        const isEditable =
-          target?.isContentEditable ||
-          target?.tagName === "INPUT" ||
-          target?.tagName === "TEXTAREA" ||
-          target?.tagName === "SELECT";
-
-        if (!isEditable) event.preventDefault();
       }
 
       if (!menuVisible || event.key !== "Tab" || focusable.length === 0) return;
@@ -113,13 +103,9 @@ export function SiteHeader() {
       }
     };
 
-    menu.addEventListener("touchmove", preventPointerScroll, { passive: false });
-    menu.addEventListener("wheel", preventPointerScroll, { passive: false });
     document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      menu.removeEventListener("touchmove", preventPointerScroll);
-      menu.removeEventListener("wheel", preventPointerScroll);
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [menuExpanded, menuMounted, menuVisible]);

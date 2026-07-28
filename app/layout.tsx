@@ -59,7 +59,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#f5f2eb",
+  themeColor: "transparent",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -106,7 +106,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           id="splash-session-gate"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem("shf-splash-seen")==="1"){document.documentElement.classList.add("splashSessionSeen");var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content","#090909");}}catch{}`,
+            __html: `try{if(sessionStorage.getItem("shf-splash-seen")==="1"){document.documentElement.classList.add("splashSessionSeen");}}catch{}`,
           }}
         />
         <noscript>
