@@ -46,9 +46,7 @@ type ViewTransitionDocument = Document & {
 const RouteTransitionContext = createContext<RouteTransitionContextValue | null>(null);
 
 export function useRouteTransition() {
-  const context = useContext(RouteTransitionContext);
-  if (!context) throw new Error("useRouteTransition must be used inside RouteFade");
-  return context;
+  return useContext(RouteTransitionContext);
 }
 
 function routeFamily(pathname: string) {

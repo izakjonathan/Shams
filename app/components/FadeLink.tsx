@@ -13,7 +13,8 @@ type FadeLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
 };
 
 export function FadeLink({ href, onClick, onBeforeNavigate, transitionKind, target, ...props }: FadeLinkProps) {
-  const { navigate, transitioning } = useRouteTransition();
+  const routeTransition = useRouteTransition();
+  const transitioning = routeTransition?.transitioning ?? false;
 
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(event);
@@ -30,10 +31,12 @@ export function FadeLink({ href, onClick, onBeforeNavigate, transitionKind, targ
     const destination = new URL(href, window.location.href);
     if (destination.origin !== window.location.origin) return;
 
+    if (!routeTransition) return;
+
     event.preventDefault();
     if (transitioning) return;
     onBeforeNavigate?.();
-    navigate(href, {
+    routeTransition.navigate(href, {
       focusOnArrival: event.detail === 0,
       transitionKind,
     });
