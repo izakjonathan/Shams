@@ -21,9 +21,12 @@
   --color-paper: #f5f2eb;
   --color-ink: #0b0b0b;
   --color-accent: #fcc64f;
+  --color-ember: #c1552c;
+  --color-ember-soft: rgba(193, 85, 44, 0.16);
+  --color-ember-glow: rgba(193, 85, 44, 0.5);
   --color-white: #fff;
-  --color-dark: #090909;
-  --color-ticket-dark: #111;
+  --color-dark: #120d09;
+  --color-ticket-dark: #16100a;
 
   /* Supporting colors */
   --color-line: rgba(11, 11, 11, 0.18);
@@ -87,6 +90,15 @@
     transparent 86%
   );
   --paper-glow-opacity: 0.94;
+  --ember-orb-gradient: radial-gradient(
+    ellipse 50% 50% at 50% 50%,
+    rgba(193, 85, 44, 1) 0%,
+    rgba(193, 85, 44, 1) 24%,
+    rgba(193, 85, 44, 0.783) 48%,
+    rgba(193, 85, 44, 0.405) 64%,
+    rgba(193, 85, 44, 0.162) 74%,
+    transparent 86%
+  );
   --hero-glow-blur-mobile: 44px;
   --hero-glow-blur-desktop: 54px;
 }

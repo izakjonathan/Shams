@@ -1,30 +1,60 @@
-# Shams for Humanity — v1.1.8
+# Shams for Humanity — v1.1.9
 
-Mobile-first Next.js festival website.
+Production-oriented, mobile-first Next.js festival website.
 
-## v1.1.8 — Vercel deployment stability
+## v1.1.9 — Vercel deployment repair
 
-This patch preserves all approved visual and accessibility improvements from v1.1.7 while removing development-only packages that caused Vercel dependency resolution to stall.
+- Removed ESLint and Playwright from the deployable dependency tree.
+- Removed the stale v1.1.7 tooling requirements from release validation.
+- Pinned TypeScript to 5.9.3.
+- Removed the Node/npm engine override that conflicted with Vercel project settings.
+- Restored Vercel's default npm installation behavior.
+- Preserved all design improvements and runtime behavior from the attached build.
 
-### Changes
 
-- Removed ESLint and Playwright from the deployable package dependency tree.
-- Removed their configuration and test files from the production ZIP.
-- Pinned TypeScript to 5.9.3 to prevent npm resolving a different compiler version.
-- Removed the package-level Node engine override so the Vercel project setting controls the runtime without warnings.
-- Restored the small, previously proven install dependency set.
-- Kept the split CSS, modal accessibility fixes, menu overflow support, theme-color reconciliation, security cleanup, content model improvements, and stricter release validation from v1.1.7.
+## Current release
+
+v1.1.9 is a deployment-repair release built on the repository-quality hardening work. It preserves the approved visual design while improving maintainability, accessibility, testing, security policy, and release validation.
+
+### Included
+
+- Shared responsive homepage, artist pages, information pages, footer, menu and error states.
+- Session-only splash screen with repeat-paint suppression.
+- Stable statically generated artist routes and responsive static image imports.
+- Preview-safe metadata and search-indexing controls.
+- Modular CSS files imported in the original cascade order.
+- ESLint configuration and Playwright smoke journeys.
+- Stronger launch validation for placeholder public information.
+- Scrollable mobile menu with inert background regions.
 
 ## Commands
 
 ```bash
 npm install
 npm run dev
+npm run lint
 npm run typecheck
 npm run build
+npm run test:e2e:chromium
 npm run release:check
 ```
 
-## Deployment
+## Reproducible installs
 
-The archive has a flat structure and is ready for GitHub/Vercel deployment. The custom domain can remain unset until launch.
+This archive does not include a generated `package-lock.json` because the package registry was unavailable in the build environment. Generate and commit the lockfile in a networked environment:
+
+```bash
+npm install --package-lock-only
+```
+
+After the lockfile is committed, change Vercel's install command to:
+
+```bash
+npm ci --no-audit --no-fund
+```
+
+## Production configuration
+
+Copy `.env.example` and configure production values in Vercel. Search indexing remains disabled unless explicitly enabled.
+
+See `RELEASE_CHECKLIST.md` and `AUDIT.md` before launch.

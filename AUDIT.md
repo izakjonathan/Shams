@@ -1,29 +1,30 @@
-# v1.1.8 current-state audit
+# v1.1.7 current-state audit
 
-## Deployment repair
+## Changes completed
 
-The v1.1.7 deployment stalled during `npm install` after adding ESLint and Playwright packages. Those tools were not required by `next build`, but Vercel still installed them and encountered dependency-resolution warnings.
+- Split the 2,466-line global stylesheet into focused style files while preserving the exact import and cascade order.
+- Added ESLint with Next.js Core Web Vitals and TypeScript rules.
+- Added Playwright smoke journeys for splash lifecycle, modal menu behavior, and artist navigation.
+- Made the footer and skip link inert together with main content while the mobile modal is mounted.
+- Removed blanket touch/wheel suppression and made the mobile overlay vertically scrollable.
+- Reconciled manifest loading chrome with the paper/transparent loading policy.
+- Removed the obsolete `interest-cohort` Permissions-Policy directive.
+- Replaced placeholder `href="#"` values with optional artist-link URLs.
+- Strengthened release validation so indexing cannot be enabled while draft public contact/legal information remains.
+- Cleaned current release documentation and separated it from historical version notes.
 
-The deployable dependency tree has been returned to the minimal application set:
+## Validation limitation
 
-- Next.js
-- React
-- React DOM
-- TypeScript and React/Node declarations
+The package registry was unavailable in this environment. A lockfile, dependency-backed Next.js build, ESLint execution and Playwright execution could therefore not be completed here. The repository includes the configuration and tests, and the release validator warns until a lockfile is generated.
 
-TypeScript is pinned to the version npm previously resolved, avoiding the contradictory root requirement shown in the Vercel log. The package-level Node engine override was removed so Vercel can use the runtime selected in Project Settings.
+## Remaining launch work
 
-## Preserved v1.1.7 improvements
+- Generate and commit `package-lock.json`, then use `npm ci` in deployment.
+- Install dependencies and run the full release and browser test commands.
+- Replace provisional public content before enabling indexing.
+- Confirm the final custom-domain configuration when available.
 
-- split stylesheet architecture
-- complete modal inert model
-- scrollable mobile menu
-- reconciled loading and manifest theme colors
-- obsolete Permissions-Policy directive removed
-- optional artist-link model
-- stricter launch validation
-- approved design and Safari behavior unchanged
 
-## Validation scope
+## v1.1.9 deployment repair
 
-Static source, import, CSS, JSON, asset, release-validator, and ZIP-integrity checks were completed. A dependency-backed build still needs to run in Vercel or another networked environment.
+The attached design-improvements archive was internally still versioned as 1.1.7 and included ESLint, eslint-config-next, Playwright, and their release-file requirements without a lockfile. This caused Vercel to spend the deployment resolving development-tool peer dependencies before the application build began. The deployable package now contains only the dependencies required to build and run the Next.js application.
