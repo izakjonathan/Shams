@@ -20,6 +20,7 @@ interface NavigateOptions {
   readonly replace?: boolean;
   readonly focusOnArrival?: boolean;
   readonly transitionKind?: TransitionKind;
+  readonly morphSource?: HTMLElement | null;
 }
 
 interface RouteTransitionContextValue {
@@ -28,11 +29,24 @@ interface RouteTransitionContextValue {
   transitioning: boolean;
 }
 
+interface BrowserViewTransition {
+  readonly ready: Promise<void>;
+  readonly finished: Promise<void>;
+  readonly updateCallbackDone: Promise<void>;
+  skipTransition: () => void;
+}
+
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (update: () => void | Promise<void>) => BrowserViewTransition;
+  activeViewTransition?: BrowserViewTransition | null;
+};
+
 const RouteTransitionContext = createContext<RouteTransitionContextValue | null>(null);
 
 const COVER_MS = 550;
 const REVEAL_MS = 550;
-const WATCHDOG_MS = 4500;
+const WATCHDOG_MS = 5000;
+const ARTIST_WATCHDOG_MS = 4200;
 
 function routeFamily(pathname: string) {
   if (pathname.startsWith("/artists/")) return "artist";
@@ -56,6 +70,10 @@ function reducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+function isArtistTransition(kind: TransitionKind) {
+  return kind === "artist-open" || kind === "artist-close" || kind === "artist-switch";
+}
+
 export function useRouteTransition() {
   return useContext(RouteTransitionContext);
 }
@@ -65,12 +83,14 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
   const router = useRouter();
   const [phase, setPhase] = useState<TransitionPhase>("idle");
   const [transitioning, setTransitioning] = useState(false);
-  const phaseRef = useRef<TransitionPhase>("idle");
   const lockRef = useRef(false);
   const previousPathRef = useRef(pathname);
   const timersRef = useRef<number[]>([]);
   const framesRef = useRef<number[]>([]);
   const transitionKindRef = useRef<TransitionKind>("page-switch");
+  const nativeTransitionRef = useRef<BrowserViewTransition | null>(null);
+  const nativeCommitResolveRef = useRef<(() => void) | null>(null);
+  const namedElementsRef = useRef<HTMLElement[]>([]);
   const pendingRef = useRef<{
     href: string;
     hash: string | null;
@@ -97,21 +117,48 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
   }, []);
 
   const setTransitionPhase = useCallback((next: TransitionPhase) => {
-    phaseRef.current = next;
     setPhase(next);
     document.documentElement.dataset.routePhase = next;
   }, []);
 
+  const clearMorphNames = useCallback(() => {
+    namedElementsRef.current.forEach((element) => {
+      element.style.removeProperty("view-transition-name");
+    });
+    namedElementsRef.current = [];
+  }, []);
+
   const unlock = useCallback(() => {
     clearAsync();
+    clearMorphNames();
+    nativeCommitResolveRef.current?.();
+    nativeCommitResolveRef.current = null;
+    nativeTransitionRef.current = null;
     pendingRef.current = null;
     lockRef.current = false;
     setTransitioning(false);
     setTransitionPhase("idle");
     delete document.documentElement.dataset.routeTransition;
     delete document.documentElement.dataset.routePhase;
-    document.documentElement.classList.remove("routeTransitionActive");
-  }, [clearAsync, setTransitionPhase]);
+    document.documentElement.classList.remove("routeTransitionActive", "artistMorphActive");
+  }, [clearAsync, clearMorphNames, setTransitionPhase]);
+
+  const nameMorphElement = useCallback((element: HTMLElement | null, name: string) => {
+    if (!element) return;
+    element.style.setProperty("view-transition-name", name);
+    namedElementsRef.current.push(element);
+  }, []);
+
+  const prepareOutgoingMorph = useCallback((source?: HTMLElement | null) => {
+    const shell = source?.closest<HTMLElement>("[data-artist-morph-shell]")
+      ?? document.querySelector<HTMLElement>("[data-artist-page-shell]");
+    const title = shell?.querySelector<HTMLElement>("[data-artist-morph-title]")
+      ?? document.querySelector<HTMLElement>("[data-artist-morph-title]");
+    const image = document.querySelector<HTMLElement>("[data-artist-morph-image]");
+
+    nameMorphElement(title, "artist-morph-title");
+    nameMorphElement(image, "artist-morph-image");
+  }, [nameMorphElement]);
 
   const positionDestination = useCallback(() => {
     const pending = pendingRef.current;
@@ -133,8 +180,19 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
 
+    if (isArtistTransition(transitionKindRef.current)) {
+      const destinationShell = target?.matches("[data-artist-morph-shell]")
+        ? target
+        : document.querySelector<HTMLElement>("[data-artist-page-shell]");
+      const destinationTitle = destinationShell?.querySelector<HTMLElement>("[data-artist-morph-title]")
+        ?? document.querySelector<HTMLElement>("[data-artist-morph-title]");
+      const destinationImage = document.querySelector<HTMLElement>("[data-artist-morph-image]");
+      nameMorphElement(destinationTitle, "artist-morph-title");
+      nameMorphElement(destinationImage, "artist-morph-image");
+    }
+
     return target;
-  }, []);
+  }, [nameMorphElement]);
 
   const revealDestination = useCallback(() => {
     const target = positionDestination();
@@ -191,11 +249,51 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     };
 
     document.documentElement.dataset.routeTransition = kind;
+
+    const viewTransitionDocument = document as ViewTransitionDocument;
+    const canMorph = isArtistTransition(kind)
+      && !reducedMotion()
+      && typeof viewTransitionDocument.startViewTransition === "function"
+      && !viewTransitionDocument.activeViewTransition;
+
+    if (canMorph) {
+      document.documentElement.classList.add("artistMorphActive");
+      prepareOutgoingMorph(options?.morphSource);
+
+      const transition = viewTransitionDocument.startViewTransition!(async () => {
+        await new Promise<void>((resolve) => {
+          nativeCommitResolveRef.current = resolve;
+          const nextHref = pendingRef.current?.href;
+          if (!nextHref) {
+            resolve();
+            return;
+          }
+          if (options?.replace) router.replace(nextHref, { scroll: false });
+          else router.push(nextHref, { scroll: false });
+        });
+      });
+
+      nativeTransitionRef.current = transition;
+      transition.ready.catch(() => undefined);
+      transition.finished
+        .catch(() => undefined)
+        .finally(() => {
+          if (pendingRef.current?.focusOnArrival) {
+            document.querySelector<HTMLElement>("main#main-content")?.focus({ preventScroll: true });
+          }
+          unlock();
+        });
+      timer(() => {
+        transition.skipTransition();
+        unlock();
+      }, ARTIST_WATCHDOG_MS);
+      return;
+    }
+
     document.documentElement.classList.add("routeTransitionActive");
     setTransitionPhase("covering");
 
     const coverDuration = reducedMotion() ? 0 : COVER_MS;
-
     timer(() => {
       setTransitionPhase("covered");
       const nextHref = pendingRef.current?.href;
@@ -205,7 +303,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     }, coverDuration);
 
     timer(unlock, WATCHDOG_MS);
-  }, [clearAsync, router, setTransitionPhase, timer, unlock]);
+  }, [clearAsync, prepareOutgoingMorph, router, setTransitionPhase, timer, unlock]);
 
   useEffect(() => {
     const previous = window.history.scrollRestoration;
@@ -213,23 +311,30 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     return () => {
       window.history.scrollRestoration = previous;
       clearAsync();
+      clearMorphNames();
       delete document.documentElement.dataset.routeTransition;
       delete document.documentElement.dataset.routePhase;
-      document.documentElement.classList.remove("routeTransitionActive");
+      document.documentElement.classList.remove("routeTransitionActive", "artistMorphActive");
     };
-  }, [clearAsync]);
+  }, [clearAsync, clearMorphNames]);
 
   useLayoutEffect(() => {
     if (previousPathRef.current === pathname) return;
     previousPathRef.current = pathname;
+
+    if (nativeCommitResolveRef.current) {
+      positionDestination();
+      const resolve = nativeCommitResolveRef.current;
+      nativeCommitResolveRef.current = null;
+      frame(() => resolve());
+      return;
+    }
 
     if (lockRef.current) {
       revealDestination();
       return;
     }
 
-    // Browser back/forward navigation cannot be covered before the URL change,
-    // so make the committed page settle immediately and visibly.
     positionDestination();
     setTransitionPhase("revealing");
     frame(() => {

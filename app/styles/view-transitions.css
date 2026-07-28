@@ -1,18 +1,15 @@
 /* ========================================================================== 
-   22 — Menu-style route transitions
+   22 — Route transitions
    ========================================================================== */
 
 :root {
   --route-panel-duration: var(--duration-menu);
   --route-panel-ease: var(--ease-menu);
+  --artist-morph-duration: 640ms;
+  --artist-morph-ease: cubic-bezier(.22, 1, .36, 1);
 }
 
-/*
-  Route changes now use the same movement as the mobile navigation: a solid
-  black panel enters from above, the route commits while it covers the screen,
-  and the panel exits back toward the top. The page itself is never faded,
-  scaled, blurred or moved.
-*/
+/* Utility and information pages keep the menu-style black curtain. */
 .routeFade {
   min-height: 100%;
 }
@@ -39,7 +36,8 @@
 :root[data-route-phase="covering"] .routeFade,
 :root[data-route-phase="covered"] .routeFade,
 :root[data-route-phase="revealing"] .routeFade,
-:root[data-route-phase="revealing-active"] .routeFade {
+:root[data-route-phase="revealing-active"] .routeFade,
+:root.artistMorphActive .routeFade {
   pointer-events: none;
 }
 
@@ -62,14 +60,99 @@
     visibility 0s linear var(--route-panel-duration);
 }
 
-/* The fixed site header uses the same stable layer relationship as the menu. */
+/*
+  Artist routes use a native matched-element morph. The selected lineup title
+  is temporarily named before capture; the destination heading receives the
+  same name before the update callback resolves. The browser therefore moves
+  and resizes one compositor snapshot rather than sliding whole pages.
+*/
 .siteHeader {
   isolation: isolate;
+  view-transition-name: site-header;
+}
+
+::view-transition-group(root) {
+  animation-duration: var(--artist-morph-duration);
+  animation-timing-function: var(--artist-morph-ease);
+}
+
+:root[data-route-transition^="artist-"]::view-transition-old(root) {
+  animation: artist-page-out 420ms cubic-bezier(.65, 0, .35, 1) both;
+}
+
+:root[data-route-transition^="artist-"]::view-transition-new(root) {
+  animation: artist-page-in 520ms 70ms var(--artist-morph-ease) both;
+}
+
+::view-transition-group(artist-morph-title) {
+  z-index: 80;
+  animation-duration: var(--artist-morph-duration);
+  animation-timing-function: var(--artist-morph-ease);
+}
+
+::view-transition-old(artist-morph-title),
+::view-transition-new(artist-morph-title) {
+  height: 100%;
+  width: 100%;
+  mix-blend-mode: normal;
+  animation-duration: var(--artist-morph-duration);
+  animation-timing-function: var(--artist-morph-ease);
+}
+
+::view-transition-group(artist-morph-image) {
+  z-index: 65;
+  animation-duration: 680ms;
+  animation-timing-function: var(--artist-morph-ease);
+}
+
+::view-transition-old(artist-morph-image) {
+  animation: artist-image-out 320ms cubic-bezier(.65, 0, .35, 1) both;
+}
+
+::view-transition-new(artist-morph-image) {
+  animation: artist-image-in 560ms 90ms var(--artist-morph-ease) both;
+}
+
+::view-transition-group(site-header) {
+  z-index: 100;
+  animation: none;
+}
+
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@keyframes artist-page-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: .12; transform: scale(.992); }
+}
+
+@keyframes artist-page-in {
+  from { opacity: 0; transform: scale(1.008); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes artist-image-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(.985); }
+}
+
+@keyframes artist-image-in {
+  from { opacity: 0; transform: scale(1.035); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .routeTransitionVeil {
     transition-duration: .01ms !important;
     transition-delay: 0ms !important;
+  }
+
+  ::view-transition-group(root),
+  ::view-transition-group(artist-morph-title),
+  ::view-transition-group(artist-morph-image) {
+    animation-duration: .01ms !important;
   }
 }

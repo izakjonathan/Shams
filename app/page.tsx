@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { FadeLink } from "./components/FadeLink";
 import { ArrowIcon } from "./components/ArrowIcon";
@@ -91,9 +90,9 @@ export default function Home() {
         />
         <div className="artistList">
           {artists.map((artist, index) => (
-            <article className="artistRow" id={`artist-${artist.slug}`} key={artist.slug}>
+            <article className="artistRow" id={`artist-${artist.slug}`} key={artist.slug} data-artist-morph-shell>
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
-              <h3 style={{ viewTransitionName: `artist-title-${artist.slug}` } as CSSProperties}>{artist.name}</h3>
+              <h3 data-artist-morph-title>{artist.name}</h3>
               <span>{artist.type}</span>
               <span>{artist.time}</span>
               <span>{artist.stage}</span>

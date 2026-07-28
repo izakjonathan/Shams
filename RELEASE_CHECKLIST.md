@@ -1,6 +1,6 @@
-# Release checklist — v1.5.1
+# Release checklist — v1.6.0
 
-- [x] Version set to 1.5.1
+- [x] Version set to 1.6.0
 - [x] Built from the confirmed v1.5.0 working baseline
 - [x] Page transition visually matches mobile-menu movement
 - [x] Black panel covers before route push
