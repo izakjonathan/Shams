@@ -33,6 +33,11 @@ interface MorphLayer {
   snapshot: HTMLDivElement;
   title: HTMLDivElement;
   sourceRect: DOMRect;
+  sourceTypography: {
+    fontSize: string;
+    lineHeight: string;
+    letterSpacing: string;
+  };
 }
 
 const RouteTransitionContext = createContext<RouteTransitionContextValue | null>(null);
@@ -94,6 +99,87 @@ function copyTitleStyles(source: HTMLElement, clone: HTMLElement) {
     "white-space",
   ];
   properties.forEach((property) => clone.style.setProperty(property, style.getPropertyValue(property)));
+}
+
+function intersectsViewport(rect: DOMRect, overscan = 96) {
+  return rect.bottom >= -overscan
+    && rect.top <= window.innerHeight + overscan
+    && rect.right >= -overscan
+    && rect.left <= window.innerWidth + overscan;
+}
+
+function snapshotBackground() {
+  const paper = window.getComputedStyle(document.documentElement).getPropertyValue("--color-paper").trim();
+  return paper || "#f4f0e8";
+}
+
+function createViewportSnapshot(route: HTMLElement, sourceTitle: HTMLElement) {
+  const snapshot = document.createElement("div");
+  snapshot.className = "artistMorphSnapshot";
+  snapshot.setAttribute("aria-hidden", "true");
+  snapshot.style.background = snapshotBackground();
+
+  sourceTitle.setAttribute("data-morph-source-active", "true");
+
+  const rootChildren = Array.from(route.children).filter((node): node is HTMLElement => node instanceof HTMLElement);
+  const candidates = rootChildren.flatMap((child) => {
+    if (child.matches("main")) {
+      return Array.from(child.children).filter((node): node is HTMLElement => node instanceof HTMLElement);
+    }
+    return [child];
+  });
+
+  for (const original of candidates) {
+    const rect = original.getBoundingClientRect();
+    if (!intersectsViewport(rect)) continue;
+
+    const clone = original.cloneNode(true) as HTMLElement;
+    clone.querySelector<HTMLElement>("[data-morph-source-active]")?.style.setProperty("visibility", "hidden");
+    clone.removeAttribute("id");
+    clone.querySelectorAll<HTMLElement>("[id]").forEach((element) => element.removeAttribute("id"));
+    clone.querySelectorAll<HTMLElement>("a, button, input, textarea, select, video, audio").forEach((element) => {
+      element.setAttribute("tabindex", "-1");
+      if (element instanceof HTMLMediaElement) element.pause();
+    });
+    clone.classList.add("artistMorphSnapshotBlock");
+    clone.style.position = "absolute";
+    clone.style.left = `${rect.left}px`;
+    clone.style.top = `${rect.top}px`;
+    clone.style.width = `${rect.width}px`;
+    clone.style.height = `${rect.height}px`;
+    clone.style.margin = "0";
+    clone.style.pointerEvents = "none";
+    snapshot.appendChild(clone);
+  }
+
+  sourceTitle.removeAttribute("data-morph-source-active");
+  if (!snapshot.childElementCount) return null;
+  snapshot.querySelectorAll<HTMLElement>("[data-morph-source-active]").forEach((element) => {
+    element.removeAttribute("data-morph-source-active");
+  });
+  return snapshot;
+}
+
+async function waitForStableDestinationLayout() {
+  try {
+    await document.fonts?.ready;
+  } catch {
+    // Font loading must never block navigation recovery.
+  }
+
+  const image = document.querySelector<HTMLImageElement>("[data-artist-page-shell] img");
+  if (image && !image.complete) {
+    await Promise.race([
+      image.decode().catch(() => undefined),
+      new Promise<void>((resolve) => window.setTimeout(resolve, 180)),
+    ]);
+  }
+
+  await new Promise<void>((resolve) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => resolve());
+    });
+  });
 }
 
 export function useRouteTransition() {
@@ -163,39 +249,15 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
   }, [clearAsync, removeMorphLayer, setTransitionPhase]);
 
   const createMorphLayer = useCallback((source?: HTMLElement | null) => {
-    const route = document.querySelector<HTMLElement>(".routeFade");
+    const route = document.querySelector<HTMLElement>("[data-live-route]");
     const sourceTitle = findSourceTitle(source);
     if (!route || !sourceTitle) return false;
 
     const sourceRect = sourceTitle.getBoundingClientRect();
     if (sourceRect.width <= 0 || sourceRect.height <= 0) return false;
 
-    const snapshot = document.createElement("div");
-    snapshot.className = "artistMorphSnapshot";
-    snapshot.setAttribute("aria-hidden", "true");
-
-    const routeClone = route.cloneNode(true) as HTMLElement;
-    routeClone.removeAttribute("aria-busy");
-    routeClone.querySelectorAll<HTMLElement>("a, button, input, textarea, select").forEach((element) => {
-      element.setAttribute("tabindex", "-1");
-    });
-
-    const sourceShell = sourceTitle.closest<HTMLElement>("[data-artist-morph-shell]")
-      ?? sourceTitle.closest<HTMLElement>("[data-artist-page-shell]");
-    const sourceShellId = sourceShell?.id;
-    const clonedTitle = sourceShellId
-      ? routeClone.querySelector<HTMLElement>(`#${CSS.escape(sourceShellId)} [data-artist-morph-title]`)
-      : routeClone.querySelector<HTMLElement>("[data-artist-page-shell] [data-artist-morph-title]");
-    if (clonedTitle) clonedTitle.style.visibility = "hidden";
-
-    const routeRect = route.getBoundingClientRect();
-    routeClone.style.position = "absolute";
-    routeClone.style.left = `${routeRect.left}px`;
-    routeClone.style.top = `${routeRect.top}px`;
-    routeClone.style.width = `${routeRect.width}px`;
-    routeClone.style.minHeight = `${route.scrollHeight}px`;
-    routeClone.style.pointerEvents = "none";
-    snapshot.appendChild(routeClone);
+    const snapshot = createViewportSnapshot(route, sourceTitle);
+    if (!snapshot) return false;
 
     const title = document.createElement("div");
     title.className = "artistMorphFloatingTitle";
@@ -207,7 +269,17 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     title.style.height = `${sourceRect.height}px`;
 
     document.body.append(snapshot, title);
-    morphLayerRef.current = { snapshot, title, sourceRect };
+    const sourceStyle = window.getComputedStyle(sourceTitle);
+    morphLayerRef.current = {
+      snapshot,
+      title,
+      sourceRect,
+      sourceTypography: {
+        fontSize: sourceStyle.fontSize,
+        lineHeight: sourceStyle.lineHeight,
+        letterSpacing: sourceStyle.letterSpacing,
+      },
+    };
     return true;
   }, []);
 
@@ -237,49 +309,85 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
   const revealMorphDestination = useCallback(() => {
     const layer = morphLayerRef.current;
     const target = positionDestination();
-    const destinationShell = target?.matches("[data-artist-morph-shell]")
-      ? target
-      : document.querySelector<HTMLElement>("[data-artist-page-shell]");
-    const destinationTitle = destinationShell?.querySelector<HTMLElement>("[data-artist-morph-title]")
-      ?? document.querySelector<HTMLElement>("[data-artist-morph-title]");
 
-    if (!layer || !destinationTitle) {
+    if (!layer) {
       unlock();
       return;
     }
 
-    destinationTitleRef.current = destinationTitle;
-    destinationTitle.style.visibility = "hidden";
-    setTransitionPhase("morph-revealing");
+    void waitForStableDestinationLayout().then(() => {
+      if (morphLayerRef.current !== layer || !lockRef.current) return;
 
-    frame(() => {
-      const destinationRect = destinationTitle.getBoundingClientRect();
-      const deltaX = destinationRect.left - layer.sourceRect.left;
-      const deltaY = destinationRect.top - layer.sourceRect.top;
-      const scaleX = destinationRect.width / layer.sourceRect.width;
-      const scaleY = destinationRect.height / layer.sourceRect.height;
+      const destinationShell = target?.matches("[data-artist-morph-shell]")
+        ? target
+        : document.querySelector<HTMLElement>("[data-artist-page-shell]");
+      const destinationTitle = destinationShell?.querySelector<HTMLElement>("[data-artist-morph-title]")
+        ?? document.querySelector<HTMLElement>("[data-artist-morph-title]");
 
-      document.documentElement.dataset.routePhase = "morph-revealing-active";
-
-      const snapshotAnimation = layer.snapshot.animate(
-        [{ opacity: 1 }, { opacity: 0 }],
-        { duration: reducedMotion() ? 1 : 420, easing: "cubic-bezier(.22, 1, .36, 1)", fill: "forwards" },
-      );
-
-      const titleAnimation = layer.title.animate(
-        [
-          { transform: "translate3d(0, 0, 0) scale(1, 1)", opacity: 1 },
-          { transform: `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleX}, ${scaleY})`, opacity: 1 },
-        ],
-        { duration: reducedMotion() ? 1 : MORPH_MS, easing: "cubic-bezier(.22, 1, .36, 1)", fill: "forwards" },
-      );
-
-      Promise.allSettled([snapshotAnimation.finished, titleAnimation.finished]).finally(() => {
-        destinationTitle.style.removeProperty("visibility");
-        if (pendingRef.current?.focusOnArrival) {
-          (target ?? document.querySelector<HTMLElement>("main#main-content"))?.focus({ preventScroll: true });
-        }
+      if (!destinationTitle) {
         unlock();
+        return;
+      }
+
+      const destinationRect = destinationTitle.getBoundingClientRect();
+      if (destinationRect.width <= 0 || destinationRect.height <= 0) {
+        unlock();
+        return;
+      }
+
+      destinationTitleRef.current = destinationTitle;
+      destinationTitle.style.visibility = "hidden";
+      setTransitionPhase("morph-revealing");
+
+      frame(() => {
+        if (morphLayerRef.current !== layer || !lockRef.current) return;
+
+        const destinationStyle = window.getComputedStyle(destinationTitle);
+
+        document.documentElement.dataset.routePhase = "morph-revealing-active";
+
+        const snapshotAnimation = layer.snapshot.animate(
+          [{ opacity: 1 }, { opacity: 0 }],
+          { duration: reducedMotion() ? 1 : 420, easing: "cubic-bezier(.22, 1, .36, 1)", fill: "forwards" },
+        );
+
+        const titleAnimation = layer.title.animate(
+          [
+            {
+              left: `${layer.sourceRect.left}px`,
+              top: `${layer.sourceRect.top}px`,
+              width: `${layer.sourceRect.width}px`,
+              height: `${layer.sourceRect.height}px`,
+              fontSize: layer.sourceTypography.fontSize,
+              lineHeight: layer.sourceTypography.lineHeight,
+              letterSpacing: layer.sourceTypography.letterSpacing,
+              opacity: 1,
+            },
+            {
+              left: `${destinationRect.left}px`,
+              top: `${destinationRect.top}px`,
+              width: `${destinationRect.width}px`,
+              height: `${destinationRect.height}px`,
+              fontSize: destinationStyle.fontSize,
+              lineHeight: destinationStyle.lineHeight,
+              letterSpacing: destinationStyle.letterSpacing,
+              opacity: 1,
+            },
+          ],
+          { duration: reducedMotion() ? 1 : MORPH_MS, easing: "cubic-bezier(.22, 1, .36, 1)", fill: "forwards" },
+        );
+
+        Promise.allSettled([snapshotAnimation.finished, titleAnimation.finished]).finally(() => {
+          destinationTitle.style.removeProperty("visibility");
+          if (pendingRef.current?.focusOnArrival) {
+            const focusTarget = target ?? document.querySelector<HTMLElement>("main#main-content");
+            if (focusTarget && !focusTarget.matches("a, button, input, textarea, select, [tabindex]")) {
+              focusTarget.setAttribute("tabindex", "-1");
+            }
+            focusTarget?.focus({ preventScroll: true });
+          }
+          unlock();
+        });
       });
     });
   }, [frame, positionDestination, setTransitionPhase, unlock]);
@@ -337,6 +445,12 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       hash: destination.hash || null,
       focusOnArrival: Boolean(options?.focusOnArrival),
     };
+    try {
+      if (destination.hash) sessionStorage.setItem("shf-route-target", destination.hash);
+      else sessionStorage.removeItem("shf-route-target");
+    } catch {
+      // Storage can be unavailable in private browsing; transition still works.
+    }
     document.documentElement.dataset.routeTransition = kind;
 
     const useMorph = isArtistTransition(kind) && !reducedMotion() && createMorphLayer(options?.morphSource);
@@ -397,7 +511,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
   return (
     <RouteTransitionContext.Provider value={value}>
       {header}
-      <div className={`routeFade routeFade--${phase}`} data-transition-kind={transitionKindRef.current} aria-busy={transitioning}>
+      <div className={`routeFade routeFade--${phase}`} data-live-route data-transition-kind={transitionKindRef.current} aria-busy={transitioning}>
         {children}
       </div>
       <div className="routeTransitionVeil" aria-hidden="true" />

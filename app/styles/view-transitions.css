@@ -70,18 +70,26 @@
 */
 .artistMorphSnapshot {
   position: fixed;
-  z-index: 55;
+  z-index: 45;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
   contain: strict;
   opacity: 1;
-  background: transparent;
+  isolation: isolate;
+}
+
+.artistMorphSnapshotBlock {
+  box-sizing: border-box;
+  pointer-events: none !important;
+  opacity: 1 !important;
+  transition: none !important;
+  animation-play-state: paused !important;
 }
 
 .artistMorphFloatingTitle {
   position: fixed;
-  z-index: 70;
+  z-index: 49;
   display: block;
   margin: 0;
   padding: 0;
@@ -90,21 +98,21 @@
   transform-origin: top left;
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
-  will-change: transform;
+  will-change: left, top, width, height, font-size;
 }
 
-:root.manualArtistMorphActive .routeFade {
+:root.manualArtistMorphActive [data-live-route] {
   opacity: 0;
 }
 
-:root[data-route-phase="morph-revealing-active"] .routeFade {
+:root[data-route-phase="morph-revealing-active"] [data-live-route] {
   opacity: 1;
   transition: opacity 420ms var(--artist-morph-ease);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .routeTransitionVeil,
-  :root[data-route-phase="morph-revealing-active"] .routeFade {
+  :root[data-route-phase="morph-revealing-active"] [data-live-route] {
     transition-duration: 1ms !important;
   }
 }

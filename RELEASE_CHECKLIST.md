@@ -1,12 +1,19 @@
-# Release checklist — v1.6.2
+# Release checklist — v1.6.4
 
-- [x] Version set to 1.6.2
-- [x] Browser-native root View Transition removed from artist routing
-- [x] Outgoing route is retained as a fixed DOM snapshot during loading
-- [x] Artist title uses measured source/destination FLIP geometry
-- [x] Destination title is hidden only during the floating-title morph
-- [x] Destination scroll is positioned before reveal
-- [x] Header remains outside the route snapshot
-- [x] Information pages retain the menu-style black curtain
-- [x] Reduced-motion fallback retained
-- [x] Watchdog cleanup retained
+- [x] Version set to 1.6.4
+- [x] Mobile-menu transition unchanged
+- [x] Information-page black curtain unchanged
+- [x] Artist routes avoid browser-native root snapshots
+- [x] Artist routes avoid cloning the complete page
+- [x] Snapshot includes only visible viewport blocks and overscan
+- [x] Snapshot uses an opaque fallback canvas
+- [x] Only the selected source title is hidden in the snapshot
+- [x] Title morph avoids non-uniform transform stretching
+- [x] Fixed header remains above snapshot and floating title
+- [x] Destination fonts and layout are stabilized before measurement
+- [x] Destination portrait decode has a bounded wait
+- [x] Navigation lock has watchdog recovery
+- [x] Reduced-motion fallback remains available
+- [x] Release validation passes
+- [x] Static architecture audit passes
+- [ ] Full local typecheck and production build (dependencies unavailable in execution environment)
