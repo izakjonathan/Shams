@@ -5,7 +5,7 @@
 :root {
   --route-panel-duration: var(--duration-menu);
   --route-panel-ease: var(--ease-menu);
-  --artist-morph-duration: 640ms;
+  --artist-morph-duration: 620ms;
   --artist-morph-ease: cubic-bezier(.22, 1, .36, 1);
 }
 
@@ -61,27 +61,47 @@
 }
 
 /*
-  Artist routes use a native matched-element morph. The selected lineup title
-  is temporarily named before capture; the destination heading receives the
-  same name before the update callback resolves. The browser therefore moves
-  and resizes one compositor snapshot rather than sliding whole pages.
+  Artist routes use a native matched-title transition. The v1.6.0 root
+  snapshots were both faded toward transparency while the repeat-visit Safari
+  canvas is intentionally transparent. Safari composites that transparent gap
+  against black, which produced the reported black screen.
+
+  Keep an opaque paper canvas for the transition and layer the new root above
+  the old root. The old page remains fully visible until the incoming page has
+  dissolved over it, so there is never a frame where both root snapshots are
+  transparent. Only the title morphs on home ↔ artist navigation. Portraits
+  receive a matched layer only for artist ↔ artist switches.
 */
+:root.artistMorphActive,
+:root.artistMorphActive body {
+  background-color: var(--color-paper) !important;
+}
+
 .siteHeader {
   isolation: isolate;
   view-transition-name: site-header;
 }
 
-::view-transition-group(root) {
+::view-transition {
+  background: var(--color-paper);
+}
+
+::view-transition-group(root),
+::view-transition-image-pair(root) {
+  background: var(--color-paper);
   animation-duration: var(--artist-morph-duration);
   animation-timing-function: var(--artist-morph-ease);
 }
 
 :root[data-route-transition^="artist-"]::view-transition-old(root) {
-  animation: artist-page-out 420ms cubic-bezier(.65, 0, .35, 1) both;
+  z-index: 1;
+  animation: none;
+  opacity: 1;
 }
 
 :root[data-route-transition^="artist-"]::view-transition-new(root) {
-  animation: artist-page-in 520ms 70ms var(--artist-morph-ease) both;
+  z-index: 2;
+  animation: artist-root-dissolve-in 420ms 40ms var(--artist-morph-ease) both;
 }
 
 ::view-transition-group(artist-morph-title) {
@@ -90,10 +110,12 @@
   animation-timing-function: var(--artist-morph-ease);
 }
 
+::view-transition-image-pair(artist-morph-title) {
+  isolation: isolate;
+}
+
 ::view-transition-old(artist-morph-title),
 ::view-transition-new(artist-morph-title) {
-  height: 100%;
-  width: 100%;
   mix-blend-mode: normal;
   animation-duration: var(--artist-morph-duration);
   animation-timing-function: var(--artist-morph-ease);
@@ -101,16 +123,16 @@
 
 ::view-transition-group(artist-morph-image) {
   z-index: 65;
-  animation-duration: 680ms;
+  animation-duration: 560ms;
   animation-timing-function: var(--artist-morph-ease);
 }
 
 ::view-transition-old(artist-morph-image) {
-  animation: artist-image-out 320ms cubic-bezier(.65, 0, .35, 1) both;
+  animation: artist-image-out 260ms cubic-bezier(.65, 0, .35, 1) both;
 }
 
 ::view-transition-new(artist-morph-image) {
-  animation: artist-image-in 560ms 90ms var(--artist-morph-ease) both;
+  animation: artist-image-in 440ms 45ms var(--artist-morph-ease) both;
 }
 
 ::view-transition-group(site-header) {
@@ -124,23 +146,18 @@
   mix-blend-mode: normal;
 }
 
-@keyframes artist-page-out {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: .12; transform: scale(.992); }
-}
-
-@keyframes artist-page-in {
-  from { opacity: 0; transform: scale(1.008); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes artist-root-dissolve-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @keyframes artist-image-out {
   from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(.985); }
+  to { opacity: 0; transform: scale(.99); }
 }
 
 @keyframes artist-image-in {
-  from { opacity: 0; transform: scale(1.035); }
+  from { opacity: 0; transform: scale(1.02); }
   to { opacity: 1; transform: scale(1); }
 }
 

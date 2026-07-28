@@ -1,12 +1,12 @@
-# Release checklist — v1.6.0
+# Release checklist — v1.6.1
 
-- [x] Version set to 1.6.0
-- [x] Built from the confirmed v1.5.0 working baseline
-- [x] Page transition visually matches mobile-menu movement
-- [x] Black panel covers before route push
-- [x] Destination position is set before reveal
-- [x] No fade, scale or blur on page content
-- [x] Reduced-motion bypass retained
-- [x] Static architecture audit passes
-- [x] Release configuration validation passes
-- [ ] Run dependency-backed TypeScript and production build in deployment environment
+- [x] Version set to 1.6.1
+- [x] Mobile menu transition unchanged
+- [x] Information-page curtain unchanged
+- [x] Artist root snapshots never fade simultaneously
+- [x] Opaque transition canvas prevents Safari black backing exposure
+- [x] Artist title remains the shared morph element
+- [x] Portrait matching limited to artist-to-artist navigation
+- [x] Reduced-motion and unsupported-browser fallback retained
+- [x] Static release validation passed
+- [x] Static architecture audit passed

@@ -154,10 +154,15 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       ?? document.querySelector<HTMLElement>("[data-artist-page-shell]");
     const title = shell?.querySelector<HTMLElement>("[data-artist-morph-title]")
       ?? document.querySelector<HTMLElement>("[data-artist-morph-title]");
-    const image = document.querySelector<HTMLElement>("[data-artist-morph-image]");
-
     nameMorphElement(title, "artist-morph-title");
-    nameMorphElement(image, "artist-morph-image");
+
+    // Only artist-to-artist navigation has a portrait on both sides. Naming a
+    // one-sided image during home ↔ artist transitions creates a large extra
+    // compositor layer in Safari and can briefly obscure the root snapshot.
+    if (transitionKindRef.current === "artist-switch") {
+      const image = document.querySelector<HTMLElement>("[data-artist-morph-image]");
+      nameMorphElement(image, "artist-morph-image");
+    }
   }, [nameMorphElement]);
 
   const positionDestination = useCallback(() => {
@@ -186,9 +191,12 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
         : document.querySelector<HTMLElement>("[data-artist-page-shell]");
       const destinationTitle = destinationShell?.querySelector<HTMLElement>("[data-artist-morph-title]")
         ?? document.querySelector<HTMLElement>("[data-artist-morph-title]");
-      const destinationImage = document.querySelector<HTMLElement>("[data-artist-morph-image]");
       nameMorphElement(destinationTitle, "artist-morph-title");
-      nameMorphElement(destinationImage, "artist-morph-image");
+
+      if (transitionKindRef.current === "artist-switch") {
+        const destinationImage = document.querySelector<HTMLElement>("[data-artist-morph-image]");
+        nameMorphElement(destinationImage, "artist-morph-image");
+      }
     }
 
     return target;
