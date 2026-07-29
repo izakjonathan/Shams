@@ -7,8 +7,12 @@ import { SplashScreen } from "./components/SplashScreen";
 import { SiteFooter } from "./components/SiteFooter";
 import { RouteFade } from "./components/RouteFade";
 import { DocumentCanvasTone } from "./components/DocumentCanvasTone";
-import { artists, event, tickets } from "./lib/content";
+import { contentRepository } from "./content";
 import { allowIndexing, serializeJsonLd, siteUrl } from "./lib/site";
+
+const event = contentRepository.getEvent();
+const artists = contentRepository.getArtists();
+const tickets = contentRepository.getTickets();
 
 const agilera = localFont({
   src: "../public/fonts/Agilera.woff",
@@ -111,7 +115,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           id="splash-session-gate"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem("shf-splash-seen-v1.9.0")==="1"){document.documentElement.classList.add("splashSessionSeen");document.documentElement.classList.remove("splashCanvasActive","splashRunwayActive");}}catch{}`,
+            __html: `try{if(sessionStorage.getItem("shf-splash-seen-v2.0.0")==="1"){document.documentElement.classList.add("splashSessionSeen");document.documentElement.classList.remove("splashCanvasActive","splashRunwayActive");}}catch{}`,
           }}
         />
         <noscript>

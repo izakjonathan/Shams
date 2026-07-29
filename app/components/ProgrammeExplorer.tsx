@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ProgrammeCategory, ProgrammeEntry } from "../lib/content/programme";
+import type { ProgrammeCategory, ProgrammeEntry } from "../content";
 
 const filters: ReadonlyArray<{ value: ProgrammeCategory; label: string }> = [
   { value: "all", label: "All" },

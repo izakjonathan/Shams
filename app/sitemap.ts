@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
-import { artists } from "./lib/content";
+import { contentRepository } from "./content";
 import { siteUrl } from "./lib/site";
+
+const artists = contentRepository.getArtists();
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

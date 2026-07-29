@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { ArrowIcon } from "../../components/ArrowIcon";
 import { ArtistNavigation } from "../../components/ArtistNavigation";
 import { PageCloseButton } from "../../components/PageCloseButton";
-import { artists, event, getArtistBySlug } from "../../lib/content";
+import { contentRepository } from "../../content";
+
+const artists = contentRepository.getArtists();
+const event = contentRepository.getEvent();
 
 export const dynamicParams = false;
 
@@ -14,7 +17,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const artist = getArtistBySlug(slug);
+  const artist = contentRepository.getArtistBySlug(slug);
 
   if (!artist) return { title: "Artist not found", robots: { index: false, follow: false } };
 
@@ -32,8 +35,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ArtistPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const artist = getArtistBySlug(slug);
-  if (!artist) notFound();
+  const artist = contentRepository.getArtistBySlug(slug);
+  if (!artist) {
+    notFound();
+    throw new Error("Artist not found");
+  }
 
   const artistIndex = artists.findIndex((entry) => entry.slug === artist.slug);
   const previousArtist = artists[(artistIndex - 1 + artists.length) % artists.length];

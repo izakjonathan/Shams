@@ -1,28 +1,28 @@
-# Shams for Humanity v1.9.0
+# Shams for Humanity v2.0.0
 
-Cleanup and stability release based on v1.8.4.
+Typed content architecture release based on v1.9.0. The approved frontend design, Safari viewport system, splash, menu, editorial curtain, and page layouts are unchanged.
 
-## Main changes
+## Content architecture
 
-- Added one shared visual-viewport utility for bottom-of-document positioning.
-- Route returns to the footer no longer use `window.innerHeight`.
-- The fixed header remains visible but becomes inert during route transitions.
-- Removed dead route-transition classes, phase class names, data attributes, and canvas-tone markers.
-- Reduced the route watchdog from 7 seconds to 4.2 seconds.
-- Temporary focus `tabindex` values are removed after focus leaves the destination.
-- Splash cleanup is now idempotent and restores root classes, runway, canvas colour, scroll position, and shell accessibility state after normal completion or interruption.
-- Splash animation is opacity-only; blur and scale compositor effects were removed.
-- The document canvas variable is written on the root only and inherited by the body.
-- The one-time artist return target is consumed and removed from session storage.
-- Global footer styling now lives in `app/styles/footer.css`.
-- `view-transitions.css` was renamed to `route-curtain.css`.
-- Artists, tickets, FAQ entries, and event content now have stable backend-ready IDs, ordering, and status fields.
-- Removed an unused motion token and an empty media query.
+All editable site content now lives under `app/content/`:
+
+- `models.ts` — canonical TypeScript models for event, artists, programme, tickets, FAQ, information pages, contact routes, navigation, and homepage content.
+- `data/` — local content-source adapters used until a database or CMS is connected.
+- `validation.ts` — runtime validation for IDs, statuses, ordering, slugs, times, dates, ticket values, and required fields.
+- `repository.ts` — the only public read interface used by server-rendered pages and metadata.
+- `navigation-repository.ts` — a lightweight client-safe interface for the interactive header.
+
+Components and routes no longer import raw content arrays. They call repository methods such as `getEvent()`, `getArtists()`, `getProgramme()`, `getInformationPage()`, and `getContactPage()`.
+
+## Backend migration path
+
+The files in `app/content/data/` can later be replaced with database or CMS adapters while keeping the repository API and frontend components stable. The runtime validator remains between external data and the presentation layer.
 
 ## Validation
 
 - Release configuration validation: passed.
 - Static architecture audit: passed.
 - CSS brace validation: passed.
-- JavaScript validation-script syntax checks: passed.
-- Full Next.js build not run because the environment registry does not provide the pinned `@types/node@22.0.0`, so a lockfile could not be generated here.
+- Validation-script syntax checks: passed.
+- ZIP integrity: passed.
+- Full dependency-based Next.js build was not run because the environment has no installed dependencies or reproducible package lock.

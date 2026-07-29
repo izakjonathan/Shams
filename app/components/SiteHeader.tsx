@@ -10,7 +10,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type TransitionEvent,
 } from "react";
-import { event } from "../lib/content";
+import { navigationRepository } from "../content";
 
 type MenuPhase = "closed" | "opening" | "open" | "closing";
 
@@ -23,6 +23,9 @@ const FOCUSABLE_SELECTOR = [
   "textarea:not([disabled])",
   '[tabindex]:not([tabindex="-1"])',
 ].join(",");
+
+const event = navigationRepository.getEventSummary();
+const primaryNavigation = navigationRepository.getPrimaryNavigation();
 
 export function SiteHeader() {
   const routeTransition = useRouteTransition();
@@ -214,10 +217,7 @@ export function SiteHeader() {
           <span>SHAMS / HUMANITY</span>
         </FadeLink>
         <nav className="desktopNav" aria-label="Primary navigation" inert={menuMounted || routeTransitioning}>
-          <FadeLink href="/#about">About</FadeLink>
-          <FadeLink href="/#lineup">Artists</FadeLink>
-          <FadeLink href="/#info">Info</FadeLink>
-          <FadeLink href="/#tickets">Tickets</FadeLink>
+          {primaryNavigation.map((item) => <FadeLink key={item.id} href={item.href}>{item.label}</FadeLink>)}
         </nav>
         <button
           ref={menuButtonRef}
@@ -250,10 +250,11 @@ export function SiteHeader() {
           onTransitionEnd={handleMenuTransitionEnd}
         >
           <nav aria-label="Mobile navigation">
-            <FadeLink onBeforeNavigate={closeMenuForNavigation} href="/#about">About <span>01</span></FadeLink>
-            <FadeLink onBeforeNavigate={closeMenuForNavigation} href="/#lineup">Artists <span>02</span></FadeLink>
-            <FadeLink onBeforeNavigate={closeMenuForNavigation} href="/#info">Event info <span>03</span></FadeLink>
-            <FadeLink onBeforeNavigate={closeMenuForNavigation} href="/#tickets">Tickets <span>04</span></FadeLink>
+            {primaryNavigation.map((item, index) => (
+              <FadeLink key={item.id} onBeforeNavigate={closeMenuForNavigation} href={item.href}>
+                {item.mobileLabel ?? item.label} <span>{String(index + 1).padStart(2, "0")}</span>
+              </FadeLink>
+            ))}
           </nav>
           <p>{event.city} · {event.date}</p>
         </div>

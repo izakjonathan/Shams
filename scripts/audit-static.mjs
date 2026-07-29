@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const root = process.cwd();
@@ -117,12 +117,13 @@ if (/\.siteFooter\s*\{/.test(homepage) || /\.siteFooter\s*\{/.test(information))
 }
 const programmeComponent = readFileSync(resolve(root, "app/components/ProgrammeExplorer.tsx"), "utf8");
 const programmeTickets = readFileSync(resolve(root, "app/styles/programme-tickets.css"), "utf8");
-const programmeContent = readFileSync(resolve(root, "app/lib/content/programme.ts"), "utf8");
+const programmeContent = readFileSync(resolve(root, "app/content/data/programme.ts"), "utf8");
+const contentModels = readFileSync(resolve(root, "app/content/models.ts"), "utf8");
 if (!programmeComponent.includes("programmeEntryTime") || programmeComponent.includes("programmeEntryNumber")) {
   errors.push("Programme entries must render editorial times instead of ordinal numbers.");
 }
 for (const required of ["readonly id: string", "readonly sortOrder: number", "data-content-id", "data-content-status"]) {
-  if (!(programmeComponent + programmeContent).includes(required)) errors.push(`Programme CMS preparation is missing: ${required}`);
+  if (!(programmeComponent + programmeContent + contentModels).includes(required)) errors.push(`Programme CMS preparation is missing: ${required}`);
 }
 
 const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "utf8");
@@ -143,7 +144,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v1.9.0")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.0.0")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.add("splashRunwayActive")')) {
@@ -303,5 +304,27 @@ if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
+
+// v2.0.0 typed content architecture
+const requiredContentFiles = [
+  "app/content/models.ts",
+  "app/content/validation.ts",
+  "app/content/repository.ts",
+  "app/content/navigation-repository.ts",
+  "app/content/data/home.ts",
+  "app/content/data/information-pages.ts",
+  "app/content/data/contact.ts",
+  "app/content/data/navigation.ts",
+];
+for (const file of requiredContentFiles) {
+  if (!existsSync(join(root, file))) errors.push(`Missing typed content architecture file: ${file}`);
+}
+const appSource = joined;
+if (appSource.includes("lib/content")) errors.push("Legacy app/lib/content imports must not remain.");
+if (existsSync(join(root, "app/lib/content"))) errors.push("Legacy app/lib/content directory must be removed.");
+if (!appSource.includes("contentRepository.getArtists")) errors.push("Public pages must read artists through the content repository.");
+if (!appSource.includes("contentRepository.getInformationPage")) errors.push("Information pages must read through the content repository.");
+if (!appSource.includes("validateContent")) errors.push("Content repository must run runtime validation.");
+
 console.log("Static architecture audit passed.");
 

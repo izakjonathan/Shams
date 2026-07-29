@@ -7,7 +7,7 @@ import splashArtwork from "../../public/images/splash-humanity-artwork.jpeg";
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
 const EXIT_DURATION_MS = 860;
-const SESSION_KEY = "shf-splash-seen-v1.9.0";
+const SESSION_KEY = "shf-splash-seen-v2.0.0";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {

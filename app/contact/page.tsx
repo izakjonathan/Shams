@@ -1,32 +1,28 @@
 import type { Metadata } from "next";
 import { FadeLink } from "../components/FadeLink";
 import { PageCloseButton } from "../components/PageCloseButton";
+import { contentRepository } from "../content";
+
+const content = contentRepository.getContactPage();
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Contact information for Shams for Humanity.",
+  description: content.intro,
   alternates: { canonical: "/contact" },
 };
-
-const contacts = [
-  { label: "GENERAL", address: "hello@shamsforhumanity.example", note: "Event information, partnerships and general questions." },
-  { label: "ACCESS", address: "access@shamsforhumanity.example", note: "Access questions and individual arrangements." },
-  { label: "PRESS", address: "press@shamsforhumanity.example", note: "Press requests, accreditation and approved materials." },
-  { label: "PRIVACY", address: "privacy@shamsforhumanity.example", note: "Questions or requests concerning personal information." },
-];
 
 export default function ContactPage() {
   return (
     <main className="contactPage" id="main-content" tabIndex={-1}>
       <PageCloseButton />
       <section className="contactHero">
-        <span className="sectionIndex">04 — CONTACT</span>
-        <h1>Let’s talk<br/>under the sun.</h1>
-        <p>Choose the most relevant route below. All addresses are placeholders and must be replaced before launch.</p>
+        <span className="sectionIndex">{content.index}</span>
+        <h1>{content.titleLines.map((line, index) => <span key={line}>{line}{index < content.titleLines.length - 1 && <br />}</span>)}</h1>
+        <p>{content.intro}</p>
       </section>
       <section className="contactGrid section">
-        {contacts.map((contact, index) => (
-          <article key={contact.label}>
+        {content.routes.map((contact, index) => (
+          <article key={contact.id} data-content-id={contact.id} data-content-status={contact.status}>
             <span>{String(index + 1).padStart(2, "0")} / {contact.label}</span>
             <h2>{contact.address}</h2>
             <p>{contact.note}</p>
@@ -35,15 +31,9 @@ export default function ContactPage() {
         ))}
       </section>
       <section className="organizerBlock">
+        <div><span className="sectionIndex">ORGANIZER INFORMATION</span><h2>Details before launch</h2></div>
         <div>
-          <span className="sectionIndex">ORGANIZER INFORMATION</span>
-          <h2>Details before launch</h2>
-        </div>
-        <div>
-          <p><strong>Legal name:</strong> To be confirmed</p>
-          <p><strong>CVR number:</strong> To be confirmed</p>
-          <p><strong>Postal address:</strong> To be confirmed</p>
-          <p><strong>Responsible contact:</strong> To be confirmed</p>
+          {Object.entries(content.organizer).map(([label, value]) => <p key={label}><strong>{label}:</strong> {value}</p>)}
           <FadeLink className="textLink dark" href="/privacy">Read our privacy draft →</FadeLink>
         </div>
       </section>

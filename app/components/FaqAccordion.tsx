@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import type { FaqEntry } from "../lib/content";
+import type { FaqEntry } from "../content";
 
 export function FaqAccordion({ faqs }: { faqs: readonly FaqEntry[] }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);

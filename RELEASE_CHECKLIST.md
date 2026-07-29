@@ -1,18 +1,18 @@
-# Release checklist — v1.9.0
+# v2.0.0 Release Checklist
 
-- [x] Built from v1.8.4 Safari Canvas Stability.
-- [x] Shared visual-viewport scrolling utility added.
-- [x] Footer returns no longer use `window.innerHeight`.
-- [x] Header interaction disabled during route transitions.
-- [x] Route curtain remains conditionally mounted.
-- [x] Mobile menu remains conditionally mounted.
-- [x] Splash restoration is idempotent.
-- [x] Splash blur and scale removed.
-- [x] One-time route target is consumed.
-- [x] Dead transition markers removed.
-- [x] Footer CSS centralized.
-- [x] Backend-ready IDs/order/status added to content models.
+- [x] Version updated to 2.0.0.
+- [x] Latest v1.9.0 visual and interaction baseline preserved.
+- [x] Legacy content directory removed.
+- [x] Canonical TypeScript models added.
+- [x] Repository boundary added.
+- [x] Runtime content validation added.
+- [x] Legal, contact, navigation, and homepage content moved out of routes.
+- [x] Public pages and metadata use repository reads.
+- [x] Stable IDs, sort order, and statuses preserved.
+- [x] Static audit expanded to reject legacy raw-content imports.
 - [x] Release validation passed.
 - [x] Static architecture audit passed.
-- [x] CSS brace validation passed.
-- [ ] Generate `package-lock.json` and run full typecheck/build in a registry with `@types/node@22.0.0` available.
+- [x] CSS structure validation passed.
+- [x] ZIP integrity passed.
+- [ ] Generate package-lock.json in a registry-complete environment.
+- [ ] Run npm ci, typecheck, and next build.

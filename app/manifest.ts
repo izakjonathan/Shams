@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { siteTheme } from "./lib/theme";
-import { event } from "./lib/content";
+import { contentRepository } from "./content";
+
+const event = contentRepository.getEvent();
 
 export default function manifest(): MetadataRoute.Manifest {
   return {

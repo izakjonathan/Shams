@@ -1,6 +1,8 @@
 import { ImageResponse } from "next/og";
-import { event } from "./lib/content";
+import { contentRepository } from "./content";
 import { siteTheme } from "./lib/theme";
+
+const event = contentRepository.getEvent();
 
 export const runtime = "edge";
 export const alt = "Shams for Humanity";

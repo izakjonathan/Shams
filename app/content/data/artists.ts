@@ -1,38 +1,9 @@
-import type { StaticImageData } from "next/image";
-import type { ContentStatus } from "./status";
+import type { Artist } from "../models";
 import artist01 from "../../../public/images/artists/artist-01.webp";
 import artist02 from "../../../public/images/artists/artist-02.webp";
 import artist03 from "../../../public/images/artists/artist-03.webp";
 import artist04 from "../../../public/images/artists/artist-04.webp";
 import artist05 from "../../../public/images/artists/artist-05.webp";
-
-export interface ArtistLink {
-  readonly label: string;
-  readonly href?: string;
-}
-
-export interface Artist {
-  readonly id: string;
-  readonly sortOrder: number;
-  readonly slug: string;
-  readonly status: ContentStatus;
-  readonly name: string;
-  readonly type: string;
-  readonly time: string;
-  readonly stage: string;
-  readonly origin: string;
-  readonly genre: string;
-  readonly pronouns?: string;
-  readonly shortBio: string;
-  readonly biography: readonly string[];
-  readonly quote: string;
-  readonly setDescription: string;
-  readonly highlights: readonly string[];
-  readonly links: readonly ArtistLink[];
-  readonly image: StaticImageData;
-  readonly imageAlt: string;
-  readonly imagePosition?: string;
-}
 
 export const artists = [
   {

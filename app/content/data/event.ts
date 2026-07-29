@@ -1,18 +1,4 @@
-import type { ContentStatus } from "./status";
-
-export interface EventContent {
-  readonly id: string;
-  readonly status: ContentStatus;
-  readonly name: string;
-  readonly tagline: string;
-  readonly city: string;
-  readonly country: string;
-  readonly date: string;
-  readonly numericDate: string;
-  readonly timeRange: string;
-  readonly isoStart: string;
-  readonly isoEnd: string;
-}
+import type { EventContent } from "../models";
 
 export const event: EventContent = {
   id: "event-2026-01",

@@ -7,8 +7,15 @@ import { ProgrammeExplorer } from "./components/ProgrammeExplorer";
 import { ScrollReveal } from "./components/ScrollReveal";
 import { SectionHeader } from "./components/SectionHeader";
 import { TicketSection } from "./components/TicketSection";
-import { artists, event, faqs, programme, tickets } from "./lib/content";
+import { contentRepository } from "./content";
 import { safeExternalUrl, serializeJsonLd } from "./lib/site";
+
+const event = contentRepository.getEvent();
+const home = contentRepository.getHome();
+const artists = contentRepository.getArtists();
+const faqs = contentRepository.getFaqs();
+const programme = contentRepository.getProgramme();
+const tickets = contentRepository.getTickets();
 
 export const metadata: Metadata = {
   title: `${event.city} · ${event.date}`,
@@ -38,18 +45,18 @@ export default function Home() {
         <div className="heroOrb orbOne" aria-hidden="true" />
         <div className="heroOrb orbTwo" aria-hidden="true" />
         <div className="heroOrb orbThree" aria-hidden="true" />
-        <div className="heroMeta topLeft"><span>01 / FIRST EDITION</span><span>MUSIC · ART · SOLIDARITY</span></div>
+        <div className="heroMeta topLeft"><span>{home.hero.edition}</span><span>{home.hero.descriptor}</span></div>
         <div className="heroMeta topRight"><span>{event.numericDate}</span><span>{event.city.toUpperCase()}</span></div>
         <div className="heroCenter">
-          <p className="eyebrow">A gathering in support of collective care</p>
-          <h1>Shams for<br/>Humanity</h1>
+          <p className="eyebrow">{home.hero.eyebrow}</p>
+          <h1>{home.hero.titleLines.map((line, index) => <span key={line}>{line}{index < home.hero.titleLines.length - 1 && <br />}</span>)}</h1>
           <div className="heroActions">
-            <a className="button buttonPrimary" href="#tickets">Get tickets <ArrowIcon /></a>
-            <a className="textLink" href="#about">Discover the festival <span aria-hidden="true">↓</span></a>
+            <a className="button buttonPrimary" href="#tickets">{home.hero.primaryAction} <ArrowIcon /></a>
+            <a className="textLink" href="#about">{home.hero.secondaryAction} <span aria-hidden="true">↓</span></a>
           </div>
         </div>
         <div className="heroBottom">
-          <p>One day. Two stages.<br/>A shared purpose.</p>
+          <p>{home.hero.footerLineOne}<br/>{home.hero.footerLineTwo}</p>
           <div className="scrollCue"><span>Scroll to explore</span><div className="scrollLine"/></div>
         </div>
       </section>
@@ -60,10 +67,10 @@ export default function Home() {
         <div className="paperGlow glowThree" aria-hidden="true" />
         <div className="sectionIndex">01 — ABOUT</div>
         <div className="statementGrid">
-          <h2>Where culture becomes a force for care.</h2>
+          <h2>{home.about.heading}</h2>
           <div>
-            <p className="lead">Shams for Humanity is an independent festival bringing people together through music, visual art, food and conversation.</p>
-            <p>Built around solidarity rather than spectacle, the event creates space for discovery, connection and meaningful action. A portion of every ticket supports trusted humanitarian initiatives.</p>
+            <p className="lead">{home.about.lead}</p>
+            <p>{home.about.body}</p>
             <a className="textLink dark" href="#mission">Our mission <ArrowIcon /></a>
           </div>
         </div>
@@ -73,9 +80,9 @@ export default function Home() {
         <div className="darkGlow darkGlowOne" aria-hidden="true" />
         <p className="verticalText">SHAMS MEANS SUN</p>
         <div className="manifestoContent">
-          <span className="kicker">OUR GUIDING IDEA</span>
-          <h2>Music can move bodies.<br/>Community can move worlds.</h2>
-          <div className="manifestoTags"><span>* Listen</span><span>* Gather</span><span>* Act</span></div>
+          <span className="kicker">{home.mission.kicker}</span>
+          <h2>{home.mission.headingLines.map((line, index) => <span key={line}>{line}{index < home.mission.headingLines.length - 1 && <br />}</span>)}</h2>
+          <div className="manifestoTags">{home.mission.tags.map((tag) => <span key={tag}>* {tag}</span>)}</div>
         </div>
       </section>
 
@@ -85,8 +92,8 @@ export default function Home() {
         <div className="paperGlow glowThree" aria-hidden="true" />
         <SectionHeader
           index="02 — ARTISTS"
-          title="First wave"
-          description="Live performances, boundary-pushing selectors and collaborative moments across two stages."
+          title={home.lineup.title}
+          description={home.lineup.description}
         />
         <div className="artistList">
           {artists.map((artist, index) => (
@@ -107,7 +114,7 @@ export default function Home() {
             </article>
           ))}
         </div>
-        <p className="lineupNote">More artists, talks and installations to be announced.</p>
+        <p className="lineupNote">{home.lineup.note}</p>
       </section>
 
       <section className="eventInfo" id="info">
@@ -130,8 +137,8 @@ export default function Home() {
         <div className="paperGlow glowThree" aria-hidden="true" />
         <SectionHeader
           index="04 — PROGRAMME"
-          title="A day in motion"
-          description="Move between sound, food, ideas and collective experiences at your own pace."
+          title={home.programme.title}
+          description={home.programme.description}
         />
         <ProgrammeExplorer entries={programme} />
       </section>
@@ -142,7 +149,7 @@ export default function Home() {
         <div className="paperGlow glowOne" aria-hidden="true" />
         <div className="paperGlow glowTwo" aria-hidden="true" />
         <div className="paperGlow glowThree" aria-hidden="true" />
-        <SectionHeader index="06 — PRACTICAL" title="Good to know" />
+        <SectionHeader index="06 — PRACTICAL" title={home.faq.title} />
         <FaqAccordion faqs={faqs} />
         <script
           type="application/ld+json"
@@ -151,7 +158,7 @@ export default function Home() {
       </section>
 
       <section className="newsletter">
-        <div><span className="kicker">STAY CLOSE</span><h2>News from<br/>under the sun.</h2></div>
+        <div><span className="kicker">{home.newsletter.kicker}</span><h2>{home.newsletter.titleLines.map((line, index) => <span key={line}>{line}{index < home.newsletter.titleLines.length - 1 && <br />}</span>)}</h2></div>
         <NewsletterForm />
       </section>
 

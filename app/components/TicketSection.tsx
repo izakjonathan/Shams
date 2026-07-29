@@ -1,5 +1,5 @@
 import { ArrowIcon } from "./ArrowIcon";
-import type { TicketTier } from "../lib/content/tickets";
+import type { TicketTier } from "../content";
 
 interface TicketSectionProps {
   readonly tickets: readonly TicketTier[];

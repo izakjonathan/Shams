@@ -1,22 +1,4 @@
-import type { ContentStatus } from "./status";
-
-export type ProgrammeCategory = "all" | "music" | "conversation" | "community";
-
-/**
- * Stable programme record designed to map directly to a future CMS/API entry.
- * `id` is the permanent content key; `sortOrder` controls editorial order even
- * when the programme continues past midnight.
- */
-export interface ProgrammeEntry {
-  readonly id: string;
-  readonly sortOrder: number;
-  readonly time: string;
-  readonly label: string;
-  readonly description: string;
-  readonly stage: string;
-  readonly category: Exclude<ProgrammeCategory, "all">;
-  readonly status: ContentStatus;
-}
+import type { ProgrammeEntry } from "../models";
 
 export const programme: readonly ProgrammeEntry[] = [
   {
@@ -27,7 +9,7 @@ export const programme: readonly ProgrammeEntry[] = [
     description: "Arrival, food, installations and an open welcome across the site.",
     stage: "Festival grounds",
     category: "community",
-    status: "confirmed",
+    status: "published",
   },
   {
     id: "community-opening",
@@ -97,6 +79,6 @@ export const programme: readonly ProgrammeEntry[] = [
     description: "The first edition comes to a close.",
     stage: "Festival grounds",
     category: "community",
-    status: "confirmed",
+    status: "published",
   },
 ];

@@ -1,22 +1,24 @@
+import { contentRepository } from "../content";
 import { FadeLink } from "./FadeLink";
 
 export function SiteFooter() {
+  const primaryNavigation = contentRepository.getPrimaryNavigation();
+  const informationNavigation = contentRepository.getInformationNavigation();
   return (
     <footer className="siteFooter" id="site-footer">
       <FadeLink className="footerLogo" href="/#top">Shams for<br/>Humanity</FadeLink>
       <div className="footerLinks">
         <div>
           <span>EXPLORE</span>
-          <FadeLink href="/#about">About</FadeLink>
-          <FadeLink href="/#lineup">Artists</FadeLink>
-          <FadeLink href="/#tickets">Tickets</FadeLink>
+          {primaryNavigation.filter((item) => item.id !== "nav-info").map((item) => (
+            <FadeLink key={item.id} href={item.href}>{item.label}</FadeLink>
+          ))}
         </div>
         <div>
           <span>INFORMATION</span>
-          <FadeLink href="/privacy">Privacy</FadeLink>
-          <FadeLink href="/terms">Terms</FadeLink>
-          <FadeLink href="/accessibility">Accessibility</FadeLink>
-          <FadeLink href="/contact">Contact</FadeLink>
+          {informationNavigation.map((item) => (
+            <FadeLink key={item.id} href={item.href}>{item.label}</FadeLink>
+          ))}
         </div>
         <div>
           <span>FOLLOW</span>

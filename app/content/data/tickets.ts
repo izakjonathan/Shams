@@ -1,20 +1,4 @@
-import type { ContentStatus } from "./status";
-
-export type TicketAvailability = "available" | "sold-out" | "coming-soon";
-
-export interface TicketTier {
-  readonly id: string;
-  readonly sortOrder: number;
-  readonly type: string;
-  readonly badge: string;
-  readonly description: string;
-  readonly price: number;
-  readonly currency: string;
-  readonly availability: TicketAvailability;
-  readonly status: ContentStatus;
-  readonly includes: readonly string[];
-  readonly featured?: boolean;
-}
+import type { TicketTier } from "../models";
 
 export const tickets: readonly TicketTier[] = [
   {

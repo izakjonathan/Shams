@@ -1,33 +1,16 @@
+import type { InformationPageContent } from "../content";
 import { FadeLink } from "./FadeLink";
 import { PageCloseButton } from "./PageCloseButton";
 
-export interface InformationSection {
-  readonly heading: string;
-  readonly paragraphs?: readonly string[];
-  readonly items?: readonly string[];
-}
-
-export function InformationPage({
-  index,
-  title,
-  intro,
-  updated,
-  sections,
-}: {
-  index: string;
-  title: string;
-  intro: string;
-  updated: string;
-  sections: readonly InformationSection[];
-}) {
+export function InformationPage({ content }: { readonly content: InformationPageContent }) {
   return (
-    <main className="informationPage" id="main-content" tabIndex={-1}>
+    <main className="informationPage" id="main-content" tabIndex={-1} data-content-id={content.id} data-content-status={content.status}>
       <PageCloseButton />
       <header className="informationHero">
-        <span className="sectionIndex">{index}</span>
-        <h1>{title}</h1>
-        <p>{intro}</p>
-        <small>Last updated: {updated}</small>
+        <span className="sectionIndex">{content.index}</span>
+        <h1>{content.title}</h1>
+        <p>{content.intro}</p>
+        <small>Last updated: {content.updated}</small>
       </header>
       <div className="informationBody">
         <aside>
@@ -36,8 +19,8 @@ export function InformationPage({
           <FadeLink className="textLink dark" href="/contact">Contact us →</FadeLink>
         </aside>
         <article>
-          {sections.map((section, indexNumber) => (
-            <section key={section.heading}>
+          {content.sections.map((section, indexNumber) => (
+            <section key={section.id} data-content-id={section.id} data-content-status={section.status}>
               <div className="informationNumber">{String(indexNumber + 1).padStart(2, "0")}</div>
               <div>
                 <h2>{section.heading}</h2>

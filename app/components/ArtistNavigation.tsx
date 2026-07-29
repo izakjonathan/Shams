@@ -1,5 +1,5 @@
 import { FadeLink } from "./FadeLink";
-import type { Artist } from "../lib/content";
+import type { Artist } from "../content";
 import { ArrowIcon } from "./ArrowIcon";
 
 interface ArtistNavigationProps {

@@ -35,7 +35,7 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "1.9.0") {
+if (pkg.version !== "2.0.0") {
   errors.push(`package.json version must be 1.8.4 for this release (found ${pkg.version}).`);
 }
 
@@ -78,10 +78,9 @@ if (indexing && siteUrl?.hostname.endsWith(".vercel.app")) {
 
 if (indexing) {
   const launchFiles = [
-    "app/contact/page.tsx",
-    "app/privacy/page.tsx",
-    "app/accessibility/page.tsx",
-    "app/lib/content/event.ts",
+    "app/content/data/contact.ts",
+    "app/content/data/information-pages.ts",
+    "app/content/data/event.ts",
   ];
   const draftPattern = /(?:@[^\s"']+\.example\b|to be confirmed|address to be confirmed|replace this address before publication)/i;
   for (const path of launchFiles) {

@@ -1,18 +1,22 @@
-# v1.9.0 Cleanup and Stability Audit
+# v2.0.0 Typed Content Architecture Audit
 
-This release applies the highest-priority findings from the complete v1.8.4 audit without changing the approved visual design.
+## Completed
 
-## Resolved contradictions
+1. Removed the legacy `app/lib/content` directory and all imports pointing to it.
+2. Established one canonical model layer for every editable content family.
+3. Added stable repository methods so page components no longer depend on storage format.
+4. Added runtime validation at the repository boundary.
+5. Added uniqueness checks for IDs, slugs, and sort positions.
+6. Added format checks for programme and artist times, ISO event dates, ticket prices, and content statuses.
+7. Moved Privacy, Terms, Accessibility, Contact, navigation, and primary homepage editorial copy out of route components.
+8. Updated artist pages, metadata, sitemap, manifest, JSON-LD, header, footer, FAQ, programme, and tickets to consume typed repository data.
+9. Kept a separate lightweight navigation repository so the client header does not need the full artist/media dataset.
+10. Preserved all v1.9.0 visual, transition, Safari canvas, splash, footer, and accessibility behavior.
 
-1. Footer destination calculations and Safari canvas sampling now share visual-viewport-aware geometry.
-2. The route curtain and mobile menu can no longer be opened at the same time through the header; the header is inert during route transitions.
-3. Splash interruption cleanup now restores every temporary class, the document canvas, the runway, scroll position, and shell accessibility state through one idempotent restoration path.
-4. The route-target storage value is consumed once instead of leaking into later homepage mounts.
-5. Dead route transition markers and unused canvas data attributes were removed.
-6. Footer ownership was moved out of homepage/information styles into one global stylesheet.
-7. Splash blur and scale animation layers were removed to reduce Safari compositor load.
-8. Content models now expose stable IDs, ordering, and status fields in preparation for the future admin backend.
+## Backend readiness
+
+The public frontend now depends on a repository contract rather than local arrays. A future database adapter can replace the local data modules without changing the visual components. The same models and validation rules can be reused by Server Actions, API routes, and the admin interface.
 
 ## Remaining external limitation
 
-The package lock and full production build still need to be generated in an environment with access to the pinned npm packages. The source remains pinned to the approved framework versions and has not been silently downgraded.
+A reproducible package lock and full production build still need to be generated in an environment with access to all pinned npm packages.

@@ -1,12 +1,4 @@
-import type { ContentStatus } from "./status";
-
-export interface FaqEntry {
-  readonly id: string;
-  readonly sortOrder: number;
-  readonly status: ContentStatus;
-  readonly question: string;
-  readonly answer: string;
-}
+import type { FaqEntry } from "../models";
 
 export const faqs: FaqEntry[] = [
   { id: "faq-01", sortOrder: 1, status: "placeholder", question: "Where does the event take place?", answer: "The first edition is planned for Copenhagen. The final venue and access details will be announced to ticket holders." },
