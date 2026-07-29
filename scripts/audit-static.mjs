@@ -144,7 +144,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.1.2")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.1.3")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.add("splashRunwayActive")')) {
@@ -300,7 +300,7 @@ if (/\.artistQuote \.darkGlowOne\s*\{[^}]*--glow-(?:w|h|opacity)/s.test(artistSt
   errors.push("Artist quote dark-gradient geometry must remain centralized in gradients.css.");
 }
 
-// v2.1.2 Safari bottom-canvas and motion hardening
+// v2.1.3 Safari bottom-canvas and motion hardening
 if (!canvasTone.includes('root.style.backgroundColor = color') || !canvasTone.includes('body.style.backgroundColor = color')) {
   errors.push("DocumentCanvasTone must apply the sampled colour directly to both html and body.");
 }
@@ -346,10 +346,19 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.1.2") errors.push("package.json version must be 2.1.2.");
+if (packageJson.version !== "2.1.3") errors.push("package.json version must be 2.1.3.");
+// v2.1.3 admin authentication type safety
+const adminAuth = readFileSync(resolve(root, "app/admin/lib/auth.ts"), "utf8");
+if (!adminAuth.includes("const encoder = new TextEncoder()") || !adminAuth.includes("timingSafeEqual(left, right)")) {
+  errors.push("Admin authentication must use TextEncoder-backed Uint8Array values for timingSafeEqual.");
+}
+if (adminAuth.includes("timingSafeEqual(Buffer.from")) {
+  errors.push("Do not pass generic Buffer values directly to timingSafeEqual; this fails Node 22 type checking.");
+}
+
 if (!packageJson.dependencies?.["drizzle-orm"] || !packageJson.dependencies?.postgres) errors.push("Database dependencies are missing.");
 
-// v2.1.2 motion/runtime cleanup
+// v2.1.3 motion/runtime cleanup
 const motionHelpers = readFileSync(resolve(root, "app/lib/motion.ts"), "utf8");
 for (const required of ["prefersReducedMotion", "cssTimeMs", "afterPaint"]) {
   if (!motionHelpers.includes(required)) errors.push(`Shared motion helper is missing: ${required}`);

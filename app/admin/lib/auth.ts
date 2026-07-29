@@ -24,9 +24,10 @@ function sign(payload: string, secret: string) {
 }
 
 function safeEqual(a: string, b: string) {
-  const left = Buffer.from(a);
-  const right = Buffer.from(b);
-  return left.length === right.length && timingSafeEqual(left, right);
+  const encoder = new TextEncoder();
+  const left = encoder.encode(a);
+  const right = encoder.encode(b);
+  return left.byteLength === right.byteLength && timingSafeEqual(left, right);
 }
 
 export function verifyCredentials(email: string, password: string) {

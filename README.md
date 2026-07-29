@@ -1,4 +1,4 @@
-# Shams for Humanity v2.1.2
+# Shams for Humanity v2.1.3
 
 Animation and runtime optimization release based on v2.1.1.
 

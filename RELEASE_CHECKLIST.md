@@ -1,24 +1,8 @@
-# v2.1.2 release checklist
+# v2.1.3 release checklist
 
-- [x] Continue from v2.1.1
-- [x] Preserve approved public design and admin foundation
-- [x] Audit all animation controllers and CSS motion
-- [x] Remove global route-transition dataset coupling
-- [x] Centralize motion helpers
-- [x] Derive JavaScript fallbacks from CSS timing tokens
-- [x] Coalesce iOS visual-viewport canvas sampling
-- [x] Keep true-bottom dark canvas and footer bleed
-- [x] Preserve conditional curtain and menu mounting
-- [x] Preserve splash-only runway and media bleed
-- [x] Shorten excessive motion durations
-- [x] Remove obsolete AppShell cleanup states
-- [x] Fix static-audit execution ordering
-- [x] Remove stale TypeScript build artifact
+- [x] Admin authentication type error fixed
+- [x] Constant-time credential and signature comparison preserved
 - [x] Release validation passes
 - [x] Static architecture audit passes
-- [x] Script syntax checks pass
-- [x] CSS brace validation passes
-- [ ] Full dependency-backed TypeScript check
-- [ ] Next.js production build
-- [ ] Live PostgreSQL migration
-- [ ] Real-device iOS 26 expanded/collapsed toolbar test
+- [x] JavaScript validation scripts pass syntax checks
+- [x] ZIP integrity verified
