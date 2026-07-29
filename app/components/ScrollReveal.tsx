@@ -31,7 +31,10 @@ export function ScrollReveal() {
     const root = document.documentElement;
     const revealItems: HTMLElement[] = [];
     let routeTarget = "";
-    try { routeTarget = sessionStorage.getItem("shf-route-target") ?? ""; } catch {}
+    try {
+      routeTarget = sessionStorage.getItem("shf-route-target") ?? "";
+      sessionStorage.removeItem("shf-route-target");
+    } catch {}
     const suppressLineupMotion = routeTarget.startsWith("#artist-");
 
     REVEAL_GROUPS.forEach(({ root: rootSelector, items }) => {

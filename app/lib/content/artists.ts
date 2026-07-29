@@ -12,6 +12,8 @@ export interface ArtistLink {
 }
 
 export interface Artist {
+  readonly id: string;
+  readonly sortOrder: number;
   readonly slug: string;
   readonly status: ContentStatus;
   readonly name: string;
@@ -34,6 +36,8 @@ export interface Artist {
 
 export const artists = [
   {
+    id: "artist-01",
+    sortOrder: 1,
     slug: "nour",
     status: "placeholder",
     name: "Nour",
@@ -57,6 +61,8 @@ export const artists = [
     links: [{ label: "Instagram" }, { label: "Listen" }, { label: "Website" }],
   },
   {
+    id: "artist-02",
+    sortOrder: 2,
     slug: "maya-al-khalil",
     status: "placeholder",
     name: "Maya Al Khalil",
@@ -80,6 +86,8 @@ export const artists = [
     links: [{ label: "Instagram" }, { label: "SoundCloud" }, { label: "Website" }],
   },
   {
+    id: "artist-03",
+    sortOrder: 3,
     slug: "aisha-devi",
     status: "placeholder",
     name: "Aïsha Devi",
@@ -103,6 +111,8 @@ export const artists = [
     links: [{ label: "Instagram" }, { label: "Listen" }, { label: "Website" }],
   },
   {
+    id: "artist-04",
+    sortOrder: 4,
     slug: "sama-abdulhadi",
     status: "placeholder",
     name: "Sama' Abdulhadi",
@@ -126,6 +136,8 @@ export const artists = [
     links: [{ label: "Instagram" }, { label: "Listen" }, { label: "Website" }],
   },
   {
+    id: "artist-05",
+    sortOrder: 5,
     slug: "habibi-funk",
     status: "placeholder",
     name: "Habibi Funk",
@@ -148,6 +160,8 @@ export const artists = [
     links: [{ label: "Instagram" }, { label: "Bandcamp" }, { label: "Website" }],
   },
   {
+    id: "artist-06",
+    sortOrder: 6,
     slug: "community-choir",
     status: "placeholder",
     name: "Community Choir",

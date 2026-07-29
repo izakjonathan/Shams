@@ -33,7 +33,7 @@ if (globals.indexOf("responsive.css") < globals.indexOf("artists.css")) {
 const routeFade = readFileSync(resolve(root, "app/components/RouteFade.tsx"), "utf8");
 for (const required of [
   "WATCHDOG_MS", "scrollRestoration", "aria-busy", "router.prefetch",
-  "routeTransitionActive", "routeTransitionVeil", "onTransitionEnd",
+  "routeTransitionVeil", "onTransitionEnd",
   "waitForDestinationLayout", "shf-route-target", "navigationStartedRef",
 ]) {
   if (!routeFade.includes(required)) errors.push(`RouteFade is missing required hardening: ${required}`);
@@ -42,7 +42,7 @@ if (!routeFade.includes('data-live-route')) errors.push("RouteFade must explicit
 if (!routeFade.includes('router.push(pending.href, { scroll: false })')) errors.push("Route changes must disable automatic Next.js scrolling.");
 if (!routeFade.includes('event.propertyName !== "transform"')) errors.push("Curtain lifecycle must react only to transform transition completion.");
 
-const transitions = readFileSync(resolve(root, "app/styles/view-transitions.css"), "utf8");
+const transitions = readFileSync(resolve(root, "app/styles/route-curtain.css"), "utf8");
 for (const required of [
   "routeTransitionVeil", "data-route-phase", "route-curtain-open-duration",
   "route-curtain-close-duration", "route-curtain-switch-duration",
@@ -103,13 +103,18 @@ if (!/\.pageCloseButton\s*\{[^}]*position:\s*fixed[^}]*border:\s*0[^}]*backgroun
 const footer = readFileSync(resolve(root, "app/components/SiteFooter.tsx"), "utf8");
 if (!footer.includes('id="site-footer"')) errors.push("Footer must expose the site-footer destination anchor.");
 const homepage = readFileSync(resolve(root, "app/styles/homepage.css"), "utf8");
-if (!/\.siteFooter\s*\{[^}]*min-height:\s*100svh/s.test(homepage)) {
+const footerStyles = readFileSync(resolve(root, "app/styles/footer.css"), "utf8");
+if (!/\.siteFooter\s*\{[^}]*min-height:\s*100svh/s.test(footerStyles)) {
   errors.push("Footer must be at least one small viewport high.");
 }
-if (!routeFade.includes('hash === "#site-footer"') || !routeFade.includes("maximumScroll")) {
+if (!routeFade.includes('hash === "#site-footer"') || !routeFade.includes("scrollToDocumentBottom")) {
   errors.push("Route controller must position footer returns at the document maximum scroll.");
 }
 
+
+if (/\.siteFooter\s*\{/.test(homepage) || /\.siteFooter\s*\{/.test(information)) {
+  errors.push("Global footer geometry must live only in footer.css.");
+}
 const programmeComponent = readFileSync(resolve(root, "app/components/ProgrammeExplorer.tsx"), "utf8");
 const programmeTickets = readFileSync(resolve(root, "app/styles/programme-tickets.css"), "utf8");
 const programmeContent = readFileSync(resolve(root, "app/lib/content/programme.ts"), "utf8");
@@ -138,7 +143,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v1.8.4")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v1.9.0")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.add("splashRunwayActive")')) {
@@ -200,7 +205,7 @@ if (!base.includes("--document-canvas-color: var(--color-paper)") || !base.inclu
   errors.push("html/body need an immediate server-rendered paper canvas fallback.");
 }
 const canvasTone = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
-for (const required of ["visualViewport?.height", "elementFromPoint", "isAtDocumentBottom", "pendingCount >= 2", "if (!candidate) return"]) {
+for (const required of ["visualViewportHeight", "elementFromPoint", "isAtDocumentBottom", "pendingCount >= 2", "if (!candidate) return"]) {
   if (!canvasTone.includes(required)) errors.push(`DocumentCanvasTone is missing visual-viewport stability hardening: ${required}`);
 }
 if (canvasTone.includes("MutationObserver")) errors.push("DocumentCanvasTone must not resample from unrelated DOM mutations.");
@@ -209,6 +214,11 @@ if (/html\.splashSessionSeen[\s\S]*background-color:\s*transparent/.test(splashS
   errors.push("Repeat visits must never leave the root canvas transparent.");
 }
 
+
+if (routeFade.includes("routeTransitionActive") || routeFade.includes("routeFade--") || routeFade.includes("data-transition-kind")) {
+  errors.push("Dead route-transition markers must not be restored.");
+}
+if (canvasTone.includes("dataset.canvasTone")) errors.push("DocumentCanvasTone must not write unused canvas-tone data attributes.");
 // v1.7.6 centralized theme and gradient architecture.
 const themeSource = readFileSync(resolve(root, "app/theme.json"), "utf8");
 const generatedTheme = readFileSync(resolve(root, "app/theme.generated.css"), "utf8");

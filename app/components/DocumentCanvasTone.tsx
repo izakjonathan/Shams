@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { visualViewportHeight } from "../lib/viewport";
 
 const TRANSPARENT_VALUES = new Set([
   "transparent",
@@ -12,10 +13,6 @@ function cssToken(name: string, fallback: string): string {
   return window.getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 }
 
-function visualViewportHeight(): number {
-  const height = window.visualViewport?.height ?? document.documentElement.clientHeight ?? window.innerHeight;
-  return Math.max(1, Math.min(height, document.documentElement.clientHeight || height));
-}
 
 function opaqueAncestorColor(node: Element | null): string | null {
   let current = node as HTMLElement | null;
@@ -71,8 +68,6 @@ export function DocumentCanvasTone() {
       if (color === lastApplied) return;
       lastApplied = color;
       root.style.setProperty("--document-canvas-color", color);
-      body.style.setProperty("--document-canvas-color", color);
-      root.dataset.canvasTone = color;
     };
 
     const update = () => {
@@ -125,7 +120,6 @@ export function DocumentCanvasTone() {
       window.removeEventListener("resize", scheduleTwice);
       window.visualViewport?.removeEventListener("resize", scheduleTwice);
       window.visualViewport?.removeEventListener("scroll", scheduleTwice);
-      delete root.dataset.canvasTone;
     };
   }, []);
 

@@ -10,13 +10,14 @@
 @import "./styles/gradients.css";
 @import "./styles/artists.css";
 @import "./styles/information.css";
+@import "./styles/footer.css";
 @import "./styles/close-control.css";
 @import "./styles/errors.css";
 @import "./styles/recoverable-error.css";
 @import "./styles/states.css";
 @import "./styles/splash-states.css";
 @import "./styles/motion.css";
-@import "./styles/view-transitions.css";
+@import "./styles/route-curtain.css";
 @import "./styles/responsive.css";
 
 @import "./styles/typography.css";

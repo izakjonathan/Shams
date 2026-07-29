@@ -35,7 +35,7 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "1.8.4") {
+if (pkg.version !== "1.9.0") {
   errors.push(`package.json version must be 1.8.4 for this release (found ${pkg.version}).`);
 }
 
@@ -54,7 +54,9 @@ for (const path of [
   "app/components/TicketSection.tsx",
   "app/styles/programme-tickets.css",
   "app/styles/components.css",
-  "app/styles/view-transitions.css",
+  "app/styles/route-curtain.css",
+  "app/styles/footer.css",
+  "app/lib/viewport.ts",
   "app/components/RouteFade.tsx",
   "app/components/FadeLink.tsx",
   "scripts/audit-static.mjs",

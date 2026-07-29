@@ -1,4 +1,22 @@
-export const event = {
+import type { ContentStatus } from "./status";
+
+export interface EventContent {
+  readonly id: string;
+  readonly status: ContentStatus;
+  readonly name: string;
+  readonly tagline: string;
+  readonly city: string;
+  readonly country: string;
+  readonly date: string;
+  readonly numericDate: string;
+  readonly timeRange: string;
+  readonly isoStart: string;
+  readonly isoEnd: string;
+}
+
+export const event: EventContent = {
+  id: "event-2026-01",
+  status: "placeholder",
   name: "Shams for Humanity",
   tagline: "A gathering of music, art and collective care.",
   city: "Copenhagen",

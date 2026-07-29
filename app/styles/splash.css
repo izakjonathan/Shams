@@ -63,9 +63,7 @@ html.splashCanvasActive.splashCanvasHandoff body {
   background-color: transparent;
   opacity: 1;
   transform: none;
-  transition:
-    opacity var(--duration-splash-exit) var(--ease-splash),
-    transform var(--duration-splash-exit) var(--ease-splash);
+  transition: opacity var(--duration-splash-exit) var(--ease-splash);
   touch-action: none;
   overscroll-behavior: contain;
   isolation: isolate;
@@ -87,10 +85,7 @@ html.splashCanvasActive.splashCanvasHandoff body {
   opacity: 1;
   transform: none;
   filter: none;
-  transition:
-    opacity var(--duration-splash-enter) var(--ease-splash),
-    transform var(--duration-splash-enter) var(--ease-splash),
-    filter var(--duration-splash-enter) var(--ease-splash);
+  transition: opacity var(--duration-splash-enter) var(--ease-splash);
 }
 
 .splashScreenArt {
@@ -98,7 +93,7 @@ html.splashCanvasActive.splashCanvasHandoff body {
   object-fit: cover;
   object-position: center center;
   background-color: var(--safari-splash-color);
-  transform: scale(1.01);
+  transform: none;
   transform-origin: center center;
 }
 

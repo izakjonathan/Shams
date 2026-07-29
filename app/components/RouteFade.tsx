@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import { scrollToDocumentBottom } from "../lib/viewport";
 import {
   createContext,
   type ReactNode,
@@ -33,7 +34,7 @@ const RouteTransitionContext = createContext<RouteTransitionContextValue | null>
 
 const COVER_TIMEOUT_MS = 620;
 const REVEAL_TIMEOUT_MS = 620;
-const WATCHDOG_MS = 7000;
+const WATCHDOG_MS = 4200;
 
 function routeFamily(pathname: string) {
   if (pathname.startsWith("/artists/")) return "artist";
@@ -124,7 +125,6 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     setTransitionPhase("idle");
     delete document.documentElement.dataset.routeTransition;
     delete document.documentElement.dataset.routePhase;
-    document.documentElement.classList.remove("routeTransitionActive");
   }, [clearTimers, setTransitionPhase]);
 
   const positionDestination = useCallback(() => {
@@ -138,8 +138,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
 
     if (hash === "#site-footer") {
       target?.classList.add("isRevealed");
-      const maximumScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-      window.scrollTo({ top: maximumScroll, left: 0, behavior: "auto" });
+      scrollToDocumentBottom("auto");
     } else if (target) {
       target.classList.add("isRevealed");
       target.scrollIntoView({ behavior: "auto", block: "start" });
@@ -149,8 +148,10 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     }
 
     if (pending?.focusOnArrival && target) {
-      if (!target.matches("a, button, input, textarea, select, [tabindex]")) target.tabIndex = -1;
+      const addedTabIndex = !target.matches("a, button, input, textarea, select, [tabindex]");
+      if (addedTabIndex) target.tabIndex = -1;
       target.focus({ preventScroll: true });
+      if (addedTabIndex) target.addEventListener("blur", () => target?.removeAttribute("tabindex"), { once: true });
     }
   }, []);
 
@@ -209,8 +210,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       const target = hash === "#top" ? null : document.getElementById(decodeURIComponent(hash.slice(1)));
       window.history.pushState(window.history.state, "", hash);
       if (hash === "#site-footer") {
-        const maximumScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-        window.scrollTo({ top: maximumScroll, left: 0, behavior: reducedMotion() ? "auto" : "smooth" });
+        scrollToDocumentBottom(reducedMotion() ? "auto" : "smooth");
       } else if (target) {
         target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
       } else {
@@ -253,7 +253,6 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       mountFrameRef.current = window.requestAnimationFrame(() => {
         mountFrameRef.current = null;
         if (!lockRef.current) return;
-        document.documentElement.classList.add("routeTransitionActive");
         setTransitionPhase("covering");
         timer(startNavigation, reducedMotion() ? 0 : COVER_TIMEOUT_MS);
       });
@@ -270,8 +269,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       if (mountFrameRef.current !== null) window.cancelAnimationFrame(mountFrameRef.current);
       delete document.documentElement.dataset.routeTransition;
       delete document.documentElement.dataset.routePhase;
-      document.documentElement.classList.remove("routeTransitionActive");
-    };
+      };
   }, [clearTimers]);
 
   useLayoutEffect(() => {
@@ -291,7 +289,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
   return (
     <RouteTransitionContext.Provider value={value}>
       {header}
-      <div className={`routeFade routeFade--${phase}`} data-live-route data-transition-kind={transitionKindRef.current} aria-busy={transitioning}>
+      <div className="routeFade" data-live-route aria-busy={transitioning}>
         {children}
       </div>
       {transitioning && (

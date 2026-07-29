@@ -51,7 +51,6 @@
   --duration-reveal: 860ms;
   --duration-splash-enter: 760ms;
   --duration-splash-exit: 860ms;
-  --duration-site-enter: 0ms;
   --reveal-stagger: 55ms;
   --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);

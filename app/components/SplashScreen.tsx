@@ -7,7 +7,7 @@ import splashArtwork from "../../public/images/splash-humanity-artwork.jpeg";
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
 const EXIT_DURATION_MS = 860;
-const SESSION_KEY = "shf-splash-seen-v1.8.4";
+const SESSION_KEY = "shf-splash-seen-v1.9.0";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {
@@ -70,6 +70,7 @@ export function SplashScreen() {
     let handoffFrame = 0;
     let exitTimer = 0;
     let doneTimer = 0;
+    let completed = false;
 
     const setShellInert = (inert: boolean) => {
       if (!shell) return;
@@ -78,16 +79,24 @@ export function SplashScreen() {
       else shell.removeAttribute("aria-hidden");
     };
 
+    const restoreNormalDocument = () => {
+      root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashRunwayActive");
+      body.classList.remove("splashActive", "splashHandoff", "splashExiting");
+      body.classList.add("splashComplete");
+      root.style.setProperty("--document-canvas-color", "var(--color-paper)");
+      body.style.removeProperty("--document-canvas-color");
+      setShellInert(false);
+      if (window.scrollY <= splashRunwayOffset() + 2) {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      }
+    };
+
     if (isRepeatVisit) {
       hasShownSplashInMemory = true;
       setStage("done");
       root.classList.add("splashSessionSeen");
-      root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashRunwayActive");
-      body.classList.remove("splashActive", "splashHandoff", "splashExiting");
-      body.classList.add("splashComplete");
-      setShellInert(false);
-      root.style.setProperty("--document-canvas-color", "var(--color-paper)");
-      body.style.setProperty("--document-canvas-color", "var(--color-paper)");
+      restoreNormalDocument();
+      completed = true;
       return;
     }
 
@@ -128,7 +137,7 @@ export function SplashScreen() {
       body.classList.add("splashHandoff");
       root.classList.add("splashCanvasHandoff");
       root.style.setProperty("--document-canvas-color", "var(--color-paper)");
-      body.style.setProperty("--document-canvas-color", "var(--color-paper)");
+      body.style.removeProperty("--document-canvas-color");
       setShellInert(false);
 
       handoffFrame = window.requestAnimationFrame(() => {
@@ -141,11 +150,10 @@ export function SplashScreen() {
 
       doneTimer = window.setTimeout(() => {
         setStage("done");
-        body.classList.remove("splashHandoff", "splashExiting");
-        body.classList.add("splashComplete");
         markSplashSeen();
         root.classList.add("splashSessionSeen");
-        root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashRunwayActive");
+        restoreNormalDocument();
+        completed = true;
         window.dispatchEvent(new Event("scroll"));
       }, skipEnterAnimation ? 50 : EXIT_DURATION_MS + 34);
     };
@@ -173,7 +181,7 @@ export function SplashScreen() {
       window.clearTimeout(exitTimer);
       window.clearTimeout(doneTimer);
       window.removeEventListener("load", handleLoad);
-      setShellInert(false);
+      if (!completed) restoreNormalDocument();
     };
   }, []);
 

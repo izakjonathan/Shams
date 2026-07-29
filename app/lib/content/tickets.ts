@@ -3,6 +3,8 @@ import type { ContentStatus } from "./status";
 export type TicketAvailability = "available" | "sold-out" | "coming-soon";
 
 export interface TicketTier {
+  readonly id: string;
+  readonly sortOrder: number;
   readonly type: string;
   readonly badge: string;
   readonly description: string;
@@ -16,6 +18,8 @@ export interface TicketTier {
 
 export const tickets: readonly TicketTier[] = [
   {
+    id: "ticket-01",
+    sortOrder: 1,
     type: "EARLY SUPPORTER",
     badge: "Sold out",
     description: "For those who believed first.",
@@ -26,6 +30,8 @@ export const tickets: readonly TicketTier[] = [
     includes: ["Full festival access", "All stages and installations"],
   },
   {
+    id: "ticket-02",
+    sortOrder: 2,
     type: "GENERAL ADMISSION",
     badge: "Available",
     description: "Full access to all music, art and shared spaces.",
@@ -37,6 +43,8 @@ export const tickets: readonly TicketTier[] = [
     featured: true,
   },
   {
+    id: "ticket-03",
+    sortOrder: 3,
     type: "SOLIDARITY TICKET",
     badge: "Available",
     description: "Entry plus an additional direct contribution to the supported initiative.",

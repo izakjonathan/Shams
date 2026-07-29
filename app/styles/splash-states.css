@@ -2,29 +2,7 @@
    20 — Splash animation states
    ========================================================================== */
 
-/* Splash stages: artwork enters within an opaque full-screen layer;
-   the live site is prepared underneath before the artwork dissolves away. */
-
-.splashScreen.isEntering .splashScreenArtWrap {
-  opacity: 0;
-  transform: translate3d(0, 16px, 0) scale(0.975);
-  filter: blur(8px);
-}
-
-.splashScreen.isActive .splashScreenArtWrap {
-  opacity: 1;
-  transform: none;
-  filter: none;
-}
-
-.splashScreen.isExiting {
-  opacity: 0;
-  transform: scale(1.035);
-}
-
-.splashScreen.isExiting .splashScreenArtWrap {
-  transform: scale(1.012);
-  filter: none;
-  transition-duration: var(--duration-splash-exit);
-}
-
+/* Opacity-only animation avoids expensive Safari blur/scale compositor layers. */
+.splashScreen.isEntering .splashScreenArtWrap { opacity: 0; }
+.splashScreen.isActive .splashScreenArtWrap { opacity: 1; }
+.splashScreen.isExiting { opacity: 0; }

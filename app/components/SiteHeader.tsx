@@ -1,6 +1,7 @@
 "use client";
 
 import { FadeLink } from "./FadeLink";
+import { useRouteTransition } from "./RouteFade";
 import {
   useEffect,
   useRef,
@@ -24,6 +25,8 @@ const FOCUSABLE_SELECTOR = [
 ].join(",");
 
 export function SiteHeader() {
+  const routeTransition = useRouteTransition();
+  const routeTransitioning = routeTransition?.transitioning ?? false;
   const [menuPhase, setMenuPhase] = useState<MenuPhase>("closed");
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -200,17 +203,17 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="siteHeader">
+      <header className="siteHeader" inert={routeTransitioning} aria-hidden={routeTransitioning ? "true" : undefined}>
         <FadeLink
           className="brand"
           href="/#top"
           aria-label="Shams for Humanity home"
-          inert={menuMounted}
+          inert={menuMounted || routeTransitioning}
         >
           <span className="brandMark" aria-hidden="true">✦</span>
           <span>SHAMS / HUMANITY</span>
         </FadeLink>
-        <nav className="desktopNav" aria-label="Primary navigation" inert={menuMounted}>
+        <nav className="desktopNav" aria-label="Primary navigation" inert={menuMounted || routeTransitioning}>
           <FadeLink href="/#about">About</FadeLink>
           <FadeLink href="/#lineup">Artists</FadeLink>
           <FadeLink href="/#info">Info</FadeLink>
@@ -223,6 +226,7 @@ export function SiteHeader() {
           onPointerDown={handleMenuPointerDown}
           onKeyDown={handleMenuButtonKeyDown}
           onClick={toggleMenu}
+          disabled={routeTransitioning}
           aria-expanded={menuExpanded}
           aria-controls="mobile-menu"
           aria-label={menuMounted ? "Close navigation menu" : "Open navigation menu"}

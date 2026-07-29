@@ -1,31 +1,18 @@
-# v1.8.4 Safari Liquid Glass Audit
+# v1.9.0 Cleanup and Stability Audit
 
-## Root canvas
+This release applies the highest-priority findings from the complete v1.8.4 audit without changing the approved visual design.
 
-- `viewport-fit=cover` remains enabled.
-- `html` and `body` use `--document-canvas-color` with an immediate paper fallback.
-- No repeat-visit or splash state makes the root transparent.
-- Splash tinting uses `--safari-splash-color`, not `theme-color` or a root background image.
-- `DocumentCanvasTone` remains responsible for matching the section touching the bottom viewport edge after splash completion.
+## Resolved contradictions
 
-## Splash
+1. Footer destination calculations and Safari canvas sampling now share visual-viewport-aware geometry.
+2. The route curtain and mobile menu can no longer be opened at the same time through the header; the header is inert during route transitions.
+3. Splash interruption cleanup now restores every temporary class, the document canvas, the runway, scroll position, and shell accessibility state through one idempotent restoration path.
+4. The route-target storage value is consumed once instead of leaking into later homepage mounts.
+5. Dead route transition markers and unused canvas data attributes were removed.
+6. Footer ownership was moved out of homepage/information styles into one global stylesheet.
+7. Splash blur and scale animation layers were removed to reduce Safari compositor load.
+8. Content models now expose stable IDs, ordering, and status fields in preparation for the future admin backend.
 
-- Artwork is rendered as real fixed media and bleeds 72 px above and 160 px below the viewport.
-- The runway offset is 62 px and is applied only after detecting mobile touch Safari.
-- No global runway or permanent coordinate offset exists.
-- Body scrolling is not locked.
-- The splash layer itself blocks touch gestures.
-- The live site is inert and aria-hidden during the splash.
-- The runway is removed and scroll is reset while the splash is still opaque.
-- The paper canvas and live site are painted for two frames before the dissolve starts.
+## Remaining external limitation
 
-## Fixed and sticky elements
-
-- Site header has no background colour or backdrop filter.
-- Mobile menu is absent from the DOM while closed.
-- Route curtain is absent from the DOM while idle.
-- Close-button visuals are on an absolute child of a transparent fixed wrapper.
-
-## Regression protection
-
-The static audit rejects transparent root states, a body splash scroll lock, persistent hidden route curtains, root splash background images, missing media bleed, missing dynamic runway activation, missing shell inert handling, and fixed close-button visuals placed directly on the fixed wrapper.
+The package lock and full production build still need to be generated in an environment with access to the pinned npm packages. The source remains pinned to the approved framework versions and has not been silently downgraded.
