@@ -119,8 +119,20 @@ for (const required of ["readonly id: string", "readonly sortOrder: number", "da
 const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "utf8");
 const splashStyles = readFileSync(resolve(root, "app/styles/splash.css"), "utf8");
 if (!splash.includes("splash-humanity-artwork.jpeg")) errors.push("Splash must use the supplied humanity artwork.");
-if (!splashStyles.includes("background: transparent") || !splashStyles.includes("min-height: 100svh") || !splash.includes('root.style.backgroundColor = "transparent"')) {
+if (!splashStyles.includes("background: transparent") || !splashStyles.includes("min-height: 100svh") || !splashStyles.includes("height: 100dvh") || !splash.includes('root.style.backgroundColor = "transparent"')) {
   errors.push("Splash must cover the full safe viewport on a transparent canvas.");
+}
+if (!/\.splashScreen\s*\{[^}]*position:\s*fixed[^}]*inset:\s*0/s.test(splashStyles)) {
+  errors.push("First-visit splash base styles must define a fixed full-viewport overlay.");
+}
+if (/html\.splashSessionSeen\s+\.splashScreen\s*\{[^}]*position:\s*fixed/s.test(splashStyles)) {
+  errors.push("Splash base geometry must not be scoped to the repeat-visit session class.");
+}
+if (!/html\.splashSessionSeen\s+\.splashScreen\s*\{[^}]*display:\s*none\s*!important/s.test(splashStyles)) {
+  errors.push("Repeat visits must suppress the server-rendered splash before hydration.");
+}
+if (!splash.includes('markSplashSeen();\n        root.classList.add("splashSessionSeen")')) {
+  errors.push("The splash session flag must be written only after the first sequence completes.");
 }
 if (splashStyles.includes("splashScreenArtWrap::before") || splashStyles.includes("splashScreenArtWrap::after")) {
   errors.push("Legacy splash gradient overlays must not remain.");

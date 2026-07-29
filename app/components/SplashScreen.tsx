@@ -7,7 +7,7 @@ import splashArtwork from "../../public/images/splash-humanity-artwork.jpeg";
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
 const EXIT_DURATION_MS = 1150;
-const SESSION_KEY = "shf-splash-seen";
+const SESSION_KEY = "shf-splash-seen-v1.7.4";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {
@@ -65,8 +65,6 @@ export function SplashScreen() {
       return;
     }
 
-    markSplashSeen();
-
     body.classList.add("splashActive");
     body.classList.remove("splashExiting", "splashComplete");
     root.style.backgroundColor = "transparent";
@@ -92,6 +90,7 @@ export function SplashScreen() {
         setStage("done");
         body.classList.remove("splashExiting");
         body.classList.add("splashComplete");
+        markSplashSeen();
         root.classList.add("splashSessionSeen");
         root.style.backgroundColor = "transparent";
         body.style.backgroundColor = "transparent";

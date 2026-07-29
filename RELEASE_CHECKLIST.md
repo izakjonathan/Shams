@@ -21,7 +21,7 @@
 - [x] Typography stylesheet is imported last to prevent legacy overrides.
 
 
-## v1.7.3
+## v1.7.4
 - [x] Programme displays times 16:00–02:00 instead of 01–08.
 - [x] Programme content has stable IDs and explicit editorial ordering for future admin data.
 - [x] New supplied splash artwork is packaged locally and rendered full bleed.

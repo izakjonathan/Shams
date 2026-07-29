@@ -44,5 +44,10 @@ A repository-wide static audit rejects these identifiers if they return.
 - Preserved the editorial curtain and all navigation behavior.
 
 
-## v1.7.3 audit
+## v1.7.4 audit
 The programme remains server-sourced and prop-driven, but now uses stable content IDs and explicit editorial order so a future admin API can replace the local data module without changing the presentation component. Generated sequence numbers were removed in favour of the actual editable time field. The splash now uses the supplied artwork on a transparent, full-safe-viewport layer; the old splash image remains unused and is removed from this release.
+
+
+## v1.7.4 splash root-cause audit
+
+The v1.7.3 base overlay selector was accidentally changed from `.splashScreen` to `html.splashSessionSeen .splashScreen`. The session class is present only when the splash should be skipped, so first visits received no fixed positioning, viewport size, z-index, or overlay layout. The session flag was also stored before the image could render, causing subsequent reloads in the same tab to skip the already-failed sequence. Both contradictions are removed in v1.7.4.

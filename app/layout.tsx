@@ -110,7 +110,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           id="splash-session-gate"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem("shf-splash-seen")==="1"){document.documentElement.classList.add("splashSessionSeen");}}catch{}`,
+            __html: `try{if(sessionStorage.getItem("shf-splash-seen-v1.7.4")==="1"){document.documentElement.classList.add("splashSessionSeen");}}catch{}`,
           }}
         />
         <noscript>

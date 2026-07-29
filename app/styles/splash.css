@@ -2,11 +2,97 @@
    02 — Splash and site entry
    ========================================================================== */
 
+/*
+ * The splash must have a complete first-visit base style. The previous build
+ * accidentally scoped that base style to html.splashSessionSeen, a class that
+ * exists only when the splash should be skipped. On a genuine first visit the
+ * overlay therefore had no fixed geometry or stacking context.
+ */
+.splashScreen {
+  position: fixed;
+  z-index: 120;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: transparent;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-splash-exit) var(--ease-splash),
+    transform var(--duration-splash-exit) var(--ease-splash);
+  touch-action: none;
+  isolation: isolate;
+}
 
-/* A pre-hydration session flag prevents repeat-route flashes. */
-/* On repeat navigation/reload, let the page paint through immediately.
-   The permanent document canvas is applied after hydration, preventing
-   Safari's top browser area from flashing black during initial loading. */
+.splashScreenArtWrap {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+  background: transparent;
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity var(--duration-splash-enter) var(--ease-splash),
+    transform var(--duration-splash-enter) var(--ease-splash),
+    filter var(--duration-splash-enter) var(--ease-splash);
+}
+
+.splashScreenArt {
+  z-index: 1;
+  object-fit: cover;
+  object-position: center center;
+  background: transparent;
+  transform: scale(1.01);
+  transform-origin: center center;
+}
+
+/* Keep the live site out of view until the splash begins its exit. */
+body.splashActive {
+  overflow: hidden;
+}
+
+.splashActive .siteShell {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0) scale(0.995);
+}
+
+.splashExiting .siteShell {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--duration-site-enter) var(--ease-splash),
+    transform var(--duration-site-enter) var(--ease-splash);
+  transition-delay: 180ms;
+}
+
+.splashComplete .siteShell {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.splashActive .skipLink,
+.splashExiting .skipLink {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/*
+ * The pre-hydration session gate is only for repeat visits. It must hide the
+ * server-rendered splash immediately and expose the site, not define the
+ * splash's normal layout.
+ */
 html.splashSessionSeen,
 html.splashSessionSeen body {
   background-color: transparent;
@@ -17,50 +103,16 @@ html.splashSessionSeen body.splashActive {
 }
 
 html.splashSessionSeen .splashScreen {
-  position: fixed;
-  z-index: 120;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  min-height: 100svh;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  background: transparent;
+  display: none !important;
+}
+
+html.splashSessionSeen .siteShell {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+html.splashSessionSeen .skipLink {
   opacity: 1;
-  transform: none;
-  transition: opacity var(--duration-splash-exit) var(--ease-splash),
-    transform var(--duration-splash-exit) var(--ease-splash);
-  touch-action: none;
+  pointer-events: auto;
 }
-
-.splashScreenArtWrap {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  min-height: 100svh;
-  overflow: hidden;
-  background: transparent;
-  opacity: 1;
-  transform: none;
-  filter: none;
-  transition: opacity var(--duration-splash-enter) var(--ease-splash),
-    transform var(--duration-splash-enter) var(--ease-splash),
-    filter var(--duration-splash-enter) var(--ease-splash);
-}
-
-.splashScreenArt {
-  object-fit: cover;
-  object-position: center center;
-  background: transparent;
-  transform: scale(1.01);
-  transform-origin: center center;
-}
-
-.splashActive .skipLink,
-.splashExiting .skipLink {
-  opacity: 0;
-  pointer-events: none;
-}
-
