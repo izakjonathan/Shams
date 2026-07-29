@@ -11,10 +11,10 @@ import {
   type TransitionEvent,
 } from "react";
 import { navigationRepository } from "../content";
+import { afterPaint, cssTimeMs } from "../lib/motion";
 
 type MenuPhase = "closed" | "opening" | "open" | "closing";
 
-const MENU_EXIT_FALLBACK_MS = 650;
 const FOCUSABLE_SELECTOR = [
   "a[href]",
   "button:not([disabled])",
@@ -33,7 +33,7 @@ export function SiteHeader() {
   const [menuPhase, setMenuPhase] = useState<MenuPhase>("closed");
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
-  const enterFrameRef = useRef<number | null>(null);
+  const cancelEnterPaintRef = useRef<(() => void) | null>(null);
   const exitTimerRef = useRef<number | null>(null);
   const hasOpenedRef = useRef(false);
   const keyboardMenuInteractionRef = useRef(false);
@@ -47,17 +47,14 @@ export function SiteHeader() {
     if (menuPhase !== "opening") return;
 
     // Paint the translated starting state before beginning the opening motion.
-    enterFrameRef.current = window.requestAnimationFrame(() => {
-      enterFrameRef.current = window.requestAnimationFrame(() => {
-        setMenuPhase("open");
-      });
+    cancelEnterPaintRef.current = afterPaint(() => {
+      cancelEnterPaintRef.current = null;
+      setMenuPhase("open");
     });
 
     return () => {
-      if (enterFrameRef.current !== null) {
-        window.cancelAnimationFrame(enterFrameRef.current);
-        enterFrameRef.current = null;
-      }
+      cancelEnterPaintRef.current?.();
+      cancelEnterPaintRef.current = null;
     };
   }, [menuPhase]);
 
@@ -123,7 +120,7 @@ export function SiteHeader() {
     // transitionend is primary; this covers interrupted/reduced-motion exits.
     exitTimerRef.current = window.setTimeout(() => {
       setMenuPhase("closed");
-    }, MENU_EXIT_FALLBACK_MS);
+    }, cssTimeMs("--duration-menu", 550) + 100);
 
     return () => {
       if (exitTimerRef.current !== null) {
@@ -161,9 +158,9 @@ export function SiteHeader() {
 
   const closeMenuForNavigation = () => {
     suppressFocusRestoreRef.current = true;
-    if (enterFrameRef.current !== null) window.cancelAnimationFrame(enterFrameRef.current);
+    cancelEnterPaintRef.current?.();
     if (exitTimerRef.current !== null) window.clearTimeout(exitTimerRef.current);
-    enterFrameRef.current = null;
+    cancelEnterPaintRef.current = null;
     exitTimerRef.current = null;
     (document.activeElement as HTMLElement | null)?.blur();
     setMenuPhase("closed");

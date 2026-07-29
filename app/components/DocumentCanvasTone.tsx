@@ -3,16 +3,16 @@
 import { useEffect } from "react";
 import { visualViewportHeight } from "../lib/viewport";
 
-const TRANSPARENT_VALUES = new Set([
-  "transparent",
-  "rgba(0, 0, 0, 0)",
-  "rgba(0,0,0,0)",
-]);
+const TRANSPARENT_VALUES = new Set(["transparent", "rgba(0, 0, 0, 0)", "rgba(0,0,0,0)"]);
+const SETTLE_DELAY_MS = 90;
 
 function cssToken(name: string, fallback: string): string {
   return window.getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 }
 
+function isIOSWebKit(): boolean {
+  return /iP(?:hone|ad|od)/.test(navigator.userAgent) && navigator.maxTouchPoints > 0;
+}
 
 function opaqueAncestorColor(node: Element | null): string | null {
   let current = node as HTMLElement | null;
@@ -25,11 +25,12 @@ function opaqueAncestorColor(node: Element | null): string | null {
 }
 
 function sampledCanvasColor(): string | null {
+  const viewport = window.visualViewport;
   const visibleHeight = visualViewportHeight();
+  const visibleWidth = Math.max(1, viewport?.width ?? document.documentElement.clientWidth);
   const y = Math.max(1, Math.floor(visibleHeight - 3));
-  const widths = [0.22, 0.5, 0.78];
-  const colors = widths
-    .map((ratio) => document.elementFromPoint(Math.max(1, Math.floor(window.innerWidth * ratio)), y))
+  const colors = [0.22, 0.5, 0.78]
+    .map((ratio) => document.elementFromPoint(Math.max(1, Math.floor(visibleWidth * ratio)), y))
     .map(opaqueAncestorColor)
     .filter((value): value is string => Boolean(value));
 
@@ -48,41 +49,55 @@ function isAtDocumentBottom(): boolean {
 }
 
 /**
- * Keeps Safari's document canvas aligned with the content touching the bottom
- * of the visual viewport. The sampler intentionally uses visualViewport.height
- * rather than window.innerHeight: during toolbar expansion Safari can report a
- * layout height that points outside elementFromPoint's valid coordinate space.
- * Invalid/transient samples retain the previous colour instead of falling back
- * to paper, eliminating the white block that appeared while the toolbar moved.
+ * Keeps the iOS WebKit document canvas aligned with the content touching the
+ * bottom of the visual viewport. Work is coalesced to one animation frame per
+ * event burst, followed by one settled sample after Safari finishes moving its
+ * toolbar. Invalid samples retain the last valid colour.
  */
 export function DocumentCanvasTone() {
   useEffect(() => {
     const root = document.documentElement;
     const body = document.body;
+    const paper = cssToken("--color-paper", "#f5f2eb");
+
+    // Other engines do not need the dynamic native-chrome workaround. Keeping
+    // the explicit server-rendered paper canvas avoids unnecessary scroll work.
+    if (!isIOSWebKit()) {
+      root.style.backgroundColor = paper;
+      body.style.backgroundColor = paper;
+      return () => {
+        root.style.removeProperty("background-color");
+        body.style.removeProperty("background-color");
+      };
+    }
+
     let frame = 0;
-    let lastApplied = root.style.getPropertyValue("--document-canvas-color") || cssToken("--color-paper", "#f5f2eb");
+    let settleTimer = 0;
+    let lastApplied = root.style.backgroundColor || paper;
     let pendingColor: string | null = null;
     let pendingCount = 0;
 
-    const apply = (color: string) => {
-      if (color === lastApplied) return;
+    const apply = (color: string, force = false) => {
+      if (!force && color === lastApplied) return;
       lastApplied = color;
       root.style.setProperty("--document-canvas-color", color);
+      root.style.backgroundColor = color;
+      body.style.backgroundColor = color;
     };
 
     const update = () => {
       frame = 0;
       if (root.classList.contains("splashCanvasActive")) return;
 
-      // The final page edge must stay black even while Safari resizes its
-      // visual viewport and elementFromPoint temporarily returns no element.
-      if (isAtDocumentBottom() && document.querySelector("#site-footer")) {
+      if (isAtDocumentBottom() && document.getElementById("site-footer")) {
         pendingColor = null;
         pendingCount = 0;
-        apply(cssToken("--color-dark", "#080808"));
+        root.classList.add("documentCanvasAtFooter");
+        apply(cssToken("--color-dark", "#080808"), true);
         return;
       }
 
+      root.classList.remove("documentCanvasAtFooter");
       const candidate = sampledCanvasColor();
       if (!candidate) return;
 
@@ -92,34 +107,34 @@ export function DocumentCanvasTone() {
         pendingCount = 1;
       }
 
-      // Require two consistent frames before changing the native-chrome canvas.
-      // This filters the one-frame paper sample Safari emits while its toolbar
-      // switches between expanded and collapsed states.
       if (pendingCount >= 2) apply(candidate);
     };
 
     const schedule = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(update);
+      if (!frame) frame = window.requestAnimationFrame(update);
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(() => {
+        if (!frame) frame = window.requestAnimationFrame(update);
+      }, SETTLE_DELAY_MS);
     };
 
-    const scheduleTwice = () => {
-      schedule();
-      window.requestAnimationFrame(schedule);
-    };
-
-    scheduleTwice();
-    window.addEventListener("scroll", scheduleTwice, { passive: true });
-    window.addEventListener("resize", scheduleTwice, { passive: true });
-    window.visualViewport?.addEventListener("resize", scheduleTwice, { passive: true });
-    window.visualViewport?.addEventListener("scroll", scheduleTwice, { passive: true });
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    window.visualViewport?.addEventListener("resize", schedule, { passive: true });
+    window.visualViewport?.addEventListener("scroll", schedule, { passive: true });
 
     return () => {
+      root.classList.remove("documentCanvasAtFooter");
+      root.style.setProperty("--document-canvas-color", paper);
+      root.style.backgroundColor = paper;
+      body.style.backgroundColor = paper;
       if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", scheduleTwice);
-      window.removeEventListener("resize", scheduleTwice);
-      window.visualViewport?.removeEventListener("resize", scheduleTwice);
-      window.visualViewport?.removeEventListener("scroll", scheduleTwice);
+      window.clearTimeout(settleTimer);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("resize", schedule);
+      window.visualViewport?.removeEventListener("scroll", schedule);
     };
   }, []);
 

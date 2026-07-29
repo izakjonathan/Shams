@@ -1,6 +1,6 @@
 {
   "name": "shams-for-humanity",
-  "version": "2.0.0",
+  "version": "2.1.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -13,18 +13,24 @@
     "audit:static": "node scripts/audit-static.mjs",
     "theme:generate": "node scripts/generate-theme.mjs",
     "predev": "npm run theme:generate",
-    "prebuild": "npm run theme:generate"
+    "prebuild": "npm run theme:generate",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "next": "16.2.10",
     "react": "19.2.7",
-    "react-dom": "19.2.7"
+    "react-dom": "19.2.7",
+    "drizzle-orm": "0.44.5",
+    "postgres": "3.4.7"
   },
   "devDependencies": {
     "@types/node": "22.0.0",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "drizzle-kit": "0.31.4"
   },
   "packageManager": "npm@10.9.4"
 }

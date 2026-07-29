@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import { afterPaint, cssTimeMs, prefersReducedMotion } from "../lib/motion";
 import { scrollToDocumentBottom } from "../lib/viewport";
 import {
   createContext,
@@ -31,10 +32,8 @@ interface RouteTransitionContextValue {
 }
 
 const RouteTransitionContext = createContext<RouteTransitionContextValue | null>(null);
-
-const COVER_TIMEOUT_MS = 620;
-const REVEAL_TIMEOUT_MS = 620;
 const WATCHDOG_MS = 4200;
+const FALLBACK_BUFFER_MS = 90;
 
 function routeFamily(pathname: string) {
   if (pathname.startsWith("/artists/")) return "artist";
@@ -45,7 +44,6 @@ function routeFamily(pathname: string) {
 function inferTransitionKind(currentPath: string, destinationPath: string): TransitionKind {
   const currentFamily = routeFamily(currentPath);
   const destinationFamily = routeFamily(destinationPath);
-
   if (currentFamily === "home" && destinationFamily === "artist") return "artist-open";
   if (currentFamily === "artist" && destinationFamily === "home") return "artist-close";
   if (currentFamily === "artist" && destinationFamily === "artist") return "artist-switch";
@@ -54,14 +52,16 @@ function inferTransitionKind(currentPath: string, destinationPath: string): Tran
   return "page-switch";
 }
 
-function reducedMotion() {
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function curtainDuration(kind: TransitionKind, phase: "cover" | "reveal"): number {
+  if (prefersReducedMotion()) return 1;
+  if (phase === "reveal") return cssTimeMs("--route-curtain-reveal-duration", 550);
+  if (kind === "artist-close" || kind === "page-close") return cssTimeMs("--route-curtain-close-duration", 500);
+  if (kind === "artist-switch" || kind === "page-switch") return cssTimeMs("--route-curtain-switch-duration", 470);
+  return cssTimeMs("--route-curtain-open-duration", 550);
 }
 
-function nextFrame() {
-  return new Promise<void>((resolve) => {
-    window.requestAnimationFrame(() => window.requestAnimationFrame(() => resolve()));
-  });
+function nextPaint() {
+  return new Promise<void>((resolve) => afterPaint(resolve));
 }
 
 async function waitForDestinationLayout() {
@@ -70,7 +70,7 @@ async function waitForDestinationLayout() {
   } catch {
     // Font loading failure must never block navigation recovery.
   }
-  await nextFrame();
+  await nextPaint();
 }
 
 export function useRouteTransition() {
@@ -81,13 +81,13 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
   const pathname = usePathname();
   const router = useRouter();
   const [phase, setPhase] = useState<TransitionPhase>("idle");
+  const [kind, setKind] = useState<TransitionKind>("page-switch");
   const [transitioning, setTransitioning] = useState(false);
   const veilRef = useRef<HTMLDivElement | null>(null);
-  const mountFrameRef = useRef<number | null>(null);
   const lockRef = useRef(false);
   const previousPathRef = useRef(pathname);
-  const timersRef = useRef<number[]>([]);
-  const transitionKindRef = useRef<TransitionKind>("page-switch");
+  const timersRef = useRef<Set<number>>(new Set());
+  const cancelMountPaintRef = useRef<(() => void) | null>(null);
   const navigationStartedRef = useRef(false);
   const pendingRef = useRef<{
     href: string;
@@ -97,44 +97,36 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
   } | null>(null);
 
   const clearTimers = useCallback(() => {
-    timersRef.current.forEach(window.clearTimeout);
-    timersRef.current = [];
+    for (const id of timersRef.current) window.clearTimeout(id);
+    timersRef.current.clear();
   }, []);
 
   const timer = useCallback((callback: () => void, delay: number) => {
-    const id = window.setTimeout(callback, delay);
-    timersRef.current.push(id);
+    const id = window.setTimeout(() => {
+      timersRef.current.delete(id);
+      callback();
+    }, delay);
+    timersRef.current.add(id);
     return id;
-  }, []);
-
-  const setTransitionPhase = useCallback((next: TransitionPhase) => {
-    setPhase(next);
-    document.documentElement.dataset.routePhase = next;
   }, []);
 
   const unlock = useCallback(() => {
     clearTimers();
+    cancelMountPaintRef.current?.();
+    cancelMountPaintRef.current = null;
     pendingRef.current = null;
     navigationStartedRef.current = false;
     lockRef.current = false;
-    if (mountFrameRef.current !== null) {
-      window.cancelAnimationFrame(mountFrameRef.current);
-      mountFrameRef.current = null;
-    }
     setTransitioning(false);
-    setTransitionPhase("idle");
-    delete document.documentElement.dataset.routeTransition;
-    delete document.documentElement.dataset.routePhase;
-  }, [clearTimers, setTransitionPhase]);
+    setPhase("idle");
+  }, [clearTimers]);
 
   const positionDestination = useCallback(() => {
     const pending = pendingRef.current;
     const hash = pending?.hash ?? (window.location.hash || null);
     let target: HTMLElement | null = null;
 
-    if (hash && hash !== "#top") {
-      target = document.getElementById(decodeURIComponent(hash.slice(1)));
-    }
+    if (hash && hash !== "#top") target = document.getElementById(decodeURIComponent(hash.slice(1)));
 
     if (hash === "#site-footer") {
       target?.classList.add("isRevealed");
@@ -159,40 +151,35 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     if (navigationStartedRef.current) return;
     const pending = pendingRef.current;
     if (!pending) return;
-
     navigationStartedRef.current = true;
-    setTransitionPhase("covered");
+    setPhase("covered");
     if (pending.replace) router.replace(pending.href, { scroll: false });
     else router.push(pending.href, { scroll: false });
-  }, [router, setTransitionPhase]);
+  }, [router]);
 
   const revealDestination = useCallback(async () => {
     positionDestination();
     await waitForDestinationLayout();
     if (!lockRef.current) return;
-
-    // Re-apply after fonts/layout settle so footer and hash destinations are
-    // exact before the curtain exposes the new route.
     positionDestination();
-    setTransitionPhase("revealing");
+    setPhase("revealing");
     window.requestAnimationFrame(() => {
       if (!lockRef.current) return;
-      setTransitionPhase("revealing-active");
-      timer(unlock, reducedMotion() ? 30 : REVEAL_TIMEOUT_MS);
+      setPhase("revealing-active");
+      timer(unlock, curtainDuration(kind, "reveal") + FALLBACK_BUFFER_MS);
     });
-  }, [positionDestination, setTransitionPhase, timer, unlock]);
+  }, [kind, positionDestination, timer, unlock]);
 
   const handleVeilTransitionEnd = useCallback((event: TransitionEvent<HTMLDivElement>) => {
     if (event.target !== veilRef.current || event.propertyName !== "transform") return;
     if (phase === "covering") startNavigation();
-    if (phase === "revealing-active") unlock();
+    else if (phase === "revealing-active") unlock();
   }, [phase, startNavigation, unlock]);
 
   const prefetch = useCallback((href: string) => {
     try {
       const destination = new URL(href, window.location.href);
-      if (destination.origin !== window.location.origin) return;
-      router.prefetch(`${destination.pathname}${destination.search}`);
+      if (destination.origin === window.location.origin) router.prefetch(`${destination.pathname}${destination.search}`);
     } catch {
       // External or malformed URLs are left to the browser.
     }
@@ -209,13 +196,10 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       const hash = destination.hash || "#top";
       const target = hash === "#top" ? null : document.getElementById(decodeURIComponent(hash.slice(1)));
       window.history.pushState(window.history.state, "", hash);
-      if (hash === "#site-footer") {
-        scrollToDocumentBottom(reducedMotion() ? "auto" : "smooth");
-      } else if (target) {
-        target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
-      } else {
-        window.scrollTo({ top: 0, left: 0, behavior: reducedMotion() ? "auto" : "smooth" });
-      }
+      const behavior = prefersReducedMotion() ? "auto" : "smooth";
+      if (hash === "#site-footer") scrollToDocumentBottom(behavior);
+      else if (target) target.scrollIntoView({ behavior, block: "start" });
+      else window.scrollTo({ top: 0, left: 0, behavior });
       if (options?.focusOnArrival) (target ?? document.querySelector<HTMLElement>("main#main-content"))?.focus({ preventScroll: true });
       return;
     }
@@ -223,10 +207,8 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     clearTimers();
     lockRef.current = true;
     navigationStartedRef.current = false;
-    setTransitioning(true);
-
-    const kind = options?.transitionKind ?? inferTransitionKind(current.pathname, destination.pathname);
-    transitionKindRef.current = kind;
+    const nextKind = options?.transitionKind ?? inferTransitionKind(current.pathname, destination.pathname);
+    setKind(nextKind);
     pendingRef.current = {
       href: `${destination.pathname}${destination.search}${destination.hash}`,
       hash: destination.hash || null,
@@ -241,24 +223,17 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       // Storage can be unavailable in private browsing.
     }
 
-    document.documentElement.dataset.routeTransition = kind;
-    setTransitionPhase("idle");
-
-    /*
-     * The fixed curtain is mounted only for an active transition. Paint its
-     * off-screen idle state first, then begin covering on the next frame.
-     * This removes an inactive fixed black layer from Safari's tint scan.
-     */
-    mountFrameRef.current = window.requestAnimationFrame(() => {
-      mountFrameRef.current = window.requestAnimationFrame(() => {
-        mountFrameRef.current = null;
-        if (!lockRef.current) return;
-        setTransitionPhase("covering");
-        timer(startNavigation, reducedMotion() ? 0 : COVER_TIMEOUT_MS);
-      });
+    setPhase("idle");
+    setTransitioning(true);
+    cancelMountPaintRef.current?.();
+    cancelMountPaintRef.current = afterPaint(() => {
+      cancelMountPaintRef.current = null;
+      if (!lockRef.current) return;
+      setPhase("covering");
+      timer(startNavigation, curtainDuration(nextKind, "cover") + FALLBACK_BUFFER_MS);
     });
     timer(unlock, WATCHDOG_MS);
-  }, [clearTimers, setTransitionPhase, startNavigation, timer, unlock]);
+  }, [clearTimers, startNavigation, timer, unlock]);
 
   useEffect(() => {
     const previous = window.history.scrollRestoration;
@@ -266,36 +241,35 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     return () => {
       window.history.scrollRestoration = previous;
       clearTimers();
-      if (mountFrameRef.current !== null) window.cancelAnimationFrame(mountFrameRef.current);
-      delete document.documentElement.dataset.routeTransition;
-      delete document.documentElement.dataset.routePhase;
-      };
+      cancelMountPaintRef.current?.();
+    };
   }, [clearTimers]);
 
   useLayoutEffect(() => {
     if (previousPathRef.current === pathname) return;
     previousPathRef.current = pathname;
-
-    if (lockRef.current) {
-      void revealDestination();
-      return;
-    }
-
-    positionDestination();
+    if (lockRef.current) void revealDestination();
+    else positionDestination();
   }, [pathname, positionDestination, revealDestination]);
 
   const value = useMemo<RouteTransitionContextValue>(() => ({ navigate, prefetch, transitioning }), [navigate, prefetch, transitioning]);
-
   return (
     <RouteTransitionContext.Provider value={value}>
       {header}
-      <div className="routeFade" data-live-route aria-busy={transitioning}>
+      <div
+        className="routeFade"
+        data-live-route
+        data-route-phase={phase}
+        aria-busy={transitioning}
+      >
         {children}
       </div>
       {transitioning && (
         <div
           ref={veilRef}
           className="routeTransitionVeil"
+          data-route-phase={phase}
+          data-route-kind={kind}
           aria-hidden="true"
           onTransitionEnd={handleVeilTransitionEnd}
         />

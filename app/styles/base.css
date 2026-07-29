@@ -28,6 +28,14 @@ body {
   overflow-x: hidden;
 }
 
+/* Safari 26 can cache the previous root colour beneath its bottom toolbar.
+ * Use an explicit class and literal colour at the true document bottom so the
+ * native compositor does not depend on a custom-property repaint. */
+html.documentCanvasAtFooter,
+html.documentCanvasAtFooter body {
+  background-color: var(--color-dark) !important;
+}
+
 .siteShell {
   position: relative;
   z-index: 1;

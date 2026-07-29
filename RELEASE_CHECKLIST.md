@@ -1,18 +1,24 @@
-# v2.0.0 Release Checklist
+# v2.1.2 release checklist
 
-- [x] Version updated to 2.0.0.
-- [x] Latest v1.9.0 visual and interaction baseline preserved.
-- [x] Legacy content directory removed.
-- [x] Canonical TypeScript models added.
-- [x] Repository boundary added.
-- [x] Runtime content validation added.
-- [x] Legal, contact, navigation, and homepage content moved out of routes.
-- [x] Public pages and metadata use repository reads.
-- [x] Stable IDs, sort order, and statuses preserved.
-- [x] Static audit expanded to reject legacy raw-content imports.
-- [x] Release validation passed.
-- [x] Static architecture audit passed.
-- [x] CSS structure validation passed.
-- [x] ZIP integrity passed.
-- [ ] Generate package-lock.json in a registry-complete environment.
-- [ ] Run npm ci, typecheck, and next build.
+- [x] Continue from v2.1.1
+- [x] Preserve approved public design and admin foundation
+- [x] Audit all animation controllers and CSS motion
+- [x] Remove global route-transition dataset coupling
+- [x] Centralize motion helpers
+- [x] Derive JavaScript fallbacks from CSS timing tokens
+- [x] Coalesce iOS visual-viewport canvas sampling
+- [x] Keep true-bottom dark canvas and footer bleed
+- [x] Preserve conditional curtain and menu mounting
+- [x] Preserve splash-only runway and media bleed
+- [x] Shorten excessive motion durations
+- [x] Remove obsolete AppShell cleanup states
+- [x] Fix static-audit execution ordering
+- [x] Remove stale TypeScript build artifact
+- [x] Release validation passes
+- [x] Static architecture audit passes
+- [x] Script syntax checks pass
+- [x] CSS brace validation passes
+- [ ] Full dependency-backed TypeScript check
+- [ ] Next.js production build
+- [ ] Live PostgreSQL migration
+- [ ] Real-device iOS 26 expanded/collapsed toolbar test

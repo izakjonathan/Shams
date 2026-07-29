@@ -3,11 +3,9 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "./components/SiteHeader";
-import { SplashScreen } from "./components/SplashScreen";
 import { SiteFooter } from "./components/SiteFooter";
-import { RouteFade } from "./components/RouteFade";
-import { DocumentCanvasTone } from "./components/DocumentCanvasTone";
 import { contentRepository } from "./content";
+import { AppShell } from "./components/AppShell";
 import { allowIndexing, serializeJsonLd, siteUrl } from "./lib/site";
 
 const event = contentRepository.getEvent();
@@ -115,7 +113,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           id="splash-session-gate"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem("shf-splash-seen-v2.0.0")==="1"){document.documentElement.classList.add("splashSessionSeen");document.documentElement.classList.remove("splashCanvasActive","splashRunwayActive");}}catch{}`,
+            __html: `try{if(sessionStorage.getItem("shf-splash-seen-v2.1.2")==="1"){document.documentElement.classList.add("splashSessionSeen");document.documentElement.classList.remove("splashCanvasActive","splashRunwayActive");}}catch{}`,
           }}
         />
         <noscript>
@@ -125,15 +123,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             .splashActive .skipLink { opacity: 1 !important; pointer-events: auto !important; }
           `}</style>
         </noscript>
-        <a className="skipLink" href="#main-content">Skip to content</a>
-        <SplashScreen />
-        <DocumentCanvasTone />
-        <div className="siteShell">
-          <RouteFade header={<SiteHeader />}>
-            {children}
-            <SiteFooter />
-          </RouteFade>
-        </div>
+        <AppShell header={<SiteHeader />} footer={<SiteFooter />}>
+          {children}
+        </AppShell>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}

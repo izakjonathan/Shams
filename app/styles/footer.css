@@ -15,6 +15,17 @@
   color: var(--color-white);
 }
 
+/* A real flow-content bleed gives Safari pixels below the visual viewport when
+ * its expanded bottom toolbar reaches beyond 100dvh. This remains black and
+ * contains no controls or layout content. */
+.siteFooter::after {
+  content: "";
+  display: block;
+  flex: 0 0 160px;
+  width: 100%;
+  background: var(--color-dark);
+}
+
 .siteFooter .footerBottom { margin-top: auto; }
 .footerLogo { display: inline-block; font-size: clamp(62px, 14vw, 140px); line-height: .75; }
 .footerLinks { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 70px 0; }

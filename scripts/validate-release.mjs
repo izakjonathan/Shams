@@ -35,8 +35,8 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "2.0.0") {
-  errors.push(`package.json version must be 1.8.4 for this release (found ${pkg.version}).`);
+if (pkg.version !== "2.1.2") {
+  errors.push(`package.json version must be 2.1.2 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [
@@ -57,6 +57,7 @@ for (const path of [
   "app/styles/route-curtain.css",
   "app/styles/footer.css",
   "app/lib/viewport.ts",
+  "app/lib/motion.ts",
   "app/components/RouteFade.tsx",
   "app/components/FadeLink.tsx",
   "scripts/audit-static.mjs",
