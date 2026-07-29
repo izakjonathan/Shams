@@ -15,7 +15,13 @@
   --tracking-tight: -0.055em;
   --tracking-display: -0.04em;
   --tracking-label: 0.08em;
-  --line-height-body: 1.45;
+  --line-height-body: 1.5;
+  --leading-body-large: 1.32;
+  --leading-body-reading: 1.55;
+  --leading-display-hero: 0.78;
+  --leading-display-section: 0.84;
+  --leading-display-compact: 0.92;
+  --leading-ui: 1.15;
 
   /* Core colors */
   --color-paper: #f5f2eb;

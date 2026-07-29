@@ -19,3 +19,6 @@ The mobile menu implementation and animation are unchanged.
 ## Reliability
 
 The controller uses `transitionend` as its primary lifecycle signal, with bounded timeout fallbacks and a global watchdog for Safari interruption recovery. Internal routes are prefetched on pointer, focus and touch intent.
+
+### v1.7.2 typography system
+Typography is centralized in `app/styles/typography.css` and uses semantic leading tokens from `app/design-system.css`. Adjust those tokens first for future site-wide typography refinements.

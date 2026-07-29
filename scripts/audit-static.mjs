@@ -66,6 +66,20 @@ if (!/h1,\s*h2,\s*h3,\s*h4,\s*h5,\s*h6\s*\{[^}]*font-family:\s*var\(--font-displ
   errors.push("Semantic headings must use the global Agilera display-font control.");
 }
 
+
+const typography = readFileSync(resolve(root, "app/styles/typography.css"), "utf8");
+for (const required of [
+  "--leading-display-hero", "--leading-display-section",
+  ".informationBody h2", ".artistHeroCopy h1", ".sectionHeading h2",
+  "text-wrap: balance", "line-height: var(--leading-display-section)",
+]) {
+  if (!typography.includes(required)) errors.push(`Typography system is missing: ${required}`);
+}
+if (!globals.includes('styles/typography.css')) errors.push("Global typography stylesheet must be imported.");
+if (/\.informationBody h2\s*\{[^}]*line-height:\s*(?:normal|1(?:\.2)?)/s.test(typography)) {
+  errors.push("Information headings must use compact Agilera line-height controls.");
+}
+
 const information = readFileSync(resolve(root, "app/styles/information.css"), "utf8");
 if (!information.includes(".informationPage") || !information.includes("background: var(--color-accent)")) {
   errors.push("Information routes must use the flat yellow page background.");

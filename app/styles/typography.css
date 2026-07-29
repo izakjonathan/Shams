@@ -1,0 +1,202 @@
+/* ========================================================================== 
+   Global typography system
+   ========================================================================== */
+
+/*
+ * Agilera has unusually tall internal font metrics. These controls keep the
+ * visible letterforms compact and consistent instead of relying on browser
+ * `normal` line-height values, which create oversized gaps on wrapped titles.
+ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-block-start: 0;
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+h1 {
+  line-height: var(--leading-display-hero);
+}
+
+h2 {
+  line-height: var(--leading-display-section);
+}
+
+h3,
+h4,
+h5,
+h6 {
+  line-height: var(--leading-display-compact);
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+/* Primary page and hero titles */
+.hero h1,
+.artistHeroCopy h1,
+.informationHero h1,
+.contactHero h1,
+.errorState h1,
+.notFound h1 {
+  line-height: var(--leading-display-hero);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Large editorial headings */
+.statement h2,
+.manifesto h2,
+.sectionHeading h2,
+.tickets h2,
+.infoIntro h2,
+.newsletter h2,
+.artistEditorialLead h2,
+.artistSet h2,
+.artistLinks h2,
+.organizerBlock h2,
+.informationBody h2,
+.artistQuote blockquote,
+.artistNavigationLink strong,
+.footerLogo {
+  line-height: var(--leading-display-section);
+  letter-spacing: var(--tracking-display);
+}
+
+/* Medium display typography */
+.infoCards h3,
+.programmeEntry h3,
+.contactGrid h2,
+.artistRow h3,
+.artistHighlights li,
+.artistExternalLink,
+.faqList button {
+  line-height: var(--leading-display-compact);
+}
+
+/* Legal and information pages */
+.informationHero {
+  padding-top: clamp(150px, 20vh, 210px);
+}
+
+.informationHero h1 {
+  margin: 0 0 clamp(30px, 5vw, 52px);
+}
+
+.informationHero > p {
+  line-height: var(--leading-body-large);
+}
+
+.informationBody {
+  row-gap: clamp(64px, 9vw, 112px);
+}
+
+.informationBody article > section {
+  gap: clamp(18px, 3vw, 34px);
+  padding-bottom: clamp(52px, 8vw, 84px);
+  margin-bottom: clamp(52px, 8vw, 84px);
+}
+
+.informationBody h2 {
+  margin: 0 0 clamp(26px, 4vw, 42px);
+  line-height: var(--leading-display-section);
+}
+
+.informationBody article p,
+.informationBody article li {
+  line-height: var(--leading-body-reading);
+}
+
+.informationBody article p {
+  margin-block: 0 1.35em;
+}
+
+.informationBody article p:last-child,
+.informationBody article li:last-child {
+  margin-bottom: 0;
+}
+
+.contactHero h1 {
+  margin: 0 0 clamp(28px, 4vw, 48px);
+}
+
+.contactGrid h2,
+.organizerBlock h2 {
+  line-height: var(--leading-display-section);
+}
+
+/* Artist pages */
+.artistHeroCopy h1 {
+  margin: 12px 0 clamp(26px, 4vw, 42px);
+}
+
+.artistEditorialLead h2,
+.artistSet h2,
+.artistLinks h2 {
+  margin-top: 16px;
+}
+
+.artistBiography p,
+.artistSetIntro p {
+  line-height: var(--leading-body-reading);
+}
+
+/* Homepage editorial rhythm */
+.hero h1 {
+  margin: 26px 0 clamp(34px, 5vw, 48px);
+}
+
+.statement h2,
+.manifesto h2,
+.sectionHeading h2,
+.tickets h2,
+.infoIntro h2,
+.newsletter h2 {
+  line-height: var(--leading-display-section);
+}
+
+.statement .lead,
+.artistStandfirst {
+  line-height: var(--leading-body-large);
+}
+
+/* Prevent inline controls and labels from inheriting display-font metrics. */
+button,
+input,
+textarea,
+select,
+small,
+.sectionIndex,
+.informationNumber,
+.eyebrow,
+.kicker {
+  line-height: var(--leading-ui);
+}
+
+@media (max-width: 759px) {
+  .informationHero {
+    min-height: auto;
+    padding-top: calc(var(--header-height-mobile) + 70px);
+    padding-bottom: 64px;
+  }
+
+  .informationHero h1 {
+    font-size: clamp(58px, 15vw, 92px);
+  }
+
+  .informationBody h2 {
+    font-size: clamp(42px, 12vw, 68px);
+  }
+
+  .informationBody article > section {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+}

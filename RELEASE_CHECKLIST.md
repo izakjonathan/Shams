@@ -13,3 +13,9 @@
 - [x] Duplicate-click lock and internal-route prefetching preserved
 - [x] Reduced-motion bypass included
 - [x] Static architecture audit updated to reject old morph code
+
+## v1.7.2 typography
+- [x] Global semantic heading controls use Agilera.
+- [x] Wrapped headings use compact explicit line-height values.
+- [x] Legal/information page typography and spacing are standardized.
+- [x] Typography stylesheet is imported last to prevent legacy overrides.

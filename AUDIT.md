@@ -31,3 +31,14 @@ A repository-wide static audit rejects these identifiers if they return.
 - Automatic Next.js scrolling is disabled during route changes.
 - ScrollReveal is coordinated through `shf-route-target` on artist close.
 - No cloned DOM, duplicated IDs, browser compositor snapshots or transparent intermediate canvas exist.
+
+## v1.7.2 typography audit
+
+- Added a single global typography layer imported last, so heading metrics are not accidentally overridden by older page styles.
+- Added semantic line-height tokens for hero, section, compact-display, reading, large body, and UI text.
+- Removed reliance on the browser's `normal` line-height for Agilera headings.
+- Standardized h1-h6 family, weight, tracking, wrapping, margins, and leading.
+- Tightened all wrapped legal-page headings, including the Terms “Tickets and payment” heading shown in the audit screenshot.
+- Standardized legal-page section spacing and paragraph rhythm.
+- Added mobile-specific legal-title sizing and layout safeguards.
+- Preserved the editorial curtain and all navigation behavior.
