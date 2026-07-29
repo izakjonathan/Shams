@@ -13,8 +13,8 @@
  * 0.85 = 15% smaller/weaker.
  */
 :root {
-  --gradient-size: 1;
-  --gradient-strength: 1;
+  --gradient-size: 1.15;
+  --gradient-strength: 1.2;
 }
 
 .paperGlowSection,
@@ -110,7 +110,7 @@
 
 .orbOne {
   --glow-w: 108vw;
-  --glow-h: 76vw;
+  --glow-h: 96vw;
   --glow-right: -34%;
   --glow-top: -2%;
   --glow-rotate: 18deg;
@@ -135,7 +135,7 @@
   --glow-bottom: 2%;
   --glow-rotate: 24deg;
   --glow-scale-x: 1.46;
-  --glow-scale-y: 0.5;
+  --glow-scale-y: 1;
   --glow-opacity: 0.92;
 }
 
