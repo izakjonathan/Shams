@@ -9,13 +9,19 @@
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: thin;
+  overflow-y: hidden;
+  padding-bottom: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   scroll-snap-type: x proximity;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .programmeFilters::-webkit-scrollbar {
-  height: 3px;
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .programmeFilter {

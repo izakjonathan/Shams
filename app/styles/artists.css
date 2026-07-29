@@ -163,13 +163,6 @@
   color: var(--color-white);
 }
 
-.artistQuote .darkGlowOne {
-  --glow-w: clamp(680px, 160vw, 1200px);
-  --glow-h: clamp(680px, 160vw, 1200px);
-  --glow-left: -82%;
-  --glow-top: -44%;
-  --glow-opacity: .58;
-}
 
 .artistQuote blockquote {
   position: relative;

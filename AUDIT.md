@@ -57,6 +57,24 @@ The v1.7.3 base overlay selector was accidentally changed from `.splashScreen` t
 The splash artwork is now also painted onto the root document canvas while the splash is active. Mobile Safari derives the visual material behind its status bar and bottom toolbar from that canvas rather than from a fixed child constrained to the visual viewport. The `splashCanvasActive` class is present in the server-rendered `<html>` element, removed before hydration for repeat visits, and removed after the first splash completes. This lets the browser chrome remain translucent over the same full-bleed artwork instead of exposing a white fallback canvas.
 
 
-## v1.7.6 theme architecture audit
+## v1.7.8 theme architecture audit
 
 The palette is no longer split across CSS and TypeScript. `app/theme.json` is consumed directly by non-CSS renderers and generates the browser CSS theme before development and production builds. The audit rejects duplicate core palette declarations in `design-system.css`, direct gradient declarations in homepage or artist component styles, and hard-coded accent RGB values inside the gradient geometry file.
+
+
+## Programme filter rail audit — v1.7.8
+
+- Confirmed `.programmeFilters` has no gradient or mask treatment.
+- Confirmed horizontal scrolling remains enabled for narrow mobile viewports.
+- Confirmed native scrollbars are hidden using Firefox and WebKit-compatible controls.
+- Confirmed vertical overflow is suppressed and no scrollbar-reserved padding remains.
+
+## v1.7.8 centralized gradient audit
+
+- Added one global edit block at the top of `app/styles/gradients.css`.
+- `--gradient-size`, `--gradient-shape-x`, `--gradient-shape-y`, `--gradient-strength`, and `--gradient-rotation` now affect the hero and every light gradient section.
+- Shared layer dimensions, shape, rotation, opacity, and wash recipes are defined once.
+- Homepage sections and artist sections now vary placement only; they cannot redefine their own size or shape.
+- Dark sections use one equivalent `--dark-gradient-*` control group.
+- Removed the artist quote gradient size/opacity override from `artists.css`.
+- Static audit rejects private hero recipes and per-section size/shape controls.

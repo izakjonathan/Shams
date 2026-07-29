@@ -108,6 +108,7 @@ if (!routeFade.includes('hash === "#site-footer"') || !routeFade.includes("maxim
 }
 
 const programmeComponent = readFileSync(resolve(root, "app/components/ProgrammeExplorer.tsx"), "utf8");
+const programmeTickets = readFileSync(resolve(root, "app/styles/programme-tickets.css"), "utf8");
 const programmeContent = readFileSync(resolve(root, "app/lib/content/programme.ts"), "utf8");
 if (!programmeComponent.includes("programmeEntryTime") || programmeComponent.includes("programmeEntryNumber")) {
   errors.push("Programme entries must render editorial times instead of ordinal numbers.");
@@ -171,7 +172,7 @@ if (designSystem.includes("--color-paper:") || designSystem.includes("--paper-or
 if (/gradient\(/.test(homepageStyles) || /gradient\(/.test(artistStyles)) {
   errors.push("Homepage and artist component styles must not define gradients directly.");
 }
-for (const required of [".hero {", ".artistHero {", ".artistSet {", ".programmeFilters {", ".artistPortrait::after {"]) {
+for (const required of [".hero {", ".artistHero .glowOne", ".artistSet .glowOne", ".artistPortrait::after {"]) {
   if (!gradients.includes(required)) errors.push(`Central gradient geometry is missing: ${required}`);
 }
 if (/rgba\(252,\s*198,\s*79/.test(gradients)) {
@@ -179,6 +180,41 @@ if (/rgba\(252,\s*198,\s*79/.test(gradients)) {
 }
 if (!readFileSync(resolve(root, "package.json"), "utf8").includes('"theme:generate"')) {
   errors.push("Package scripts must expose theme generation.");
+}
+
+
+// v1.7.8 programme filter rail must remain swipeable without visual fade or scrollbar chrome.
+if (/\.programmeFilters\s*\{[^}]*background\s*:/s.test(gradients)) {
+  errors.push("Programme filter rail must not have a right-edge background gradient.");
+}
+if (!programmeTickets.includes("scrollbar-width: none") || !programmeTickets.includes(".programmeFilters::-webkit-scrollbar") || !programmeTickets.includes("display: none")) {
+  errors.push("Programme filter rail must hide native scrollbars across Firefox and WebKit.");
+}
+if (!programmeTickets.includes("overflow-x: auto") || !programmeTickets.includes("overflow-y: hidden")) {
+  errors.push("Programme filter rail must retain horizontal scrolling while suppressing vertical overflow.");
+}
+
+// v1.7.8 all gradient geometry must inherit from the single global control block.
+for (const required of [
+  "--gradient-size:", "--gradient-shape-x:", "--gradient-shape-y:",
+  "--gradient-strength:", "--gradient-rotation:",
+  "--gradient-layer-1-w:", "--gradient-layer-2-w:", "--gradient-layer-3-w:",
+  "--dark-gradient-size:", "--dark-gradient-shape-x:", "--dark-gradient-strength:",
+  "background-image: var(--gradient-wash-1), var(--gradient-wash-2), var(--gradient-wash-3)",
+]) {
+  if (!gradients.includes(required)) errors.push(`Centralized gradient control is missing: ${required}`);
+}
+for (const selector of [".statement", ".lineup", ".programme", ".faq", ".artistHero", ".artistSet"]) {
+  const match = gradients.match(new RegExp(`\\${selector}\\s*\\{([^}]*)\\}`, "s"));
+  if (match && /--(?:section-)?glow-(?:[123]-)?(?:w|h|scale-x|scale-y|opacity|rotate)/.test(match[1])) {
+    errors.push(`${selector} must not own independent gradient size/shape controls.`);
+  }
+}
+if (/\.hero\s*\{[^}]*radial-gradient/s.test(gradients)) {
+  errors.push("Hero must use the shared wash variables rather than a private radial-gradient recipe.");
+}
+if (/\.artistQuote \.darkGlowOne\s*\{[^}]*--glow-(?:w|h|opacity)/s.test(artistStyles)) {
+  errors.push("Artist quote dark-gradient size/strength must be controlled globally in gradients.css.");
 }
 
 if (errors.length) {

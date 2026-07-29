@@ -32,7 +32,7 @@
 - [x] The temporary splash canvas is removed for repeat visits and after completion.
 
 
-## v1.7.6 centralized theme and gradients
+## v1.7.8 centralized theme and gradients
 - [x] Core palette moved to one editable `app/theme.json` source.
 - [x] Theme CSS is generated automatically before dev and build.
 - [x] Manifest, Open Graph and global error use the same theme source.
@@ -40,3 +40,19 @@
 - [x] All gradient geometry and declarations are centralized in `app/styles/gradients.css`.
 - [x] Homepage and artist styles contain no direct gradient declarations.
 - [x] Static audit rejects palette duplication and gradient regressions.
+
+
+## Programme filter rail
+
+- [x] No right-edge white/paper gradient.
+- [x] No visible horizontal scrollbar.
+- [x] Horizontal touch scrolling remains available.
+- [x] Vertical page scrolling does not reveal a filter scrollbar.
+
+## v1.7.8 gradient system
+
+- [x] One global light-gradient control block affects hero and all paper sections.
+- [x] One global dark-gradient control block affects all dark sections.
+- [x] No section-specific width, height, scale, opacity, or wash recipes remain.
+- [x] Hero no longer uses a private radial-gradient definition.
+- [x] Static audit passes.

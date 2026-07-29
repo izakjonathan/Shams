@@ -1,4 +1,4 @@
-# Shams for Humanity v1.7.6 — Centralized Theme and Gradients
+# Shams for Humanity v1.7.8 — Centralized Theme and Gradients
 
 This release removes the complete artist morph system and replaces every cross-route navigation with one deterministic editorial curtain.
 
@@ -45,7 +45,7 @@ Typography is centralized in `app/styles/typography.css` and uses semantic leadi
 
 During the first-visit splash, the supplied artwork is applied both to the full-screen overlay and the document canvas. This is required for iOS Safari's top status area and bottom toolbar area to visually continue the artwork. The temporary canvas class is removed when the splash finishes.
 
-## v1.7.6 centralized visual system
+## v1.7.8 centralized visual system
 
 - `app/theme.json` is the single editable source for the core palette.
 - `scripts/generate-theme.mjs` generates `app/theme.generated.css`, including RGB channels, translucent derivatives and shared gradient colour recipes.
@@ -56,3 +56,18 @@ During the first-visit splash, the supplied artwork is applied both to the full-
 - Homepage and artist component styles no longer contain direct gradient declarations.
 
 To change the paper background everywhere, edit `paper` in `app/theme.json`. To change gradient colour globally, edit `accent`. To change gradient size, shape or position, edit `app/styles/gradients.css`.
+
+
+## v1.7.8 programme filter rail refinement
+
+- Removed the right-edge paper gradient from the programme category rail.
+- Hidden native horizontal scrollbars in Safari, Chromium, and Firefox while retaining touch and pointer horizontal scrolling.
+- Prevented vertical overflow in the filter rail and removed the old scrollbar padding.
+
+## Centralized gradient controls (v1.7.8)
+
+All gradient size, shape, rotation, strength, and shared wash controls are now in the first `:root` block of `app/styles/gradients.css`.
+
+Edit `--gradient-size`, `--gradient-shape-x`, `--gradient-shape-y`, `--gradient-strength`, and `--gradient-rotation` to change every light gradient across the hero, homepage paper sections, and artist paper sections at once. The three `--gradient-layer-*` groups provide advanced global controls for each shared layer. Dark sections have an equivalent `--dark-gradient-*` group.
+
+Sections may only mirror layer placement. They no longer define independent width, height, scale, opacity, or wash recipes.
