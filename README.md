@@ -1,4 +1,4 @@
-# Shams for Humanity v1.8.3
+# Shams for Humanity v1.8.4
 
 This release hardens the site for iOS 26 Safari Liquid Glass while preserving the approved v1.8.2 visual design, editorial curtain, menu, hero, gradients, content, and navigation.
 
@@ -24,4 +24,4 @@ This release hardens the site for iOS 26 Safari Liquid Glass while preserving th
 
 The sampled blue canvas, scroll runway, and artwork remain active while the splash is opaque. During exit, the runway is removed, scroll is restored to zero, the document canvas switches to paper, the site shell is made interactive, two frames are painted, and only then does the artwork dissolve.
 
-The splash session key is `shf-splash-seen-v1.8.3`.
+The splash session key is `shf-splash-seen-v1.8.4`.

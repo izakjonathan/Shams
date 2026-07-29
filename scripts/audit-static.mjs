@@ -124,7 +124,7 @@ const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "u
 const splashStyles = readFileSync(resolve(root, "app/styles/splash.css"), "utf8");
 if (!splash.includes("splash-humanity-artwork.jpeg")) errors.push("Splash must use the supplied humanity artwork.");
 if (!splashStyles.includes("background-color: transparent") || !splashStyles.includes("min-height: 100svh") || !splashStyles.includes("height: 100dvh")) {
-  errors.push("Splash overlay must cover the full safe viewport while its fixed wrapper remains visually transparent.");
+  errors.push("Splash overlay must cover the full safe viewport while its wrapper remains visually transparent.");
 }
 for (const required of [
   "--safari-splash-color", "--safari-splash-top-bleed", "--safari-splash-bottom-bleed",
@@ -138,7 +138,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v1.8.3")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v1.8.4")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.add("splashRunwayActive")')) {
@@ -147,10 +147,10 @@ if (!splash.includes('root.classList.add("splashRunwayActive")')) {
 if (!splash.includes('root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashRunwayActive")')) {
   errors.push("Splash must remove all temporary canvas and runway states after completion.");
 }
-if (!/\.splashScreen\s*\{[^}]*position:\s*fixed[^}]*inset:\s*0/s.test(splashStyles)) {
-  errors.push("First-visit splash base styles must define a fixed full-viewport overlay.");
+if (!/\.splashScreen\s*\{[^}]*position:\s*absolute[^}]*top:\s*0[^}]*right:\s*0[^}]*left:\s*0/s.test(splashStyles)) {
+  errors.push("First-visit splash must use a document-positioned full-viewport stage so the Safari runway can expose media pixels.");
 }
-if (/html\.splashSessionSeen\s+\.splashScreen\s*\{[^}]*position:\s*fixed/s.test(splashStyles)) {
+if (/html\.splashSessionSeen\s+\.splashScreen\s*\{[^}]*position:\s*(?:fixed|absolute)/s.test(splashStyles)) {
   errors.push("Splash base geometry must not be scoped to the repeat-visit session class.");
 }
 if (!/html\.splashSessionSeen\s+\.splashScreen\s*\{[^}]*display:\s*none\s*!important/s.test(splashStyles)) {
@@ -183,7 +183,7 @@ if (/\.splashScreen\.isExiting \.splashScreenArtWrap\s*\{[^}]*filter:\s*blur/s.t
   errors.push("Splash exit must not blur the blue artwork over the destination.");
 }
 
-// v1.8.3 iOS Safari Liquid Glass hardening.
+// v1.8.4 iOS Safari Liquid Glass hardening.
 if (/body\.splashActive\s*\{[^}]*overflow:\s*hidden/s.test(splashStyles)) {
   errors.push("Splash must not lock body scrolling on iOS Safari.");
 }
@@ -199,6 +199,12 @@ if (/(?:^|[;{])\s*visibility:\s*hidden/m.test(transitions)) {
 if (!base.includes("--document-canvas-color: var(--color-paper)") || !base.includes("background-color: var(--document-canvas-color)")) {
   errors.push("html/body need an immediate server-rendered paper canvas fallback.");
 }
+const canvasTone = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
+for (const required of ["visualViewport?.height", "elementFromPoint", "isAtDocumentBottom", "pendingCount >= 2", "if (!candidate) return"]) {
+  if (!canvasTone.includes(required)) errors.push(`DocumentCanvasTone is missing visual-viewport stability hardening: ${required}`);
+}
+if (canvasTone.includes("MutationObserver")) errors.push("DocumentCanvasTone must not resample from unrelated DOM mutations.");
+if (/candidate\s*\?\?\s*cssToken\("--color-paper"/.test(canvasTone)) errors.push("Invalid canvas samples must retain the previous tone instead of falling back to paper.");
 if (/html\.splashSessionSeen[\s\S]*background-color:\s*transparent/.test(splashStyles)) {
   errors.push("Repeat visits must never leave the root canvas transparent.");
 }

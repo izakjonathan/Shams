@@ -1,4 +1,4 @@
-# v1.8.3 Safari Liquid Glass Audit
+# v1.8.4 Safari Liquid Glass Audit
 
 ## Root canvas
 

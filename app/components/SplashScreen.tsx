@@ -7,7 +7,7 @@ import splashArtwork from "../../public/images/splash-humanity-artwork.jpeg";
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
 const EXIT_DURATION_MS = 860;
-const SESSION_KEY = "shf-splash-seen-v1.8.3";
+const SESSION_KEY = "shf-splash-seen-v1.8.4";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {
@@ -44,9 +44,9 @@ function shouldUseSplashRunway(): boolean {
 type SplashStage = "entering" | "active" | "exiting" | "done";
 
 /**
- * Full-screen splash sequence with an iOS-Safari-only scroll runway:
+ * Full-screen splash sequence with a document-positioned iOS Safari runway:
  * 1. keep an explicit sampled blue document colour,
- * 2. scroll a small hidden runway so Safari can composite real pixels,
+ * 2. scroll a small hidden runway through an absolute media stage so Safari can composite real pixels,
  * 3. bleed the artwork beyond both toolbar edges,
  * 4. atomically prepare the live site and paper canvas,
  * 5. dissolve the artwork only after the destination is painted.

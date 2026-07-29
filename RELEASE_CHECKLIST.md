@@ -1,4 +1,4 @@
-# Release checklist — v1.8.3
+# Release checklist — v1.8.4
 
 - [x] Built from v1.8.2.
 - [x] `viewport-fit=cover` retained.
@@ -14,7 +14,7 @@
 - [x] Mobile menu conditional mounting preserved.
 - [x] Fixed close-control visuals moved to an absolute child.
 - [x] `DocumentCanvasTone` retained.
-- [x] Splash session key updated to v1.8.3.
+- [x] Splash session key updated to v1.8.4.
 - [x] Release validation passes.
 - [x] Static architecture audit passes.
 - [x] CSS brace validation passes.

@@ -33,6 +33,12 @@ html.splashRunwayActive body {
   min-height: calc(100dvh + var(--safari-splash-scroll-offset));
 }
 
+/* The splash stage participates in the document runway. A fixed stage would
+ * still make Safari sample only the root colour behind its native chrome. */
+html.splashRunwayActive .splashScreen {
+  height: calc(100dvh + var(--safari-splash-scroll-offset));
+}
+
 /* Switch to the normal paper canvas while the opaque splash still covers it. */
 html.splashCanvasActive.splashCanvasHandoff,
 html.splashCanvasActive.splashCanvasHandoff body {
@@ -41,9 +47,11 @@ html.splashCanvasActive.splashCanvasHandoff body {
 }
 
 .splashScreen {
-  position: fixed;
+  position: absolute;
   z-index: 120;
-  inset: 0;
+  top: 0;
+  right: 0;
+  left: 0;
   width: 100%;
   height: 100vh;
   height: 100svh;
@@ -64,7 +72,7 @@ html.splashCanvasActive.splashCanvasHandoff body {
 }
 
 /*
- * Bleed real image pixels beyond both visual-viewport edges. This gives
+ * Bleed real image pixels beyond both visual-viewport edges. The stage is absolute, not fixed, so the non-zero runway scroll can expose these pixels to Safari. This gives
  * Safari content to composite when the expanded toolbar changes its bounds.
  */
 .splashScreenArtWrap {
