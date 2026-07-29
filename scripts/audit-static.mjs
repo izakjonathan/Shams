@@ -172,7 +172,7 @@ if (designSystem.includes("--color-paper:") || designSystem.includes("--paper-or
 if (/gradient\(/.test(homepageStyles) || /gradient\(/.test(artistStyles)) {
   errors.push("Homepage and artist component styles must not define gradients directly.");
 }
-for (const required of [".hero {", ".artistHero .glowOne", ".artistSet .glowOne", ".artistPortrait::after {"]) {
+for (const required of [".hero::before {", ".artistHero {", ".artistSet {", ".artistPortrait::after {"]) {
   if (!gradients.includes(required)) errors.push(`Central gradient geometry is missing: ${required}`);
 }
 if (/rgba\(252,\s*198,\s*79/.test(gradients)) {
@@ -194,39 +194,39 @@ if (!programmeTickets.includes("overflow-x: auto") || !programmeTickets.includes
   errors.push("Programme filter rail must retain horizontal scrolling while suppressing vertical overflow.");
 }
 
-// v1.7.9 all gradient controls stay centralized while the approved hero composition remains protected.
+// v1.8.0 restores the approved v1.7.7 hero and exposes only two safe master controls.
 for (const required of [
-  "--gradient-size:", "--gradient-shape-x:", "--gradient-shape-y:",
-  "--gradient-strength:", "--gradient-rotation:",
-  "--gradient-layer-1-w:", "--gradient-layer-2-w:", "--gradient-layer-3-w:",
-  "--hero-wash-1:", "--hero-layer-1-w:", "--hero-layer-2-w:", "--hero-layer-3-w:",
-  "--dark-gradient-size:", "--dark-gradient-shape-x:", "--dark-gradient-strength:",
-  "background-image: var(--gradient-wash-1), var(--gradient-wash-2), var(--gradient-wash-3)",
-  "background-image: var(--hero-wash-1), var(--hero-wash-2), var(--hero-wash-3)",
+  "--gradient-size: 1", "--gradient-strength: 1",
+  ".hero::before", ".paperGlowSection::before",
+  "scale(var(--gradient-size))",
+  "opacity: var(--gradient-strength)",
+  "--glow-w: 108vw", "--glow-h: 76vw",
+  "--glow-w: 84vw", "--glow-h: 94vw",
+  "--glow-w: 66vw", "--glow-h: 52vw",
 ]) {
-  if (!gradients.includes(required)) errors.push(`Centralized gradient control is missing: ${required}`);
+  if (!gradients.includes(required)) errors.push(`Simplified gradient control or approved hero geometry is missing: ${required}`);
 }
-for (const selector of [".statement", ".lineup", ".programme", ".faq", ".artistHero", ".artistSet"]) {
-  const match = gradients.match(new RegExp(`\\${selector}\\s*\\{([^}]*)\\}`, "s"));
-  if (match && /--(?:section-)?glow-(?:[123]-)?(?:w|h|scale-x|scale-y|opacity|rotate)/.test(match[1])) {
-    errors.push(`${selector} must not own independent gradient size/shape controls.`);
-  }
-}
-if (/\.hero\s*\{[^}]*radial-gradient/s.test(gradients)) {
-  errors.push("Hero gradient recipes must be variables in the centralized :root control block.");
-}
-for (const required of [
-  "--glow-w: var(--hero-layer-1-w)", "--glow-h: var(--hero-layer-1-h)",
-  "--glow-w: var(--hero-layer-2-w)", "--glow-h: var(--hero-layer-2-h)",
-  "--glow-w: var(--hero-layer-3-w)", "--glow-h: var(--hero-layer-3-h)",
+for (const forbidden of [
+  "--gradient-shape-x", "--gradient-shape-y", "--gradient-rotation",
+  "--hero-layer-", "--gradient-layer-", "calc(var(--glow-w) *",
+  "calc(var(--glow-opacity)",
 ]) {
-  if (!gradients.includes(required)) errors.push(`Hero orb geometry is not centralized: ${required}`);
+  if (gradients.includes(forbidden)) errors.push(`Legacy over-centralized gradient control remains: ${forbidden}`);
 }
-if (/\.hero \.orbOne,\s*\.statement/s.test(gradients)) {
-  errors.push("Hero placement must not be grouped with paper-section placement; that regression breaks the approved hero composition.");
+if (!/\.hero::before\s*\{[^}]*radial-gradient\(ellipse 68% 40% at -4% 22%/s.test(gradients)) {
+  errors.push("The approved v1.7.7 hero wash recipe is not restored.");
+}
+if (/\.hero\s*\{[^}]*transform\s*:/s.test(gradients) || /\.hero\s*\{[^}]*scale\(/s.test(gradients)) {
+  errors.push("Gradient controls must never transform or scale the hero section itself.");
+}
+if (!/\.heroOrb,\s*\.paperGlow,\s*\.darkGlow\s*\{[^}]*width:\s*var\(--glow-w\);[^}]*height:\s*var\(--glow-h\);/s.test(gradients)) {
+  errors.push("Gradient artwork must preserve the original element dimensions before visual-only scaling.");
+}
+if (/\.hero\s*\{[^}]*background-image/s.test(gradients)) {
+  errors.push("Hero wash strength must be controlled through the isolated pseudo-element, not the section background.");
 }
 if (/\.artistQuote \.darkGlowOne\s*\{[^}]*--glow-(?:w|h|opacity)/s.test(artistStyles)) {
-  errors.push("Artist quote dark-gradient size/strength must be controlled globally in gradients.css.");
+  errors.push("Artist quote dark-gradient geometry must remain centralized in gradients.css.");
 }
 
 if (errors.length) {

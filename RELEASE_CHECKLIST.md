@@ -58,7 +58,7 @@
 - [x] Static audit passes.
 
 
-## v1.7.9 hero restoration
+## v1.8.0 hero restoration
 
 - [x] Restore approved mobile hero wash recipe.
 - [x] Restore approved mobile hero orb dimensions and anchors.
@@ -66,3 +66,12 @@
 - [x] Keep hero controls centralized in `app/styles/gradients.css`.
 - [x] Preserve global gradient master controls across all sections.
 - [x] Reject grouping hero placement with paper-section placement in static audit.
+
+## v1.8.0 hero and gradient controls
+
+- [x] Approved v1.7.7 hero wash recipe restored.
+- [x] Approved mobile and desktop hero orb geometry restored.
+- [x] Only `--gradient-size` and `--gradient-strength` are exposed as master controls.
+- [x] No global shape, rotation, layer-size, or hero-layer token system remains.
+- [x] Master controls affect gradient artwork only, never section/content geometry.
+- [x] Unsupported custom-property multiplication in `calc()` is absent.

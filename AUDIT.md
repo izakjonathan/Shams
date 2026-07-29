@@ -80,9 +80,9 @@ The palette is no longer split across CSS and TypeScript. `app/theme.json` is co
 - Static audit rejects private hero recipes and per-section size/shape controls.
 
 
-## v1.7.9 hero regression audit
+## v1.8.0 hero regression audit
 
-The v1.7.8 centralization incorrectly made the hero inherit ordinary paper-section layer dimensions and placement. This changed both the wash composition and the orb anchors, producing the broken mobile hero shown in testing. v1.7.9 restores the approved hero recipe while keeping every editable value in the centralized gradient file. Verified:
+The v1.7.8 centralization incorrectly made the hero inherit ordinary paper-section layer dimensions and placement. This changed both the wash composition and the orb anchors, producing the broken mobile hero shown in testing. v1.8.0 restores the approved hero recipe while keeping every editable value in the centralized gradient file. Verified:
 
 - hero background uses `--hero-wash-1/2/3`;
 - hero layers use `--hero-layer-*` variables;
@@ -90,3 +90,7 @@ The v1.7.8 centralization incorrectly made the hero inherit ordinary paper-secti
 - no gradient declarations exist in `homepage.css` or `artists.css`;
 - hero selectors are not grouped with statement/programme placement selectors;
 - mobile and desktop hero geometry match the approved pre-regression values.
+
+## v1.8.0 root-cause audit
+
+The v1.7.8/v1.7.9 system used unsupported arithmetic-style CSS such as multiplying custom-property lengths inside `calc()`, and it coupled global shape/rotation controls to the hero orb transforms. That made the hero composition unreliable and unnecessarily complex. This build restores the v1.7.7 hero CSS as the source of truth. Only a final visual `scale(var(--gradient-size))` is added to the gradient elements, and strength is isolated through opacity on gradient-only layers. No section or content container is transformed.

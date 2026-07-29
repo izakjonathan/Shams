@@ -1,4 +1,4 @@
-# Shams for Humanity v1.7.9 — Restored Hero + Centralized Gradient Controls
+# Shams for Humanity v1.8.0 — Restored Hero + Simple Gradient Controls
 
 This release removes the complete artist morph system and replaces every cross-route navigation with one deterministic editorial curtain.
 
@@ -45,38 +45,15 @@ Typography is centralized in `app/styles/typography.css` and uses semantic leadi
 
 During the first-visit splash, the supplied artwork is applied both to the full-screen overlay and the document canvas. This is required for iOS Safari's top status area and bottom toolbar area to visually continue the artwork. The temporary canvas class is removed when the splash finishes.
 
-## v1.7.9 hero restoration
+## v1.8.0 hero restoration and safe controls
 
-- Restores the approved v1.7.7 hero wash and three-orb composition exactly.
-- Keeps all editable gradient controls in the single `:root` block at the top of `app/styles/gradients.css`.
-- Global controls (`--gradient-size`, `--gradient-shape-x`, `--gradient-shape-y`, `--gradient-strength`, and `--gradient-rotation`) still affect the hero and every other gradient section.
-- Hero-specific composition tokens are centralized as `--hero-wash-*` and `--hero-layer-*`; they are not scattered through component CSS.
-- Paper sections continue to inherit the shared `--gradient-layer-*` system.
-- The audit rejects the v1.7.8 regression where hero placement was grouped with ordinary paper sections.
+- Restores the complete approved v1.7.7 hero gradient implementation and geometry.
+- Removes the over-centralized v1.7.8/v1.7.9 layer, shape, rotation, and hero-token systems.
+- Exposes only two controls at the top of `app/styles/gradients.css`:
+  - `--gradient-size`: visually enlarges or reduces gradient artwork only.
+  - `--gradient-strength`: adjusts gradient visibility only.
+- Neither control changes section height, width, spacing, typography, content positioning, or page scale.
+- Section-specific placement remains exactly as designed, so changing the two master controls cannot rearrange the composition.
+- The hero wash and all section washes are isolated in pseudo-elements so strength can be adjusted without changing layout.
 
-## v1.7.8 centralized visual system
-
-- `app/theme.json` is the single editable source for the core palette.
-- `scripts/generate-theme.mjs` generates `app/theme.generated.css`, including RGB channels, translucent derivatives and shared gradient colour recipes.
-- `predev` and `prebuild` regenerate the CSS automatically.
-- TypeScript-only renderers (manifest, Open Graph image and global error shell) import the same JSON through `app/lib/theme.ts`.
-- `app/design-system.css` now contains typography, dimensions, spacing and motion only.
-- `app/styles/gradients.css` contains every gradient definition and all gradient geometry/placement, including hero, homepage sections, artist pages, dark glows and small component fades.
-- Homepage and artist component styles no longer contain direct gradient declarations.
-
-To change the paper background everywhere, edit `paper` in `app/theme.json`. To change gradient colour globally, edit `accent`. To change gradient size, shape or position, edit `app/styles/gradients.css`.
-
-
-## v1.7.8 programme filter rail refinement
-
-- Removed the right-edge paper gradient from the programme category rail.
-- Hidden native horizontal scrollbars in Safari, Chromium, and Firefox while retaining touch and pointer horizontal scrolling.
-- Prevented vertical overflow in the filter rail and removed the old scrollbar padding.
-
-## Centralized gradient controls (v1.7.8)
-
-All gradient size, shape, rotation, strength, and shared wash controls are now in the first `:root` block of `app/styles/gradients.css`.
-
-Edit `--gradient-size`, `--gradient-shape-x`, `--gradient-shape-y`, `--gradient-strength`, and `--gradient-rotation` to change every light gradient across the hero, homepage paper sections, and artist paper sections at once. The three `--gradient-layer-*` groups provide advanced global controls for each shared layer. Dark sections have an equivalent `--dark-gradient-*` group.
-
-Sections may only mirror layer placement. They no longer define independent width, height, scale, opacity, or wash recipes.
+Use `1` for the approved original appearance. For example, `1.1` makes the glow artwork 10% larger; `0.8` makes all gradients 20% weaker.

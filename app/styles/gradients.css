@@ -3,132 +3,24 @@
    ========================================================================== */
 
 /*
- * GLOBAL GRADIENT CONTROLS — EDIT THIS BLOCK
+ * SIMPLE GLOBAL CONTROLS — EDIT ONLY THESE TWO VALUES
  *
- * These variables affect the hero, every light paper section, artist pages,
- * and all dark-section glows. Individual sections may only choose which side
- * a shared layer enters from; they no longer own independent size/shape values.
+ * --gradient-size changes only the rendered glow artwork. It does not alter
+ * section dimensions, spacing, typography, or content scale.
+ * --gradient-strength changes only gradient visibility.
+ *
+ * 1 = approved original appearance, 1.15 = 15% larger/stronger,
+ * 0.85 = 15% smaller/weaker.
  */
 :root {
-  /* Overall light-gradient controls */
   --gradient-size: 1;
-  --gradient-shape-x: 1;
-  --gradient-shape-y: 1;
   --gradient-strength: 1;
-  --gradient-rotation: 0deg;
-
-  /* Hero-specific composition — centralized here to preserve the approved hero.
-     The five global controls above still resize/reshape/strengthen all gradients. */
-  --hero-wash-1: radial-gradient(
-    ellipse 68% 40% at -4% 22%,
-    rgb(var(--color-accent-rgb) / calc(0.583 * var(--gradient-wash-strength))) 0%,
-    rgb(var(--color-accent-rgb) / calc(0.328 * var(--gradient-wash-strength))) 36%,
-    rgb(var(--color-accent-rgb) / calc(0.146 * var(--gradient-wash-strength))) 58%,
-    transparent 82%
-  );
-  --hero-wash-2: radial-gradient(
-    ellipse 88% 42% at 88% 10%,
-    rgb(var(--color-accent-rgb) / calc(0.62 * var(--gradient-wash-strength))) 0%,
-    rgb(var(--color-accent-rgb) / calc(0.328 * var(--gradient-wash-strength))) 34%,
-    rgb(var(--color-accent-rgb) / calc(0.146 * var(--gradient-wash-strength))) 58%,
-    transparent 82%
-  );
-  --hero-wash-3: radial-gradient(
-    ellipse 54% 28% at 50% 84%,
-    rgb(var(--color-accent-rgb) / calc(0.365 * var(--gradient-wash-strength))) 0%,
-    rgb(var(--color-accent-rgb) / calc(0.182 * var(--gradient-wash-strength))) 34%,
-    rgb(var(--color-accent-rgb) / calc(0.073 * var(--gradient-wash-strength))) 56%,
-    transparent 78%
-  );
-
-  --hero-layer-1-w: 108vw;
-  --hero-layer-1-h: 76vw;
-  --hero-layer-1-right: -34%;
-  --hero-layer-1-top: -2%;
-  --hero-layer-1-rotate: 18deg;
-  --hero-layer-1-scale-x: 1.24;
-  --hero-layer-1-scale-y: 0.82;
-  --hero-layer-1-opacity: 1;
-
-  --hero-layer-2-w: 84vw;
-  --hero-layer-2-h: 94vw;
-  --hero-layer-2-left: -36%;
-  --hero-layer-2-bottom: -8%;
-  --hero-layer-2-rotate: -30deg;
-  --hero-layer-2-scale-x: 0.96;
-  --hero-layer-2-scale-y: 1.16;
-  --hero-layer-2-opacity: 1;
-
-  --hero-layer-3-w: 66vw;
-  --hero-layer-3-h: 52vw;
-  --hero-layer-3-left: 28%;
-  --hero-layer-3-bottom: 2%;
-  --hero-layer-3-rotate: 24deg;
-  --hero-layer-3-scale-x: 1.46;
-  --hero-layer-3-scale-y: 0.5;
-  --hero-layer-3-opacity: 0.92;
-
-  /* Shared light layer geometry — mobile */
-  --gradient-layer-1-w: 118vw;
-  --gradient-layer-1-h: 86vw;
-  --gradient-layer-1-scale-x: 1.18;
-  --gradient-layer-1-scale-y: 0.86;
-  --gradient-layer-1-rotate: 18deg;
-  --gradient-layer-1-opacity: 0.9;
-
-  --gradient-layer-2-w: 104vw;
-  --gradient-layer-2-h: 94vw;
-  --gradient-layer-2-scale-x: 0.98;
-  --gradient-layer-2-scale-y: 1.18;
-  --gradient-layer-2-rotate: -24deg;
-  --gradient-layer-2-opacity: 0.76;
-
-  --gradient-layer-3-w: 104vw;
-  --gradient-layer-3-h: 58vw;
-  --gradient-layer-3-scale-x: 1.4;
-  --gradient-layer-3-scale-y: 0.62;
-  --gradient-layer-3-rotate: 26deg;
-  --gradient-layer-3-opacity: 0.68;
-
-  /* Shared soft wash geometry and strength */
-  --gradient-wash-strength: 1;
-  --gradient-wash-1: radial-gradient(
-    ellipse 88% 56% at 4% 14%,
-    rgb(var(--color-accent-rgb) / calc(0.459 * var(--gradient-wash-strength))) 0%,
-    rgb(var(--color-accent-rgb) / calc(0.27 * var(--gradient-wash-strength))) 34%,
-    rgb(var(--color-accent-rgb) / calc(0.108 * var(--gradient-wash-strength))) 56%,
-    transparent 82%
-  );
-  --gradient-wash-2: radial-gradient(
-    ellipse 78% 48% at 100% 48%,
-    rgb(var(--color-accent-rgb) / calc(0.378 * var(--gradient-wash-strength))) 0%,
-    rgb(var(--color-accent-rgb) / calc(0.189 * var(--gradient-wash-strength))) 34%,
-    rgb(var(--color-accent-rgb) / calc(0.068 * var(--gradient-wash-strength))) 56%,
-    transparent 80%
-  );
-  --gradient-wash-3: radial-gradient(
-    ellipse 84% 44% at 24% 96%,
-    rgb(var(--color-accent-rgb) / calc(0.27 * var(--gradient-wash-strength))) 0%,
-    rgb(var(--color-accent-rgb) / calc(0.135 * var(--gradient-wash-strength))) 36%,
-    rgb(var(--color-accent-rgb) / calc(0.054 * var(--gradient-wash-strength))) 58%,
-    transparent 80%
-  );
-
-  /* Shared dark-gradient controls */
-  --dark-gradient-size: 1;
-  --dark-gradient-shape-x: 1;
-  --dark-gradient-shape-y: 1;
-  --dark-gradient-strength: 1;
-  --dark-gradient-w: clamp(600px, 150vw, 1380px);
-  --dark-gradient-h: clamp(600px, 150vw, 1380px);
-  --dark-gradient-opacity: 0.62;
 }
 
 .paperGlowSection,
 .manifesto,
 .tickets,
-.newsletter,
-.hero {
+.newsletter {
   position: relative;
   overflow: hidden;
   overflow: clip;
@@ -137,19 +29,36 @@
 
 .paperGlowSection {
   background-color: var(--color-paper);
-  background-repeat: no-repeat;
-  background-image: var(--gradient-wash-1), var(--gradient-wash-2), var(--gradient-wash-3);
 }
 
-.hero {
-  background-color: var(--color-paper);
+.hero::before,
+.paperGlowSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--gradient-strength);
+  transform: scale(var(--gradient-size));
+  transform-origin: center;
   background-repeat: no-repeat;
-  background-image: var(--hero-wash-1), var(--hero-wash-2), var(--hero-wash-3);
+}
+
+.hero::before {
+  background-image:
+    radial-gradient(ellipse 68% 40% at -4% 22%, rgb(var(--color-accent-rgb) / 0.583) 0, rgb(var(--color-accent-rgb) / 0.328) 36%, rgb(var(--color-accent-rgb) / 0.146) 58%, transparent 82%),
+    radial-gradient(ellipse 88% 42% at 88% 10%, rgb(var(--color-accent-rgb) / 0.62) 0, rgb(var(--color-accent-rgb) / 0.328) 34%, rgb(var(--color-accent-rgb) / 0.146) 58%, transparent 82%),
+    radial-gradient(ellipse 54% 28% at 50% 84%, rgb(var(--color-accent-rgb) / 0.365) 0, rgb(var(--color-accent-rgb) / 0.182) 34%, rgb(var(--color-accent-rgb) / 0.073) 56%, transparent 78%);
+}
+
+.paperGlowSection::before {
+  background-image: var(--section-wash-1, none),
+    var(--section-wash-2, none),
+    var(--section-wash-3, none);
 }
 
 .paperGlowSection > :not(.paperGlow),
 .darkGlowSection > :not(.darkGlow),
-.hero > :not(.heroOrb),
 .newsletter > * {
   position: relative;
   z-index: 2;
@@ -161,237 +70,381 @@
   position: absolute;
   pointer-events: none;
   border-radius: 50%;
-  width: calc(var(--glow-w) * var(--gradient-size));
-  height: calc(var(--glow-h) * var(--gradient-size));
+  width: var(--glow-w);
+  height: var(--glow-h);
   left: var(--glow-left, auto);
   right: var(--glow-right, auto);
   top: var(--glow-top, auto);
   bottom: var(--glow-bottom, auto);
-  opacity: calc(var(--glow-opacity, 1) * var(--gradient-strength));
+  opacity: var(--gradient-strength);
   transform-origin: center;
   transform:
-    rotate(calc(var(--glow-rotate, 0deg) + var(--gradient-rotation)))
-    scale(
-      calc(var(--glow-scale-x, 1) * var(--gradient-shape-x)),
-      calc(var(--glow-scale-y, 1) * var(--gradient-shape-y))
-    );
+    rotate(var(--glow-rotate, 0deg))
+    scale(var(--glow-scale-x, 1), var(--glow-scale-y, 1))
+    scale(var(--gradient-size));
 }
 
 .heroOrb,
 .paperGlow {
-  z-index: 1;
   background: var(--paper-orb-gradient);
   background-repeat: no-repeat;
 }
 
-.heroOrb {
-  filter: blur(var(--hero-glow-blur-mobile));
-}
-
 .darkGlow {
   z-index: 1;
-  width: calc(var(--dark-gradient-w) * var(--dark-gradient-size));
-  height: calc(var(--dark-gradient-h) * var(--dark-gradient-size));
-  opacity: calc(var(--dark-gradient-opacity) * var(--dark-gradient-strength));
-  transform: scale(var(--dark-gradient-shape-x), var(--dark-gradient-shape-y));
   background: var(--dark-orb-gradient);
   background-repeat: no-repeat;
+  filter: opacity(var(--glow-opacity, 1));
 }
 
-/* Paper sections share one geometry system. The hero retains its approved
-   composition through dedicated variables in the same centralized block. */
+.heroOrb {
+  filter:
+    blur(var(--hero-glow-blur-mobile))
+    opacity(var(--glow-opacity, 1));
+}
+
+.paperGlow {
+  z-index: 1;
+  filter: opacity(var(--glow-opacity, var(--paper-glow-opacity)));
+}
+
+.orbOne {
+  --glow-w: 108vw;
+  --glow-h: 76vw;
+  --glow-right: -34%;
+  --glow-top: -2%;
+  --glow-rotate: 18deg;
+  --glow-scale-x: 1.24;
+  --glow-scale-y: 0.82;
+}
+
+.orbTwo {
+  --glow-w: 84vw;
+  --glow-h: 94vw;
+  --glow-left: -36%;
+  --glow-bottom: -8%;
+  --glow-rotate: -30deg;
+  --glow-scale-x: 0.96;
+  --glow-scale-y: 1.16;
+}
+
+.orbThree {
+  --glow-w: 66vw;
+  --glow-h: 52vw;
+  --glow-left: 28%;
+  --glow-bottom: 2%;
+  --glow-rotate: 24deg;
+  --glow-scale-x: 1.46;
+  --glow-scale-y: 0.5;
+  --glow-opacity: 0.92;
+}
+
 .paperGlowSection .glowOne {
-  --glow-w: var(--gradient-layer-1-w);
-  --glow-h: var(--gradient-layer-1-h);
-  --glow-rotate: var(--gradient-layer-1-rotate);
-  --glow-scale-x: var(--gradient-layer-1-scale-x);
-  --glow-scale-y: var(--gradient-layer-1-scale-y);
-  --glow-opacity: var(--gradient-layer-1-opacity);
+  --glow-w: var(--section-glow-1-w);
+  --glow-h: var(--section-glow-1-h);
+  --glow-left: var(--section-glow-1-left, auto);
+  --glow-right: var(--section-glow-1-right, auto);
+  --glow-top: var(--section-glow-1-top, auto);
+  --glow-bottom: var(--section-glow-1-bottom, auto);
+  --glow-rotate: var(--section-glow-1-rotate, 0deg);
+  --glow-scale-x: var(--section-glow-1-scale-x, 1);
+  --glow-scale-y: var(--section-glow-1-scale-y, 1);
+  --glow-opacity: var(--section-glow-1-opacity, var(--paper-glow-opacity));
 }
 
 .paperGlowSection .glowTwo {
-  --glow-w: var(--gradient-layer-2-w);
-  --glow-h: var(--gradient-layer-2-h);
-  --glow-rotate: var(--gradient-layer-2-rotate);
-  --glow-scale-x: var(--gradient-layer-2-scale-x);
-  --glow-scale-y: var(--gradient-layer-2-scale-y);
-  --glow-opacity: var(--gradient-layer-2-opacity);
+  --glow-w: var(--section-glow-2-w);
+  --glow-h: var(--section-glow-2-h);
+  --glow-left: var(--section-glow-2-left, auto);
+  --glow-right: var(--section-glow-2-right, auto);
+  --glow-top: var(--section-glow-2-top, auto);
+  --glow-bottom: var(--section-glow-2-bottom, auto);
+  --glow-rotate: var(--section-glow-2-rotate, 0deg);
+  --glow-scale-x: var(--section-glow-2-scale-x, 1);
+  --glow-scale-y: var(--section-glow-2-scale-y, 1);
+  --glow-opacity: var(--section-glow-2-opacity, var(--paper-glow-opacity));
 }
 
 .paperGlowSection .glowThree {
-  --glow-w: var(--gradient-layer-3-w);
-  --glow-h: var(--gradient-layer-3-h);
-  --glow-rotate: var(--gradient-layer-3-rotate);
-  --glow-scale-x: var(--gradient-layer-3-scale-x);
-  --glow-scale-y: var(--gradient-layer-3-scale-y);
-  --glow-opacity: var(--gradient-layer-3-opacity);
+  --glow-w: var(--section-glow-3-w);
+  --glow-h: var(--section-glow-3-h);
+  --glow-left: var(--section-glow-3-left, auto);
+  --glow-right: var(--section-glow-3-right, auto);
+  --glow-top: var(--section-glow-3-top, auto);
+  --glow-bottom: var(--section-glow-3-bottom, auto);
+  --glow-rotate: var(--section-glow-3-rotate, 0deg);
+  --glow-scale-x: var(--section-glow-3-scale-x, 1);
+  --glow-scale-y: var(--section-glow-3-scale-y, 1);
+  --glow-opacity: var(--section-glow-3-opacity, var(--paper-glow-opacity));
 }
 
-.hero .orbOne {
-  --glow-w: var(--hero-layer-1-w);
-  --glow-h: var(--hero-layer-1-h);
-  --glow-right: var(--hero-layer-1-right);
-  --glow-top: var(--hero-layer-1-top);
-  --glow-rotate: var(--hero-layer-1-rotate);
-  --glow-scale-x: var(--hero-layer-1-scale-x);
-  --glow-scale-y: var(--hero-layer-1-scale-y);
-  --glow-opacity: var(--hero-layer-1-opacity);
-}
 
-.hero .orbTwo {
-  --glow-w: var(--hero-layer-2-w);
-  --glow-h: var(--hero-layer-2-h);
-  --glow-left: var(--hero-layer-2-left);
-  --glow-bottom: var(--hero-layer-2-bottom);
-  --glow-rotate: var(--hero-layer-2-rotate);
-  --glow-scale-x: var(--hero-layer-2-scale-x);
-  --glow-scale-y: var(--hero-layer-2-scale-y);
-  --glow-opacity: var(--hero-layer-2-opacity);
-}
-
-.hero .orbThree {
-  --glow-w: var(--hero-layer-3-w);
-  --glow-h: var(--hero-layer-3-h);
-  --glow-left: var(--hero-layer-3-left);
-  --glow-bottom: var(--hero-layer-3-bottom);
-  --glow-rotate: var(--hero-layer-3-rotate);
-  --glow-scale-x: var(--hero-layer-3-scale-x);
-  --glow-scale-y: var(--hero-layer-3-scale-y);
-  --glow-opacity: var(--hero-layer-3-opacity);
-}
-
-/* Shared layer placement. Sections can mirror the layout, but not redefine
-   size, shape, opacity, or fade recipes. */
-.statement .glowOne,
-.programme .glowOne,
-.artistHero .glowOne {
-  --glow-left: -56vw;
-  --glow-top: -12vw;
-}
-
-.statement .glowTwo,
-.programme .glowTwo,
-.artistHero .glowTwo {
-  --glow-right: -58vw;
-  --glow-top: 36%;
-}
-
-.statement .glowThree,
-.programme .glowThree,
-.artistHero .glowThree {
-  --glow-left: -2vw;
-  --glow-bottom: -28vw;
-}
-
-.lineup .glowOne,
-.faq .glowOne,
-.artistSet .glowOne {
-  --glow-right: -56vw;
-  --glow-top: -14vw;
-}
-
-.lineup .glowTwo,
-.faq .glowTwo,
-.artistSet .glowTwo {
-  --glow-left: -58vw;
-  --glow-top: 34%;
-}
-
-.lineup .glowThree,
-.faq .glowThree,
-.artistSet .glowThree {
-  --glow-right: -22vw;
-  --glow-bottom: -28vw;
-}
-
-/* Dark sections use one shared size/shape system and only vary placement. */
-.manifesto .darkGlowOne {
-  --glow-left: -72%;
-  --glow-top: -34%;
-}
-
-.tickets .darkGlowOne {
-  --glow-left: -68%;
-  --glow-bottom: -46%;
-}
-
-.artistQuote .darkGlowOne {
-  --glow-left: -82%;
-  --glow-top: -44%;
-}
 
 /* Small component gradients are centralized here as well. */
 .artistPortrait::after {
   background: linear-gradient(180deg, transparent 56%, var(--color-ink-58) 100%);
 }
 
+/* Hero and artist page gradient geometry. */
+
+.artistHero {
+  --section-wash-1: radial-gradient(ellipse 96% 64% at 3% 10%, rgb(var(--color-accent-rgb) / 0.5) 0%, rgb(var(--color-accent-rgb) / 0.24) 42%, transparent 80%);
+  --section-wash-2: radial-gradient(ellipse 88% 56% at 100% 52%, rgb(var(--color-accent-rgb) / 0.34) 0%, rgb(var(--color-accent-rgb) / 0.14) 44%, transparent 82%);
+  --section-wash-3: radial-gradient(ellipse 70% 42% at 35% 100%, rgb(var(--color-accent-rgb) / 0.2) 0%, transparent 78%);
+  --section-glow-1-w: 118vw;
+  --section-glow-1-h: 92vw;
+  --section-glow-1-left: -62vw;
+  --section-glow-1-top: -24vw;
+  --section-glow-1-opacity: 0.78;
+  --section-glow-2-w: 104vw;
+  --section-glow-2-h: 100vw;
+  --section-glow-2-right: -66vw;
+  --section-glow-2-top: 24%;
+  --section-glow-2-opacity: 0.62;
+  --section-glow-3-w: 110vw;
+  --section-glow-3-h: 62vw;
+  --section-glow-3-left: 8vw;
+  --section-glow-3-bottom: -34vw;
+  --section-glow-3-opacity: 0.5;
+}
+
+.artistSet {
+  --section-wash-1: radial-gradient(ellipse 88% 58% at 100% 12%, rgb(var(--color-accent-rgb) / 0.42), transparent 80%);
+  --section-wash-2: radial-gradient(ellipse 76% 46% at 0% 72%, rgb(var(--color-accent-rgb) / 0.25), transparent 78%);
+  --section-wash-3: none;
+  --section-glow-1-w: 112vw;
+  --section-glow-1-h: 86vw;
+  --section-glow-1-right: -62vw;
+  --section-glow-1-top: -18vw;
+  --section-glow-1-opacity: 0.7;
+  --section-glow-2-w: 98vw;
+  --section-glow-2-h: 102vw;
+  --section-glow-2-left: -62vw;
+  --section-glow-2-bottom: -34vw;
+  --section-glow-2-opacity: 0.55;
+  --section-glow-3-w: 1px;
+  --section-glow-3-h: 1px;
+  --section-glow-3-opacity: 0;
+}
+
+/* Paper section-specific wash + glow controls (mobile-first). */
+
+.statement {
+  --section-wash-1: radial-gradient(ellipse 88% 56% at 4% 14%, rgb(var(--color-accent-rgb) / 0.459) 0%, rgb(var(--color-accent-rgb) / 0.27) 34%, rgb(var(--color-accent-rgb) / 0.108) 56%, transparent 82%);
+  --section-wash-2: radial-gradient(ellipse 78% 48% at 100% 48%, rgb(var(--color-accent-rgb) / 0.378) 0%, rgb(var(--color-accent-rgb) / 0.189) 34%, rgb(var(--color-accent-rgb) / 0.068) 56%, transparent 80%);
+  --section-wash-3: radial-gradient(ellipse 84% 44% at 24% 96%, rgb(var(--color-accent-rgb) / 0.27) 0%, rgb(var(--color-accent-rgb) / 0.135) 36%, rgb(var(--color-accent-rgb) / 0.054) 58%, transparent 80%);
+  --section-glow-1-w: 118vw;
+  --section-glow-1-h: 86vw;
+  --section-glow-1-left: -56vw;
+  --section-glow-1-top: -12vw;
+  --section-glow-1-rotate: 18deg;
+  --section-glow-1-scale-x: 1.18;
+  --section-glow-1-scale-y: 0.86;
+  --section-glow-1-opacity: 0.9;
+  --section-glow-2-w: 104vw;
+  --section-glow-2-h: 94vw;
+  --section-glow-2-right: -58vw;
+  --section-glow-2-top: 36%;
+  --section-glow-2-rotate: -24deg;
+  --section-glow-2-scale-x: 0.98;
+  --section-glow-2-scale-y: 1.18;
+  --section-glow-2-opacity: 0.76;
+  --section-glow-3-w: 104vw;
+  --section-glow-3-h: 58vw;
+  --section-glow-3-left: -2vw;
+  --section-glow-3-bottom: -28vw;
+  --section-glow-3-rotate: 26deg;
+  --section-glow-3-scale-x: 1.4;
+  --section-glow-3-scale-y: 0.62;
+  --section-glow-3-opacity: 0.68;
+}
+
+.lineup {
+  --section-wash-1: radial-gradient(ellipse 82% 50% at 98% 8%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.095) 58%, transparent 82%);
+  --section-wash-2: radial-gradient(ellipse 70% 44% at 2% 48%, rgb(var(--color-accent-rgb) / 0.297) 0%, rgb(var(--color-accent-rgb) / 0.149) 34%, rgb(var(--color-accent-rgb) / 0.068) 56%, transparent 78%);
+  --section-wash-3: radial-gradient(ellipse 92% 48% at 58% 100%, rgb(var(--color-accent-rgb) / 0.27) 0%, rgb(var(--color-accent-rgb) / 0.135) 36%, rgb(var(--color-accent-rgb) / 0.054) 58%, transparent 80%);
+  --section-glow-1-w: 116vw;
+  --section-glow-1-h: 82vw;
+  --section-glow-1-right: -56vw;
+  --section-glow-1-top: -14vw;
+  --section-glow-1-rotate: -18deg;
+  --section-glow-1-scale-x: 1.22;
+  --section-glow-1-scale-y: 0.86;
+  --section-glow-1-opacity: 0.88;
+  --section-glow-2-w: 100vw;
+  --section-glow-2-h: 108vw;
+  --section-glow-2-left: -58vw;
+  --section-glow-2-top: 34%;
+  --section-glow-2-rotate: 24deg;
+  --section-glow-2-scale-x: 0.88;
+  --section-glow-2-scale-y: 1.16;
+  --section-glow-2-opacity: 0.76;
+  --section-glow-3-w: 112vw;
+  --section-glow-3-h: 60vw;
+  --section-glow-3-right: -22vw;
+  --section-glow-3-bottom: -28vw;
+  --section-glow-3-rotate: 16deg;
+  --section-glow-3-scale-x: 1.34;
+  --section-glow-3-scale-y: 0.64;
+  --section-glow-3-opacity: 0.66;
+}
+
+.programme {
+  --section-wash-1: radial-gradient(ellipse 86% 50% at 16% 6%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.095) 58%, transparent 80%);
+  --section-wash-2: radial-gradient(ellipse 90% 54% at 90% 34%, rgb(var(--color-accent-rgb) / 0.351) 0%, rgb(var(--color-accent-rgb) / 0.189) 36%, rgb(var(--color-accent-rgb) / 0.081) 58%, transparent 80%);
+  --section-wash-3: radial-gradient(ellipse 76% 44% at 42% 100%, rgb(var(--color-accent-rgb) / 0.243) 0%, rgb(var(--color-accent-rgb) / 0.135) 34%, rgb(var(--color-accent-rgb) / 0.054) 56%, transparent 78%);
+  --section-glow-1-w: 114vw;
+  --section-glow-1-h: 84vw;
+  --section-glow-1-left: -50vw;
+  --section-glow-1-top: -14vw;
+  --section-glow-1-rotate: 16deg;
+  --section-glow-1-scale-x: 1.16;
+  --section-glow-1-scale-y: 0.9;
+  --section-glow-1-opacity: 0.86;
+  --section-glow-2-w: 118vw;
+  --section-glow-2-h: 104vw;
+  --section-glow-2-right: -62vw;
+  --section-glow-2-top: 28%;
+  --section-glow-2-rotate: -24deg;
+  --section-glow-2-scale-x: 0.94;
+  --section-glow-2-scale-y: 1.16;
+  --section-glow-2-opacity: 0.78;
+  --section-glow-3-w: 106vw;
+  --section-glow-3-h: 58vw;
+  --section-glow-3-left: 4vw;
+  --section-glow-3-bottom: -28vw;
+  --section-glow-3-rotate: 28deg;
+  --section-glow-3-scale-x: 1.38;
+  --section-glow-3-scale-y: 0.6;
+  --section-glow-3-opacity: 0.66;
+}
+
+.faq {
+  --section-wash-1: radial-gradient(ellipse 78% 46% at 96% 8%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.081) 58%, transparent 80%);
+  --section-wash-2: radial-gradient(ellipse 66% 40% at 2% 56%, rgb(var(--color-accent-rgb) / 0.27) 0%, rgb(var(--color-accent-rgb) / 0.135) 34%, rgb(var(--color-accent-rgb) / 0.054) 56%, transparent 78%);
+  --section-wash-3: radial-gradient(ellipse 84% 46% at 74% 100%, rgb(var(--color-accent-rgb) / 0.243) 0%, rgb(var(--color-accent-rgb) / 0.121) 36%, rgb(var(--color-accent-rgb) / 0.054) 58%, transparent 80%);
+  --section-glow-1-w: 114vw;
+  --section-glow-1-h: 82vw;
+  --section-glow-1-right: -56vw;
+  --section-glow-1-top: -14vw;
+  --section-glow-1-rotate: -16deg;
+  --section-glow-1-scale-x: 1.2;
+  --section-glow-1-scale-y: 0.86;
+  --section-glow-1-opacity: 0.88;
+  --section-glow-2-w: 102vw;
+  --section-glow-2-h: 106vw;
+  --section-glow-2-left: -60vw;
+  --section-glow-2-top: 34%;
+  --section-glow-2-rotate: 22deg;
+  --section-glow-2-scale-x: 0.9;
+  --section-glow-2-scale-y: 1.16;
+  --section-glow-2-opacity: 0.74;
+  --section-glow-3-w: 110vw;
+  --section-glow-3-h: 58vw;
+  --section-glow-3-right: -20vw;
+  --section-glow-3-bottom: -28vw;
+  --section-glow-3-rotate: 22deg;
+  --section-glow-3-scale-x: 1.36;
+  --section-glow-3-scale-y: 0.6;
+  --section-glow-3-opacity: 0.64;
+}
+
+/* Dark section glow geometry.
+   Each dark section now uses one larger primary glow only.
+   Each dark section uses one deliberately oversized primary glow. */
+.manifesto .darkGlowOne {
+  --glow-w: clamp(520px, 132vw, 1240px);
+  --glow-h: clamp(520px, 132vw, 1240px);
+  --glow-left: -72%;
+  --glow-top: -34%;
+  --glow-opacity: 0.62;
+}
+
+.tickets .darkGlowOne {
+  --glow-w: clamp(600px, 150vw, 1380px);
+  --glow-h: clamp(600px, 150vw, 1380px);
+  --glow-left: -68%;
+  --glow-bottom: -46%;
+  --glow-opacity: 0.64;
+}
+
 @media (min-width: 760px) {
-  :root {
-    --gradient-layer-1-w: 76vw;
-    --gradient-layer-1-h: 52vw;
-    --gradient-layer-2-w: 66vw;
-    --gradient-layer-2-h: 64vw;
-    --gradient-layer-3-w: 74vw;
-    --gradient-layer-3-h: 38vw;
-
-    --hero-layer-1-w: 92vw;
-    --hero-layer-1-h: 64vw;
-    --hero-layer-1-right: -24%;
-    --hero-layer-1-top: -4%;
-    --hero-layer-2-w: 72vw;
-    --hero-layer-2-h: 82vw;
-    --hero-layer-2-left: -22%;
-    --hero-layer-2-bottom: -10%;
-    --hero-layer-3-w: 58vw;
-    --hero-layer-3-h: 42vw;
-    --hero-layer-3-left: 30%;
-    --hero-layer-3-bottom: 4%;
-
-    --dark-gradient-w: clamp(820px, 92vw, 1520px);
-    --dark-gradient-h: clamp(820px, 92vw, 1520px);
-  }
-
-  .heroOrb {
-    filter: blur(var(--hero-glow-blur-desktop));
-  }
-
-  .statement .glowOne,
-  .programme .glowOne,
-  .artistHero .glowOne {
-    --glow-left: -34vw;
-    --glow-top: -8vw;
-  }
-
-  .statement .glowTwo,
-  .programme .glowTwo,
-  .artistHero .glowTwo {
-    --glow-right: -34vw;
-  }
-
-  .lineup .glowOne,
-  .faq .glowOne,
-  .artistSet .glowOne {
-    --glow-right: -34vw;
-  }
-
-  .lineup .glowTwo,
-  .faq .glowTwo,
-  .artistSet .glowTwo {
-    --glow-left: -34vw;
-  }
-
   .manifesto .darkGlowOne {
+    --glow-w: clamp(760px, 82vw, 1400px);
+    --glow-h: clamp(760px, 82vw, 1400px);
     --glow-left: -42%;
     --glow-top: -40%;
   }
 
   .tickets .darkGlowOne {
+    --glow-w: clamp(820px, 92vw, 1520px);
+    --glow-h: clamp(820px, 92vw, 1520px);
     --glow-left: -38%;
     --glow-bottom: -48%;
   }
 
-  .artistQuote .darkGlowOne {
-    --glow-left: -44%;
-    --glow-top: -42%;
+  .heroOrb {
+    filter:
+      blur(var(--hero-glow-blur-desktop))
+      opacity(var(--glow-opacity, 1));
   }
+
+  .orbOne {
+    --glow-w: 92vw;
+    --glow-h: 64vw;
+    --glow-right: -24%;
+    --glow-top: -4%;
+  }
+
+  .orbTwo {
+    --glow-w: 72vw;
+    --glow-h: 82vw;
+    --glow-left: -22%;
+    --glow-bottom: -10%;
+  }
+
+  .orbThree {
+    --glow-w: 58vw;
+    --glow-h: 42vw;
+    --glow-left: 30%;
+    --glow-bottom: 4%;
+  }
+
+  .statement {
+    --section-glow-1-w: 76vw;
+    --section-glow-1-h: 52vw;
+    --section-glow-2-w: 66vw;
+    --section-glow-2-h: 64vw;
+    --section-glow-3-w: 74vw;
+    --section-glow-3-h: 38vw;
+  }
+
+  .lineup {
+    --section-glow-1-w: 74vw;
+    --section-glow-1-h: 50vw;
+    --section-glow-2-w: 64vw;
+    --section-glow-2-h: 70vw;
+    --section-glow-3-w: 76vw;
+    --section-glow-3-h: 40vw;
+  }
+
+  .programme {
+    --section-glow-1-w: 74vw;
+    --section-glow-1-h: 52vw;
+    --section-glow-2-w: 76vw;
+    --section-glow-2-h: 68vw;
+    --section-glow-3-w: 72vw;
+    --section-glow-3-h: 38vw;
+  }
+
+  .faq {
+    --section-glow-1-w: 74vw;
+    --section-glow-1-h: 50vw;
+    --section-glow-2-w: 64vw;
+    --section-glow-2-h: 70vw;
+    --section-glow-3-w: 74vw;
+    --section-glow-3-h: 38vw;
+  }
+
 }
+
