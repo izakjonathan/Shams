@@ -13,12 +13,9 @@ export function AppShell({ children, header, footer }: { children: ReactNode; he
   useEffect(() => {
     if (!isAdmin) return;
     const root = document.documentElement;
-    const paper = getComputedStyle(root).getPropertyValue("--color-paper").trim() || "#f5f2eb";
-    document.body.classList.remove("splashActive", "splashHandoff", "splashExiting", "splashComplete");
-    root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashRunwayActive", "splashSessionSeen", "documentCanvasAtFooter");
-    root.style.setProperty("--document-canvas-color", paper);
-    root.style.backgroundColor = paper;
-    document.body.style.backgroundColor = paper;
+    document.body.classList.remove("splashActive", "splashEntering", "splashHolding", "splashExiting");
+    root.classList.remove("splashCanvasActive", "splashRunwayActive", "splashHandoffActive");
+    root.style.removeProperty("--document-canvas-color");
   }, [isAdmin]);
 
   if (isAdmin) return <>{children}</>;

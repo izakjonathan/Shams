@@ -16,14 +16,12 @@
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  transform: translate3d(0, -100%, 0);
-  backface-visibility: hidden;
-  will-change: transform;
+  transform: translateY(-100%);
   transition: transform var(--duration-menu) var(--ease-menu);
 }
 
 .mobileMenu.isOpen {
-  transform: translate3d(0, 0, 0);
+  transform: translateY(0);
 }
 
 .mobileMenu nav {

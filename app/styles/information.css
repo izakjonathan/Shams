@@ -143,6 +143,17 @@
   overflow-wrap: anywhere;
 }
 
+.contactGrid h2 a {
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .contactGrid h2 a:hover {
+    text-decoration: underline;
+  }
+}
+
 .contactGrid p {
   max-width: 48ch;
   line-height: 1.5;

@@ -138,7 +138,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               </span>
             ) : (
               <a className="artistExternalLink" href={link.href} key={link.label} target="_blank" rel="noreferrer">
-                {link.label}<ArrowIcon />
+                {link.label}<ArrowIcon /><span className="srOnly"> (opens in a new tab)</span>
               </a>
             )
           ))}

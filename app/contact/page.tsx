@@ -24,7 +24,7 @@ export default function ContactPage() {
         {content.routes.map((contact, index) => (
           <article key={contact.id} data-content-id={contact.id} data-content-status={contact.status}>
             <span>{String(index + 1).padStart(2, "0")} / {contact.label}</span>
-            <h2>{contact.address}</h2>
+            <h2><a href={`mailto:${contact.address}`}>{contact.address}</a></h2>
             <p>{contact.note}</p>
             <span className="contactPlaceholder">ADDRESS TO BE CONFIRMED</span>
           </article>

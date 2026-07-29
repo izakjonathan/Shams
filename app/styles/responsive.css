@@ -186,6 +186,12 @@
   .artistNavigationLink strong {
     font-size: clamp(44px, 15vw, 74px);
   }
+
+  .artistArrow {
+    width: 44px;
+    height: 44px;
+    margin: -5px;
+  }
 }
 
 

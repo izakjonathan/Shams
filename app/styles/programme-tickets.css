@@ -53,6 +53,11 @@
   border-top: 1px solid var(--color-line);
 }
 
+.programmeEmpty {
+  padding: 36px 0;
+  color: var(--color-text-subtle);
+}
+
 .programmeEntry {
   display: grid;
   grid-template-columns: 52px minmax(0, 1fr);

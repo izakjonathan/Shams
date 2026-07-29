@@ -44,7 +44,7 @@ export function TicketSection({ tickets, ticketUrl }: TicketSectionProps) {
               <strong>{ticket.price} <small>{ticket.currency}</small></strong>
               {canPurchase ? (
                 <a className="ticketAction" href={ticketUrl} target="_blank" rel="noreferrer">
-                  Get ticket <ArrowIcon />
+                  Get ticket <ArrowIcon /><span className="srOnly"> (opens in a new tab)</span>
                 </a>
               ) : (
                 <button type="button" disabled>

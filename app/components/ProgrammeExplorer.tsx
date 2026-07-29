@@ -41,27 +41,31 @@ export function ProgrammeExplorer({ entries }: ProgrammeExplorerProps) {
       </div>
 
       <div className="programmeList" aria-live="polite">
-        {visibleEntries.map((entry) => (
-          <article
-            className="programmeEntry"
-            id={`programme-${entry.id}`}
-            data-content-id={entry.id}
-            data-content-status={entry.status}
-            key={entry.id}
-          >
-            <time className="programmeEntryTime" dateTime={entry.time}>
-              {entry.time}
-            </time>
-            <div className="programmeEntryContent">
-              <h3>{entry.label}</h3>
-              <p>{entry.description}</p>
-            </div>
-            <div className="programmeEntryMeta">
-              <span>{entry.stage}</span>
-              <span>{entry.category}</span>
-            </div>
-          </article>
-        ))}
+        {visibleEntries.length === 0 ? (
+          <p className="programmeEmpty">Nothing in this category yet — check back soon or browse another filter.</p>
+        ) : (
+          visibleEntries.map((entry) => (
+            <article
+              className="programmeEntry"
+              id={`programme-${entry.id}`}
+              data-content-id={entry.id}
+              data-content-status={entry.status}
+              key={entry.id}
+            >
+              <time className="programmeEntryTime" dateTime={entry.time}>
+                {entry.time}
+              </time>
+              <div className="programmeEntryContent">
+                <h3>{entry.label}</h3>
+                <p>{entry.description}</p>
+              </div>
+              <div className="programmeEntryMeta">
+                <span>{entry.stage}</span>
+                <span>{entry.category}</span>
+              </div>
+            </article>
+          ))
+        )}
       </div>
     </div>
   );

@@ -45,18 +45,18 @@
   --icon-button-size: 34px;
 
   /* Motion */
-  --duration-fast: 240ms;
-  --duration-medium: 420ms;
+  --duration-fast: 300ms;
+  --duration-medium: 480ms;
   --duration-menu: 550ms;
-  --duration-reveal: 700ms;
-  --duration-splash-enter: 520ms;
-  --duration-splash-exit: 700ms;
-  --reveal-stagger: 40ms;
+  --duration-reveal: 860ms;
+  --duration-splash-enter: 760ms;
+  --duration-splash-exit: 860ms;
+  --reveal-stagger: 55ms;
   --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-splash: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-menu: cubic-bezier(0.76, 0, 0.24, 1);
-  --reveal-distance: 16px;
-  --reveal-distance-small: 10px;
+  --reveal-distance: 20px;
+  --reveal-distance-small: 14px;
 
 }

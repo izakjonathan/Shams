@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { afterPaint, cssTimeMs, prefersReducedMotion } from "../lib/motion";
 import splashArtwork from "../../public/images/splash-humanity-artwork.jpeg";
 
-const MIN_HOLD_MS = 1100;
-const SESSION_KEY = "shf-splash-seen-v2.1.3";
+const ENTER_DURATION_MS = 760;
+const MIN_HOLD_MS = 1800;
+const EXIT_DURATION_MS = 860;
+const SESSION_KEY = "shf-splash-seen-v2.1.0";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {
@@ -58,17 +59,15 @@ export function SplashScreen() {
     const root = document.documentElement;
     const body = document.body;
     const shell = document.querySelector<HTMLElement>(".siteShell");
-    const reducedMotion = prefersReducedMotion();
-    const enterDuration = cssTimeMs("--duration-splash-enter", 760);
-    const exitDuration = cssTimeMs("--duration-splash-exit", 860);
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isRepeatVisit = hasSeenSplashThisSession();
     const skipEnterAnimation = reducedMotion;
     const useRunway = shouldUseSplashRunway();
     const start = performance.now();
     let hasLoaded = document.readyState === "complete";
-    let cancelEnterPaint: (() => void) | null = null;
-    let cancelRunwayPaint: (() => void) | null = null;
-    let cancelHandoffPaint: (() => void) | null = null;
+    let enterFrame = 0;
+    let runwayFrame = 0;
+    let handoffFrame = 0;
     let exitTimer = 0;
     let doneTimer = 0;
     let completed = false;
@@ -107,11 +106,13 @@ export function SplashScreen() {
     root.classList.add("splashCanvasActive");
     if (useRunway) {
       root.classList.add("splashRunwayActive");
-      cancelRunwayPaint = afterPaint(() => {
-        const offset = splashRunwayOffset();
-        if (offset > 0 && window.scrollY < offset) {
-          window.scrollTo({ top: offset, left: 0, behavior: "auto" });
-        }
+      runwayFrame = window.requestAnimationFrame(() => {
+        runwayFrame = window.requestAnimationFrame(() => {
+          const offset = splashRunwayOffset();
+          if (offset > 0 && window.scrollY < offset) {
+            window.scrollTo({ top: offset, left: 0, behavior: "auto" });
+          }
+        });
       });
     } else {
       root.classList.remove("splashRunwayActive");
@@ -120,7 +121,9 @@ export function SplashScreen() {
     if (skipEnterAnimation) {
       setStage("active");
     } else {
-      cancelEnterPaint = afterPaint(() => setStage("active"));
+      enterFrame = window.requestAnimationFrame(() => {
+        enterFrame = window.requestAnimationFrame(() => setStage("active"));
+      });
     }
 
     const beginExit = () => {
@@ -137,10 +140,12 @@ export function SplashScreen() {
       body.style.removeProperty("--document-canvas-color");
       setShellInert(false);
 
-      cancelHandoffPaint = afterPaint(() => {
-        setStage("exiting");
-        body.classList.remove("splashHandoff");
-        body.classList.add("splashExiting");
+      handoffFrame = window.requestAnimationFrame(() => {
+        handoffFrame = window.requestAnimationFrame(() => {
+          setStage("exiting");
+          body.classList.remove("splashHandoff");
+          body.classList.add("splashExiting");
+        });
       });
 
       doneTimer = window.setTimeout(() => {
@@ -150,12 +155,12 @@ export function SplashScreen() {
         restoreNormalDocument();
         completed = true;
         window.dispatchEvent(new Event("scroll"));
-      }, skipEnterAnimation ? 50 : exitDuration + 50);
+      }, skipEnterAnimation ? 50 : EXIT_DURATION_MS + 34);
     };
 
     const maybeScheduleExit = () => {
       if (!hasLoaded || hasBegunExit.current) return;
-      const minimumTotal = reducedMotion ? 0 : enterDuration + MIN_HOLD_MS;
+      const minimumTotal = reducedMotion ? 0 : ENTER_DURATION_MS + MIN_HOLD_MS;
       const remaining = Math.max(0, minimumTotal - (performance.now() - start));
       window.clearTimeout(exitTimer);
       exitTimer = window.setTimeout(beginExit, remaining);
@@ -170,9 +175,9 @@ export function SplashScreen() {
     else window.addEventListener("load", handleLoad, { once: true });
 
     return () => {
-      cancelEnterPaint?.();
-      cancelRunwayPaint?.();
-      cancelHandoffPaint?.();
+      window.cancelAnimationFrame(enterFrame);
+      window.cancelAnimationFrame(runwayFrame);
+      window.cancelAnimationFrame(handoffFrame);
       window.clearTimeout(exitTimer);
       window.clearTimeout(doneTimer);
       window.removeEventListener("load", handleLoad);

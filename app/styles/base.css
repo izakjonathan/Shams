@@ -16,6 +16,12 @@ html {
   background-color: var(--document-canvas-color);
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
   margin: 0;
   width: 100%;
