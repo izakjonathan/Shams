@@ -42,3 +42,7 @@ A repository-wide static audit rejects these identifiers if they return.
 - Standardized legal-page section spacing and paragraph rhythm.
 - Added mobile-specific legal-title sizing and layout safeguards.
 - Preserved the editorial curtain and all navigation behavior.
+
+
+## v1.7.3 audit
+The programme remains server-sourced and prop-driven, but now uses stable content IDs and explicit editorial order so a future admin API can replace the local data module without changing the presentation component. Generated sequence numbers were removed in favour of the actual editable time field. The splash now uses the supplied artwork on a transparent, full-safe-viewport layer; the old splash image remains unused and is removed from this release.

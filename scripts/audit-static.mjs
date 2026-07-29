@@ -107,6 +107,25 @@ if (!routeFade.includes('hash === "#site-footer"') || !routeFade.includes("maxim
   errors.push("Route controller must position footer returns at the document maximum scroll.");
 }
 
+const programmeComponent = readFileSync(resolve(root, "app/components/ProgrammeExplorer.tsx"), "utf8");
+const programmeContent = readFileSync(resolve(root, "app/lib/content/programme.ts"), "utf8");
+if (!programmeComponent.includes("programmeEntryTime") || programmeComponent.includes("programmeEntryNumber")) {
+  errors.push("Programme entries must render editorial times instead of ordinal numbers.");
+}
+for (const required of ["readonly id: string", "readonly sortOrder: number", "data-content-id", "data-content-status"]) {
+  if (!(programmeComponent + programmeContent).includes(required)) errors.push(`Programme CMS preparation is missing: ${required}`);
+}
+
+const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "utf8");
+const splashStyles = readFileSync(resolve(root, "app/styles/splash.css"), "utf8");
+if (!splash.includes("splash-humanity-artwork.jpeg")) errors.push("Splash must use the supplied humanity artwork.");
+if (!splashStyles.includes("background: transparent") || !splashStyles.includes("min-height: 100svh") || !splash.includes('root.style.backgroundColor = "transparent"')) {
+  errors.push("Splash must cover the full safe viewport on a transparent canvas.");
+}
+if (splashStyles.includes("splashScreenArtWrap::before") || splashStyles.includes("splashScreenArtWrap::after")) {
+  errors.push("Legacy splash gradient overlays must not remain.");
+}
+
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);

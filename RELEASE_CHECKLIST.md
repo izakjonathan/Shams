@@ -19,3 +19,10 @@
 - [x] Wrapped headings use compact explicit line-height values.
 - [x] Legal/information page typography and spacing are standardized.
 - [x] Typography stylesheet is imported last to prevent legacy overrides.
+
+
+## v1.7.3
+- [x] Programme displays times 16:00–02:00 instead of 01–08.
+- [x] Programme content has stable IDs and explicit editorial ordering for future admin data.
+- [x] New supplied splash artwork is packaged locally and rendered full bleed.
+- [x] Splash safe-area canvas is transparent and legacy overlays are removed.

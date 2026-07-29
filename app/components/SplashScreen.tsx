@@ -2,13 +2,11 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import splashArtwork from "../../public/images/splash-screen-edge-safe.png";
+import splashArtwork from "../../public/images/splash-humanity-artwork.jpeg";
 
 const ENTER_DURATION_MS = 760;
 const MIN_HOLD_MS = 1800;
 const EXIT_DURATION_MS = 1150;
-const PAPER_COLOR = "#f5f2eb";
-const CANVAS_COLOR = "#090909";
 const SESSION_KEY = "shf-splash-seen";
 let hasShownSplashInMemory = false;
 
@@ -62,8 +60,8 @@ export function SplashScreen() {
       root.classList.add("splashSessionSeen");
       body.classList.remove("splashActive", "splashExiting");
       body.classList.add("splashComplete");
-      root.style.backgroundColor = CANVAS_COLOR;
-      body.style.backgroundColor = CANVAS_COLOR;
+      root.style.backgroundColor = "transparent";
+      body.style.backgroundColor = "transparent";
       return;
     }
 
@@ -71,8 +69,8 @@ export function SplashScreen() {
 
     body.classList.add("splashActive");
     body.classList.remove("splashExiting", "splashComplete");
-    root.style.backgroundColor = PAPER_COLOR;
-    body.style.backgroundColor = PAPER_COLOR;
+    root.style.backgroundColor = "transparent";
+    body.style.backgroundColor = "transparent";
 
     // Two frames ensure the entering state is painted before transitioning in.
     if (skipEnterAnimation) {
@@ -95,8 +93,8 @@ export function SplashScreen() {
         body.classList.remove("splashExiting");
         body.classList.add("splashComplete");
         root.classList.add("splashSessionSeen");
-        root.style.backgroundColor = CANVAS_COLOR;
-        body.style.backgroundColor = CANVAS_COLOR;
+        root.style.backgroundColor = "transparent";
+        body.style.backgroundColor = "transparent";
       }, skipEnterAnimation ? 50 : EXIT_DURATION_MS);
     };
 

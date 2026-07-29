@@ -17,7 +17,10 @@ interface ProgrammeExplorerProps {
 export function ProgrammeExplorer({ entries }: ProgrammeExplorerProps) {
   const [activeFilter, setActiveFilter] = useState<ProgrammeCategory>("all");
   const visibleEntries = useMemo(
-    () => entries.filter((entry) => activeFilter === "all" || entry.category === activeFilter),
+    () =>
+      entries
+        .filter((entry) => activeFilter === "all" || entry.category === activeFilter)
+        .toSorted((a, b) => a.sortOrder - b.sortOrder),
     [activeFilter, entries]
   );
 
@@ -38,9 +41,17 @@ export function ProgrammeExplorer({ entries }: ProgrammeExplorerProps) {
       </div>
 
       <div className="programmeList" aria-live="polite">
-        {visibleEntries.map((entry, index) => (
-          <article className="programmeEntry" key={`${entry.time ?? "untimed"}-${entry.label}`}>
-            <div className="programmeEntryNumber">{String(index + 1).padStart(2, "0")}</div>
+        {visibleEntries.map((entry) => (
+          <article
+            className="programmeEntry"
+            id={`programme-${entry.id}`}
+            data-content-id={entry.id}
+            data-content-status={entry.status}
+            key={entry.id}
+          >
+            <time className="programmeEntryTime" dateTime={entry.time}>
+              {entry.time}
+            </time>
             <div className="programmeEntryContent">
               <h3>{entry.label}</h3>
               <p>{entry.description}</p>

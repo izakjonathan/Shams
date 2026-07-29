@@ -17,49 +17,16 @@ html.splashSessionSeen body.splashActive {
 }
 
 html.splashSessionSeen .splashScreen {
-  display: none !important;
-}
-
-html.splashSessionSeen .siteShell {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
-}
-
-html.splashSessionSeen .skipLink {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.splashActive .siteShell {
-  opacity: 0;
-  transform: translate3d(0, 22px, 0) scale(.99);
-}
-
-body.splashActive {
-  overflow: hidden;
-}
-
-.splashExiting .siteShell {
-  opacity: 1;
-  transform: none;
-  transition: opacity var(--duration-site-enter) var(--ease-splash),
-    transform var(--duration-site-enter) var(--ease-splash);
-  transition-delay: 220ms;
-}
-
-.splashComplete .siteShell {
-  transition: none;
-}
-
-.splashScreen {
   position: fixed;
   z-index: 120;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100svh;
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: var(--color-paper);
+  background: transparent;
   opacity: 1;
   transform: none;
   transition: opacity var(--duration-splash-exit) var(--ease-splash),
@@ -70,9 +37,9 @@ body.splashActive {
 .splashScreenArtWrap {
   position: absolute;
   inset: 0;
-  z-index: 1;
   width: 100%;
   height: 100%;
+  min-height: 100svh;
   overflow: hidden;
   background: transparent;
   opacity: 1;
@@ -83,51 +50,11 @@ body.splashActive {
     filter var(--duration-splash-enter) var(--ease-splash);
 }
 
-.splashScreenArtWrap::before,
-.splashScreenArtWrap::after {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  pointer-events: none;
-  border-radius: 50%;
-}
-
-.splashScreenArtWrap::before {
-  width: 118vw;
-  height: 118vw;
-  left: -62vw;
-  top: 8%;
-  background: radial-gradient(
-    circle at center,
-    rgba(252, 198, 79, 0.52) 0%,
-    rgba(252, 198, 79, 0.34) 30%,
-    rgba(252, 198, 79, 0.16) 56%,
-    rgba(252, 198, 79, 0.05) 74%,
-    transparent 90%
-  );
-}
-
-.splashScreenArtWrap::after {
-  width: 132vw;
-  height: 132vw;
-  right: -74vw;
-  bottom: 7%;
-  background: radial-gradient(
-    circle at center,
-    rgba(252, 198, 79, 0.58) 0%,
-    rgba(252, 198, 79, 0.39) 30%,
-    rgba(252, 198, 79, 0.18) 57%,
-    rgba(252, 198, 79, 0.06) 76%,
-    transparent 91%
-  );
-}
-
 .splashScreenArt {
-  z-index: 1;
   object-fit: cover;
   object-position: center center;
-  background: var(--color-paper);
-  transform: scale(1.16);
+  background: transparent;
+  transform: scale(1.01);
   transform-origin: center center;
 }
 

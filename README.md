@@ -1,4 +1,4 @@
-# Shams for Humanity v1.7.1 — Editorial Curtain
+# Shams for Humanity v1.7.3 — Programme Data + Full-bleed Splash
 
 This release removes the complete artist morph system and replaces every cross-route navigation with one deterministic editorial curtain.
 
@@ -22,3 +22,12 @@ The controller uses `transitionend` as its primary lifecycle signal, with bounde
 
 ### v1.7.2 typography system
 Typography is centralized in `app/styles/typography.css` and uses semantic leading tokens from `app/design-system.css`. Adjust those tokens first for future site-wide typography refinements.
+
+
+### v1.7.3 programme and splash preparation
+
+- Programme rows render their editable `time` values rather than generated ordinal numbers.
+- Programme records now have stable IDs and explicit sort order for future CMS/API mapping.
+- Rendered rows expose content ID and status data attributes for admin-preview integration.
+- The supplied humanity artwork is the new full-bleed splash image.
+- Splash and document canvases remain transparent through the safe areas, with no legacy gradient overlays.
