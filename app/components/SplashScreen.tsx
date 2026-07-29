@@ -6,7 +6,7 @@ import { afterPaint, cssTimeMs, prefersReducedMotion } from "../lib/motion";
 import splashArtwork from "../../public/images/splash-humanity-artwork.jpeg";
 
 const MIN_HOLD_MS = 1100;
-const SESSION_KEY = "shf-splash-seen-v2.1.4";
+const SESSION_KEY = "shf-splash-seen-v2.1.5";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {

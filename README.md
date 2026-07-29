@@ -1,4 +1,4 @@
-# Shams for Humanity v2.1.4
+# Shams for Humanity v2.1.6
 
 Animation and runtime optimization release based on v2.1.1.
 
@@ -17,6 +17,10 @@ The public design, admin/database foundation, typed content architecture, Safari
 
 See `AUDIT.md` for the complete review.
 
-## v2.1.4 UX integration
+## v2.1.6 artist arrow size restoration
 
 This release selectively merges the safe UX improvements from the separate UX pass into the optimized v2.1.3 baseline. It adds accessible new-tab announcements for artist and ticket links, a programme empty state, clickable email addresses with clearer hover affordance, larger mobile artist navigation targets, and slightly stronger muted-text contrast. Authentication, motion utilities, Safari canvas handling, splash timing, route-curtain lifecycle, menu compositor hardening, versioning, and audit architecture remain from the current optimized baseline.
+
+## v2.1.6
+The footer is restored to a true full-screen section. The previous 160 px flow bleed has been removed; Safari's lower chrome is handled by the existing document-canvas controller instead of extra footer height.
+

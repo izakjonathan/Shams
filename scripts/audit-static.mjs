@@ -144,7 +144,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.1.4")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.1.5")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.add("splashRunwayActive")')) {
@@ -300,15 +300,18 @@ if (/\.artistQuote \.darkGlowOne\s*\{[^}]*--glow-(?:w|h|opacity)/s.test(artistSt
   errors.push("Artist quote dark-gradient geometry must remain centralized in gradients.css.");
 }
 
-// v2.1.4 Safari bottom-canvas and motion hardening
+// v2.1.6 Safari bottom-canvas and motion hardening
 if (!canvasTone.includes('root.style.backgroundColor = color') || !canvasTone.includes('body.style.backgroundColor = color')) {
   errors.push("DocumentCanvasTone must apply the sampled colour directly to both html and body.");
 }
 if (!canvasTone.includes('documentCanvasAtFooter') || !base.includes('html.documentCanvasAtFooter')) {
   errors.push("The true document bottom must use the explicit dark Safari canvas state.");
 }
-if (!footerStyles.includes('.siteFooter::after') || !footerStyles.includes('flex: 0 0 160px')) {
-  errors.push("Footer must include a real black bottom bleed for expanded Safari toolbar states.");
+if (footerStyles.includes('.siteFooter::after') || footerStyles.includes('flex: 0 0 160px')) {
+  errors.push("Footer must not use flow-content bleed that makes it taller than one viewport.");
+}
+if (!footerStyles.includes('min-height: 100dvh') || !footerStyles.includes('.siteFooter .footerBottom { margin-top: auto; }')) {
+  errors.push("Footer must retain dynamic-viewport sizing and bottom-row distribution.");
 }
 
 // v2.1.0 typed content architecture
@@ -346,8 +349,14 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.1.4") errors.push("package.json version must be 2.1.4.");
-// v2.1.4 admin authentication type safety
+if (packageJson.version !== "2.1.6") errors.push("package.json version must be 2.1.6.");
+// v2.1.6 artist arrow size regression guard
+const responsiveCss = readFileSync(resolve(root, "app/styles/responsive.css"), "utf8");
+if (/\.artistArrow\s*\{[^}]*width:\s*44px/s.test(responsiveCss) || /\.artistArrow\s*\{[^}]*margin:\s*-5px/s.test(responsiveCss)) {
+  errors.push("Homepage artist arrow buttons must not reintroduce the oversized mobile override.");
+}
+
+// v2.1.6 admin authentication type safety
 const adminAuth = readFileSync(resolve(root, "app/admin/lib/auth.ts"), "utf8");
 if (!adminAuth.includes("const encoder = new TextEncoder()") || !adminAuth.includes("timingSafeEqual(left, right)")) {
   errors.push("Admin authentication must use TextEncoder-backed Uint8Array values for timingSafeEqual.");
@@ -358,7 +367,7 @@ if (adminAuth.includes("timingSafeEqual(Buffer.from")) {
 
 if (!packageJson.dependencies?.["drizzle-orm"] || !packageJson.dependencies?.postgres) errors.push("Database dependencies are missing.");
 
-// v2.1.4 motion/runtime cleanup
+// v2.1.6 motion/runtime cleanup
 const motionHelpers = readFileSync(resolve(root, "app/lib/motion.ts"), "utf8");
 for (const required of ["prefersReducedMotion", "cssTimeMs", "afterPaint"]) {
   if (!motionHelpers.includes(required)) errors.push(`Shared motion helper is missing: ${required}`);

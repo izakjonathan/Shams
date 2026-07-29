@@ -67,7 +67,7 @@ export async function seedDatabase(actor: string) {
       });
     }
   }
-  await db.insert(auditLogs).values({ id: randomUUID(), actor, action: "seed", recordType: "all", recordId: "local-content", after: { version: "2.1.4" } });
+  await db.insert(auditLogs).values({ id: randomUUID(), actor, action: "seed", recordType: "all", recordId: "local-content", after: { version: "2.1.5" } });
 }
 
 export async function saveAdminRecord(actor: string, record: AdminRecord) {
