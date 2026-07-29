@@ -61,8 +61,8 @@ export function SplashScreen() {
       root.classList.remove("splashCanvasActive");
       body.classList.remove("splashActive", "splashExiting");
       body.classList.add("splashComplete");
-      root.style.backgroundColor = "transparent";
-      body.style.backgroundColor = "transparent";
+      root.style.removeProperty("background-color");
+      body.style.removeProperty("background-color");
       return;
     }
 
@@ -94,8 +94,9 @@ export function SplashScreen() {
         markSplashSeen();
         root.classList.add("splashSessionSeen");
         root.classList.remove("splashCanvasActive");
-        root.style.backgroundColor = "transparent";
-        body.style.backgroundColor = "transparent";
+        root.style.removeProperty("background-color");
+        body.style.removeProperty("background-color");
+        window.dispatchEvent(new Event("scroll"));
       }, skipEnterAnimation ? 50 : EXIT_DURATION_MS);
     };
 

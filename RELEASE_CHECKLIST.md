@@ -58,7 +58,7 @@
 - [x] Static audit passes.
 
 
-## v1.8.0 hero restoration
+## v1.8.1 hero restoration
 
 - [x] Restore approved mobile hero wash recipe.
 - [x] Restore approved mobile hero orb dimensions and anchors.
@@ -67,7 +67,7 @@
 - [x] Preserve global gradient master controls across all sections.
 - [x] Reject grouping hero placement with paper-section placement in static audit.
 
-## v1.8.0 hero and gradient controls
+## v1.8.1 hero and gradient controls
 
 - [x] Approved v1.7.7 hero wash recipe restored.
 - [x] Approved mobile and desktop hero orb geometry restored.
@@ -75,3 +75,11 @@
 - [x] No global shape, rotation, layer-size, or hero-layer token system remains.
 - [x] Master controls affect gradient artwork only, never section/content geometry.
 - [x] Unsupported custom-property multiplication in `calc()` is absent.
+
+## v1.8.1 Safari bottom edge
+
+- [x] No permanent transparent root/body canvas after the splash.
+- [x] Bottom browser chrome samples the section colour touching the viewport bottom.
+- [x] Dark ticket and footer areas keep a dark document canvas.
+- [x] Footer covers `100vh`, `100svh`, and `100dvh`.
+- [x] No white overlay or bottom fade is added to page content.

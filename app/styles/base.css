@@ -12,14 +12,14 @@ html {
   min-height: 100%;
   scroll-behavior: auto;
   scroll-padding-top: calc(var(--header-height-mobile) + 16px);
-  background: var(--color-paper);
+  background: var(--document-canvas-color, var(--color-paper));
 }
 
 body {
   margin: 0;
   width: 100%;
   min-height: 100vh;
-  background: var(--color-paper);
+  background: var(--document-canvas-color, var(--color-paper));
   color: var(--color-ink);
   font-family: var(--font-body);
   font-size: 16px;

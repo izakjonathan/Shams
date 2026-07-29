@@ -1,4 +1,4 @@
-# Shams for Humanity v1.8.0 — Restored Hero + Simple Gradient Controls
+# Shams for Humanity v1.8.1 — Restored Hero + Simple Gradient Controls
 
 This release removes the complete artist morph system and replaces every cross-route navigation with one deterministic editorial curtain.
 
@@ -45,7 +45,7 @@ Typography is centralized in `app/styles/typography.css` and uses semantic leadi
 
 During the first-visit splash, the supplied artwork is applied both to the full-screen overlay and the document canvas. This is required for iOS Safari's top status area and bottom toolbar area to visually continue the artwork. The temporary canvas class is removed when the splash finishes.
 
-## v1.8.0 hero restoration and safe controls
+## v1.8.1 hero restoration and safe controls
 
 - Restores the complete approved v1.7.7 hero gradient implementation and geometry.
 - Removes the over-centralized v1.7.8/v1.7.9 layer, shape, rotation, and hero-token systems.

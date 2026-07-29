@@ -6,6 +6,7 @@ import { SiteHeader } from "./components/SiteHeader";
 import { SplashScreen } from "./components/SplashScreen";
 import { SiteFooter } from "./components/SiteFooter";
 import { RouteFade } from "./components/RouteFade";
+import { DocumentCanvasTone } from "./components/DocumentCanvasTone";
 import { artists, event, tickets } from "./lib/content";
 import { allowIndexing, serializeJsonLd, siteUrl } from "./lib/site";
 
@@ -123,6 +124,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </noscript>
         <a className="skipLink" href="#main-content">Skip to content</a>
         <SplashScreen />
+        <DocumentCanvasTone />
         <div className="siteShell">
           <RouteFade header={<SiteHeader />}>
             {children}
