@@ -2,7 +2,7 @@ import { FadeLink } from "./FadeLink";
 
 export function SiteFooter() {
   return (
-    <footer className="siteFooter">
+    <footer className="siteFooter" id="site-footer">
       <FadeLink className="footerLogo" href="/#top">Shams for<br/>Humanity</FadeLink>
       <div className="footerLinks">
         <div>

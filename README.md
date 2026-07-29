@@ -1,4 +1,4 @@
-# Shams for Humanity v1.7.0 — Editorial Curtain
+# Shams for Humanity v1.7.1 — Editorial Curtain
 
 This release removes the complete artist morph system and replaces every cross-route navigation with one deterministic editorial curtain.
 

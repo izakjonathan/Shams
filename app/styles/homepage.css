@@ -584,7 +584,17 @@
 footer {
   background: var(--color-dark);
   color: var(--color-white);
-  padding: 80px var(--page-gutter) 25px;
+  padding: 80px var(--page-gutter) max(25px, env(safe-area-inset-bottom, 0px));
+}
+
+.siteFooter {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+.siteFooter .footerBottom {
+  margin-top: auto;
 }
 
 .footerLogo {

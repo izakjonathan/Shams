@@ -2,28 +2,20 @@
    23 — Information, legal and contact pages
    ========================================================================== */
 
+.informationPage,
+.contactPage {
+  min-height: 100svh;
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
 .informationHero {
   min-height: 72svh;
   padding: clamp(130px, 18vh, 190px) var(--page-gutter) 70px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  --section-wash-1: radial-gradient(ellipse 95% 65% at 3% 5%, rgba(252, 198, 79, .52), transparent 82%);
-  --section-wash-2: radial-gradient(ellipse 75% 48% at 100% 72%, rgba(252, 198, 79, .30), transparent 82%);
-  --section-wash-3: none;
-  --section-glow-1-w: 120vw;
-  --section-glow-1-h: 92vw;
-  --section-glow-1-left: -62vw;
-  --section-glow-1-top: -28vw;
-  --section-glow-1-opacity: .74;
-  --section-glow-2-w: 102vw;
-  --section-glow-2-h: 96vw;
-  --section-glow-2-right: -68vw;
-  --section-glow-2-bottom: -38vw;
-  --section-glow-2-opacity: .52;
-  --section-glow-3-w: 1px;
-  --section-glow-3-h: 1px;
-  --section-glow-3-opacity: 0;
+  background: var(--color-accent);
 }
 
 .informationHero h1 {
@@ -47,25 +39,11 @@
   text-transform: uppercase;
 }
 
-
-.organizerBlock h2 {
-  margin: 18px 0 0;
-  font-size: clamp(50px, 11vw, 108px);
-  line-height: .84;
-}
-
-.contactHero .darkGlowOne {
-  --glow-w: clamp(680px, 160vw, 1200px);
-  --glow-h: clamp(680px, 160vw, 1200px);
-  --glow-left: -82%;
-  --glow-top: -44%;
-  --glow-opacity: .58;
-}
-
 .informationBody {
   padding: var(--section-space-mobile) var(--page-gutter);
   display: grid;
   gap: 72px;
+  background: var(--color-accent);
 }
 
 .informationBody aside {
@@ -123,22 +101,17 @@
   flex-direction: column;
   justify-content: flex-end;
   overflow: clip;
-  isolation: isolate;
-  background: var(--color-dark);
-  color: var(--color-white);
+  background: var(--color-accent);
+  color: var(--color-ink);
 }
 
 .contactHero h1 {
-  position: relative;
-  z-index: 2;
   margin: 26px 0;
   font-size: clamp(70px, 17vw, 170px);
   line-height: .76;
 }
 
 .contactHero p {
-  position: relative;
-  z-index: 2;
   max-width: 55ch;
   margin: 0;
   font-size: 18px;
@@ -149,6 +122,7 @@
   display: grid;
   padding-top: 0;
   padding-bottom: 0;
+  background: var(--color-accent);
 }
 
 .contactGrid article {
@@ -177,29 +151,20 @@
 .contactPlaceholder {
   display: inline-block;
   margin-top: 18px;
-  color: var(--color-text-subtle);
+  color: rgba(11, 11, 11, .58);
 }
 
 .organizerBlock {
   padding: var(--section-space-mobile) var(--page-gutter);
   display: grid;
   gap: 48px;
-  --section-wash-1: radial-gradient(ellipse 94% 62% at 100% 10%, rgba(252, 198, 79, .44), transparent 82%);
-  --section-wash-2: radial-gradient(ellipse 76% 44% at 0% 90%, rgba(252, 198, 79, .24), transparent 80%);
-  --section-wash-3: none;
-  --section-glow-1-w: 112vw;
-  --section-glow-1-h: 90vw;
-  --section-glow-1-right: -62vw;
-  --section-glow-1-top: -28vw;
-  --section-glow-1-opacity: .65;
-  --section-glow-2-w: 96vw;
-  --section-glow-2-h: 96vw;
-  --section-glow-2-left: -64vw;
-  --section-glow-2-bottom: -42vw;
-  --section-glow-2-opacity: .48;
-  --section-glow-3-w: 1px;
-  --section-glow-3-h: 1px;
-  --section-glow-3-opacity: 0;
+  background: var(--color-accent);
+}
+
+.organizerBlock h2 {
+  margin: 18px 0 0;
+  font-size: clamp(50px, 11vw, 108px);
+  line-height: .84;
 }
 
 .organizerBlock p {
@@ -208,7 +173,7 @@
   border-bottom: 1px solid rgba(9, 9, 9, .45);
 }
 
-/* Footer now serves every route. */
+/* Footer serves every route and is always at least one complete viewport. */
 .siteFooter {
   position: relative;
   z-index: 2;
@@ -226,11 +191,9 @@
   .footerLinks a:hover {
     opacity: .62;
   }
-
 }
 
 @media (min-width: 760px) {
-
   .organizerBlock {
     grid-template-columns: minmax(300px, .8fr) minmax(420px, 1.2fr);
     gap: 8vw;
@@ -259,16 +222,7 @@
     padding-left: clamp(28px, 5vw, 70px);
   }
 
-
-  .contactHero .darkGlowOne {
-    --glow-w: clamp(900px, 94vw, 1500px);
-    --glow-h: clamp(900px, 94vw, 1500px);
-    --glow-left: -32%;
-    --glow-top: -68%;
-  }
-
   .footerLinks {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
   }
 }
-

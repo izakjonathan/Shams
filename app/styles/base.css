@@ -36,6 +36,17 @@ body {
   transform: none;
 }
 
+/* Global display-type control: every semantic heading uses Agilera. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: var(--font-weight-display);
+}
+
 a {
   color: inherit;
   text-decoration: none;

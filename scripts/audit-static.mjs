@@ -61,6 +61,38 @@ if (!transitions.includes("z-index: 45")) errors.push("Curtain must remain below
 const fadeLink = readFileSync(resolve(root, "app/components/FadeLink.tsx"), "utf8");
 if (fadeLink.includes("morphSource")) errors.push("FadeLink still passes obsolete morph source data.");
 
+const base = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
+if (!/h1,\s*h2,\s*h3,\s*h4,\s*h5,\s*h6\s*\{[^}]*font-family:\s*var\(--font-display\)/s.test(base)) {
+  errors.push("Semantic headings must use the global Agilera display-font control.");
+}
+
+const information = readFileSync(resolve(root, "app/styles/information.css"), "utf8");
+if (!information.includes(".informationPage") || !information.includes("background: var(--color-accent)")) {
+  errors.push("Information routes must use the flat yellow page background.");
+}
+if (/informationHero[^}]*gradient|contactHero[^}]*gradient|organizerBlock[^}]*gradient/s.test(information)) {
+  errors.push("Information and contact routes must not restore gradients.");
+}
+
+const closeButton = readFileSync(resolve(root, "app/components/PageCloseButton.tsx"), "utf8");
+if (!closeButton.includes('href = "/#site-footer"') || !closeButton.includes("CrossIcon")) {
+  errors.push("Information-page close control must return to the footer and use the custom cross icon.");
+}
+const closeStyles = readFileSync(resolve(root, "app/styles/close-control.css"), "utf8");
+if (!closeStyles.includes("background: transparent") || !closeStyles.includes("border: 1px solid var(--color-ink)")) {
+  errors.push("Close control must be an unfilled black circular outline.");
+}
+
+const footer = readFileSync(resolve(root, "app/components/SiteFooter.tsx"), "utf8");
+if (!footer.includes('id="site-footer"')) errors.push("Footer must expose the site-footer destination anchor.");
+const homepage = readFileSync(resolve(root, "app/styles/homepage.css"), "utf8");
+if (!/\.siteFooter\s*\{[^}]*min-height:\s*100svh/s.test(homepage)) {
+  errors.push("Footer must be at least one small viewport high.");
+}
+if (!routeFade.includes('hash === "#site-footer"') || !routeFade.includes("maximumScroll")) {
+  errors.push("Route controller must position footer returns at the document maximum scroll.");
+}
+
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);

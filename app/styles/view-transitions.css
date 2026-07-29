@@ -3,10 +3,10 @@
    ========================================================================== */
 
 :root {
-  --route-curtain-open-duration: 500ms;
-  --route-curtain-close-duration: 470ms;
-  --route-curtain-switch-duration: 430ms;
-  --route-curtain-reveal-duration: 500ms;
+  --route-curtain-open-duration: 550ms;
+  --route-curtain-close-duration: 500ms;
+  --route-curtain-switch-duration: 470ms;
+  --route-curtain-reveal-duration: 550ms;
   --route-curtain-ease: var(--ease-menu);
 }
 
@@ -15,17 +15,15 @@
 }
 
 /*
-  Route changes use one deterministic editorial curtain. It follows the
-  mobile menu's visual language without touching the menu implementation:
-  a solid black sheet enters from above, navigation commits while the sheet
-  fully covers the viewport, then the sheet leaves upward. The fixed header
-  remains above the sheet, and the route below never fades, scales or moves.
+  One deterministic route transition, matching the mobile menu's motion:
+  a solid black sheet enters from above, the route commits only while the
+  viewport is fully covered, and the sheet then exits upward. The live page,
+  fixed header and safe-area canvas never fade, scale, blur or slide.
 */
 .routeTransitionVeil {
   position: fixed;
   z-index: 45;
   inset: 0;
-  box-sizing: border-box;
   background: var(--color-dark);
   visibility: hidden;
   pointer-events: none;
@@ -36,19 +34,6 @@
   transition:
     transform var(--route-curtain-open-duration) var(--route-curtain-ease),
     visibility 0s linear var(--route-curtain-open-duration);
-}
-
-/* A restrained warm leading edge keeps the wipe legible against dark pages. */
-.routeTransitionVeil::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  background: var(--color-yellow);
-  opacity: .78;
-  transform: translateY(100%);
 }
 
 :root.routeTransitionActive .routeTransitionVeil {
@@ -70,11 +55,13 @@
   pointer-events: auto;
 }
 
-:root[data-route-transition="artist-close"] .routeTransitionVeil {
+:root[data-route-transition="artist-close"] .routeTransitionVeil,
+:root[data-route-transition="page-close"] .routeTransitionVeil {
   transition-duration: var(--route-curtain-close-duration), 0s;
 }
 
-:root[data-route-transition="artist-switch"] .routeTransitionVeil {
+:root[data-route-transition="artist-switch"] .routeTransitionVeil,
+:root[data-route-transition="page-switch"] .routeTransitionVeil {
   transition-duration: var(--route-curtain-switch-duration), 0s;
 }
 

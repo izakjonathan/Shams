@@ -1,4 +1,4 @@
-# v1.7.0 release checklist
+# v1.7.1 release checklist
 
 - [x] Artist morph system removed from TSX, CSS and link plumbing
 - [x] Editorial curtain used for artist open, close and artist-to-artist navigation

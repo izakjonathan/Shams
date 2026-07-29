@@ -131,7 +131,11 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       target = document.getElementById(decodeURIComponent(hash.slice(1)));
     }
 
-    if (target) {
+    if (hash === "#site-footer") {
+      target?.classList.add("isRevealed");
+      const maximumScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      window.scrollTo({ top: maximumScroll, left: 0, behavior: "auto" });
+    } else if (target) {
       target.classList.add("isRevealed");
       target.scrollIntoView({ behavior: "auto", block: "start" });
     } else {
@@ -161,6 +165,9 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     await waitForDestinationLayout();
     if (!lockRef.current) return;
 
+    // Re-apply after fonts/layout settle so footer and hash destinations are
+    // exact before the curtain exposes the new route.
+    positionDestination();
     setTransitionPhase("revealing");
     window.requestAnimationFrame(() => {
       if (!lockRef.current) return;
@@ -196,8 +203,14 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       const hash = destination.hash || "#top";
       const target = hash === "#top" ? null : document.getElementById(decodeURIComponent(hash.slice(1)));
       window.history.pushState(window.history.state, "", hash);
-      if (target) target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
-      else window.scrollTo({ top: 0, left: 0, behavior: reducedMotion() ? "auto" : "smooth" });
+      if (hash === "#site-footer") {
+        const maximumScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+        window.scrollTo({ top: maximumScroll, left: 0, behavior: reducedMotion() ? "auto" : "smooth" });
+      } else if (target) {
+        target.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, left: 0, behavior: reducedMotion() ? "auto" : "smooth" });
+      }
       if (options?.focusOnArrival) (target ?? document.querySelector<HTMLElement>("main#main-content"))?.focus({ preventScroll: true });
       return;
     }

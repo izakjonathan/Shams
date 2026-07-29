@@ -1,4 +1,4 @@
-# v1.7.0 editorial curtain audit
+# v1.7.1 editorial curtain audit
 
 ## Removed completely
 

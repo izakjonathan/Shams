@@ -19,9 +19,8 @@ export default function ContactPage() {
   return (
     <main className="contactPage" id="main-content" tabIndex={-1}>
       <PageCloseButton />
-      <section className="contactHero darkGlowSection">
-        <div className="darkGlow darkGlowOne" aria-hidden="true" />
-        <span className="sectionIndex light">04 — CONTACT</span>
+      <section className="contactHero">
+        <span className="sectionIndex">04 — CONTACT</span>
         <h1>Let’s talk<br/>under the sun.</h1>
         <p>Choose the most relevant route below. All addresses are placeholders and must be replaced before launch.</p>
       </section>
@@ -35,9 +34,7 @@ export default function ContactPage() {
           </article>
         ))}
       </section>
-      <section className="organizerBlock paperGlowSection">
-        <div className="paperGlow glowOne" aria-hidden="true" />
-        <div className="paperGlow glowTwo" aria-hidden="true" />
+      <section className="organizerBlock">
         <div>
           <span className="sectionIndex">ORGANIZER INFORMATION</span>
           <h2>Details before launch</h2>
