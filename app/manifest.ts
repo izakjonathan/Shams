@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { siteTheme } from "./lib/theme";
 import { event } from "./lib/content";
 
 export default function manifest(): MetadataRoute.Manifest {
@@ -8,8 +9,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: event.tagline,
     start_url: "/",
     display: "standalone",
-    background_color: "#f5f2eb",
-    theme_color: "#f5f2eb",
+    background_color: siteTheme.paper,
+    theme_color: siteTheme.paper,
     icons: [
       {
         src: "/icon.svg",

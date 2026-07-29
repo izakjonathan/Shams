@@ -1,6 +1,6 @@
 {
   "name": "shams-for-humanity",
-  "version": "1.7.4",
+  "version": "1.7.6",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,7 +10,10 @@
     "check": "npm run typecheck && npm run build",
     "release:check": "npm run release:validate && npm run audit:static && npm run typecheck && npm run build",
     "release:validate": "node scripts/validate-release.mjs",
-    "audit:static": "node scripts/audit-static.mjs"
+    "audit:static": "node scripts/audit-static.mjs",
+    "theme:generate": "node scripts/generate-theme.mjs",
+    "predev": "npm run theme:generate",
+    "prebuild": "npm run theme:generate"
   },
   "dependencies": {
     "next": "16.2.10",

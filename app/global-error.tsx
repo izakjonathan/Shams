@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { siteTheme } from "./lib/theme";
 
 export default function GlobalError({
   error,
@@ -23,8 +24,8 @@ export default function GlobalError({
           placeItems: "center",
           padding: "32px",
           boxSizing: "border-box",
-          background: "#f5f2eb",
-          color: "#090909",
+          background: siteTheme.paper,
+          color: siteTheme.dark,
           fontFamily: "Arial, sans-serif",
         }}
       >
@@ -43,9 +44,9 @@ export default function GlobalError({
               marginTop: "24px",
               minHeight: "52px",
               padding: "0 24px",
-              border: "1px solid #090909",
-              background: "#090909",
-              color: "#fff",
+              border: `1px solid ${siteTheme.dark}`,
+              background: siteTheme.dark,
+              color: siteTheme.white,
               font: "inherit",
               cursor: "pointer",
             }}

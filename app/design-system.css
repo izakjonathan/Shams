@@ -23,29 +23,7 @@
   --leading-display-compact: 0.92;
   --leading-ui: 1.15;
 
-  /* Core colors */
-  --color-paper: #f5f2eb;
-  --color-ink: #0b0b0b;
-  --color-accent: #fcc64f;
-  --color-white: #fff;
-  --color-dark: #090909;
-  --color-ticket-dark: #111;
-
-  /* Supporting colors */
-  --color-line: rgba(11, 11, 11, 0.18);
-  --color-line-strong: rgba(0, 0, 0, 0.35);
-  --color-overlay-hover: rgba(0, 0, 0, 0.03);
-  --color-light-muted: rgba(255, 255, 255, 0.7);
-  --color-dark-line: #333;
-  --color-ticket-line: #484848;
-  --color-control-line: #555;
-  --color-text-muted: #555;
-  --color-placeholder: #76736c;
-  --color-text-subtle: #777;
-  --color-ticket-copy: #aaa;
-  --color-ticket-footnote: #888;
-  --color-disabled: #666;
-  --color-feature-copy: #221100;
+  /* Palette and gradient colour recipes live in app/theme.css. */
 
   /* Borders and radii */
   --border-width: 1px;
@@ -82,17 +60,4 @@
   --reveal-distance: 20px;
   --reveal-distance-small: 14px;
 
-  /* Effects */
-  --paper-orb-gradient: radial-gradient(
-    ellipse 50% 50% at 50% 50%,
-    rgba(252, 198, 79, 1) 0%,
-    rgba(252, 198, 79, 1) 24%,
-    rgba(252, 198, 79, 0.783) 48%,
-    rgba(252, 198, 79, 0.405) 64%,
-    rgba(252, 198, 79, 0.162) 74%,
-    transparent 86%
-  );
-  --paper-glow-opacity: 0.94;
-  --hero-glow-blur-mobile: 44px;
-  --hero-glow-blur-desktop: 54px;
 }

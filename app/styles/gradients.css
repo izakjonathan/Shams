@@ -57,15 +57,7 @@
 
 .darkGlow {
   z-index: 1;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(252, 198, 79, 0.50) 0%,
-    rgba(252, 198, 79, 0.36) 18%,
-    rgba(252, 198, 79, 0.20) 36%,
-    rgba(252, 198, 79, 0.09) 52%,
-    rgba(252, 198, 79, 0.025) 66%,
-    transparent 74%
-  );
+  background: var(--dark-orb-gradient);
   background-repeat: no-repeat;
 }
 
@@ -148,12 +140,73 @@
   --glow-opacity: var(--section-glow-3-opacity, var(--paper-glow-opacity));
 }
 
+
+
+/* Small component gradients are centralized here as well. */
+.programmeFilters {
+  background: linear-gradient(90deg, transparent calc(100% - 30px), var(--color-paper));
+}
+
+.artistPortrait::after {
+  background: linear-gradient(180deg, transparent 56%, var(--color-ink-58) 100%);
+}
+
+/* Hero and artist page gradient geometry.
+   Component styles no longer define gradients directly. */
+
+.hero {
+  background-image:
+    radial-gradient(ellipse 68% 40% at -4% 22%, rgb(var(--color-accent-rgb) / 0.583) 0, rgb(var(--color-accent-rgb) / 0.328) 36%, rgb(var(--color-accent-rgb) / 0.146) 58%, transparent 82%),
+    radial-gradient(ellipse 88% 42% at 88% 10%, rgb(var(--color-accent-rgb) / 0.62) 0, rgb(var(--color-accent-rgb) / 0.328) 34%, rgb(var(--color-accent-rgb) / 0.146) 58%, transparent 82%),
+    radial-gradient(ellipse 54% 28% at 50% 84%, rgb(var(--color-accent-rgb) / 0.365) 0, rgb(var(--color-accent-rgb) / 0.182) 34%, rgb(var(--color-accent-rgb) / 0.073) 56%, transparent 78%);
+}
+
+.artistHero {
+  --section-wash-1: radial-gradient(ellipse 96% 64% at 3% 10%, rgb(var(--color-accent-rgb) / 0.5) 0%, rgb(var(--color-accent-rgb) / 0.24) 42%, transparent 80%);
+  --section-wash-2: radial-gradient(ellipse 88% 56% at 100% 52%, rgb(var(--color-accent-rgb) / 0.34) 0%, rgb(var(--color-accent-rgb) / 0.14) 44%, transparent 82%);
+  --section-wash-3: radial-gradient(ellipse 70% 42% at 35% 100%, rgb(var(--color-accent-rgb) / 0.2) 0%, transparent 78%);
+  --section-glow-1-w: 118vw;
+  --section-glow-1-h: 92vw;
+  --section-glow-1-left: -62vw;
+  --section-glow-1-top: -24vw;
+  --section-glow-1-opacity: 0.78;
+  --section-glow-2-w: 104vw;
+  --section-glow-2-h: 100vw;
+  --section-glow-2-right: -66vw;
+  --section-glow-2-top: 24%;
+  --section-glow-2-opacity: 0.62;
+  --section-glow-3-w: 110vw;
+  --section-glow-3-h: 62vw;
+  --section-glow-3-left: 8vw;
+  --section-glow-3-bottom: -34vw;
+  --section-glow-3-opacity: 0.5;
+}
+
+.artistSet {
+  --section-wash-1: radial-gradient(ellipse 88% 58% at 100% 12%, rgb(var(--color-accent-rgb) / 0.42), transparent 80%);
+  --section-wash-2: radial-gradient(ellipse 76% 46% at 0% 72%, rgb(var(--color-accent-rgb) / 0.25), transparent 78%);
+  --section-wash-3: none;
+  --section-glow-1-w: 112vw;
+  --section-glow-1-h: 86vw;
+  --section-glow-1-right: -62vw;
+  --section-glow-1-top: -18vw;
+  --section-glow-1-opacity: 0.7;
+  --section-glow-2-w: 98vw;
+  --section-glow-2-h: 102vw;
+  --section-glow-2-left: -62vw;
+  --section-glow-2-bottom: -34vw;
+  --section-glow-2-opacity: 0.55;
+  --section-glow-3-w: 1px;
+  --section-glow-3-h: 1px;
+  --section-glow-3-opacity: 0;
+}
+
 /* Paper section-specific wash + glow controls (mobile-first). */
 
 .statement {
-  --section-wash-1: radial-gradient(ellipse 88% 56% at 4% 14%, rgba(252, 198, 79, 0.459) 0%, rgba(252, 198, 79, 0.27) 34%, rgba(252, 198, 79, 0.108) 56%, transparent 82%);
-  --section-wash-2: radial-gradient(ellipse 78% 48% at 100% 48%, rgba(252, 198, 79, 0.378) 0%, rgba(252, 198, 79, 0.189) 34%, rgba(252, 198, 79, 0.068) 56%, transparent 80%);
-  --section-wash-3: radial-gradient(ellipse 84% 44% at 24% 96%, rgba(252, 198, 79, 0.27) 0%, rgba(252, 198, 79, 0.135) 36%, rgba(252, 198, 79, 0.054) 58%, transparent 80%);
+  --section-wash-1: radial-gradient(ellipse 88% 56% at 4% 14%, rgb(var(--color-accent-rgb) / 0.459) 0%, rgb(var(--color-accent-rgb) / 0.27) 34%, rgb(var(--color-accent-rgb) / 0.108) 56%, transparent 82%);
+  --section-wash-2: radial-gradient(ellipse 78% 48% at 100% 48%, rgb(var(--color-accent-rgb) / 0.378) 0%, rgb(var(--color-accent-rgb) / 0.189) 34%, rgb(var(--color-accent-rgb) / 0.068) 56%, transparent 80%);
+  --section-wash-3: radial-gradient(ellipse 84% 44% at 24% 96%, rgb(var(--color-accent-rgb) / 0.27) 0%, rgb(var(--color-accent-rgb) / 0.135) 36%, rgb(var(--color-accent-rgb) / 0.054) 58%, transparent 80%);
   --section-glow-1-w: 118vw;
   --section-glow-1-h: 86vw;
   --section-glow-1-left: -56vw;
@@ -181,9 +234,9 @@
 }
 
 .lineup {
-  --section-wash-1: radial-gradient(ellipse 82% 50% at 98% 8%, rgba(252, 198, 79, 0.405) 0%, rgba(252, 198, 79, 0.216) 34%, rgba(252, 198, 79, 0.095) 58%, transparent 82%);
-  --section-wash-2: radial-gradient(ellipse 70% 44% at 2% 48%, rgba(252, 198, 79, 0.297) 0%, rgba(252, 198, 79, 0.149) 34%, rgba(252, 198, 79, 0.068) 56%, transparent 78%);
-  --section-wash-3: radial-gradient(ellipse 92% 48% at 58% 100%, rgba(252, 198, 79, 0.27) 0%, rgba(252, 198, 79, 0.135) 36%, rgba(252, 198, 79, 0.054) 58%, transparent 80%);
+  --section-wash-1: radial-gradient(ellipse 82% 50% at 98% 8%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.095) 58%, transparent 82%);
+  --section-wash-2: radial-gradient(ellipse 70% 44% at 2% 48%, rgb(var(--color-accent-rgb) / 0.297) 0%, rgb(var(--color-accent-rgb) / 0.149) 34%, rgb(var(--color-accent-rgb) / 0.068) 56%, transparent 78%);
+  --section-wash-3: radial-gradient(ellipse 92% 48% at 58% 100%, rgb(var(--color-accent-rgb) / 0.27) 0%, rgb(var(--color-accent-rgb) / 0.135) 36%, rgb(var(--color-accent-rgb) / 0.054) 58%, transparent 80%);
   --section-glow-1-w: 116vw;
   --section-glow-1-h: 82vw;
   --section-glow-1-right: -56vw;
@@ -211,9 +264,9 @@
 }
 
 .programme {
-  --section-wash-1: radial-gradient(ellipse 86% 50% at 16% 6%, rgba(252, 198, 79, 0.405) 0%, rgba(252, 198, 79, 0.216) 34%, rgba(252, 198, 79, 0.095) 58%, transparent 80%);
-  --section-wash-2: radial-gradient(ellipse 90% 54% at 90% 34%, rgba(252, 198, 79, 0.351) 0%, rgba(252, 198, 79, 0.189) 36%, rgba(252, 198, 79, 0.081) 58%, transparent 80%);
-  --section-wash-3: radial-gradient(ellipse 76% 44% at 42% 100%, rgba(252, 198, 79, 0.243) 0%, rgba(252, 198, 79, 0.135) 34%, rgba(252, 198, 79, 0.054) 56%, transparent 78%);
+  --section-wash-1: radial-gradient(ellipse 86% 50% at 16% 6%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.095) 58%, transparent 80%);
+  --section-wash-2: radial-gradient(ellipse 90% 54% at 90% 34%, rgb(var(--color-accent-rgb) / 0.351) 0%, rgb(var(--color-accent-rgb) / 0.189) 36%, rgb(var(--color-accent-rgb) / 0.081) 58%, transparent 80%);
+  --section-wash-3: radial-gradient(ellipse 76% 44% at 42% 100%, rgb(var(--color-accent-rgb) / 0.243) 0%, rgb(var(--color-accent-rgb) / 0.135) 34%, rgb(var(--color-accent-rgb) / 0.054) 56%, transparent 78%);
   --section-glow-1-w: 114vw;
   --section-glow-1-h: 84vw;
   --section-glow-1-left: -50vw;
@@ -241,9 +294,9 @@
 }
 
 .faq {
-  --section-wash-1: radial-gradient(ellipse 78% 46% at 96% 8%, rgba(252, 198, 79, 0.405) 0%, rgba(252, 198, 79, 0.216) 34%, rgba(252, 198, 79, 0.081) 58%, transparent 80%);
-  --section-wash-2: radial-gradient(ellipse 66% 40% at 2% 56%, rgba(252, 198, 79, 0.27) 0%, rgba(252, 198, 79, 0.135) 34%, rgba(252, 198, 79, 0.054) 56%, transparent 78%);
-  --section-wash-3: radial-gradient(ellipse 84% 46% at 74% 100%, rgba(252, 198, 79, 0.243) 0%, rgba(252, 198, 79, 0.121) 36%, rgba(252, 198, 79, 0.054) 58%, transparent 80%);
+  --section-wash-1: radial-gradient(ellipse 78% 46% at 96% 8%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.081) 58%, transparent 80%);
+  --section-wash-2: radial-gradient(ellipse 66% 40% at 2% 56%, rgb(var(--color-accent-rgb) / 0.27) 0%, rgb(var(--color-accent-rgb) / 0.135) 34%, rgb(var(--color-accent-rgb) / 0.054) 56%, transparent 78%);
+  --section-wash-3: radial-gradient(ellipse 84% 46% at 74% 100%, rgb(var(--color-accent-rgb) / 0.243) 0%, rgb(var(--color-accent-rgb) / 0.121) 36%, rgb(var(--color-accent-rgb) / 0.054) 58%, transparent 80%);
   --section-glow-1-w: 114vw;
   --section-glow-1-h: 82vw;
   --section-glow-1-right: -56vw;

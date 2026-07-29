@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { event } from "./lib/content";
+import { siteTheme } from "./lib/theme";
 
 export const runtime = "edge";
 export const alt = "Shams for Humanity";
@@ -17,8 +18,8 @@ export default async function OpengraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#f5f2eb",
-          color: "#0b0b0b",
+          background: siteTheme.paper,
+          color: siteTheme.ink,
           fontFamily: "Arial, Helvetica, sans-serif",
           position: "relative",
         }}

@@ -11,9 +11,6 @@
   align-items: center;
   justify-content: center;
   background-color: var(--color-paper);
-  background-image: radial-gradient(ellipse 68% 40% at -4% 22%, rgba(252, 198, 79, 0.583) 0, rgba(252, 198, 79, 0.328) 36%, rgba(252, 198, 79, 0.146) 58%, transparent 82%),
-    radial-gradient(ellipse 88% 42% at 88% 10%, rgba(252, 198, 79, 0.62) 0, rgba(252, 198, 79, 0.328) 34%, rgba(252, 198, 79, 0.146) 58%, transparent 82%),
-    radial-gradient(ellipse 54% 28% at 50% 84%, rgba(252, 198, 79, 0.365) 0, rgba(252, 198, 79, 0.182) 34%, rgba(252, 198, 79, 0.073) 56%, transparent 78%);
 }
 
 .heroCenter {

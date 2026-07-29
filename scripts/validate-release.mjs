@@ -35,8 +35,8 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "1.7.4") {
-  errors.push(`package.json version must be 1.7.4 for this release (found ${pkg.version}).`);
+if (pkg.version !== "1.7.6") {
+  errors.push(`package.json version must be 1.7.6 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [
@@ -58,6 +58,9 @@ for (const path of [
   "app/components/RouteFade.tsx",
   "app/components/FadeLink.tsx",
   "scripts/audit-static.mjs",
+  "scripts/generate-theme.mjs",
+  "app/theme.json",
+  "app/theme.generated.css",
 ]) {
   if (!existsSync(resolve(root, path))) errors.push(`Missing required release file: ${path}`);
 }

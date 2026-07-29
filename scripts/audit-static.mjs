@@ -119,8 +119,18 @@ for (const required of ["readonly id: string", "readonly sortOrder: number", "da
 const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "utf8");
 const splashStyles = readFileSync(resolve(root, "app/styles/splash.css"), "utf8");
 if (!splash.includes("splash-humanity-artwork.jpeg")) errors.push("Splash must use the supplied humanity artwork.");
-if (!splashStyles.includes("background: transparent") || !splashStyles.includes("min-height: 100svh") || !splashStyles.includes("height: 100dvh") || !splash.includes('root.style.backgroundColor = "transparent"')) {
-  errors.push("Splash must cover the full safe viewport on a transparent canvas.");
+if (!splashStyles.includes("background: transparent") || !splashStyles.includes("min-height: 100svh") || !splashStyles.includes("height: 100dvh")) {
+  errors.push("Splash must cover the full safe viewport on a transparent overlay.");
+}
+for (const required of ["splashCanvasActive", "background-image: url(\"/images/splash-humanity-artwork.jpeg\")", "background-size: cover"]) {
+  if (!splashStyles.includes(required)) errors.push(`Safari splash canvas integration is missing: ${required}`);
+}
+const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v1.7.6")) {
+  errors.push("Root layout must activate the splash document canvas and use the current session key.");
+}
+if (!splash.includes('root.classList.remove("splashCanvasActive")')) {
+  errors.push("Splash must remove the document artwork canvas after completion.");
 }
 if (!/\.splashScreen\s*\{[^}]*position:\s*fixed[^}]*inset:\s*0/s.test(splashStyles)) {
   errors.push("First-visit splash base styles must define a fixed full-viewport overlay.");
@@ -138,8 +148,42 @@ if (splashStyles.includes("splashScreenArtWrap::before") || splashStyles.include
   errors.push("Legacy splash gradient overlays must not remain.");
 }
 
+// v1.7.6 centralized theme and gradient architecture.
+const themeSource = readFileSync(resolve(root, "app/theme.json"), "utf8");
+const generatedTheme = readFileSync(resolve(root, "app/theme.generated.css"), "utf8");
+const designSystem = readFileSync(resolve(root, "app/design-system.css"), "utf8");
+const gradients = readFileSync(resolve(root, "app/styles/gradients.css"), "utf8");
+const homepageStyles = readFileSync(resolve(root, "app/styles/homepage.css"), "utf8");
+const artistStyles = readFileSync(resolve(root, "app/styles/artists.css"), "utf8");
+
+for (const required of ["paper", "ink", "accent", "white", "dark", "ticketDark"]) {
+  if (!themeSource.includes(`"${required}"`)) errors.push(`Theme source is missing palette key: ${required}`);
+}
+if (!globals.startsWith('@import "./theme.generated.css";')) {
+  errors.push("Generated theme stylesheet must be imported first.");
+}
+for (const required of ["--color-paper-rgb", "--color-accent-rgb", "--paper-orb-gradient", "--dark-orb-gradient"]) {
+  if (!generatedTheme.includes(required)) errors.push(`Generated theme is missing: ${required}`);
+}
+if (designSystem.includes("--color-paper:") || designSystem.includes("--paper-orb-gradient:")) {
+  errors.push("Palette and gradient colour recipes must not be duplicated in design-system.css.");
+}
+if (/gradient\(/.test(homepageStyles) || /gradient\(/.test(artistStyles)) {
+  errors.push("Homepage and artist component styles must not define gradients directly.");
+}
+for (const required of [".hero {", ".artistHero {", ".artistSet {", ".programmeFilters {", ".artistPortrait::after {"]) {
+  if (!gradients.includes(required)) errors.push(`Central gradient geometry is missing: ${required}`);
+}
+if (/rgba\(252,\s*198,\s*79/.test(gradients)) {
+  errors.push("Gradient colours must derive from --color-accent-rgb rather than hard-coded accent values.");
+}
+if (!readFileSync(resolve(root, "package.json"), "utf8").includes('"theme:generate"')) {
+  errors.push("Package scripts must expose theme generation.");
+}
+
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
 console.log("Static architecture audit passed.");
+

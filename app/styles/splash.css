@@ -2,6 +2,33 @@
    02 — Splash and site entry
    ========================================================================== */
 
+
+/*
+ * Safari paints the areas behind its top status bar and bottom toolbar from
+ * the document canvas, not from a fixed element constrained to the visual
+ * viewport. During the splash, place the exact same artwork on the root and
+ * body canvases so those browser chrome areas remain visually transparent and
+ * reveal the artwork underneath instead of falling back to white.
+ */
+html.splashCanvasActive,
+html.splashCanvasActive body {
+  background-color: transparent;
+  background-image: url("/images/splash-humanity-artwork.jpeg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+
+html.splashCanvasActive {
+  min-height: 100%;
+}
+
+html.splashCanvasActive body {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+}
+
 /*
  * The splash must have a complete first-visit base style. The previous build
  * accidentally scoped that base style to html.splashSessionSeen, a class that

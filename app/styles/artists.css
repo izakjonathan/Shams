@@ -15,24 +15,6 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  --section-wash-1: radial-gradient(ellipse 96% 64% at 3% 10%, rgba(252, 198, 79, 0.50) 0%, rgba(252, 198, 79, 0.24) 42%, transparent 80%);
-  --section-wash-2: radial-gradient(ellipse 88% 56% at 100% 52%, rgba(252, 198, 79, 0.34) 0%, rgba(252, 198, 79, 0.14) 44%, transparent 82%);
-  --section-wash-3: radial-gradient(ellipse 70% 42% at 35% 100%, rgba(252, 198, 79, 0.20) 0%, transparent 78%);
-  --section-glow-1-w: 118vw;
-  --section-glow-1-h: 92vw;
-  --section-glow-1-left: -62vw;
-  --section-glow-1-top: -24vw;
-  --section-glow-1-opacity: 0.78;
-  --section-glow-2-w: 104vw;
-  --section-glow-2-h: 100vw;
-  --section-glow-2-right: -66vw;
-  --section-glow-2-top: 24%;
-  --section-glow-2-opacity: 0.62;
-  --section-glow-3-w: 110vw;
-  --section-glow-3-h: 62vw;
-  --section-glow-3-left: 8vw;
-  --section-glow-3-bottom: -34vw;
-  --section-glow-3-opacity: 0.50;
 }
 
 .artistHeroTopline {
@@ -74,7 +56,7 @@
   min-height: 360px;
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(9, 9, 9, 0.75);
+  border: 1px solid var(--color-ink-75);
   background: var(--color-ink);
 }
 
@@ -84,7 +66,6 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(180deg, transparent 56%, rgba(9, 9, 9, .58) 100%);
 }
 
 .artistPortraitImage {
@@ -119,7 +100,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   border-top: 1px solid var(--color-ink);
-  background: rgba(245, 242, 235, .50);
+  background: var(--color-paper-50);
 }
 
 .artistFactBar > div {
@@ -203,22 +184,6 @@
 .artistSet {
   display: grid;
   gap: 42px;
-  --section-wash-1: radial-gradient(ellipse 88% 58% at 100% 12%, rgba(252, 198, 79, .42), transparent 80%);
-  --section-wash-2: radial-gradient(ellipse 76% 46% at 0% 72%, rgba(252, 198, 79, .25), transparent 78%);
-  --section-wash-3: none;
-  --section-glow-1-w: 112vw;
-  --section-glow-1-h: 86vw;
-  --section-glow-1-right: -62vw;
-  --section-glow-1-top: -18vw;
-  --section-glow-1-opacity: .7;
-  --section-glow-2-w: 98vw;
-  --section-glow-2-h: 102vw;
-  --section-glow-2-left: -62vw;
-  --section-glow-2-bottom: -34vw;
-  --section-glow-2-opacity: .55;
-  --section-glow-3-w: 1px;
-  --section-glow-3-h: 1px;
-  --section-glow-3-opacity: 0;
 }
 
 .artistSetIntro p {
