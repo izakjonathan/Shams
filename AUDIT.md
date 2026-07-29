@@ -78,3 +78,15 @@ The palette is no longer split across CSS and TypeScript. `app/theme.json` is co
 - Dark sections use one equivalent `--dark-gradient-*` control group.
 - Removed the artist quote gradient size/opacity override from `artists.css`.
 - Static audit rejects private hero recipes and per-section size/shape controls.
+
+
+## v1.7.9 hero regression audit
+
+The v1.7.8 centralization incorrectly made the hero inherit ordinary paper-section layer dimensions and placement. This changed both the wash composition and the orb anchors, producing the broken mobile hero shown in testing. v1.7.9 restores the approved hero recipe while keeping every editable value in the centralized gradient file. Verified:
+
+- hero background uses `--hero-wash-1/2/3`;
+- hero layers use `--hero-layer-*` variables;
+- global gradient master controls still apply to hero and paper sections;
+- no gradient declarations exist in `homepage.css` or `artists.css`;
+- hero selectors are not grouped with statement/programme placement selectors;
+- mobile and desktop hero geometry match the approved pre-regression values.

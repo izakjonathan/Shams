@@ -194,13 +194,15 @@ if (!programmeTickets.includes("overflow-x: auto") || !programmeTickets.includes
   errors.push("Programme filter rail must retain horizontal scrolling while suppressing vertical overflow.");
 }
 
-// v1.7.8 all gradient geometry must inherit from the single global control block.
+// v1.7.9 all gradient controls stay centralized while the approved hero composition remains protected.
 for (const required of [
   "--gradient-size:", "--gradient-shape-x:", "--gradient-shape-y:",
   "--gradient-strength:", "--gradient-rotation:",
   "--gradient-layer-1-w:", "--gradient-layer-2-w:", "--gradient-layer-3-w:",
+  "--hero-wash-1:", "--hero-layer-1-w:", "--hero-layer-2-w:", "--hero-layer-3-w:",
   "--dark-gradient-size:", "--dark-gradient-shape-x:", "--dark-gradient-strength:",
   "background-image: var(--gradient-wash-1), var(--gradient-wash-2), var(--gradient-wash-3)",
+  "background-image: var(--hero-wash-1), var(--hero-wash-2), var(--hero-wash-3)",
 ]) {
   if (!gradients.includes(required)) errors.push(`Centralized gradient control is missing: ${required}`);
 }
@@ -211,7 +213,17 @@ for (const selector of [".statement", ".lineup", ".programme", ".faq", ".artistH
   }
 }
 if (/\.hero\s*\{[^}]*radial-gradient/s.test(gradients)) {
-  errors.push("Hero must use the shared wash variables rather than a private radial-gradient recipe.");
+  errors.push("Hero gradient recipes must be variables in the centralized :root control block.");
+}
+for (const required of [
+  "--glow-w: var(--hero-layer-1-w)", "--glow-h: var(--hero-layer-1-h)",
+  "--glow-w: var(--hero-layer-2-w)", "--glow-h: var(--hero-layer-2-h)",
+  "--glow-w: var(--hero-layer-3-w)", "--glow-h: var(--hero-layer-3-h)",
+]) {
+  if (!gradients.includes(required)) errors.push(`Hero orb geometry is not centralized: ${required}`);
+}
+if (/\.hero \.orbOne,\s*\.statement/s.test(gradients)) {
+  errors.push("Hero placement must not be grouped with paper-section placement; that regression breaks the approved hero composition.");
 }
 if (/\.artistQuote \.darkGlowOne\s*\{[^}]*--glow-(?:w|h|opacity)/s.test(artistStyles)) {
   errors.push("Artist quote dark-gradient size/strength must be controlled globally in gradients.css.");

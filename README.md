@@ -1,4 +1,4 @@
-# Shams for Humanity v1.7.8 — Centralized Theme and Gradients
+# Shams for Humanity v1.7.9 — Restored Hero + Centralized Gradient Controls
 
 This release removes the complete artist morph system and replaces every cross-route navigation with one deterministic editorial curtain.
 
@@ -44,6 +44,15 @@ Typography is centralized in `app/styles/typography.css` and uses semantic leadi
 ### v1.7.5 splash canvas
 
 During the first-visit splash, the supplied artwork is applied both to the full-screen overlay and the document canvas. This is required for iOS Safari's top status area and bottom toolbar area to visually continue the artwork. The temporary canvas class is removed when the splash finishes.
+
+## v1.7.9 hero restoration
+
+- Restores the approved v1.7.7 hero wash and three-orb composition exactly.
+- Keeps all editable gradient controls in the single `:root` block at the top of `app/styles/gradients.css`.
+- Global controls (`--gradient-size`, `--gradient-shape-x`, `--gradient-shape-y`, `--gradient-strength`, and `--gradient-rotation`) still affect the hero and every other gradient section.
+- Hero-specific composition tokens are centralized as `--hero-wash-*` and `--hero-layer-*`; they are not scattered through component CSS.
+- Paper sections continue to inherit the shared `--gradient-layer-*` system.
+- The audit rejects the v1.7.8 regression where hero placement was grouped with ordinary paper sections.
 
 ## v1.7.8 centralized visual system
 

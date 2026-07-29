@@ -17,6 +17,57 @@
   --gradient-strength: 1;
   --gradient-rotation: 0deg;
 
+  /* Hero-specific composition — centralized here to preserve the approved hero.
+     The five global controls above still resize/reshape/strengthen all gradients. */
+  --hero-wash-1: radial-gradient(
+    ellipse 68% 40% at -4% 22%,
+    rgb(var(--color-accent-rgb) / calc(0.583 * var(--gradient-wash-strength))) 0%,
+    rgb(var(--color-accent-rgb) / calc(0.328 * var(--gradient-wash-strength))) 36%,
+    rgb(var(--color-accent-rgb) / calc(0.146 * var(--gradient-wash-strength))) 58%,
+    transparent 82%
+  );
+  --hero-wash-2: radial-gradient(
+    ellipse 88% 42% at 88% 10%,
+    rgb(var(--color-accent-rgb) / calc(0.62 * var(--gradient-wash-strength))) 0%,
+    rgb(var(--color-accent-rgb) / calc(0.328 * var(--gradient-wash-strength))) 34%,
+    rgb(var(--color-accent-rgb) / calc(0.146 * var(--gradient-wash-strength))) 58%,
+    transparent 82%
+  );
+  --hero-wash-3: radial-gradient(
+    ellipse 54% 28% at 50% 84%,
+    rgb(var(--color-accent-rgb) / calc(0.365 * var(--gradient-wash-strength))) 0%,
+    rgb(var(--color-accent-rgb) / calc(0.182 * var(--gradient-wash-strength))) 34%,
+    rgb(var(--color-accent-rgb) / calc(0.073 * var(--gradient-wash-strength))) 56%,
+    transparent 78%
+  );
+
+  --hero-layer-1-w: 108vw;
+  --hero-layer-1-h: 76vw;
+  --hero-layer-1-right: -34%;
+  --hero-layer-1-top: -2%;
+  --hero-layer-1-rotate: 18deg;
+  --hero-layer-1-scale-x: 1.24;
+  --hero-layer-1-scale-y: 0.82;
+  --hero-layer-1-opacity: 1;
+
+  --hero-layer-2-w: 84vw;
+  --hero-layer-2-h: 94vw;
+  --hero-layer-2-left: -36%;
+  --hero-layer-2-bottom: -8%;
+  --hero-layer-2-rotate: -30deg;
+  --hero-layer-2-scale-x: 0.96;
+  --hero-layer-2-scale-y: 1.16;
+  --hero-layer-2-opacity: 1;
+
+  --hero-layer-3-w: 66vw;
+  --hero-layer-3-h: 52vw;
+  --hero-layer-3-left: 28%;
+  --hero-layer-3-bottom: 2%;
+  --hero-layer-3-rotate: 24deg;
+  --hero-layer-3-scale-x: 1.46;
+  --hero-layer-3-scale-y: 0.5;
+  --hero-layer-3-opacity: 0.92;
+
   /* Shared light layer geometry — mobile */
   --gradient-layer-1-w: 118vw;
   --gradient-layer-1-h: 86vw;
@@ -84,11 +135,16 @@
   isolation: isolate;
 }
 
-.paperGlowSection,
-.hero {
+.paperGlowSection {
   background-color: var(--color-paper);
   background-repeat: no-repeat;
   background-image: var(--gradient-wash-1), var(--gradient-wash-2), var(--gradient-wash-3);
+}
+
+.hero {
+  background-color: var(--color-paper);
+  background-repeat: no-repeat;
+  background-image: var(--hero-wash-1), var(--hero-wash-2), var(--hero-wash-3);
 }
 
 .paperGlowSection > :not(.paperGlow),
@@ -142,8 +198,8 @@
   background-repeat: no-repeat;
 }
 
-/* All light sections use the same three layer sizes and shapes. */
-.heroOrb.orbOne,
+/* Paper sections share one geometry system. The hero retains its approved
+   composition through dedicated variables in the same centralized block. */
 .paperGlowSection .glowOne {
   --glow-w: var(--gradient-layer-1-w);
   --glow-h: var(--gradient-layer-1-h);
@@ -153,7 +209,6 @@
   --glow-opacity: var(--gradient-layer-1-opacity);
 }
 
-.heroOrb.orbTwo,
 .paperGlowSection .glowTwo {
   --glow-w: var(--gradient-layer-2-w);
   --glow-h: var(--gradient-layer-2-h);
@@ -163,7 +218,6 @@
   --glow-opacity: var(--gradient-layer-2-opacity);
 }
 
-.heroOrb.orbThree,
 .paperGlowSection .glowThree {
   --glow-w: var(--gradient-layer-3-w);
   --glow-h: var(--gradient-layer-3-h);
@@ -173,9 +227,41 @@
   --glow-opacity: var(--gradient-layer-3-opacity);
 }
 
+.hero .orbOne {
+  --glow-w: var(--hero-layer-1-w);
+  --glow-h: var(--hero-layer-1-h);
+  --glow-right: var(--hero-layer-1-right);
+  --glow-top: var(--hero-layer-1-top);
+  --glow-rotate: var(--hero-layer-1-rotate);
+  --glow-scale-x: var(--hero-layer-1-scale-x);
+  --glow-scale-y: var(--hero-layer-1-scale-y);
+  --glow-opacity: var(--hero-layer-1-opacity);
+}
+
+.hero .orbTwo {
+  --glow-w: var(--hero-layer-2-w);
+  --glow-h: var(--hero-layer-2-h);
+  --glow-left: var(--hero-layer-2-left);
+  --glow-bottom: var(--hero-layer-2-bottom);
+  --glow-rotate: var(--hero-layer-2-rotate);
+  --glow-scale-x: var(--hero-layer-2-scale-x);
+  --glow-scale-y: var(--hero-layer-2-scale-y);
+  --glow-opacity: var(--hero-layer-2-opacity);
+}
+
+.hero .orbThree {
+  --glow-w: var(--hero-layer-3-w);
+  --glow-h: var(--hero-layer-3-h);
+  --glow-left: var(--hero-layer-3-left);
+  --glow-bottom: var(--hero-layer-3-bottom);
+  --glow-rotate: var(--hero-layer-3-rotate);
+  --glow-scale-x: var(--hero-layer-3-scale-x);
+  --glow-scale-y: var(--hero-layer-3-scale-y);
+  --glow-opacity: var(--hero-layer-3-opacity);
+}
+
 /* Shared layer placement. Sections can mirror the layout, but not redefine
    size, shape, opacity, or fade recipes. */
-.hero .orbOne,
 .statement .glowOne,
 .programme .glowOne,
 .artistHero .glowOne {
@@ -183,7 +269,6 @@
   --glow-top: -12vw;
 }
 
-.hero .orbTwo,
 .statement .glowTwo,
 .programme .glowTwo,
 .artistHero .glowTwo {
@@ -191,7 +276,6 @@
   --glow-top: 36%;
 }
 
-.hero .orbThree,
 .statement .glowThree,
 .programme .glowThree,
 .artistHero .glowThree {
@@ -249,6 +333,20 @@
     --gradient-layer-2-h: 64vw;
     --gradient-layer-3-w: 74vw;
     --gradient-layer-3-h: 38vw;
+
+    --hero-layer-1-w: 92vw;
+    --hero-layer-1-h: 64vw;
+    --hero-layer-1-right: -24%;
+    --hero-layer-1-top: -4%;
+    --hero-layer-2-w: 72vw;
+    --hero-layer-2-h: 82vw;
+    --hero-layer-2-left: -22%;
+    --hero-layer-2-bottom: -10%;
+    --hero-layer-3-w: 58vw;
+    --hero-layer-3-h: 42vw;
+    --hero-layer-3-left: 30%;
+    --hero-layer-3-bottom: 4%;
+
     --dark-gradient-w: clamp(820px, 92vw, 1520px);
     --dark-gradient-h: clamp(820px, 92vw, 1520px);
   }
@@ -257,7 +355,6 @@
     filter: blur(var(--hero-glow-blur-desktop));
   }
 
-  .hero .orbOne,
   .statement .glowOne,
   .programme .glowOne,
   .artistHero .glowOne {
@@ -265,7 +362,6 @@
     --glow-top: -8vw;
   }
 
-  .hero .orbTwo,
   .statement .glowTwo,
   .programme .glowTwo,
   .artistHero .glowTwo {

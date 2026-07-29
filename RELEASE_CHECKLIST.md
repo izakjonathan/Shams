@@ -56,3 +56,13 @@
 - [x] No section-specific width, height, scale, opacity, or wash recipes remain.
 - [x] Hero no longer uses a private radial-gradient definition.
 - [x] Static audit passes.
+
+
+## v1.7.9 hero restoration
+
+- [x] Restore approved mobile hero wash recipe.
+- [x] Restore approved mobile hero orb dimensions and anchors.
+- [x] Restore approved desktop hero orb dimensions and anchors.
+- [x] Keep hero controls centralized in `app/styles/gradients.css`.
+- [x] Preserve global gradient master controls across all sections.
+- [x] Reject grouping hero placement with paper-section placement in static audit.
