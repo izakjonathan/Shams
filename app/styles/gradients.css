@@ -41,8 +41,8 @@
     transparent 78%
   );
 
-  --hero-layer-1-w: 108vw;
-  --hero-layer-1-h: 76vw;
+  --hero-layer-1-w: 118vw;
+  --hero-layer-1-h: 96vw;
   --hero-layer-1-right: -34%;
   --hero-layer-1-top: -2%;
   --hero-layer-1-rotate: 18deg;
@@ -59,18 +59,18 @@
   --hero-layer-2-scale-y: 1.16;
   --hero-layer-2-opacity: 1;
 
-  --hero-layer-3-w: 66vw;
-  --hero-layer-3-h: 52vw;
+  --hero-layer-3-w: 76vw;
+  --hero-layer-3-h: 62vw;
   --hero-layer-3-left: 28%;
   --hero-layer-3-bottom: 2%;
   --hero-layer-3-rotate: 24deg;
   --hero-layer-3-scale-x: 1.46;
-  --hero-layer-3-scale-y: 0.5;
-  --hero-layer-3-opacity: 0.92;
+  --hero-layer-3-scale-y: 1;
+  --hero-layer-3-opacity: 1;
 
   /* Shared light layer geometry — mobile */
   --gradient-layer-1-w: 118vw;
-  --gradient-layer-1-h: 86vw;
+  --gradient-layer-1-h: 96vw;
   --gradient-layer-1-scale-x: 1.18;
   --gradient-layer-1-scale-y: 0.86;
   --gradient-layer-1-rotate: 18deg;
@@ -84,9 +84,9 @@
   --gradient-layer-2-opacity: 0.76;
 
   --gradient-layer-3-w: 104vw;
-  --gradient-layer-3-h: 58vw;
+  --gradient-layer-3-h: 98vw;
   --gradient-layer-3-scale-x: 1.4;
-  --gradient-layer-3-scale-y: 0.62;
+  --gradient-layer-3-scale-y: 1;
   --gradient-layer-3-rotate: 26deg;
   --gradient-layer-3-opacity: 0.68;
 
