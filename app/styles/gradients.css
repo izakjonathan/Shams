@@ -71,8 +71,8 @@
 }
 
 .orbOne {
-  --glow-w: 108vw;
-  --glow-h: 76vw;
+  --glow-w: 118vw;
+  --glow-h: 96vw;
   --glow-right: -34%;
   --glow-top: -2%;
   --glow-rotate: 18deg;
@@ -81,8 +81,8 @@
 }
 
 .orbTwo {
-  --glow-w: 84vw;
-  --glow-h: 94vw;
+  --glow-w: 104vw;
+  --glow-h: 114vw;
   --glow-left: -36%;
   --glow-bottom: -8%;
   --glow-rotate: -30deg;
@@ -91,13 +91,13 @@
 }
 
 .orbThree {
-  --glow-w: 66vw;
-  --glow-h: 52vw;
+  --glow-w: 96vw;
+  --glow-h: 82vw;
   --glow-left: 28%;
   --glow-bottom: 2%;
   --glow-rotate: 24deg;
   --glow-scale-x: 1.46;
-  --glow-scale-y: 0.5;
+  --glow-scale-y: 1;
   --glow-opacity: 0.92;
 }
 
