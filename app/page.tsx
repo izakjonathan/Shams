@@ -90,9 +90,9 @@ export default function Home() {
         />
         <div className="artistList">
           {artists.map((artist, index) => (
-            <article className="artistRow" id={`artist-${artist.slug}`} key={artist.slug} data-artist-morph-shell>
+            <article className="artistRow" id={`artist-${artist.slug}`} key={artist.slug}>
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
-              <h3 data-artist-morph-title>{artist.name}</h3>
+              <h3>{artist.name}</h3>
               <span>{artist.type}</span>
               <span>{artist.time}</span>
               <span>{artist.stage}</span>

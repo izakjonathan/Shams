@@ -1,31 +1,54 @@
 /* ========================================================================== 
-   22 — Route transitions
+   22 — Editorial route curtain
    ========================================================================== */
 
 :root {
-  --route-panel-duration: var(--duration-menu);
-  --route-panel-ease: var(--ease-menu);
-  --artist-morph-duration: 520ms;
-  --artist-morph-ease: cubic-bezier(.22, 1, .36, 1);
+  --route-curtain-open-duration: 500ms;
+  --route-curtain-close-duration: 470ms;
+  --route-curtain-switch-duration: 430ms;
+  --route-curtain-reveal-duration: 500ms;
+  --route-curtain-ease: var(--ease-menu);
 }
 
 .routeFade {
   min-height: 100%;
 }
 
-/* Utility and information pages retain the menu-style black curtain. */
+/*
+  Route changes use one deterministic editorial curtain. It follows the
+  mobile menu's visual language without touching the menu implementation:
+  a solid black sheet enters from above, navigation commits while the sheet
+  fully covers the viewport, then the sheet leaves upward. The fixed header
+  remains above the sheet, and the route below never fades, scales or moves.
+*/
 .routeTransitionVeil {
   position: fixed;
-  z-index: 40;
+  z-index: 45;
   inset: 0;
+  box-sizing: border-box;
   background: var(--color-dark);
   visibility: hidden;
   pointer-events: none;
-  transform: translate3d(0, -100%, 0);
-  transition:
-    transform var(--route-panel-duration) var(--route-panel-ease),
-    visibility 0s linear var(--route-panel-duration);
+  transform: translate3d(0, -101%, 0);
+  backface-visibility: hidden;
+  contain: strict;
   will-change: transform;
+  transition:
+    transform var(--route-curtain-open-duration) var(--route-curtain-ease),
+    visibility 0s linear var(--route-curtain-open-duration);
+}
+
+/* A restrained warm leading edge keeps the wipe legible against dark pages. */
+.routeTransitionVeil::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--color-yellow);
+  opacity: .78;
+  transform: translateY(100%);
 }
 
 :root.routeTransitionActive .routeTransitionVeil {
@@ -33,11 +56,10 @@
   transition-delay: 0s;
 }
 
-:root[data-route-phase="covering"] .routeFade,
-:root[data-route-phase="covered"] .routeFade,
-:root[data-route-phase="revealing"] .routeFade,
-:root[data-route-phase="revealing-active"] .routeFade,
-:root.manualArtistMorphActive .routeFade {
+:root[data-route-phase="covering"] [data-live-route],
+:root[data-route-phase="covered"] [data-live-route],
+:root[data-route-phase="revealing"] [data-live-route],
+:root[data-route-phase="revealing-active"] [data-live-route] {
   pointer-events: none;
 }
 
@@ -48,71 +70,28 @@
   pointer-events: auto;
 }
 
+:root[data-route-transition="artist-close"] .routeTransitionVeil {
+  transition-duration: var(--route-curtain-close-duration), 0s;
+}
+
+:root[data-route-transition="artist-switch"] .routeTransitionVeil {
+  transition-duration: var(--route-curtain-switch-duration), 0s;
+}
+
 :root[data-route-phase="revealing"] .routeTransitionVeil {
   transition: none;
 }
 
 :root[data-route-phase="revealing-active"] .routeTransitionVeil {
-  transform: translate3d(0, -100%, 0);
+  transform: translate3d(0, -101%, 0);
   pointer-events: auto;
   transition:
-    transform var(--route-panel-duration) var(--route-panel-ease),
-    visibility 0s linear var(--route-panel-duration);
-}
-
-/*
-  Artist routes use a deterministic DOM/FLIP morph instead of the browser
-  View Transition root snapshot. The live outgoing page is cloned before
-  navigation and held above the app while Next.js commits the destination.
-  This prevents Safari from exposing its black/white compositor canvas and
-  makes route latency invisible. The selected title is rendered as a separate
-  fixed layer and transformed into the destination title's measured bounds.
-*/
-.artistMorphSnapshot {
-  position: fixed;
-  z-index: 45;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  contain: strict;
-  opacity: 1;
-  isolation: isolate;
-}
-
-.artistMorphSnapshotBlock {
-  box-sizing: border-box;
-  pointer-events: none !important;
-  opacity: 1 !important;
-  transition: none !important;
-  animation-play-state: paused !important;
-}
-
-.artistMorphFloatingTitle {
-  position: fixed;
-  z-index: 49;
-  display: block;
-  margin: 0;
-  padding: 0;
-  overflow: visible;
-  pointer-events: none;
-  transform-origin: top left;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-  will-change: left, top, width, height, font-size;
-}
-
-:root.manualArtistMorphActive [data-live-route] {
-  opacity: 0;
-}
-
-:root[data-route-phase="morph-revealing-active"] [data-live-route] {
-  opacity: 1;
-  transition: opacity 420ms var(--artist-morph-ease);
+    transform var(--route-curtain-reveal-duration) var(--route-curtain-ease),
+    visibility 0s linear var(--route-curtain-reveal-duration);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .routeTransitionVeil,
-  :root[data-route-phase="morph-revealing-active"] [data-live-route] {
-    transition-duration: 1ms !important;
+  .routeTransitionVeil {
+    transition-duration: 1ms, 0s !important;
   }
 }

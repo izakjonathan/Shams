@@ -1,16 +1,21 @@
-# Shams for Humanity v1.6.4
+# Shams for Humanity v1.7.0 — Editorial Curtain
 
-## Lightweight artist morph transitions
+This release removes the complete artist morph system and replaces every cross-route navigation with one deterministic editorial curtain.
 
-This release keeps the v1.6.3 deterministic DOM/FLIP approach, but removes its largest remaining Safari and performance risk.
+## Transition behaviour
 
-Artist navigation now builds a lightweight snapshot from only the route blocks that intersect the current viewport, with a small overscan area. It no longer clones and lays out the entire homepage or artist page. The selected artist title is isolated into a floating layer and animates by interpolating its measured position, dimensions and typography rather than stretching the letters with separate X/Y transforms.
+- A solid black sheet enters from above immediately after activation.
+- The fixed site header remains stable above the sheet.
+- Next.js navigation begins only after the curtain fully covers the viewport.
+- The destination scroll position is set while hidden.
+- Fonts and two stable layout frames are awaited before reveal.
+- The curtain exits upward; the live page never fades, scales, slides or blurs.
+- Artist close and artist-to-artist actions use slightly faster timing than opening.
+- Same-page hash navigation remains normal smooth scrolling.
+- Reduced-motion users receive a near-instant cover/reveal.
 
-Additional hardening:
+The mobile menu implementation and animation are unchanged.
 
-- the snapshot receives an opaque paper canvas so Safari cannot expose a black or white backing surface through transparent document areas;
-- only the selected artist title is hidden in the outgoing snapshot;
-- the floating title remains below the fixed site header;
-- the destination waits briefly for its priority portrait to decode, then waits for fonts and two stable layout frames;
-- return focus can be applied to the artist row by making it temporarily programmatically focusable;
-- the mobile menu and information-page black curtain remain unchanged.
+## Reliability
+
+The controller uses `transitionend` as its primary lifecycle signal, with bounded timeout fallbacks and a global watchdog for Safari interruption recovery. Internal routes are prefetched on pointer, focus and touch intent.

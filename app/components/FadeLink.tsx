@@ -49,7 +49,6 @@ export function FadeLink({
     routeTransition.navigate(href, {
       focusOnArrival: event.detail === 0,
       transitionKind,
-      morphSource: event.currentTarget,
     });
   };
 

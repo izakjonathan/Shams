@@ -53,13 +53,13 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
         <div className="artistHeroTopline">
           <span>ARTIST {String(artistIndex + 1).padStart(2, "0")} / {String(artists.length).padStart(2, "0")}</span>
         </div>
-        <div className="artistHeroGrid" data-artist-page-shell>
+        <div className="artistHeroGrid">
           <div className="artistHeroCopy">
             <p className="eyebrow">{artist.stage} · {artist.time}</p>
-            <h1 data-artist-morph-title>{artist.name}</h1>
+            <h1>{artist.name}</h1>
             <p className="artistStandfirst">{artist.shortBio}</p>
           </div>
-          <figure className="artistPortrait" data-artist-morph-image>
+          <figure className="artistPortrait">
             <Image
               className="artistPortraitImage"
               src={artist.image}
