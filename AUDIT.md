@@ -1,28 +1,11 @@
-# v2.1.1 architecture audit
+# v2.1.4 deployment type-fix audit
 
-## Scope
+- Fixed the admin authentication constant-time comparison to use `TextEncoder`-produced `Uint8Array` values instead of generic `Buffer` values.
+- This avoids the Node 22 TypeScript `ArrayBufferLike` / `SharedArrayBuffer` incompatibility reported by Vercel at `app/admin/lib/auth.ts`.
+- Credential and session signature comparisons remain constant-time through `node:crypto` `timingSafeEqual`.
+- Reviewed all remaining `Buffer.from` calls; they are encoding/decoding operations and are not passed to `timingSafeEqual`.
+- Release and static architecture validation pass.
 
-The release was reviewed for separation between the approved public frontend and the new administration layer.
+## v2.1.4 selective UX merge
 
-## Confirmed
-
-- Public routes remain on the v2.0.0 validated local repository.
-- `/admin` is excluded from indexing through route metadata.
-- Admin sessions use HTTP-only, same-site cookies with HMAC signatures and an eight-hour expiry.
-- Missing or weak admin configuration cannot authenticate a user.
-- Database access is server-only and lazy; the public frontend does not require `DATABASE_URL`.
-- PostgreSQL uses a generic JSONB content table with stable metadata and a separate append-only audit log.
-- Local content is normalized before database seeding so Next.js `StaticImageData` objects become persistent image paths.
-- Database writes are disabled in the UI until `DATABASE_URL` is configured.
-- Stable IDs cannot be changed in the editor.
-- The mobile menu, splash, Safari canvas controller, route curtain and public CSS were not rewritten.
-
-## Known next-phase work
-
-- Public database repository adapter and preview-mode data selection.
-- Structured per-field editors replacing the foundation JSON editor.
-- Image upload/storage integration.
-- Database-side schema validation before writes.
-- Role-based access, password rotation and optional identity-provider authentication.
-- Revision restore UI and record deletion workflow.
-- A reproducible lockfile and full production build.
+Verified that only the approved UX changes were merged. The TextEncoder authentication fix, shared motion utilities, iOS WebKit canvas guard, settled viewport sampling, conditional route curtain, CSS-derived timing fallbacks, menu translate3d hardening, and corrected audit execution order remain intact.

@@ -144,7 +144,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.1.0")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.1.4")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.add("splashRunwayActive")')) {
@@ -172,7 +172,7 @@ if (splashStyles.includes("splashScreenArtWrap::before") || splashStyles.include
 // v1.8.2 splash handoff must never expose the duplicate artwork canvas.
 for (const required of [
   "splashHandoff", "splashCanvasHandoff", "--document-canvas-color",
-  "window.requestAnimationFrame", 'body.classList.add("splashHandoff")',
+  "afterPaint", 'body.classList.add("splashHandoff")',
 ]) {
   if (!(splash + splashStyles).includes(required)) errors.push(`Splash handoff hardening is missing: ${required}`);
 }
@@ -300,7 +300,7 @@ if (/\.artistQuote \.darkGlowOne\s*\{[^}]*--glow-(?:w|h|opacity)/s.test(artistSt
   errors.push("Artist quote dark-gradient geometry must remain centralized in gradients.css.");
 }
 
-// v2.1.1 Safari bottom-canvas hardening
+// v2.1.4 Safari bottom-canvas and motion hardening
 if (!canvasTone.includes('root.style.backgroundColor = color') || !canvasTone.includes('body.style.backgroundColor = color')) {
   errors.push("DocumentCanvasTone must apply the sampled colour directly to both html and body.");
 }
@@ -309,11 +309,6 @@ if (!canvasTone.includes('documentCanvasAtFooter') || !base.includes('html.docum
 }
 if (!footerStyles.includes('.siteFooter::after') || !footerStyles.includes('flex: 0 0 160px')) {
   errors.push("Footer must include a real black bottom bleed for expanded Safari toolbar states.");
-}
-
-if (errors.length) {
-  errors.forEach((error) => console.error(`ERROR: ${error}`));
-  process.exit(1);
 }
 
 // v2.1.0 typed content architecture
@@ -331,7 +326,7 @@ for (const file of requiredContentFiles) {
   if (!existsSync(join(root, file))) errors.push(`Missing typed content architecture file: ${file}`);
 }
 const appSource = joined;
-if (appSource.includes("lib/content")) errors.push("Legacy app/lib/content imports must not remain.");
+if (/from\s+["'](?:\.\.\/)*lib\/content["']/.test(appSource)) errors.push("Legacy app/lib/content imports must not remain.");
 if (existsSync(join(root, "app/lib/content"))) errors.push("Legacy app/lib/content directory must be removed.");
 if (!appSource.includes("contentRepository.getArtists")) errors.push("Public pages must read artists through the content repository.");
 if (!appSource.includes("contentRepository.getInformationPage")) errors.push("Information pages must read through the content repository.");
@@ -351,7 +346,50 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.1.1") errors.push("package.json version must be 2.1.1.");
+if (packageJson.version !== "2.1.4") errors.push("package.json version must be 2.1.4.");
+// v2.1.4 admin authentication type safety
+const adminAuth = readFileSync(resolve(root, "app/admin/lib/auth.ts"), "utf8");
+if (!adminAuth.includes("const encoder = new TextEncoder()") || !adminAuth.includes("timingSafeEqual(left, right)")) {
+  errors.push("Admin authentication must use TextEncoder-backed Uint8Array values for timingSafeEqual.");
+}
+if (adminAuth.includes("timingSafeEqual(Buffer.from")) {
+  errors.push("Do not pass generic Buffer values directly to timingSafeEqual; this fails Node 22 type checking.");
+}
+
 if (!packageJson.dependencies?.["drizzle-orm"] || !packageJson.dependencies?.postgres) errors.push("Database dependencies are missing.");
+
+// v2.1.4 motion/runtime cleanup
+const motionHelpers = readFileSync(resolve(root, "app/lib/motion.ts"), "utf8");
+for (const required of ["prefersReducedMotion", "cssTimeMs", "afterPaint"]) {
+  if (!motionHelpers.includes(required)) errors.push(`Shared motion helper is missing: ${required}`);
+}
+if (routeFade.includes("document.documentElement.dataset") || routeFade.includes("transitionKindRef")) {
+  errors.push("Route curtain must not mutate global root datasets or retain the obsolete transition-kind ref.");
+}
+if (!routeFade.includes('data-route-phase={phase}') || !transitions.includes('.routeTransitionVeil[data-route-phase=')) {
+  errors.push("Route curtain phase must be scoped to the mounted route/veil elements.");
+}
+if (!routeFade.includes('cssTimeMs("--route-curtain') || !routeFade.includes("FALLBACK_BUFFER_MS")) {
+  errors.push("Route fallback timers must derive from the CSS motion tokens.");
+}
+if (!canvasTone.includes("isIOSWebKit") || !canvasTone.includes("SETTLE_DELAY_MS")) {
+  errors.push("DocumentCanvasTone must avoid continuous dynamic sampling on non-iOS engines and resample after toolbar settling.");
+}
+if (canvasTone.includes("scheduleTwice")) errors.push("Legacy double-rAF canvas scheduling must not remain.");
+const appShell = readFileSync(resolve(root, "app/components/AppShell.tsx"), "utf8");
+for (const obsolete of ["splashEntering", "splashHolding", "splashHandoffActive"]) {
+  if (appShell.includes(obsolete)) errors.push(`Obsolete AppShell splash cleanup state remains: ${obsolete}`);
+}
+if (!splash.includes('cssTimeMs("--duration-splash-enter"') || !splash.includes('cssTimeMs("--duration-splash-exit"')) {
+  errors.push("Splash JavaScript timing must derive from the design-system CSS tokens.");
+}
+if (!readFileSync(resolve(root, "app/components/SiteHeader.tsx"), "utf8").includes('cssTimeMs("--duration-menu"')) {
+  errors.push("Menu fallback timing must derive from the shared CSS duration token.");
+}
+
+if (errors.length) {
+  errors.forEach((error) => console.error(`ERROR: ${error}`));
+  process.exit(1);
+}
 console.log("Static architecture audit passed.");
 
