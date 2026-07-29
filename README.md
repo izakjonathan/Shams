@@ -1,59 +1,27 @@
-# Shams for Humanity v1.8.1 — Restored Hero + Simple Gradient Controls
+# Shams for Humanity v1.8.3
 
-This release removes the complete artist morph system and replaces every cross-route navigation with one deterministic editorial curtain.
+This release hardens the site for iOS 26 Safari Liquid Glass while preserving the approved v1.8.2 visual design, editorial curtain, menu, hero, gradients, content, and navigation.
 
-## Transition behaviour
+## Safari viewport system
 
-- A solid black sheet enters from above immediately after activation.
-- The fixed site header remains stable above the sheet.
-- Next.js navigation begins only after the curtain fully covers the viewport.
-- The destination scroll position is set while hidden.
-- Fonts and two stable layout frames are awaited before reveal.
-- The curtain exits upward; the live page never fades, scales, slides or blurs.
-- Artist close and artist-to-artist actions use slightly faster timing than opening.
-- Same-page hash navigation remains normal smooth scrolling.
-- Reduced-motion users receive a near-instant cover/reveal.
+- `html` and `body` always have an explicit document-canvas colour.
+- The server-rendered fallback is the site paper colour.
+- During the splash, Safari receives a sampled blue fallback colour instead of a transparent root or root background image.
+- The splash artwork bleeds above and below the visual viewport using dedicated top and bottom guard bands.
+- A 62 px scroll runway is enabled only on touch mobile Safari, then removed while the splash is still opaque.
+- The normal homepage and all route coordinates remain unchanged; there is no global runway.
+- The site shell becomes inert and `aria-hidden` while the splash is active, then is restored before the dissolve.
+- The document is not locked with `body { overflow: hidden; }`.
 
-The mobile menu implementation and animation are unchanged.
+## Fixed-element tint isolation
 
-## Reliability
+- The editorial route curtain is mounted only while a route transition is active.
+- The mobile menu remains conditionally mounted exactly as before.
+- The fixed page-close wrapper is transparent and borderless; its visible circular border, cross, hover fill, and focus ring live on an absolutely positioned child.
+- The fixed site header remains transparent with no backdrop filter.
 
-The controller uses `transitionend` as its primary lifecycle signal, with bounded timeout fallbacks and a global watchdog for Safari interruption recovery. Internal routes are prefetched on pointer, focus and touch intent.
+## Splash handoff
 
-### v1.7.2 typography system
-Typography is centralized in `app/styles/typography.css` and uses semantic leading tokens from `app/design-system.css`. Adjust those tokens first for future site-wide typography refinements.
+The sampled blue canvas, scroll runway, and artwork remain active while the splash is opaque. During exit, the runway is removed, scroll is restored to zero, the document canvas switches to paper, the site shell is made interactive, two frames are painted, and only then does the artwork dissolve.
 
-
-### v1.7.5 programme and splash preparation
-
-- Programme rows render their editable `time` values rather than generated ordinal numbers.
-- Programme records now have stable IDs and explicit sort order for future CMS/API mapping.
-- Rendered rows expose content ID and status data attributes for admin-preview integration.
-- The supplied humanity artwork is the new full-bleed splash image.
-- Splash and document canvases remain transparent through the safe areas, with no legacy gradient overlays.
-
-
-## v1.7.5 splash fix
-
-- Restores unscoped first-visit `.splashScreen` geometry and stacking.
-- Uses `100dvh` with `100svh`/`100vh` fallbacks for iOS viewport coverage.
-- Keeps the site shell hidden until the splash exits.
-- Uses a versioned session key and records it only after a completed sequence.
-- Repeat visits are suppressed before hydration without affecting first visits.
-
-### v1.7.5 splash canvas
-
-During the first-visit splash, the supplied artwork is applied both to the full-screen overlay and the document canvas. This is required for iOS Safari's top status area and bottom toolbar area to visually continue the artwork. The temporary canvas class is removed when the splash finishes.
-
-## v1.8.1 hero restoration and safe controls
-
-- Restores the complete approved v1.7.7 hero gradient implementation and geometry.
-- Removes the over-centralized v1.7.8/v1.7.9 layer, shape, rotation, and hero-token systems.
-- Exposes only two controls at the top of `app/styles/gradients.css`:
-  - `--gradient-size`: visually enlarges or reduces gradient artwork only.
-  - `--gradient-strength`: adjusts gradient visibility only.
-- Neither control changes section height, width, spacing, typography, content positioning, or page scale.
-- Section-specific placement remains exactly as designed, so changing the two master controls cannot rearrange the composition.
-- The hero wash and all section washes are isolated in pseudo-elements so strength can be adjusted without changing layout.
-
-Use `1` for the approved original appearance. For example, `1.1` makes the glow artwork 10% larger; `0.8` makes all gradients 20% weaker.
+The splash session key is `shf-splash-seen-v1.8.3`.

@@ -82,6 +82,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
   const [phase, setPhase] = useState<TransitionPhase>("idle");
   const [transitioning, setTransitioning] = useState(false);
   const veilRef = useRef<HTMLDivElement | null>(null);
+  const mountFrameRef = useRef<number | null>(null);
   const lockRef = useRef(false);
   const previousPathRef = useRef(pathname);
   const timersRef = useRef<number[]>([]);
@@ -115,6 +116,10 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     pendingRef.current = null;
     navigationStartedRef.current = false;
     lockRef.current = false;
+    if (mountFrameRef.current !== null) {
+      window.cancelAnimationFrame(mountFrameRef.current);
+      mountFrameRef.current = null;
+    }
     setTransitioning(false);
     setTransitionPhase("idle");
     delete document.documentElement.dataset.routeTransition;
@@ -237,12 +242,22 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     }
 
     document.documentElement.dataset.routeTransition = kind;
-    document.documentElement.classList.add("routeTransitionActive");
-    setTransitionPhase("covering");
+    setTransitionPhase("idle");
 
-    // transitionend is the primary trigger; this bounded fallback protects
-    // navigation if Safari suppresses the event during interruption.
-    timer(startNavigation, reducedMotion() ? 0 : COVER_TIMEOUT_MS);
+    /*
+     * The fixed curtain is mounted only for an active transition. Paint its
+     * off-screen idle state first, then begin covering on the next frame.
+     * This removes an inactive fixed black layer from Safari's tint scan.
+     */
+    mountFrameRef.current = window.requestAnimationFrame(() => {
+      mountFrameRef.current = window.requestAnimationFrame(() => {
+        mountFrameRef.current = null;
+        if (!lockRef.current) return;
+        document.documentElement.classList.add("routeTransitionActive");
+        setTransitionPhase("covering");
+        timer(startNavigation, reducedMotion() ? 0 : COVER_TIMEOUT_MS);
+      });
+    });
     timer(unlock, WATCHDOG_MS);
   }, [clearTimers, setTransitionPhase, startNavigation, timer, unlock]);
 
@@ -252,6 +267,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     return () => {
       window.history.scrollRestoration = previous;
       clearTimers();
+      if (mountFrameRef.current !== null) window.cancelAnimationFrame(mountFrameRef.current);
       delete document.documentElement.dataset.routeTransition;
       delete document.documentElement.dataset.routePhase;
       document.documentElement.classList.remove("routeTransitionActive");
@@ -278,12 +294,14 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       <div className={`routeFade routeFade--${phase}`} data-live-route data-transition-kind={transitionKindRef.current} aria-busy={transitioning}>
         {children}
       </div>
-      <div
-        ref={veilRef}
-        className="routeTransitionVeil"
-        aria-hidden="true"
-        onTransitionEnd={handleVeilTransitionEnd}
-      />
+      {transitioning && (
+        <div
+          ref={veilRef}
+          className="routeTransitionVeil"
+          aria-hidden="true"
+          onTransitionEnd={handleVeilTransitionEnd}
+        />
+      )}
       <span className="srOnly" aria-live="polite" aria-atomic="true">
         {transitioning ? "Loading page" : ""}
       </span>

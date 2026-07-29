@@ -3,7 +3,7 @@
    ========================================================================== */
 
 /* Splash stages: artwork enters within an opaque full-screen layer;
-   the overlay then fades/scales out while the site rises underneath. */
+   the live site is prepared underneath before the artwork dissolves away. */
 
 .splashScreen.isEntering .splashScreenArtWrap {
   opacity: 0;
@@ -23,8 +23,8 @@
 }
 
 .splashScreen.isExiting .splashScreenArtWrap {
-  transform: scale(1.015);
-  filter: blur(6px);
+  transform: scale(1.012);
+  filter: none;
   transition-duration: var(--duration-splash-exit);
 }
 

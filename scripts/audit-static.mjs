@@ -93,8 +93,11 @@ if (!closeButton.includes('href = "/#site-footer"') || !closeButton.includes("Cr
   errors.push("Information-page close control must return to the footer and use the custom cross icon.");
 }
 const closeStyles = readFileSync(resolve(root, "app/styles/close-control.css"), "utf8");
-if (!closeStyles.includes("background: transparent") || !closeStyles.includes("border: 1px solid var(--color-ink)")) {
-  errors.push("Close control must be an unfilled black circular outline.");
+if (!closeStyles.includes(".pageCloseButtonVisual") || !closeStyles.includes("border: 1px solid var(--color-ink)")) {
+  errors.push("Close control visuals must live on an absolute child with an unfilled black circular outline.");
+}
+if (!/\.pageCloseButton\s*\{[^}]*position:\s*fixed[^}]*border:\s*0[^}]*background:\s*transparent/s.test(closeStyles)) {
+  errors.push("The fixed close-control wrapper must remain visually transparent for Safari tint isolation.");
 }
 
 const footer = readFileSync(resolve(root, "app/components/SiteFooter.tsx"), "utf8");
@@ -120,18 +123,29 @@ for (const required of ["readonly id: string", "readonly sortOrder: number", "da
 const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "utf8");
 const splashStyles = readFileSync(resolve(root, "app/styles/splash.css"), "utf8");
 if (!splash.includes("splash-humanity-artwork.jpeg")) errors.push("Splash must use the supplied humanity artwork.");
-if (!splashStyles.includes("background: transparent") || !splashStyles.includes("min-height: 100svh") || !splashStyles.includes("height: 100dvh")) {
-  errors.push("Splash must cover the full safe viewport on a transparent overlay.");
+if (!splashStyles.includes("background-color: transparent") || !splashStyles.includes("min-height: 100svh") || !splashStyles.includes("height: 100dvh")) {
+  errors.push("Splash overlay must cover the full safe viewport while its fixed wrapper remains visually transparent.");
 }
-for (const required of ["splashCanvasActive", "background-image: url(\"/images/splash-humanity-artwork.jpeg\")", "background-size: cover"]) {
-  if (!splashStyles.includes(required)) errors.push(`Safari splash canvas integration is missing: ${required}`);
+for (const required of [
+  "--safari-splash-color", "--safari-splash-top-bleed", "--safari-splash-bottom-bleed",
+  "--safari-splash-scroll-offset", "splashRunwayActive", "overflow-y: scroll",
+  "top: calc(-1 * var(--safari-splash-top-bleed))",
+  "bottom: calc(-1 * var(--safari-splash-bottom-bleed))",
+]) {
+  if (!splashStyles.includes(required)) errors.push(`Safari splash viewport hardening is missing: ${required}`);
+}
+if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles)) {
+  errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v1.7.6")) {
-  errors.push("Root layout must activate the splash document canvas and use the current session key.");
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v1.8.3")) {
+  errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
-if (!splash.includes('root.classList.remove("splashCanvasActive")')) {
-  errors.push("Splash must remove the document artwork canvas after completion.");
+if (!splash.includes('root.classList.add("splashRunwayActive")')) {
+  errors.push("The splash-only runway must be activated dynamically only on mobile Safari.");
+}
+if (!splash.includes('root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashRunwayActive")')) {
+  errors.push("Splash must remove all temporary canvas and runway states after completion.");
 }
 if (!/\.splashScreen\s*\{[^}]*position:\s*fixed[^}]*inset:\s*0/s.test(splashStyles)) {
   errors.push("First-visit splash base styles must define a fixed full-viewport overlay.");
@@ -147,6 +161,46 @@ if (!splash.includes('markSplashSeen();\n        root.classList.add("splashSessi
 }
 if (splashStyles.includes("splashScreenArtWrap::before") || splashStyles.includes("splashScreenArtWrap::after")) {
   errors.push("Legacy splash gradient overlays must not remain.");
+}
+
+// v1.8.2 splash handoff must never expose the duplicate artwork canvas.
+for (const required of [
+  "splashHandoff", "splashCanvasHandoff", "--document-canvas-color",
+  "window.requestAnimationFrame", 'body.classList.add("splashHandoff")',
+]) {
+  if (!(splash + splashStyles).includes(required)) errors.push(`Splash handoff hardening is missing: ${required}`);
+}
+if (!/\.splashHandoff \.siteShell,\s*\.splashExiting \.siteShell,[\s\S]*?\{[^}]*opacity:\s*1[^}]*transition:\s*none/s.test(splashStyles)) {
+  errors.push("The destination site must be fully painted before the splash starts fading.");
+}
+if (!/html\.splashCanvasActive\.splashCanvasHandoff[\s\S]*--document-canvas-color:\s*var\(--color-paper\)[\s\S]*background-color:\s*var\(--document-canvas-color\)/.test(splashStyles)) {
+  errors.push("The sampled splash canvas must switch atomically to the paper canvas during handoff.");
+}
+if (/\.splashExiting \.siteShell\s*\{[^}]*transition-delay/s.test(splashStyles)) {
+  errors.push("Splash exit must not delay revealing the destination site.");
+}
+if (/\.splashScreen\.isExiting \.splashScreenArtWrap\s*\{[^}]*filter:\s*blur/s.test(readFileSync(resolve(root, "app/styles/splash-states.css"), "utf8"))) {
+  errors.push("Splash exit must not blur the blue artwork over the destination.");
+}
+
+// v1.8.3 iOS Safari Liquid Glass hardening.
+if (/body\.splashActive\s*\{[^}]*overflow:\s*hidden/s.test(splashStyles)) {
+  errors.push("Splash must not lock body scrolling on iOS Safari.");
+}
+if (!splash.includes("shell.inert = inert") || !splash.includes('shell.setAttribute("aria-hidden", "true")')) {
+  errors.push("The site shell must become inert and aria-hidden while the splash is active.");
+}
+if (!routeFade.includes("{transitioning && (") || !routeFade.includes('className="routeTransitionVeil"')) {
+  errors.push("The fixed route curtain must be conditionally mounted only during transitions.");
+}
+if (/(?:^|[;{])\s*visibility:\s*hidden/m.test(transitions)) {
+  errors.push("The route curtain must not remain mounted and hidden with visibility.");
+}
+if (!base.includes("--document-canvas-color: var(--color-paper)") || !base.includes("background-color: var(--document-canvas-color)")) {
+  errors.push("html/body need an immediate server-rendered paper canvas fallback.");
+}
+if (/html\.splashSessionSeen[\s\S]*background-color:\s*transparent/.test(splashStyles)) {
+  errors.push("Repeat visits must never leave the root canvas transparent.");
 }
 
 // v1.7.6 centralized theme and gradient architecture.

@@ -1,85 +1,20 @@
-# v1.7.1 release checklist
+# Release checklist — v1.8.3
 
-- [x] Artist morph system removed from TSX, CSS and link plumbing
-- [x] Editorial curtain used for artist open, close and artist-to-artist navigation
-- [x] Utility/information pages use the same coherent curtain system
-- [x] Mobile menu implementation left unchanged
-- [x] Fixed header remains above route curtain
-- [x] No live-page opacity, scale, blur or directional movement
-- [x] Route commits only while viewport is fully covered
-- [x] Destination scroll is positioned before reveal
-- [x] Fonts and stable layout frames awaited before reveal
-- [x] `transitionend` lifecycle plus timeout fallback and watchdog
-- [x] Duplicate-click lock and internal-route prefetching preserved
-- [x] Reduced-motion bypass included
-- [x] Static architecture audit updated to reject old morph code
-
-## v1.7.2 typography
-- [x] Global semantic heading controls use Agilera.
-- [x] Wrapped headings use compact explicit line-height values.
-- [x] Legal/information page typography and spacing are standardized.
-- [x] Typography stylesheet is imported last to prevent legacy overrides.
-
-
-## v1.7.5
-- [x] Programme displays times 16:00–02:00 instead of 01–08.
-- [x] Programme content has stable IDs and explicit editorial ordering for future admin data.
-- [x] New supplied splash artwork is packaged locally and rendered full bleed.
-- [x] Splash safe-area canvas is transparent and legacy overlays are removed.
-
-- [x] Splash artwork is painted on the root document canvas while active.
-- [x] Safari top and bottom browser UI can sample the artwork rather than a white fallback.
-- [x] The temporary splash canvas is removed for repeat visits and after completion.
-
-
-## v1.7.8 centralized theme and gradients
-- [x] Core palette moved to one editable `app/theme.json` source.
-- [x] Theme CSS is generated automatically before dev and build.
-- [x] Manifest, Open Graph and global error use the same theme source.
-- [x] Gradient colour recipes derive from shared RGB channels.
-- [x] All gradient geometry and declarations are centralized in `app/styles/gradients.css`.
-- [x] Homepage and artist styles contain no direct gradient declarations.
-- [x] Static audit rejects palette duplication and gradient regressions.
-
-
-## Programme filter rail
-
-- [x] No right-edge white/paper gradient.
-- [x] No visible horizontal scrollbar.
-- [x] Horizontal touch scrolling remains available.
-- [x] Vertical page scrolling does not reveal a filter scrollbar.
-
-## v1.7.8 gradient system
-
-- [x] One global light-gradient control block affects hero and all paper sections.
-- [x] One global dark-gradient control block affects all dark sections.
-- [x] No section-specific width, height, scale, opacity, or wash recipes remain.
-- [x] Hero no longer uses a private radial-gradient definition.
-- [x] Static audit passes.
-
-
-## v1.8.1 hero restoration
-
-- [x] Restore approved mobile hero wash recipe.
-- [x] Restore approved mobile hero orb dimensions and anchors.
-- [x] Restore approved desktop hero orb dimensions and anchors.
-- [x] Keep hero controls centralized in `app/styles/gradients.css`.
-- [x] Preserve global gradient master controls across all sections.
-- [x] Reject grouping hero placement with paper-section placement in static audit.
-
-## v1.8.1 hero and gradient controls
-
-- [x] Approved v1.7.7 hero wash recipe restored.
-- [x] Approved mobile and desktop hero orb geometry restored.
-- [x] Only `--gradient-size` and `--gradient-strength` are exposed as master controls.
-- [x] No global shape, rotation, layer-size, or hero-layer token system remains.
-- [x] Master controls affect gradient artwork only, never section/content geometry.
-- [x] Unsupported custom-property multiplication in `calc()` is absent.
-
-## v1.8.1 Safari bottom edge
-
-- [x] No permanent transparent root/body canvas after the splash.
-- [x] Bottom browser chrome samples the section colour touching the viewport bottom.
-- [x] Dark ticket and footer areas keep a dark document canvas.
-- [x] Footer covers `100vh`, `100svh`, and `100dvh`.
-- [x] No white overlay or bottom fade is added to page content.
+- [x] Built from v1.8.2.
+- [x] `viewport-fit=cover` retained.
+- [x] Explicit paper root fallback rendered server-side.
+- [x] Dedicated sampled splash colour added.
+- [x] Root splash background image removed.
+- [x] Splash media bleeds above and below Safari chrome.
+- [x] Splash-only mobile Safari runway added.
+- [x] No global runway or normal-page coordinate offset.
+- [x] Body splash overflow lock removed.
+- [x] Site shell inert/aria-hidden lifecycle added.
+- [x] Route curtain conditionally mounted.
+- [x] Mobile menu conditional mounting preserved.
+- [x] Fixed close-control visuals moved to an absolute child.
+- [x] `DocumentCanvasTone` retained.
+- [x] Splash session key updated to v1.8.3.
+- [x] Release validation passes.
+- [x] Static architecture audit passes.
+- [x] CSS brace validation passes.

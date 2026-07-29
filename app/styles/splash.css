@@ -2,39 +2,44 @@
    02 — Splash and site entry
    ========================================================================== */
 
+:root {
+  /* Sampled from the supplied artwork for Safari's Liquid Glass fallback. */
+  --safari-splash-color: #78bce8;
+  --safari-splash-top-bleed: 72px;
+  --safari-splash-bottom-bleed: 160px;
+  --safari-splash-scroll-offset: 62px;
+}
 
 /*
- * Safari paints the areas behind its top status bar and bottom toolbar from
- * the document canvas, not from a fixed element constrained to the visual
- * viewport. During the splash, place the exact same artwork on the root and
- * body canvases so those browser chrome areas remain visually transparent and
- * reveal the artwork underneath instead of falling back to white.
+ * html and body always retain an explicit colour. Safari 26 may sample the
+ * root colour behind its native chrome, and transparent roots can fall back
+ * to white or black. The visible artwork is a separate bleeding media layer.
  */
 html.splashCanvasActive,
 html.splashCanvasActive body {
-  background-color: transparent;
-  background-image: url("/images/splash-humanity-artwork.jpeg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+  --document-canvas-color: var(--safari-splash-color);
+  background-color: var(--document-canvas-color);
+  background-image: none;
 }
 
-html.splashCanvasActive {
+/* Splash-only runway. Normal site coordinates remain completely unchanged. */
+html.splashRunwayActive {
   min-height: 100%;
+  overflow-y: scroll;
+  overscroll-behavior: none;
 }
 
-html.splashCanvasActive body {
-  min-height: 100vh;
-  min-height: 100svh;
-  min-height: 100dvh;
+html.splashRunwayActive body {
+  min-height: calc(100dvh + var(--safari-splash-scroll-offset));
 }
 
-/*
- * The splash must have a complete first-visit base style. The previous build
- * accidentally scoped that base style to html.splashSessionSeen, a class that
- * exists only when the splash should be skipped. On a genuine first visit the
- * overlay therefore had no fixed geometry or stacking context.
- */
+/* Switch to the normal paper canvas while the opaque splash still covers it. */
+html.splashCanvasActive.splashCanvasHandoff,
+html.splashCanvasActive.splashCanvasHandoff body {
+  --document-canvas-color: var(--color-paper);
+  background-color: var(--document-canvas-color);
+}
+
 .splashScreen {
   position: fixed;
   z-index: 120;
@@ -46,26 +51,31 @@ html.splashCanvasActive body {
   min-height: 100svh;
   display: grid;
   place-items: center;
-  overflow: hidden;
-  background: transparent;
+  overflow: visible;
+  background-color: transparent;
   opacity: 1;
   transform: none;
   transition:
     opacity var(--duration-splash-exit) var(--ease-splash),
     transform var(--duration-splash-exit) var(--ease-splash);
   touch-action: none;
+  overscroll-behavior: contain;
   isolation: isolate;
 }
 
+/*
+ * Bleed real image pixels beyond both visual-viewport edges. This gives
+ * Safari content to composite when the expanded toolbar changes its bounds.
+ */
 .splashScreenArtWrap {
   position: absolute;
   z-index: 1;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  min-height: 100svh;
+  top: calc(-1 * var(--safari-splash-top-bleed));
+  right: 0;
+  bottom: calc(-1 * var(--safari-splash-bottom-bleed));
+  left: 0;
   overflow: hidden;
-  background: transparent;
+  background-color: var(--safari-splash-color);
   opacity: 1;
   transform: none;
   filter: none;
@@ -79,30 +89,20 @@ html.splashCanvasActive body {
   z-index: 1;
   object-fit: cover;
   object-position: center center;
-  background: transparent;
+  background-color: var(--safari-splash-color);
   transform: scale(1.01);
   transform-origin: center center;
 }
 
-/* Keep the live site out of view until the splash begins its exit. */
-body.splashActive {
-  overflow: hidden;
-}
-
+/* The document remains scrollable; the overlay itself blocks gestures. */
 .splashActive .siteShell {
   opacity: 0;
-  transform: translate3d(0, 18px, 0) scale(0.995);
-}
-
-.splashExiting .siteShell {
-  opacity: 1;
   transform: none;
-  transition:
-    opacity var(--duration-site-enter) var(--ease-splash),
-    transform var(--duration-site-enter) var(--ease-splash);
-  transition-delay: 180ms;
 }
 
+/* The destination is painted and made interactive before the dissolve. */
+.splashHandoff .siteShell,
+.splashExiting .siteShell,
 .splashComplete .siteShell {
   opacity: 1;
   transform: none;
@@ -110,23 +110,17 @@ body.splashActive {
 }
 
 .splashActive .skipLink,
+.splashHandoff .skipLink,
 .splashExiting .skipLink {
   opacity: 0;
   pointer-events: none;
 }
 
-/*
- * The pre-hydration session gate is only for repeat visits. It must hide the
- * server-rendered splash immediately and expose the site, not define the
- * splash's normal layout.
- */
+/* Repeat visits skip the overlay but keep the explicit paper canvas. */
 html.splashSessionSeen,
 html.splashSessionSeen body {
-  background-color: transparent;
-}
-
-html.splashSessionSeen body.splashActive {
-  overflow: visible;
+  --document-canvas-color: var(--color-paper);
+  background-color: var(--document-canvas-color);
 }
 
 html.splashSessionSeen .splashScreen {

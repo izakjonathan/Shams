@@ -19,7 +19,9 @@ export function PageCloseButton({
       transitionKind={href.startsWith("/#artist-") ? "artist-close" : "page-close"}
       aria-label={label}
     >
-      <CrossIcon />
+      <span className="pageCloseButtonVisual" aria-hidden="true">
+        <CrossIcon />
+      </span>
     </FadeLink>
   );
 }

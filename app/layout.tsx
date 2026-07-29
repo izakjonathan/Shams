@@ -61,7 +61,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "transparent",
+  themeColor: "#f5f2eb",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -111,14 +111,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           id="splash-session-gate"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `try{if(sessionStorage.getItem("shf-splash-seen-v1.7.6")==="1"){document.documentElement.classList.add("splashSessionSeen");document.documentElement.classList.remove("splashCanvasActive");}}catch{}`,
+            __html: `try{if(sessionStorage.getItem("shf-splash-seen-v1.8.3")==="1"){document.documentElement.classList.add("splashSessionSeen");document.documentElement.classList.remove("splashCanvasActive","splashRunwayActive");}}catch{}`,
           }}
         />
         <noscript>
           <style>{`
             .splashScreen { display: none !important; }
             .siteShell { opacity: 1 !important; transform: none !important; }
-            body.splashActive { overflow: visible !important; }
             .splashActive .skipLink { opacity: 1 !important; pointer-events: auto !important; }
           `}</style>
         </noscript>
