@@ -13,8 +13,8 @@
  * 0.85 = 15% smaller/weaker.
  */
 :root {
-  --gradient-size: 1;
-  --gradient-strength: 1;
+  --gradient-size: 1.5;
+  --gradient-strength: 1.2;
 }
 
 .paperGlowSection,
