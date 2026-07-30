@@ -36,6 +36,27 @@ html.documentCanvasAtFooter body {
   background-color: var(--color-dark) !important;
 }
 
+/* Safari can expose the root canvas beneath its expanded bottom toolbar before
+ * its scroll metrics report the exact document end. While the footer actually
+ * touches the visual viewport bottom, render a non-layout black underlay behind
+ * the app. It is display:none at all other times, so it cannot tint the toolbar
+ * elsewhere or alter document height. */
+body::after {
+  content: "";
+  display: none;
+}
+
+html.documentCanvasAtFooter body::after {
+  content: "";
+  display: block;
+  position: fixed;
+  inset: auto 0 0;
+  height: max(180px, calc(env(safe-area-inset-bottom, 0px) + 140px));
+  background-color: var(--color-dark);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .siteShell {
   position: relative;
   z-index: 1;

@@ -40,17 +40,30 @@ function sampledCanvasColor(): string | null {
   return [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
 }
 
+function footerTouchesVisualViewportBottom(): boolean {
+  const footer = document.getElementById("site-footer");
+  if (!footer) return false;
+
+  const viewport = window.visualViewport;
+  const visibleHeight = Math.max(1, viewport?.height ?? window.innerHeight);
+  const rect = footer.getBoundingClientRect();
+  const tolerance = 4;
+
+  return rect.top <= visibleHeight + tolerance && rect.bottom >= visibleHeight - tolerance;
+}
+
 function isAtDocumentBottom(): boolean {
   const viewport = window.visualViewport;
   const viewportBottom = window.scrollY + (viewport?.offsetTop ?? 0) + (viewport?.height ?? window.innerHeight);
   const layoutBottom = window.scrollY + document.documentElement.clientHeight;
-  const documentBottom = document.documentElement.scrollHeight - 12;
+  const documentBottom = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) - 12;
   return viewportBottom >= documentBottom || layoutBottom >= documentBottom;
 }
 
 /**
  * Keeps the iOS WebKit document canvas aligned with the content touching the
- * bottom of the visual viewport. Work is coalesced to one animation frame per
+ * bottom of the visual viewport. Footer contact is detected geometrically,
+ * rather than relying only on the unstable mathematical document end. Work is coalesced to one animation frame per
  * event burst, followed by one settled sample after Safari finishes moving its
  * toolbar. Invalid samples retain the last valid colour.
  */
@@ -89,7 +102,7 @@ export function DocumentCanvasTone() {
       frame = 0;
       if (root.classList.contains("splashCanvasActive")) return;
 
-      if (isAtDocumentBottom() && document.getElementById("site-footer")) {
+      if (footerTouchesVisualViewportBottom() || isAtDocumentBottom()) {
         pendingColor = null;
         pendingCount = 0;
         root.classList.add("documentCanvasAtFooter");

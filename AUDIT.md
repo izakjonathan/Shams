@@ -1,26 +1,21 @@
-# v2.1.6 artist arrow restoration audit
+# v2.1.7 permanent Safari footer-canvas audit
 
-- Fixed the admin authentication constant-time comparison to use `TextEncoder`-produced `Uint8Array` values instead of generic `Buffer` values.
-- This avoids the Node 22 TypeScript `ArrayBufferLike` / `SharedArrayBuffer` incompatibility reported by Vercel at `app/admin/lib/auth.ts`.
-- Credential and session signature comparisons remain constant-time through `node:crypto` `timingSafeEqual`.
-- Reviewed all remaining `Buffer.from` calls; they are encoding/decoding operations and are not passed to `timingSafeEqual`.
-- Release and static architecture validation pass.
+## Root cause
+The previous implementation locked the canvas to black only when the mathematical document bottom was reached. iOS Safari changes `visualViewport.height`, toolbar geometry, and native chrome independently. The footer could visibly touch the toolbar while both document-end calculations remained a few pixels short, leaving the paper canvas visible as a white strip.
 
-## v2.1.6 selective UX merge
+## Resolution
+- Detect footer contact directly from `#site-footer.getBoundingClientRect()` against `visualViewport.height`.
+- Retain exact document-bottom detection as a secondary safeguard.
+- Force literal dark backgrounds on both `html` and `body` while footer contact is active.
+- Add a conditionally rendered fixed black underlay behind the site shell. It is `display:none` outside footer state and never contributes to document height.
+- Keep the footer itself at one viewport; no flow bleed, spacer, pseudo-content below the footer, or extra scroll distance is introduced.
+- Use the maximum of body and root scroll heights for the secondary bottom check.
 
-Verified that only the approved UX changes were merged. The TextEncoder authentication fix, shared motion utilities, iOS WebKit canvas guard, settled viewport sampling, conditional route curtain, CSS-derived timing fallbacks, menu translate3d hardening, and corrected audit execution order remain intact.
+## Regression guards
+The static audit now requires footer-contact geometry detection, the non-layout conditional underlay, and rejects reintroduction of flow-based footer bleed.
 
-
-## Artist arrow regression check
-
-- The mobile-only `.artistArrow` 44 px size override has been removed.
-- Homepage artist arrows inherit the shared `--icon-button-size` token from `homepage.css`.
-- No negative margin is applied to artist arrow controls.
-- All other v2.1.4 accessibility improvements remain intact.
-
-## v2.1.6 footer viewport correction
-- Removed the 160 px `siteFooter::after` flow-content bleed that made the footer taller than one viewport.
-- The footer retains `100vh`/`100svh`/`100dvh` minimum sizing and safe-area padding.
-- Safari toolbar coverage now relies on the existing explicit black `html`/`body` canvas at true document bottom, avoiding extra layout height.
-- Confirmed the footer bottom row still uses `margin-top: auto`, so the footer composition fills one screen without a trailing empty block.
-
+## Validation
+- Release validation passed.
+- Static architecture audit passed.
+- Validation scripts parse under Node.
+- CSS braces and ZIP integrity checked.

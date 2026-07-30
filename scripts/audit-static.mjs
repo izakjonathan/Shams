@@ -300,7 +300,7 @@ if (/\.artistQuote \.darkGlowOne\s*\{[^}]*--glow-(?:w|h|opacity)/s.test(artistSt
   errors.push("Artist quote dark-gradient geometry must remain centralized in gradients.css.");
 }
 
-// v2.1.6 Safari bottom-canvas and motion hardening
+// v2.1.7 Safari bottom-canvas and motion hardening
 if (!canvasTone.includes('root.style.backgroundColor = color') || !canvasTone.includes('body.style.backgroundColor = color')) {
   errors.push("DocumentCanvasTone must apply the sampled colour directly to both html and body.");
 }
@@ -349,14 +349,23 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.1.6") errors.push("package.json version must be 2.1.6.");
-// v2.1.6 artist arrow size regression guard
+if (packageJson.version !== "2.1.7") errors.push("package.json version must be 2.1.7.");
+// v2.1.7 footer canvas permanence guards
+const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
+const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
+if (!canvasToneV217.includes("footerTouchesVisualViewportBottom")) errors.push("Document canvas must detect footer contact with the visual viewport bottom.");
+if (!canvasToneV217.includes("footerTouchesVisualViewportBottom() || isAtDocumentBottom()")) errors.push("Footer canvas lock must not depend only on exact document-end metrics.");
+if (!baseCssV217.includes("html.documentCanvasAtFooter body::after")) errors.push("Footer canvas state must provide a non-layout black Safari underlay.");
+if (!baseCssV217.includes("body::after") || !baseCssV217.includes("display: none")) errors.push("The Safari footer underlay must be display:none outside footer state.");
+if (readFileSync(resolve(root, "app/styles/footer.css"), "utf8").includes("footerCanvasBleed")) errors.push("Footer must not regain flow-based canvas bleed that increases its height.");
+
+// v2.1.7 artist arrow size regression guard
 const responsiveCss = readFileSync(resolve(root, "app/styles/responsive.css"), "utf8");
 if (/\.artistArrow\s*\{[^}]*width:\s*44px/s.test(responsiveCss) || /\.artistArrow\s*\{[^}]*margin:\s*-5px/s.test(responsiveCss)) {
   errors.push("Homepage artist arrow buttons must not reintroduce the oversized mobile override.");
 }
 
-// v2.1.6 admin authentication type safety
+// v2.1.7 admin authentication type safety
 const adminAuth = readFileSync(resolve(root, "app/admin/lib/auth.ts"), "utf8");
 if (!adminAuth.includes("const encoder = new TextEncoder()") || !adminAuth.includes("timingSafeEqual(left, right)")) {
   errors.push("Admin authentication must use TextEncoder-backed Uint8Array values for timingSafeEqual.");
@@ -367,7 +376,7 @@ if (adminAuth.includes("timingSafeEqual(Buffer.from")) {
 
 if (!packageJson.dependencies?.["drizzle-orm"] || !packageJson.dependencies?.postgres) errors.push("Database dependencies are missing.");
 
-// v2.1.6 motion/runtime cleanup
+// v2.1.7 motion/runtime cleanup
 const motionHelpers = readFileSync(resolve(root, "app/lib/motion.ts"), "utf8");
 for (const required of ["prefersReducedMotion", "cssTimeMs", "afterPaint"]) {
   if (!motionHelpers.includes(required)) errors.push(`Shared motion helper is missing: ${required}`);

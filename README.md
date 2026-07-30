@@ -1,26 +1,8 @@
-# Shams for Humanity v2.1.6
+# Shams for Humanity v2.1.7
 
-Animation and runtime optimization release based on v2.1.1.
+## Safari footer canvas permanence
+This release fixes the remaining white area beneath the black footer on iOS Safari. The canvas now changes to black when the footer physically touches the bottom of the visual viewport, rather than waiting for unstable exact-document-end metrics.
 
-## Main improvements
+A fixed black underlay is mounted behind the site only during footer contact. It does not alter layout or footer height and is completely removed from rendering elsewhere with `display:none`.
 
-- Shared motion helpers for reduced-motion detection, CSS duration parsing and painted-frame scheduling.
-- Route curtain state is local to the mounted transition elements rather than written to the document root.
-- Route, menu and splash recovery timers derive from CSS tokens.
-- iOS canvas sampling is coalesced and no longer runs on unrelated engines.
-- Splash and menu double-rAF implementations are consolidated.
-- Faster, more responsive splash, reveal and interaction timing.
-- Static audit ordering and false-positive checks corrected.
-- Stale build artifact removed.
-
-The public design, admin/database foundation, typed content architecture, Safari splash runway, footer bleed and editorial curtain visual treatment are preserved.
-
-See `AUDIT.md` for the complete review.
-
-## v2.1.6 artist arrow size restoration
-
-This release selectively merges the safe UX improvements from the separate UX pass into the optimized v2.1.3 baseline. It adds accessible new-tab announcements for artist and ticket links, a programme empty state, clickable email addresses with clearer hover affordance, larger mobile artist navigation targets, and slightly stronger muted-text contrast. Authentication, motion utilities, Safari canvas handling, splash timing, route-curtain lifecycle, menu compositor hardening, versioning, and audit architecture remain from the current optimized baseline.
-
-## v2.1.6
-The footer is restored to a true full-screen section. The previous 160 px flow bleed has been removed; Safari's lower chrome is handled by the existing document-canvas controller instead of extra footer height.
-
+All v2.1.6 design, admin, content, animation, splash, menu, route-curtain, and accessibility behavior is preserved.
