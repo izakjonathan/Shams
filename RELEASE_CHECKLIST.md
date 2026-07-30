@@ -1,6 +1,6 @@
-# v2.1.7 release checklist
+# v2.1.8 release checklist
 
-- [x] Built from v2.1.6
+- [x] Built from v2.1.7
 - [x] Footer remains one dynamic viewport tall
 - [x] Footer contact uses visualViewport geometry
 - [x] Exact document-bottom check retained as fallback

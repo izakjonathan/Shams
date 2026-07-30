@@ -3,10 +3,10 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { afterPaint, cssTimeMs, prefersReducedMotion } from "../lib/motion";
-import splashArtwork from "../../public/images/splash-humanity-artwork.jpeg";
+import splashArtwork from "../../public/images/splash-humanity-artwork.png";
 
 const MIN_HOLD_MS = 1100;
-const SESSION_KEY = "shf-splash-seen-v2.1.5";
+const SESSION_KEY = "shf-splash-seen-v2.1.8";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {

@@ -11,6 +11,7 @@
  *
  * 1 = approved original appearance, 1.15 = 15% larger/stronger,
  * 0.85 = 15% smaller/weaker.
+ * Current approved values: size 1.5, strength 1.2.
  */
 :root {
   --gradient-size: 1.5;

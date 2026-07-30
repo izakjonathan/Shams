@@ -1,4 +1,4 @@
-# v2.1.7 permanent Safari footer-canvas audit
+# v2.1.8 permanent Safari footer-canvas audit
 
 ## Root cause
 The previous implementation locked the canvas to black only when the mathematical document bottom was reached. iOS Safari changes `visualViewport.height`, toolbar geometry, and native chrome independently. The footer could visibly touch the toolbar while both document-end calculations remained a few pixels short, leaving the paper canvas visible as a white strip.
