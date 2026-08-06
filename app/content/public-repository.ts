@@ -6,6 +6,7 @@ import type {
   Artist,
   ContactPageContent,
   FaqEntry,
+  GalleryImage,
   InformationPageContent,
   ProgrammeEntry,
   TicketTier,
@@ -29,6 +30,7 @@ function failurePolicy(): FailurePolicy {
 
 function localFor(type: PublicContentType): unknown[] {
   if (type === "artist") return contentRepository.getArtists();
+  if (type === "gallery") return contentRepository.getGallery();
   if (type === "programme") return contentRepository.getProgramme();
   if (type === "ticket") return contentRepository.getTickets();
   if (type === "faq") return contentRepository.getFaqs();
@@ -68,6 +70,7 @@ export const publicContentRepository = {
   getPrimaryNavigation: () => contentRepository.getPrimaryNavigation(),
   getInformationNavigation: () => contentRepository.getInformationNavigation(),
   getArtists: async () => records("artist") as Promise<Artist[]>,
+  getGallery: async () => records("gallery") as Promise<GalleryImage[]>,
   getArtistBySlug: async (slug: string) =>
     (await records("artist") as Artist[]).find((item) => item.slug === slug),
   getProgramme: async () => records("programme") as Promise<ProgrammeEntry[]>,

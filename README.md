@@ -1,14 +1,16 @@
-# Shams for Humanity v2.7.1
+# Shams for Humanity v2.8.0
 
-Built from the stable v2.7.0 gallery baseline.
+Built from the confirmed v2.7.1 public baseline.
 
-## Changes
+## Gallery admin and publishing integration
 
-- Scroll reveal now starts in the second homepage section (About).
-- Hero remains fully visible and excluded from reveal.
-- About label, heading, and copy reveal independently with the existing bounded stagger.
-- Initial protection boundary is reduced to 0.92 visual viewports so About is not pre-revealed.
-- Gallery image cadence is reduced from 5.2 seconds to 3.6 seconds.
-- Crossfade duration is reduced from 1.4 seconds to 0.9 seconds while remaining opacity-only.
+- Adds a dedicated `/admin/gallery` workspace.
+- Gallery images can be ordered, described, drafted, published, or archived.
+- Adds structured image-path and alternative-text fields with a visual preview.
+- Adds gallery assets to the shared admin media QA workspace.
+- Seeds all canonical local gallery records into PostgreSQL.
+- Public database mode reads published gallery records through the existing repository adapter.
+- Gallery publishing invalidates a dedicated `content:gallery` cache tag.
+- Draft Mode preview uses the real homepage gallery.
 
-All stable v2.7.0 public rendering, Safari canvas, splash, route curtain, menu, database, preview, and admin behaviour is preserved.
+The approved v2.7.1 gallery design, 3.6-second cadence, 0.9-second crossfade, lower-section reveal, stable splash, Safari canvas/footer handling, menu, route curtain, and public typography remain unchanged.

@@ -8,12 +8,12 @@ export default async function AdminOverview() {
   await requireAdmin();
   const database = isDatabaseConfigured();
   const groups = [
-    ["Artists", "artist", "/admin/artists"], ["Programme", "programme", "/admin/programme"], ["Tickets", "ticket", "/admin/tickets"], ["FAQs", "faq", "/admin/faqs"], ["Pages", "page", "/admin/pages"],
+    ["Artists", "artist", "/admin/artists"], ["Gallery", "gallery", "/admin/gallery"], ["Programme", "programme", "/admin/programme"], ["Tickets", "ticket", "/admin/tickets"], ["FAQs", "faq", "/admin/faqs"], ["Pages", "page", "/admin/pages"],
   ] as const;
   return <>
     <header className="adminPageHeader"><div><p className="adminEyebrow">OVERVIEW</p><h1>Content studio</h1></div><span className={`adminSource adminSource--${database ? "database" : "local"}`}>{database ? "Database connected" : "Local preview"}</span></header>
     {!database && <div className="adminNotice"><strong>Database not connected.</strong><p>The admin is showing the canonical local content in read-only mode. Add DATABASE_URL, run the migration, then seed the database.</p></div>}
-    {database && <form action={seedDatabaseAction} className="adminSeed"><p>Seed or refresh database records from the v2.1.9 local baseline.</p><button type="submit">Seed database</button></form>}
+    {database && <form action={seedDatabaseAction} className="adminSeed"><p>Seed or refresh database records from the v2.8.0 local baseline.</p><button type="submit">Seed database</button></form>}
     <div className="adminCards">{groups.map(([label, type, href]) => <Link href={href} key={type}><span>{localAdminRecords(type).length}</span><h2>{label}</h2><p>View, edit, order and publish records.</p></Link>)}</div>
     <section className="adminRoadmap"><h2>Editing workflow</h2><p>Protected sessions, structured content forms, media metadata checks, PostgreSQL publishing, previews, audit logs, draft states and local-data fallback.</p></section>
   </>;

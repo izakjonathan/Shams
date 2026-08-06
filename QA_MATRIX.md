@@ -121,3 +121,11 @@ Requires a configured preview database and admin credentials:
 - Confirm “Shams” remains centered, yellow, and rendered in Agilera.
 - Confirm autoplay pauses when the gallery leaves the viewport or the tab is hidden.
 - Confirm reduced-motion mode keeps a static image.
+
+## v2.8.0 gallery checks
+
+- Gallery admin publishing: edit alt text/order/status, publish, and confirm cache invalidation.
+- Draft preview: verify draft gallery records render only for authenticated preview sessions.
+- Public local mode: verify all 14 canonical images remain available.
+- Public database mode: verify only published gallery records render in sort order.
+- Media QA: verify missing image and missing alt-text states are visible.

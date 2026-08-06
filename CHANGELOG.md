@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.8.0 — Gallery admin and publishing integration
+
+- Added a dedicated admin gallery workspace with ordering, status, image path, alt text, and previews.
+- Added gallery records to database seeding, validation, audit logging, Draft Mode, and targeted cache invalidation.
+- Public database mode can now power the homepage gallery with published records.
+- Extended the media QA workspace to include gallery assets.
+- Preserved the approved public gallery animation and stable rendering architecture.
+
+
 ## 2.7.0 — Event atmosphere gallery
 
 - Added a full-viewport gallery directly before the Artists section.

@@ -4,6 +4,7 @@ import { logoutAction } from "../actions/auth";
 const items = [
   ["Overview", "/admin"],
   ["Artists", "/admin/artists"],
+  ["Gallery", "/admin/gallery"],
   ["Programme", "/admin/programme"],
   ["Tickets", "/admin/tickets"],
   ["FAQs", "/admin/faqs"],

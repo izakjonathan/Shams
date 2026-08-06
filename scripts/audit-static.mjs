@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.7.1") errors.push("package.json version must be 2.7.1.");
+if (packageJson.version !== "2.8.0") errors.push("package.json version must be 2.8.0.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -657,6 +657,32 @@ for (let index = 1; index <= 14; index += 1) {
   if (!existsSync(resolve(root, filename))) errors.push(`Missing optimized gallery image: ${filename}`);
 }
 if (!globals.includes('@import "./styles/gallery.css";')) errors.push("Global CSS must import the gallery stylesheet.");
+
+
+// v2.8.0 gallery admin, database publication, and preview integration.
+const adminGalleryPage = readFileSync(resolve(root, "app/admin/gallery/page.tsx"), "utf8");
+const adminValidation280 = readFileSync(resolve(root, "app/content/admin-validation.ts"), "utf8");
+const adminContent280 = readFileSync(resolve(root, "app/admin/lib/content-admin.ts"), "utf8");
+const cacheTags280 = readFileSync(resolve(root, "app/content/cache-tags.ts"), "utf8");
+const publicRepository280 = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
+const databaseRecords280 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
+const adminNav280 = readFileSync(resolve(root, "app/admin/components/AdminNav.tsx"), "utf8");
+for (const required of [
+  'type AdminContentType = "artist" | "gallery"',
+  'type === "gallery" ? contentRepository.getGallery()',
+  '["artist", "gallery", "programme"',
+]) {
+  if (!adminContent280.includes(required)) errors.push(`Gallery admin content integration is missing: ${required}`);
+}
+if (!adminValidation280.includes('metadata.type === "gallery"') || !adminValidation280.includes("validateGallery")) errors.push("Gallery records must pass canonical admin validation.");
+if (!cacheTags280.includes('gallery: "content:gallery"')) errors.push("Gallery publishing needs its own cache tag.");
+if (!publicRepository280.includes('getGallery: async () => records("gallery")')) errors.push("Public gallery must read through the database-capable public repository.");
+if (!databaseRecords280.includes('queryDatabase("gallery", false)') || !databaseRecords280.includes("CONTENT_TAGS.gallery")) errors.push("Published database gallery records must be cached and tagged.");
+if (!adminGalleryPage.includes('listAdminRecords("gallery")') || !adminGalleryPage.includes('RecordEditor')) errors.push("Admin gallery workspace is missing.");
+if (!adminNav280.includes('/admin/gallery')) errors.push("Admin navigation must expose the gallery workspace.");
+if (!structuredFields.includes('type === "gallery"') || !structuredFields.includes("Gallery image")) errors.push("Gallery needs structured image and alt-text fields.");
+if (!v260AdminActions.includes('type === "gallery"') || !v260AdminActions.includes('CONTENT_TAGS[type]')) errors.push("Gallery form writes must validate and invalidate the public cache tag.");
+if (!publicHome245.includes('publicContentRepository.getGallery()')) errors.push("Homepage gallery must use the public repository so published database records can power it.");
 
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));

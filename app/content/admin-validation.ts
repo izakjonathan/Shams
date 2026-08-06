@@ -1,6 +1,6 @@
 import type { ContentStatus, ProgrammeCategory, TicketAvailability } from "./models";
 
-export type AdminContentType = "artist" | "programme" | "ticket" | "faq" | "page";
+export type AdminContentType = "artist" | "gallery" | "programme" | "ticket" | "faq" | "page";
 
 const VALID_STATUSES = new Set<ContentStatus>(["draft", "placeholder", "published", "archived"]);
 const VALID_PROGRAMME_CATEGORIES = new Set<Exclude<ProgrammeCategory, "all">>(["music", "conversation", "community"]);
@@ -71,6 +71,12 @@ function validateArtist(data: Record<string, unknown>, metadata: AdminRecordMeta
     string(item.label, `artist.links[${index}].label`);
     optionalString(item.href, `artist.links[${index}].href`);
   });
+}
+
+
+function validateGallery(data: Record<string, unknown>) {
+  if (!(typeof data.image === "string" || (data.image && typeof data.image === "object"))) fail("gallery.image must be a stored image path or image object.");
+  string(data.alt, "gallery.alt");
 }
 
 function validateProgramme(data: Record<string, unknown>) {
@@ -157,6 +163,7 @@ export function validateAdminRecord(dataInput: unknown, metadata: AdminRecordMet
   const data = object(dataInput, "data");
   validateCommon(data, metadata);
   if (metadata.type === "artist") validateArtist(data, metadata);
+  else if (metadata.type === "gallery") validateGallery(data);
   else if (metadata.type === "programme") validateProgramme(data);
   else if (metadata.type === "ticket") validateTicket(data);
   else if (metadata.type === "faq") validateFaq(data);

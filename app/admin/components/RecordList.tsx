@@ -3,7 +3,7 @@ import { adminRouteForType } from "../lib/routes";
 import type { AdminContentType, AdminRecord } from "../lib/content-admin";
 
 function title(record: AdminRecord) {
-  for (const key of ["name", "label", "type", "question", "title"] as const) {
+  for (const key of ["name", "alt", "label", "type", "question", "title"] as const) {
     const value = record.data[key];
     if (typeof value === "string" && value.trim()) return value;
   }

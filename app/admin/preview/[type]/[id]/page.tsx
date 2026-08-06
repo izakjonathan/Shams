@@ -2,11 +2,12 @@ import { notFound, redirect } from "next/navigation";
 import { requireAdmin } from "../../../lib/auth";
 import { getAdminRecord, type AdminContentType } from "../../../lib/content-admin";
 
-const TYPES = new Set<AdminContentType>(["artist", "programme", "ticket", "faq", "page"]);
+const TYPES = new Set<AdminContentType>(["artist", "gallery", "programme", "ticket", "faq", "page"]);
 
 function publicPath(type: AdminContentType, record: Awaited<ReturnType<typeof getAdminRecord>>) {
   if (!record) return null;
   if (type === "artist" && record.slug) return `/artists/${record.slug}`;
+  if (type === "gallery") return "/";
   if (type === "page") {
     if (record.slug && ["privacy", "terms", "accessibility", "contact"].includes(record.slug)) return `/${record.slug}`;
     if ("routes" in record.data) return "/contact";

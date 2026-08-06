@@ -1,10 +1,10 @@
-# v2.7.1 reveal and gallery cadence audit
+# v2.8.0 gallery admin and publishing audit
 
-- Confirmed hero has no reveal markers.
-- Confirmed About is the first section with reveal markers.
-- Confirmed initial pre-reveal threshold is below one visual viewport.
-- Confirmed one IntersectionObserver remains the sole reveal owner.
-- Confirmed gallery remains opacity-only and visibility-aware.
-- Confirmed gallery cadence is 3600 ms with a 900 ms crossfade.
-- Confirmed reduced-motion users receive static visible content.
-- Confirmed no startup scroll manipulation, gradient transforms, or hero blur were restored.
+- Confirmed the public gallery remains immediately before Artists.
+- Confirmed public local mode continues to use the canonical 14 optimized WebP records.
+- Confirmed public database mode returns only published gallery records unless authenticated Draft Mode is active.
+- Confirmed gallery has a dedicated cache tag and targeted revalidation after admin writes.
+- Confirmed gallery records are included in database seeding and append-only audit logging.
+- Confirmed admin gallery editing uses structured media and alt-text fields.
+- Confirmed gallery media appears in the media QA workspace.
+- Confirmed no public animation, splash, Safari, reveal, menu, curtain, or footer architecture was changed.

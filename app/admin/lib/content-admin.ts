@@ -7,7 +7,7 @@ import packageJson from "../../../package.json";
 import { getDatabase, isDatabaseConfigured } from "../../db/client";
 import { auditLogs, contentRecords } from "../../db/schema";
 
-export type AdminContentType = "artist" | "programme" | "ticket" | "faq" | "page";
+export type AdminContentType = "artist" | "gallery" | "programme" | "ticket" | "faq" | "page";
 
 export interface AdminRecord {
   id: string;
@@ -31,6 +31,7 @@ function normalize(value: unknown): unknown {
 
 export function localAdminRecords(type: AdminContentType): AdminRecord[] {
   const records = type === "artist" ? contentRepository.getArtists()
+    : type === "gallery" ? contentRepository.getGallery()
     : type === "programme" ? contentRepository.getProgramme()
       : type === "ticket" ? contentRepository.getTickets()
         : type === "faq" ? contentRepository.getFaqs()
@@ -62,7 +63,7 @@ export async function getAdminRecord(type: AdminContentType, id: string) {
 export async function seedDatabase(actor: string) {
   if (!isDatabaseConfigured()) throw new Error("DATABASE_URL is not configured.");
   const db = getDatabase();
-  const allTypes: AdminContentType[] = ["artist", "programme", "ticket", "faq", "page"];
+  const allTypes: AdminContentType[] = ["artist", "gallery", "programme", "ticket", "faq", "page"];
   for (const type of allTypes) {
     for (const record of localAdminRecords(type)) {
       await db.insert(contentRecords).values({ id: record.id, type: record.type, slug: record.slug, status: record.status, sortOrder: record.sortOrder, data: record.data, updatedAt: new Date() }).onConflictDoUpdate({

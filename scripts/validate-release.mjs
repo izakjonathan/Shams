@@ -35,8 +35,8 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "2.7.1") {
-  errors.push(`package.json version must be 2.7.1 for this release (found ${pkg.version}).`);
+if (pkg.version !== "2.8.0") {
+  errors.push(`package.json version must be 2.8.0 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [
@@ -53,6 +53,9 @@ for (const path of [
   "app/components/ProgrammeExplorer.tsx",
   "app/components/TicketSection.tsx",
   "app/components/EventGallery.tsx",
+  "app/admin/gallery/page.tsx",
+  "app/content/admin-validation.ts",
+  "app/content/cache-tags.ts",
   "app/content/data/gallery.ts",
   "app/styles/gallery.css",
   "app/styles/programme-tickets.css",

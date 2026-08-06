@@ -24,9 +24,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const gallery = contentRepository.getGallery();
-  const [artists, faqs, programme, tickets] = await Promise.all([
+  const [artists, gallery, faqs, programme, tickets] = await Promise.all([
     publicContentRepository.getArtists(),
+    publicContentRepository.getGallery(),
     publicContentRepository.getFaqs(),
     publicContentRepository.getProgramme(),
     publicContentRepository.getTickets(),

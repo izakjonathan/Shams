@@ -53,6 +53,11 @@ const cachedPublishedReaders: Record<
     ["public-artists-v2"],
     { tags: [CONTENT_TAGS.artist] },
   ),
+  gallery: unstable_cache(
+    () => queryDatabase("gallery", false),
+    ["public-gallery-v1"],
+    { tags: [CONTENT_TAGS.gallery] },
+  ),
   programme: unstable_cache(
     () => queryDatabase("programme", false),
     ["public-programme-v2"],

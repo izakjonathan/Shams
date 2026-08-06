@@ -37,6 +37,14 @@ export function StructuredFields({ record, type }: { record: AdminRecord; type: 
     <label>External links<textarea name="links" className="adminTextarea--medium" defaultValue={Array.isArray(data.links) ? data.links.map((link) => { const item=link as Record<string,unknown>; return `${String(item.label ?? "")}|${String(item.href ?? "")}`; }).join("\n") : ""} aria-describedby="links-help" /><small id="links-help">One link per line: Label|https://example.com</small></label>
   </>;
 
+
+  if (type === "gallery") return <>
+    <fieldset className="adminMediaFieldset"><legend>Gallery image</legend><div className="adminMediaGrid">
+      <div className="adminMediaPreview">{value(data,"image") ? <img src={value(data,"image")} alt="" /> : <span>No image</span>}</div>
+      <div className="adminMediaInputs"><label>Image path or URL<input name="image" defaultValue={value(data,"image")} required /></label><label>Alternative text<input name="alt" defaultValue={value(data,"alt")} required /></label></div>
+    </div></fieldset>
+  </>;
+
   if (type === "programme") return <>
     <div className="adminFieldGrid adminFieldGrid--two"><label>Time<input name="time" type="time" defaultValue={value(data,"time")} required /></label><label>Category<select name="category" defaultValue={value(data,"category")}><option value="music">Music</option><option value="conversation">Conversation</option><option value="community">Community</option></select></label><label>Title<input name="label" defaultValue={value(data,"label")} required /></label><label>Stage<input name="stage" defaultValue={value(data,"stage")} required /></label></div>
     <label>Description<textarea name="description" className="adminTextarea--short" defaultValue={value(data,"description")} required /></label>
