@@ -1,12 +1,14 @@
-# Shams for Humanity v2.7.0
+# Shams for Humanity v2.7.1
 
-Event-atmosphere gallery release built from the stable v2.6.2 baseline.
+Built from the stable v2.7.0 gallery baseline.
 
-## Included
-- A full-viewport image gallery immediately before the Artists section.
-- All 14 supplied Day Tripping photographs, optimized to WebP.
-- Smooth 1.4-second opacity crossfades with no sliding or transform animation.
-- A centered yellow “Shams” overlay using Agilera.
-- The slideshow runs only while the gallery is visible and pauses in background tabs.
-- Reduced-motion users receive a static first image.
-- The stable splash, gradients, Safari canvas handling, footer, menu, route curtain, scroll reveal, database content, and admin workflows are unchanged.
+## Changes
+
+- Scroll reveal now starts in the second homepage section (About).
+- Hero remains fully visible and excluded from reveal.
+- About label, heading, and copy reveal independently with the existing bounded stagger.
+- Initial protection boundary is reduced to 0.92 visual viewports so About is not pre-revealed.
+- Gallery image cadence is reduced from 5.2 seconds to 3.6 seconds.
+- Crossfade duration is reduced from 1.4 seconds to 0.9 seconds while remaining opacity-only.
+
+All stable v2.7.0 public rendering, Safari canvas, splash, route curtain, menu, database, preview, and admin behaviour is preserved.

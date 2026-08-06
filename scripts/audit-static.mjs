@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.7.0") errors.push("package.json version must be 2.7.0.");
+if (packageJson.version !== "2.7.1") errors.push("package.json version must be 2.7.1.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -577,7 +577,7 @@ for (const required of [
   'pathname !== "/"',
   'prefersReducedMotion()',
   'IntersectionObserver',
-  'INITIAL_VIEWPORT_BUFFER',
+  'INITIAL_VISIBLE_VIEWPORT_RATIO',
   'STAGGER_STEP_MS',
   'data-lower-reveal',
 ]) {
@@ -632,7 +632,7 @@ if (lowerReveal.includes("isIOSWebKit")) errors.push("Lower-section reveal must 
 if (!lowerReveal.includes('threshold: 0.04') || !lowerReveal.includes('rootMargin: "0px 0px -10% 0px"')) errors.push("Visible lower reveal observer settings are missing.");
 if (!motionRevealStyles.includes("--lower-reveal-distance: 28px") || !motionRevealStyles.includes("--lower-reveal-duration: 760ms") || !motionRevealStyles.includes("--lower-reveal-delay")) errors.push("Visible reveal motion tokens or stagger are missing.");
 
-// v2.7.0 event-atmosphere gallery guards.
+// v2.7.1 event-atmosphere gallery and reveal guards.
 const eventGallery = readFileSync(resolve(root, "app/components/EventGallery.tsx"), "utf8");
 const galleryData = readFileSync(resolve(root, "app/content/data/gallery.ts"), "utf8");
 const galleryStyles = readFileSync(resolve(root, "app/styles/gallery.css"), "utf8");
@@ -641,14 +641,14 @@ if (!publicHome245.includes("<EventGallery images={gallery} />") || publicHome24
 }
 for (const required of [
   'aria-label="Event atmosphere gallery"',
-  'SLIDE_INTERVAL_MS = 5200',
+  'SLIDE_INTERVAL_MS = 3600',
   'prefersReducedMotion()',
   'IntersectionObserver',
   'eventGalleryTitle',
 ]) {
   if (!eventGallery.includes(required)) errors.push(`Event gallery behavior is missing: ${required}`);
 }
-if (!galleryStyles.includes("transition: opacity 1400ms") || !galleryStyles.includes("color: var(--color-accent)") || !galleryStyles.includes("font-family: var(--font-display)")) {
+if (!galleryStyles.includes("transition: opacity 900ms") || !galleryStyles.includes("color: var(--color-accent)") || !galleryStyles.includes("font-family: var(--font-display)")) {
   errors.push("Gallery must use an opacity crossfade and centered yellow Agilera overlay.");
 }
 if ((galleryData.match(/status: "published"/g) || []).length !== 14) errors.push("Gallery must include all 14 supplied images.");

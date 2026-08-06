@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import type { GalleryImage } from "../content";
 import { prefersReducedMotion } from "../lib/motion";
 
-const SLIDE_INTERVAL_MS = 5200;
+const SLIDE_INTERVAL_MS = 3600;
 
 export function EventGallery({ images }: { images: readonly GalleryImage[] }) {
   const sectionRef = useRef<HTMLElement>(null);

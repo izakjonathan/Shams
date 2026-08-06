@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { prefersReducedMotion } from "../lib/motion";
 
 const SELECTOR = "[data-lower-reveal]";
-const INITIAL_VIEWPORT_BUFFER = 0.08;
+const INITIAL_VISIBLE_VIEWPORT_RATIO = 0.92;
 const STAGGER_STEP_MS = 45;
 const MAX_STAGGER_ITEMS = 5;
 
@@ -18,8 +18,8 @@ function viewportHeight(): number {
  *
  * Server HTML remains visible by default. During the pre-paint layout phase,
  * only marked elements clearly below the initial visual viewport are placed in
- * a pending state. Hero and About have no reveal markers and can never be
- * concealed. This keeps first paint deterministic while allowing the effect on
+ * a pending state. The hero remains unmarked; the About section is the first
+ * section eligible for reveal. This keeps first paint deterministic while allowing the effect on
  * iOS Safari and other modern browsers.
  */
 export function LowerSectionReveal() {
@@ -37,7 +37,7 @@ export function LowerSectionReveal() {
       return;
     }
 
-    const initialLimit = viewportHeight() * (1 + INITIAL_VIEWPORT_BUFFER);
+    const initialLimit = viewportHeight() * INITIAL_VISIBLE_VIEWPORT_RATIO;
     const pending: HTMLElement[] = [];
 
     for (const [index, element] of elements.entries()) {

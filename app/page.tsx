@@ -68,10 +68,10 @@ export default async function Home() {
         <div className="paperGlow glowOne" aria-hidden="true" />
         <div className="paperGlow glowTwo" aria-hidden="true" />
         <div className="paperGlow glowThree" aria-hidden="true" />
-        <div className="sectionIndex">01 — ABOUT</div>
+        <div className="sectionIndex" data-lower-reveal>01 — ABOUT</div>
         <div className="statementGrid">
-          <h2>{home.about.heading}</h2>
-          <div>
+          <h2 data-lower-reveal>{home.about.heading}</h2>
+          <div data-lower-reveal>
             <p className="lead">{home.about.lead}</p>
             <p>{home.about.body}</p>
             <FadeLink className="textLink dark" href="/#mission">Our mission <ArrowIcon /></FadeLink>

@@ -45,7 +45,7 @@
 /*
  * Server-rendered content is visible by default. Only elements marked pending
  * by the client controller are concealed, and iOS WebKit never enables this
- * state. Hero and About are intentionally not marked for reveal.
+ * state. The hero is intentionally unmarked; About is the first reveal-enabled section.
  */
 html.lowerRevealEnabled [data-lower-reveal].isLowerRevealPending {
   opacity: 0;

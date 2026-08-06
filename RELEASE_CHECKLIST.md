@@ -1,17 +1,13 @@
-# v2.7.0 release checklist
+# v2.7.1 release checklist
 
-- [x] Built from v2.6.2 stable baseline
-- [x] Gallery placed directly before Artists
-- [x] All 14 supplied images included
-- [x] Images converted to optimized WebP
-- [x] Full-viewport responsive crop
-- [x] Smooth opacity-only crossfade
-- [x] Centered yellow Agilera “Shams” overlay
-- [x] Slideshow pauses outside the viewport and in background tabs
-- [x] Reduced-motion static fallback
-- [x] No controls or additional copy added
-- [x] Content model and validation updated
-- [x] Static architecture audit runs all checks before success
-- [x] Release validation passes
-- [ ] Full dependency-backed Next.js build
-- [ ] Real-iPhone gallery transition QA
+- [x] Built from v2.7.0
+- [x] Hero excluded from reveal
+- [x] About starts scroll reveal
+- [x] Gallery switches every 3.6 seconds
+- [x] Gallery crossfade shortened to 0.9 seconds
+- [x] Reduced motion preserved
+- [x] Static architecture audit passed
+- [x] Release validation passed
+- [x] ZIP integrity checked
+- [ ] Real-iPhone visual QA
+- [ ] Dependency-backed Next.js build
