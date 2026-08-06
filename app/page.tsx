@@ -4,7 +4,6 @@ import { ArrowIcon } from "./components/ArrowIcon";
 import { FaqAccordion } from "./components/FaqAccordion";
 import { NewsletterForm } from "./components/NewsletterForm";
 import { ProgrammeExplorer } from "./components/ProgrammeExplorer";
-import { ScrollReveal } from "./components/ScrollReveal";
 import { SectionHeader } from "./components/SectionHeader";
 import { TicketSection } from "./components/TicketSection";
 import { contentRepository } from "./content";
@@ -43,8 +42,6 @@ export default async function Home() {
 
   return (
     <main id="main-content" tabIndex={-1}>
-      <ScrollReveal />
-
       <section className="hero" id="top">
         <div className="heroOrb orbOne" aria-hidden="true" />
         <div className="heroOrb orbTwo" aria-hidden="true" />

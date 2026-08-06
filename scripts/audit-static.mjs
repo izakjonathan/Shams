@@ -60,7 +60,6 @@ if (!transitions.includes("z-index: 45")) errors.push("Curtain must remain below
 
 const fadeLink = readFileSync(resolve(root, "app/components/FadeLink.tsx"), "utf8");
 const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "utf8");
-const scrollReveal = readFileSync(resolve(root, "app/components/ScrollReveal.tsx"), "utf8");
 if (fadeLink.includes("morphSource")) errors.push("FadeLink still passes obsolete morph source data.");
 
 const base = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -135,7 +134,6 @@ if (!splashStyles.includes("background-color: transparent") || !splashStyles.inc
 }
 for (const required of [
   "--safari-splash-color", "--safari-splash-top-bleed", "--safari-splash-bottom-bleed",
-  "--safari-splash-scroll-offset", "splashRunwayActive", "overflow-y: scroll",
   "top: calc(-1 * var(--safari-splash-top-bleed))",
   "bottom: calc(-1 * var(--safari-splash-bottom-bleed))",
 ]) {
@@ -145,17 +143,14 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.4.4")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.4.5")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
-if (!splash.includes('root.classList.add("splashRunwayActive")')) {
-  errors.push("The splash-only runway must be activated dynamically only on mobile Safari.");
+if (!splash.includes('root.classList.remove("splashCanvasActive", "splashCanvasHandoff")')) {
+  errors.push("Splash must remove all temporary canvas states after completion.");
 }
-if (!splash.includes('root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashRunwayActive")')) {
-  errors.push("Splash must remove all temporary canvas and runway states after completion.");
-}
-if (!/\.splashScreen\s*\{[^}]*position:\s*absolute[^}]*top:\s*0[^}]*right:\s*0[^}]*left:\s*0/s.test(splashStyles)) {
-  errors.push("First-visit splash must use a document-positioned full-viewport stage so the Safari runway can expose media pixels.");
+if (!/\.splashScreen\s*\{[^}]*position:\s*fixed[^}]*top:\s*0[^}]*right:\s*0[^}]*left:\s*0/s.test(splashStyles)) {
+  errors.push("Splash must use a fixed full-viewport stage without mutating document scroll.");
 }
 if (/html\.splashSessionSeen\s+\.splashScreen\s*\{[^}]*position:\s*(?:fixed|absolute)/s.test(splashStyles)) {
   errors.push("Splash base geometry must not be scoped to the repeat-visit session class.");
@@ -350,7 +345,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.4.4") errors.push("package.json version must be 2.4.4.");
+if (packageJson.version !== "2.4.5") errors.push("package.json version must be 2.4.5.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -533,7 +528,7 @@ if (!appSource.includes('from "./content/server"') && !appSource.includes('from 
 }
 
 
-// v2.4.4 runtime hardening and lazy database adapter.
+// v2.4.5 runtime hardening and lazy database adapter.
 const publicRepository242 = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
 const databaseRecords242 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
 const nextConfig242 = readFileSync(resolve(root, "next.config.ts"), "utf8");
@@ -547,12 +542,19 @@ for (const path of ["app/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx"
   if (!readFileSync(resolve(root, path), "utf8").includes('export const runtime = "nodejs";')) errors.push(`${path} must declare the Node.js runtime.`);
 }
 
-// v2.4.4 initial-paint stability guards.
+// v2.4.5 initial-paint determinism guards.
 if (!splash.includes("document.fonts.ready") || !splash.includes("FONT_READY_TIMEOUT_MS")) {
   errors.push("Splash must wait boundedly for the display font before revealing the hero.");
 }
-if (!scrollReveal.includes("staticPaintLimit") || !scrollReveal.includes("visualViewportHeight() * 2") || scrollReveal.includes('{ root: "#about"')) {
-  errors.push("ScrollReveal must leave the hero/About composition static and animate only content safely below the initial viewports.");
+if (existsSync(resolve(root, "app/components/ScrollReveal.tsx"))) {
+  errors.push("Progressive ScrollReveal must remain removed from the public runtime.");
+}
+const publicHome245 = readFileSync(resolve(root, "app/page.tsx"), "utf8");
+if (publicHome245.includes("ScrollReveal")) {
+  errors.push("Homepage must render in its final visible state without hydration concealment.");
+}
+if ((splash + splashStyles + layout).includes("splashRunwayActive") || (splash + splashStyles).includes("safari-splash-scroll-offset") || splash.includes("scrollTo({ top: offset")) {
+  errors.push("Splash must not mutate document scroll through a runway.");
 }
 if (/saturate\(var\(--gradient-strength\)\)|contrast\(var\(--gradient-strength\)\)/.test(gradients)) {
   errors.push("Large gradient layers must not use saturation/contrast filters; they cause avoidable Safari repaints.");

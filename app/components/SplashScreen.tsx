@@ -7,7 +7,7 @@ import splashArtwork from "../../public/images/splash-humanity-artwork.png";
 
 const MIN_HOLD_MS = 1100;
 const FONT_READY_TIMEOUT_MS = 1400;
-const SESSION_KEY = "shf-splash-seen-v2.4.4";
+const SESSION_KEY = "shf-splash-seen-v2.4.5";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {
@@ -28,28 +28,14 @@ function markSplashSeen(): void {
   }
 }
 
-function splashRunwayOffset(): number {
-  const raw = window.getComputedStyle(document.documentElement)
-    .getPropertyValue("--safari-splash-scroll-offset");
-  return Number.parseFloat(raw) || 0;
-}
-
-function shouldUseSplashRunway(): boolean {
-  const mobile = window.matchMedia("(max-width: 760px)").matches;
-  const touch = navigator.maxTouchPoints > 0;
-  const safari = /Safari/i.test(navigator.userAgent) && !/(CriOS|FxiOS|EdgiOS|OPiOS)/i.test(navigator.userAgent);
-  return mobile && touch && safari;
-}
-
 type SplashStage = "entering" | "active" | "exiting" | "done";
 
 /**
- * Full-screen splash sequence with a document-positioned iOS Safari runway:
+ * Full-screen splash sequence with no document-scroll mutation:
  * 1. keep an explicit sampled blue document colour,
- * 2. scroll a small hidden runway through an absolute media stage so Safari can composite real pixels,
- * 3. bleed the artwork beyond both toolbar edges,
- * 4. atomically prepare the live site and paper canvas,
- * 5. dissolve the artwork only after the destination is painted.
+ * 2. bleed the artwork beyond both toolbar edges,
+ * 3. atomically prepare the live site and paper canvas,
+ * 4. dissolve the artwork only after the destination is painted.
  */
 export function SplashScreen() {
   const [stage, setStage] = useState<SplashStage>("entering");
@@ -64,21 +50,13 @@ export function SplashScreen() {
     const exitDuration = cssTimeMs("--duration-splash-exit", 860);
     const isRepeatVisit = hasSeenSplashThisSession();
     const skipEnterAnimation = reducedMotion;
-    const useRunway = shouldUseSplashRunway();
     const start = performance.now();
-    const navigationEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
-    const isFreshDocumentLoad = !navigationEntry || navigationEntry.type === "navigate" || navigationEntry.type === "reload";
-    const previousScrollRestoration = window.history.scrollRestoration;
-    if (isFreshDocumentLoad) window.history.scrollRestoration = "manual";
     let hasLoaded = document.readyState === "complete";
     let cancelEnterPaint: (() => void) | null = null;
-    let cancelRunwayPaint: (() => void) | null = null;
     let cancelHandoffPaint: (() => void) | null = null;
     let exitTimer = 0;
     let doneTimer = 0;
     let completed = false;
-    let topStabilizationFrame = 0;
-    let topStabilizationTimer = 0;
 
     const setShellInert = (inert: boolean) => {
       if (!shell) return;
@@ -87,30 +65,13 @@ export function SplashScreen() {
       else shell.removeAttribute("aria-hidden");
     };
 
-    const holdFreshLoadAtTop = () => {
-      if (!isFreshDocumentLoad) return;
-      window.cancelAnimationFrame(topStabilizationFrame);
-      window.clearTimeout(topStabilizationTimer);
-      const enforce = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-      enforce();
-      topStabilizationFrame = window.requestAnimationFrame(() => {
-        enforce();
-        topStabilizationFrame = window.requestAnimationFrame(enforce);
-      });
-      topStabilizationTimer = window.setTimeout(enforce, 180);
-    };
-
     const restoreNormalDocument = () => {
-      root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashRunwayActive");
+      root.classList.remove("splashCanvasActive", "splashCanvasHandoff");
       body.classList.remove("splashActive", "splashHandoff", "splashExiting");
       body.classList.add("splashComplete");
       root.style.setProperty("--document-canvas-color", "var(--color-paper)");
       body.style.removeProperty("--document-canvas-color");
       setShellInert(false);
-      if (isFreshDocumentLoad || window.scrollY <= splashRunwayOffset() + 2) {
-        holdFreshLoadAtTop();
-      }
-      window.history.scrollRestoration = previousScrollRestoration;
     };
 
     if (isRepeatVisit) {
@@ -126,18 +87,6 @@ export function SplashScreen() {
     body.classList.add("splashActive");
     body.classList.remove("splashHandoff", "splashExiting", "splashComplete");
     root.classList.add("splashCanvasActive");
-    if (useRunway) {
-      root.classList.add("splashRunwayActive");
-      cancelRunwayPaint = afterPaint(() => {
-        const offset = splashRunwayOffset();
-        if (offset > 0 && window.scrollY < offset) {
-          window.scrollTo({ top: offset, left: 0, behavior: "auto" });
-        }
-      });
-    } else {
-      root.classList.remove("splashRunwayActive");
-    }
-
     if (skipEnterAnimation) {
       setStage("active");
     } else {
@@ -162,8 +111,6 @@ export function SplashScreen() {
       await waitForDisplayFont();
 
       // Prepare the live page while the splash is still fully opaque.
-      root.classList.remove("splashRunwayActive");
-      holdFreshLoadAtTop();
       body.classList.remove("splashActive");
       body.classList.add("splashHandoff");
       root.classList.add("splashCanvasHandoff");
@@ -205,13 +152,9 @@ export function SplashScreen() {
 
     return () => {
       cancelEnterPaint?.();
-      cancelRunwayPaint?.();
       cancelHandoffPaint?.();
       window.clearTimeout(exitTimer);
       window.clearTimeout(doneTimer);
-      window.clearTimeout(topStabilizationTimer);
-      window.cancelAnimationFrame(topStabilizationFrame);
-      window.history.scrollRestoration = previousScrollRestoration;
       window.removeEventListener("load", handleLoad);
       if (!completed) restoreNormalDocument();
     };

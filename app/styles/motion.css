@@ -20,18 +20,11 @@
   .splashScreen,
   .splashScreenArtWrap,
   .mobileMenu,
-  .revealItem,
-  .revealItem.isRevealed,
   .faqAnswerInner {
     transform: none !important;
     filter: none !important;
   }
 
-  .scrollRevealEnabled .revealItem,
-  .scrollRevealEnabled .revealItem.isRevealed {
-    opacity: 1;
-    transition: none;
-  }
 
   .faqAnswer,
   .faqAnswerInner {

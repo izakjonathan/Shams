@@ -1,33 +1,6 @@
 /* ========================================================================== 
-   17 — Scroll reveal and accessibility
+   17 — Accessibility and interaction states
    ========================================================================== */
-
-/* Progressive, content-level scroll reveal. */
-
-.scrollRevealEnabled .revealItem {
-  opacity: 0;
-  transform: translate3d(0, var(--reveal-distance), 0);
-  transition: opacity var(--duration-reveal) var(--ease-reveal),
-    transform var(--duration-reveal) var(--ease-reveal);
-  transition-delay: 0ms;
-}
-
-.scrollRevealEnabled .revealItem.isRevealed {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-  transition-delay: calc(var(--reveal-order, 0) * var(--reveal-stagger));
-}
-
-.scrollRevealEnabled .infoCards > article.revealItem,
-.scrollRevealEnabled .programmeEntry.revealItem,
-.scrollRevealEnabled .ticketGrid > article.revealItem,
-.scrollRevealEnabled .faqList > article.revealItem {
-  --reveal-distance: var(--reveal-distance-small);
-}
-
-main:focus {
-  outline: none;
-}
 
 /* Accessibility: visible keyboard focus for interactive elements that don't
    already define their own focus-visible treatment above. */
