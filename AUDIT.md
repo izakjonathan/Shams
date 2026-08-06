@@ -1,13 +1,11 @@
-# v2.3.0 admin publishing workflow audit
+# v2.4.0 database public-content audit
 
-- Public splash, hero, gradients, Safari canvas, footer, menu, curtain, typography, and accessibility systems are unchanged.
-- Admin writes continue through canonical type-specific validation.
-- Publishing status is controlled by explicit server-action intent rather than client-only state.
-- Existing records carry an `updatedAt` token; stale editor submissions are rejected.
-- Slugs are checked for conflicts before database writes.
-- FAQ and page editor links now resolve to `/admin/faqs` and `/admin/pages`.
-- Preview and audit routes require the existing signed admin session.
-- Audit records include metadata and status transitions rather than data alone.
-- No database migration is required because the existing schema already contains status, timestamps, and audit tables.
-
-Outstanding verification: full dependency-backed build, PostgreSQL migration/seed/write test, and deployed admin workflow QA.
+- Public components retain their existing presentation and receive data through a new server-only repository.
+- Normal database mode returns published records only.
+- Authenticated Draft Mode bypasses the published cache and includes draft records.
+- Local mode remains the default and rollback source.
+- Database failure behavior is explicit rather than silently inferred.
+- Admin saves invalidate only the affected content tag.
+- Preview routes are authenticated, private, no-store, visibly labelled, and noindex.
+- Event, homepage, and navigation remain local because no corresponding database record types exist yet.
+- Full PostgreSQL, build, and browser verification still require external credentials and installed dependencies.

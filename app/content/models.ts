@@ -30,7 +30,7 @@ export interface Artist extends ContentRecord {
   readonly setDescription: string;
   readonly highlights: readonly string[];
   readonly links: readonly ArtistLink[];
-  readonly image: StaticImageData;
+  readonly image: StaticImageData | string;
   readonly imageAlt: string;
   readonly imagePosition?: string;
 }

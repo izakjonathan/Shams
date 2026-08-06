@@ -84,3 +84,14 @@ Requires a configured preview database and admin credentials:
 - Save, publish, move to draft, and archive each record type.
 - Confirm protected record previews require authentication.
 - Confirm FAQ and information-page list links stay inside `/admin/faqs` and `/admin/pages`.
+
+
+## v2.4.0 database public content
+
+- Local source renders canonical content.
+- Database source renders published records only.
+- Draft records remain hidden outside authenticated preview.
+- Preview banner appears and exit disables Draft Mode.
+- Publishing invalidates the relevant content cache tag.
+- Error and local-fallback policies behave as configured.
+- Public layout, splash, curtain, menu, footer, and Safari canvas remain unchanged.

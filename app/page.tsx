@@ -7,15 +7,11 @@ import { ProgrammeExplorer } from "./components/ProgrammeExplorer";
 import { ScrollReveal } from "./components/ScrollReveal";
 import { SectionHeader } from "./components/SectionHeader";
 import { TicketSection } from "./components/TicketSection";
-import { contentRepository } from "./content";
+import { contentRepository, publicContentRepository } from "./content";
 import { safeExternalUrl, serializeJsonLd } from "./lib/site";
 
 const event = contentRepository.getEvent();
 const home = contentRepository.getHome();
-const artists = contentRepository.getArtists();
-const faqs = contentRepository.getFaqs();
-const programme = contentRepository.getProgramme();
-const tickets = contentRepository.getTickets();
 
 export const metadata: Metadata = {
   title: `${event.city} · ${event.date}`,
@@ -24,17 +20,22 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map(({ question, answer }) => ({
-    "@type": "Question",
-    name: question,
-    acceptedAnswer: { "@type": "Answer", text: answer },
-  })),
-};
-
-export default function Home() {
+export default async function Home() {
+  const [artists, faqs, programme, tickets] = await Promise.all([
+    publicContentRepository.getArtists(),
+    publicContentRepository.getFaqs(),
+    publicContentRepository.getProgramme(),
+    publicContentRepository.getTickets(),
+  ]);
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map(({ question, answer }) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer },
+    })),
+  };
   const ticketUrl = safeExternalUrl(process.env.NEXT_PUBLIC_TICKET_URL);
 
   return (

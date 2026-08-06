@@ -85,3 +85,17 @@
     transform: none !important;
   }
 }
+
+.previewBanner {
+  position: relative;
+  z-index: 90;
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 0.65rem var(--page-gutter);
+  background: var(--color-dark);
+  color: var(--color-white);
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+.previewBanner a { color: inherit; text-decoration: underline; text-underline-offset: 0.18em; }

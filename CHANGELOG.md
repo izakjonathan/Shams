@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.4.0 — Database-backed public content and preview mode
+
+- Added a server-only public repository with local/database source switching.
+- Database mode exposes only published records to normal visitors.
+- Authenticated Draft Mode renders drafts through the real public site.
+- Added tagged caching and targeted invalidation after admin writes.
+- Added explicit error versus local-fallback database policy.
+
+
 ## 2.3.0 — Admin publishing and governance workflow
 
 - Added explicit save, publish, draft, and archive actions.

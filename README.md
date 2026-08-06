@@ -1,17 +1,12 @@
-# Shams for Humanity v2.3.0
+# Shams for Humanity v2.4.0
 
-## Admin publishing and governance workflow
+Database-backed public content and authenticated Draft Mode preview, built from v2.3.0.
 
-This release builds on v2.2.0 without changing the approved public experience. It strengthens the existing database-backed admin foundation with explicit publishing actions, protected record previews, stale-edit protection, slug conflict checks, corrected admin routing, and a persistent audit-log workspace.
+## Content source
 
-### Included
+- `CONTENT_SOURCE=local` keeps the canonical local repository as the public source.
+- `CONTENT_SOURCE=database` reads published artists, programme, tickets, FAQs, and information pages from PostgreSQL.
+- `CONTENT_DATABASE_FAILURE=error` fails visibly on database errors.
+- `CONTENT_DATABASE_FAILURE=local-fallback` deliberately falls back to canonical local content.
 
-- Save, publish, move-to-draft, and archive actions.
-- Protected record previews under `/admin/preview/...`.
-- Optimistic concurrency protection using each record's `updatedAt` value.
-- Duplicate slug rejection within each content type.
-- Audit-log workspace at `/admin/audit`.
-- Correct plural routes for FAQ and information-page editors.
-- Expanded audit metadata for status and content changes.
-
-The public frontend continues to use the validated local repository. Enabling database content on the public site remains a deliberate later phase after a real database migration and preview deployment have passed QA.
+Admin preview enables Next.js Draft Mode and renders database drafts through the real public components. Publish actions invalidate content-type cache tags. Public design and Safari behavior are unchanged.

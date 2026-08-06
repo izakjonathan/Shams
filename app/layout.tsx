@@ -6,6 +6,7 @@ import { SiteHeader } from "./components/SiteHeader";
 import { SiteFooter } from "./components/SiteFooter";
 import { contentRepository } from "./content";
 import { AppShell } from "./components/AppShell";
+import { PreviewBanner } from "./components/PreviewBanner";
 import { allowIndexing, serializeJsonLd, siteUrl } from "./lib/site";
 
 const event = contentRepository.getEvent();
@@ -124,6 +125,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           `}</style>
         </noscript>
         <AppShell header={<SiteHeader />} footer={<SiteFooter />}>
+          <PreviewBanner />
           {children}
         </AppShell>
         <script

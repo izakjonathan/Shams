@@ -18,3 +18,5 @@ export type {
   TicketAvailability,
   TicketTier,
 } from "./models";
+
+export { publicContentRepository, CONTENT_TAGS } from "./public-repository";

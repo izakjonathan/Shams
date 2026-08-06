@@ -1,17 +1,17 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { requireAdmin } from "../../../lib/auth";
 import { getAdminRecord, type AdminContentType } from "../../../lib/content-admin";
-import { adminRouteForType } from "../../../lib/routes";
 
 const TYPES = new Set<AdminContentType>(["artist", "programme", "ticket", "faq", "page"]);
 
-function recordTitle(data: Record<string, unknown>, fallback: string) {
-  for (const key of ["name", "title", "question", "label", "type"]) {
-    const value = data[key];
-    if (typeof value === "string" && value.trim()) return value;
+function publicPath(type: AdminContentType, record: Awaited<ReturnType<typeof getAdminRecord>>) {
+  if (!record) return null;
+  if (type === "artist" && record.slug) return `/artists/${record.slug}`;
+  if (type === "page") {
+    if (record.slug && ["privacy", "terms", "accessibility", "contact"].includes(record.slug)) return `/${record.slug}`;
+    if ("routes" in record.data) return "/contact";
   }
-  return fallback;
+  return "/";
 }
 
 export default async function AdminRecordPreview({ params }: { params: Promise<{ type: string; id: string }> }) {
@@ -20,28 +20,7 @@ export default async function AdminRecordPreview({ params }: { params: Promise<{
   const type = rawType as AdminContentType;
   if (!TYPES.has(type)) notFound();
   const record = await getAdminRecord(type, id);
-  if (!record) notFound();
-  const route = adminRouteForType(type);
-  return (
-    <article className="adminPreview">
-      <header className="adminPageHeader">
-        <div><p className="adminEyebrow">PROTECTED PREVIEW</p><h1>{recordTitle(record.data, record.id)}</h1></div>
-        <Link className="adminBackLink" href={`/admin/${route}?edit=${encodeURIComponent(record.id)}`}>Back to editor</Link>
-      </header>
-      <div className="adminPreviewMeta">
-        <span className={`adminStatus adminStatus--${record.status}`}>{record.status}</span>
-        <span>{record.type}</span><span>{record.slug ?? record.id}</span><span>Order {record.sortOrder}</span>
-      </div>
-      <section className="adminPreviewCard">
-        {Object.entries(record.data).map(([key, value]) => (
-          <div className="adminPreviewField" key={key}>
-            <strong>{key}</strong>
-            {Array.isArray(value) || (value && typeof value === "object")
-              ? <pre>{JSON.stringify(value, null, 2)}</pre>
-              : <p>{String(value ?? "")}</p>}
-          </div>
-        ))}
-      </section>
-    </article>
-  );
+  const path = publicPath(type, record);
+  if (!path) notFound();
+  redirect(`/api/preview?path=${encodeURIComponent(path)}`);
 }

@@ -349,7 +349,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.3.0") errors.push("package.json version must be 2.3.0.");
+if (packageJson.version !== "2.4.0") errors.push("package.json version must be 2.4.0.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -494,6 +494,20 @@ if (!adminRoutes.includes('if (type === "faq") return "faqs"') || !adminRoutes.i
 for (const path of ["app/admin/audit/page.tsx", "app/admin/preview/[type]/[id]/page.tsx"]) {
   if (!existsSync(resolve(root, path))) errors.push(`Missing v2.3.0 admin workflow file: ${path}`);
 }
+
+
+// v2.4.0 database-backed public content and preview guards.
+const publicRepository = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
+const previewRoute = readFileSync(resolve(root, "app/api/preview/route.ts"), "utf8");
+const previewExit = readFileSync(resolve(root, "app/api/preview/exit/route.ts"), "utf8");
+const previewBanner = readFileSync(resolve(root, "app/components/PreviewBanner.tsx"), "utf8");
+for (const required of ["CONTENT_SOURCE", "CONTENT_DATABASE_FAILURE", "unstable_cache", "draftMode", "CONTENT_TAGS", "local-fallback"]) {
+  if (!publicRepository.includes(required)) errors.push(`Public database repository is missing: ${required}`);
+}
+if (!previewRoute.includes("getAdminIdentity") || !previewRoute.includes(".enable()")) errors.push("Draft preview enable route must require an admin session and enable Draft Mode.");
+if (!previewExit.includes(".disable()")) errors.push("Draft preview exit route must disable Draft Mode.");
+if (!previewBanner.includes("noindex,nofollow") || !previewBanner.includes("Exit preview")) errors.push("Draft preview must be visibly identified and excluded from indexing.");
+if (!adminActions.includes("revalidateTag") || !adminActions.includes("CONTENT_TAGS")) errors.push("Publishing actions must invalidate the affected public content tag.");
 
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));

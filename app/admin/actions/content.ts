@@ -1,11 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "../lib/auth";
 import { saveAdminRecord, seedDatabase, type AdminContentType } from "../lib/content-admin";
 import { adminRouteForType } from "../lib/routes";
 import { parseContentStatus, validateAdminRecord } from "../../content/admin-validation";
+import { CONTENT_TAGS } from "../../content/public-repository";
 
 const TYPES = new Set<AdminContentType>(["artist", "programme", "ticket", "faq", "page"]);
 
@@ -37,5 +38,6 @@ export async function saveRecordAction(formData: FormData) {
   await saveAdminRecord(actor, { id, type, slug, status, sortOrder, data, updatedAt: expectedUpdatedAt }, expectedUpdatedAt);
   const route = adminRouteForType(type);
   revalidatePath(`/admin/${route}`);
+  revalidateTag(CONTENT_TAGS[type], "max");
   redirect(`/admin/${route}?saved=1`);
 }

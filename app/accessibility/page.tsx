@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { InformationPage } from "../components/InformationPage";
-import { contentRepository } from "../content";
+import { contentRepository, publicContentRepository } from "../content";
 
 const content = contentRepository.getInformationPage("accessibility");
 
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/accessibility" },
 };
 
-export default function Page() {
-  return <InformationPage content={content} />;
+export default async function Page() {
+  const databaseContent = await publicContentRepository.getInformationPage("accessibility");
+  return <InformationPage content={databaseContent ?? content} />;
 }

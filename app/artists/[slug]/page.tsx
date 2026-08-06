@@ -4,20 +4,20 @@ import { notFound } from "next/navigation";
 import { ArrowIcon } from "../../components/ArrowIcon";
 import { ArtistNavigation } from "../../components/ArtistNavigation";
 import { PageCloseButton } from "../../components/PageCloseButton";
-import { contentRepository } from "../../content";
+import { contentRepository, publicContentRepository } from "../../content";
 
-const artists = contentRepository.getArtists();
+const localArtists = contentRepository.getArtists();
 const event = contentRepository.getEvent();
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
-  return artists.map((artist) => ({ slug: artist.slug }));
+  return localArtists.map((artist) => ({ slug: artist.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const artist = contentRepository.getArtistBySlug(slug);
+  const artist = await publicContentRepository.getArtistBySlug(slug);
 
   if (!artist) return { title: "Artist not found", robots: { index: false, follow: false } };
 
@@ -28,14 +28,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: artist.name,
       description: artist.shortBio,
-      images: [{ url: artist.image.src, alt: artist.imageAlt }],
+      images: [{ url: typeof artist.image === "string" ? artist.image : artist.image.src, alt: artist.imageAlt }],
     },
   };
 }
 
 export default async function ArtistPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const artist = contentRepository.getArtistBySlug(slug);
+  const artists = await publicContentRepository.getArtists();
+  const artist = artists.find((entry) => entry.slug === slug);
   if (!artist) {
     notFound();
     throw new Error("Artist not found");
@@ -72,7 +73,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ slug: s
               alt={artist.imageAlt}
               fill
               priority
-              placeholder="blur"
+              placeholder={typeof artist.image === "string" ? "empty" : "blur"}
               sizes="(min-width: 1400px) 580px, (min-width: 760px) 38vw, calc(100vw - 36px)"
               style={{ objectPosition: artist.imagePosition ?? "center" }}
             />
