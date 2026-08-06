@@ -1,4 +1,4 @@
-# v2.4.5 release checklist
+# v2.4.6 release checklist
 
 - [x] Built from v2.4.4
 - [x] Removed public ScrollReveal runtime and concealment CSS

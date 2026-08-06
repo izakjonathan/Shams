@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import Script from "next/script";
 import "./globals.css";
 import { SiteHeader } from "./components/SiteHeader";
 import { SiteFooter } from "./components/SiteFooter";
@@ -109,14 +108,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
   return (
     <html lang="en" className={`${agilera.variable} splashCanvasActive`}>
-      <body className="splashActive">
-        <Script
-          id="splash-session-gate"
-          strategy="beforeInteractive"
+      <head>
+        <script
+          id="initial-scroll-and-splash-gate"
           dangerouslySetInnerHTML={{
-            __html: `try{const k="shf-splash-seen-v2.4.5";if(sessionStorage.getItem(k)==="1"){document.documentElement.classList.add("splashSessionSeen");document.documentElement.classList.remove("splashCanvasActive");}else{history.scrollRestoration="manual";scrollTo(0,0);}}catch{}`,
+            __html: `(function(){try{var k="shf-splash-seen-v2.4.6";var seen=sessionStorage.getItem(k)==="1";var root=document.documentElement;if(seen){root.classList.add("splashSessionSeen");root.classList.remove("splashCanvasActive");}var entry=performance.getEntriesByType&&performance.getEntriesByType("navigation")[0];var type=entry&&entry.type||"navigate";if(location.hash||type==="back_forward")return;history.scrollRestoration="manual";root.classList.add("initialScrollGuardActive");var active=true;var frame=0;var safety=0;var pin=function(){if(!active)return;if(scrollX!==0||scrollY!==0)scrollTo(0,0);frame=requestAnimationFrame(pin);};var release=function(){if(!active)return;active=false;if(frame)cancelAnimationFrame(frame);if(safety)clearTimeout(safety);removeEventListener("scroll",pin,true);removeEventListener("pageshow",pin,true);removeEventListener("load",pin,true);if(window.visualViewport){visualViewport.removeEventListener("resize",pin);visualViewport.removeEventListener("scroll",pin);}scrollTo(0,0);root.classList.remove("initialScrollGuardActive");requestAnimationFrame(function(){history.scrollRestoration="auto";});try{delete window.__shamsReleaseInitialScrollGuard;}catch(_){window.__shamsReleaseInitialScrollGuard=undefined;}};window.__shamsReleaseInitialScrollGuard=release;addEventListener("scroll",pin,true);addEventListener("pageshow",pin,true);addEventListener("load",pin,true);if(window.visualViewport){visualViewport.addEventListener("resize",pin,{passive:true});visualViewport.addEventListener("scroll",pin,{passive:true});}pin();if(seen){addEventListener("load",function(){setTimeout(release,900);},{once:true});}safety=setTimeout(release,8000);}catch(_){}})();`,
           }}
         />
+      </head>
+      <body className="splashActive">
         <noscript>
           <style>{`
             .splashScreen { display: none !important; }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.4.6 — Deterministic startup scroll guard
+
+- Installs a pre-hydration head script that pins direct loads and reloads to `scrollY = 0` until startup is complete.
+- Preserves native browser back/forward restoration and direct hash navigation.
+- Prevents Safari's delayed native scroll restoration from racing the splash handoff.
+- Disables scroll anchoring only while the startup guard is active.
+
 ## 2.4.5 — Production runtime-boundary hardening
 
 - Moved database public reads into a dedicated server-only adapter.
