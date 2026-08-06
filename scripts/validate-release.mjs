@@ -35,8 +35,8 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "2.1.8") {
-  errors.push(`package.json version must be 2.1.8 for this release (found ${pkg.version}).`);
+if (pkg.version !== "2.1.9") {
+  errors.push(`package.json version must be 2.1.9 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [
@@ -79,7 +79,10 @@ if (indexing && siteUrl?.hostname.endsWith(".vercel.app")) {
 
 if (indexing) {
   const launchFiles = [
-    "app/content/data/contact.ts",
+    "app/content/admin-validation.ts",
+  "CHANGELOG.md",
+  "QA_MATRIX.md",
+  "app/content/data/contact.ts",
     "app/content/data/information-pages.ts",
     "app/content/data/event.ts",
   ];

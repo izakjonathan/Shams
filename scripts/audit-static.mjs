@@ -270,7 +270,7 @@ for (const required of [
   "--gradient-size: 1.5", "--gradient-strength: 1.2",
   ".hero::before", ".paperGlowSection::before",
   "scale(var(--gradient-size))",
-  "opacity: var(--gradient-strength)",
+  "filter: saturate(var(--gradient-strength)) contrast(var(--gradient-strength))",
   "--glow-w: 108vw", "--glow-h: 76vw",
   "--glow-w: 84vw", "--glow-h: 94vw",
   "--glow-w: 66vw", "--glow-h: 52vw",
@@ -349,7 +349,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.1.8") errors.push("package.json version must be 2.1.8.");
+if (packageJson.version !== "2.1.9") errors.push("package.json version must be 2.1.9.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -403,6 +403,36 @@ if (!splash.includes('cssTimeMs("--duration-splash-enter"') || !splash.includes(
 }
 if (!readFileSync(resolve(root, "app/components/SiteHeader.tsx"), "utf8").includes('cssTimeMs("--duration-menu"')) {
   errors.push("Menu fallback timing must derive from the shared CSS duration token.");
+}
+
+
+// v2.1.9 Constitution alignment phase-one guards.
+const adminActions = readFileSync(resolve(root, "app/admin/actions/content.ts"), "utf8");
+const adminValidation = readFileSync(resolve(root, "app/content/admin-validation.ts"), "utf8");
+const contentAdmin = readFileSync(resolve(root, "app/admin/lib/content-admin.ts"), "utf8");
+if (!adminActions.includes("validateAdminRecord") || !adminActions.includes("parseContentStatus")) {
+  errors.push("Admin writes must pass through canonical type-specific validation before persistence.");
+}
+for (const required of ["validateArtist", "validateProgramme", "validateTicket", "validateFaq", "validatePage", "VALID_STATUSES"]) {
+  if (!adminValidation.includes(required)) errors.push(`Admin content validation is missing: ${required}`);
+}
+if (!contentAdmin.includes("packageJson.version") || contentAdmin.includes('version: "2.1.5"')) {
+  errors.push("Database seed audit metadata must derive from the current package version.");
+}
+if (!routeFade.includes("function focusElement") || !routeFade.includes("focusElement(target ??")) {
+  errors.push("Same-route and cross-route focus restoration must use the shared focus helper.");
+}
+if (existsSync(resolve(root, "public/images/splash-humanity-artwork.jpeg"))) {
+  errors.push("The unused legacy splash JPEG must not remain in the release package.");
+}
+if (!gradients.includes("contrast(var(--gradient-strength))")) {
+  errors.push("Gradient strength above 1 must have a visible effect rather than relying only on clamped opacity.");
+}
+if (!packageJson.engines || packageJson.engines.node !== "22.x") {
+  errors.push("The release must pin the intended Node major for Vercel builds.");
+}
+if (!existsSync(resolve(root, "CHANGELOG.md")) || !existsSync(resolve(root, "QA_MATRIX.md"))) {
+  errors.push("Constitution alignment releases require a changelog and documented QA matrix.");
 }
 
 if (errors.length) {

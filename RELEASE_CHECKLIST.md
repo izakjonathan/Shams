@@ -1,14 +1,22 @@
-# v2.1.8 release checklist
+# v2.1.9 release checklist
 
-- [x] Built from v2.1.7
-- [x] Footer remains one dynamic viewport tall
-- [x] Footer contact uses visualViewport geometry
-- [x] Exact document-bottom check retained as fallback
-- [x] html and body are forced dark during footer contact
-- [x] Conditional black underlay does not affect layout height
-- [x] Underlay is display:none outside footer state
-- [x] No flow-based footer bleed exists
+- [x] Built from v2.1.8
+- [x] Shams visual identity and Safari systems unchanged
+- [x] Admin writes receive type-specific validation
+- [x] Admin status values use the canonical status vocabulary
+- [x] Seed audit version derives from package version
+- [x] Same-route focus restoration uses temporary tabindex cleanup
+- [x] Gradient strength 1.2 has a non-clamped visual effect
+- [x] Unused old splash JPEG removed
+- [x] Node 22 major pinned
+- [x] Changelog added
+- [x] QA matrix added
 - [x] Release validation passes
 - [x] Static architecture audit passes
 - [x] Script syntax checks pass
+- [x] CSS brace validation passes
 - [x] ZIP integrity passes
+- [ ] Clean `npm ci` completed — blocked until a valid package lock can be generated from a registry containing all pinned packages
+- [ ] Full TypeScript and Next.js production build completed
+- [ ] Real database admin write validation completed
+- [ ] Real-iPhone Safari matrix completed

@@ -2,6 +2,8 @@ import "server-only";
 import { and, asc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { contentRepository } from "../../content";
+import type { ContentStatus } from "../../content/models";
+import packageJson from "../../../package.json";
 import { getDatabase, isDatabaseConfigured } from "../../db/client";
 import { auditLogs, contentRecords } from "../../db/schema";
 
@@ -11,7 +13,7 @@ export interface AdminRecord {
   id: string;
   type: AdminContentType;
   slug: string | null;
-  status: string;
+  status: ContentStatus;
   sortOrder: number;
   data: Record<string, unknown>;
 }
@@ -46,13 +48,13 @@ export async function listAdminRecords(type: AdminContentType) {
   if (!isDatabaseConfigured()) return { source: "local" as const, records: localAdminRecords(type) };
   const db = getDatabase();
   const rows = await db.select().from(contentRecords).where(eq(contentRecords.type, type)).orderBy(asc(contentRecords.sortOrder));
-  return { source: "database" as const, records: rows.map((row) => ({ ...row, type: row.type as AdminContentType, data: row.data as Record<string, unknown> })) };
+  return { source: "database" as const, records: rows.map((row) => ({ ...row, type: row.type as AdminContentType, status: row.status as ContentStatus, data: row.data as Record<string, unknown> })) };
 }
 
 export async function getAdminRecord(type: AdminContentType, id: string) {
   if (!isDatabaseConfigured()) return localAdminRecords(type).find((record) => record.id === id) ?? null;
   const [row] = await getDatabase().select().from(contentRecords).where(and(eq(contentRecords.type, type), eq(contentRecords.id, id))).limit(1);
-  return row ? { ...row, type: row.type as AdminContentType, data: row.data as Record<string, unknown> } : null;
+  return row ? { ...row, type: row.type as AdminContentType, status: row.status as ContentStatus, data: row.data as Record<string, unknown> } : null;
 }
 
 export async function seedDatabase(actor: string) {
@@ -67,7 +69,7 @@ export async function seedDatabase(actor: string) {
       });
     }
   }
-  await db.insert(auditLogs).values({ id: randomUUID(), actor, action: "seed", recordType: "all", recordId: "local-content", after: { version: "2.1.5" } });
+  await db.insert(auditLogs).values({ id: randomUUID(), actor, action: "seed", recordType: "all", recordId: "local-content", after: { version: packageJson.version } });
 }
 
 export async function saveAdminRecord(actor: string, record: AdminRecord) {

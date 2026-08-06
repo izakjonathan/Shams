@@ -1,21 +1,62 @@
-# v2.1.8 permanent Safari footer-canvas audit
+# v2.1.9 Constitution alignment implementation audit
 
-## Root cause
-The previous implementation locked the canvas to black only when the mathematical document bottom was reached. iOS Safari changes `visualViewport.height`, toolbar geometry, and native chrome independently. The footer could visibly touch the toolbar while both document-end calculations remained a few pixels short, leaving the paper canvas visible as a white strip.
+## Baseline
 
-## Resolution
-- Detect footer contact directly from `#site-footer.getBoundingClientRect()` against `visualViewport.height`.
-- Retain exact document-bottom detection as a secondary safeguard.
-- Force literal dark backgrounds on both `html` and `body` while footer contact is active.
-- Add a conditionally rendered fixed black underlay behind the site shell. It is `display:none` outside footer state and never contributes to document height.
-- Keep the footer itself at one viewport; no flow bleed, spacer, pseudo-content below the footer, or extra scroll distance is introduced.
-- Use the maximum of body and root scroll heights for the secondary bottom check.
+Built from `shams-for-humanity-v2.1.8-splash-refresh-gradient-update.zip` following the Project Development Constitution alignment audit.
 
-## Regression guards
-The static audit now requires footer-contact geometry detection, the non-layout conditional underlay, and rejects reintroduction of flow-based footer bleed.
+## Corrections applied
 
-## Validation
-- Release validation passed.
-- Static architecture audit passed.
-- Validation scripts parse under Node.
-- CSS braces and ZIP integrity checked.
+### Admin mutation validation
+
+Admin JSON is no longer written directly to PostgreSQL after only metadata normalization. Every write now passes through `app/content/admin-validation.ts`, which validates:
+
+- canonical status values;
+- stable ID and metadata agreement;
+- slug shape and agreement;
+- programme time/category values;
+- ticket price, availability, and includes;
+- FAQ fields;
+- information/contact page structure;
+- artist editorial, image, biography, highlights, and link fields.
+
+The public repository remains unchanged and continues using its existing full-content validation.
+
+### Gradient-strength correction
+
+The global strength value remains `1.2`. Wash layers still use bounded opacity, while all gradient layers now also use saturation and contrast derived from the same strength token. This makes values above `1` visible without altering section geometry, content scale, spacing, or layout.
+
+### Focus consistency
+
+Same-document hash navigation and cross-route arrival now share one focus helper. Non-focusable destinations receive a temporary `tabindex="-1"`, which is removed on blur.
+
+### Release traceability
+
+- Seed audit metadata derives from `package.json`.
+- Node 22 is pinned through `engines`.
+- The unused old splash JPEG was removed.
+- `CHANGELOG.md` and `QA_MATRIX.md` were added.
+- v2.1.8 documentation drift was corrected by replacing release documentation with the actual v2.1.9 scope.
+
+## Deliberately unchanged high-risk systems
+
+No changes were made to:
+
+- splash runway or handoff;
+- Safari document-canvas/footer-contact controller;
+- route-curtain timing and ownership;
+- menu phase model;
+- hero geometry;
+- footer sizing;
+- browser history/swipe-back behaviour;
+- public/admin layout separation;
+- CSS file ownership.
+
+## Verification
+
+- Static architecture audit passes.
+- Release configuration validation passes.
+- Validation and theme scripts parse under Node.
+- CSS brace integrity passes.
+- ZIP integrity passes.
+
+A clean dependency install, full TypeScript check, Next.js production build, database mutation test, and browser/device matrix remain required outside this constrained registry environment.

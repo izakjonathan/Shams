@@ -70,7 +70,7 @@ export async function getAdminIdentity() {
   }
 }
 
-export async function requireAdmin() {
+export async function requireAdmin(): Promise<string> {
   const identity = await getAdminIdentity();
   if (!identity) redirect("/admin/login");
   return identity;

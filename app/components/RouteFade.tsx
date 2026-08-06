@@ -64,6 +64,15 @@ function nextPaint() {
   return new Promise<void>((resolve) => afterPaint(resolve));
 }
 
+
+function focusElement(target: HTMLElement | null) {
+  if (!target) return;
+  const addedTabIndex = !target.matches("a, button, input, textarea, select, [tabindex]");
+  if (addedTabIndex) target.tabIndex = -1;
+  target.focus({ preventScroll: true });
+  if (addedTabIndex) target.addEventListener("blur", () => target.removeAttribute("tabindex"), { once: true });
+}
+
 async function waitForDestinationLayout() {
   try {
     await document.fonts?.ready;
@@ -139,12 +148,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       target = document.querySelector<HTMLElement>("main#main-content");
     }
 
-    if (pending?.focusOnArrival && target) {
-      const addedTabIndex = !target.matches("a, button, input, textarea, select, [tabindex]");
-      if (addedTabIndex) target.tabIndex = -1;
-      target.focus({ preventScroll: true });
-      if (addedTabIndex) target.addEventListener("blur", () => target?.removeAttribute("tabindex"), { once: true });
-    }
+    if (pending?.focusOnArrival) focusElement(target);
   }, []);
 
   const startNavigation = useCallback(() => {
@@ -200,7 +204,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       if (hash === "#site-footer") scrollToDocumentBottom(behavior);
       else if (target) target.scrollIntoView({ behavior, block: "start" });
       else window.scrollTo({ top: 0, left: 0, behavior });
-      if (options?.focusOnArrival) (target ?? document.querySelector<HTMLElement>("main#main-content"))?.focus({ preventScroll: true });
+      if (options?.focusOnArrival) focusElement(target ?? document.querySelector<HTMLElement>("main#main-content"));
       return;
     }
 

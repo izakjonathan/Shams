@@ -1,6 +1,6 @@
 {
   "name": "shams-for-humanity",
-  "version": "2.1.8",
+  "version": "2.1.9",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -32,5 +32,8 @@
     "typescript": "5.9.3",
     "drizzle-kit": "0.31.4"
   },
-  "packageManager": "npm@10.9.4"
+  "packageManager": "npm@10.9.4",
+  "engines": {
+    "node": "22.x"
+  }
 }

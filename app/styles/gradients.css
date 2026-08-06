@@ -39,7 +39,8 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: var(--gradient-strength);
+  opacity: min(1, var(--gradient-strength));
+  filter: saturate(var(--gradient-strength)) contrast(var(--gradient-strength));
   transform: scale(var(--gradient-size));
   transform-origin: center;
   background-repeat: no-repeat;
@@ -77,7 +78,6 @@
   right: var(--glow-right, auto);
   top: var(--glow-top, auto);
   bottom: var(--glow-bottom, auto);
-  opacity: var(--gradient-strength);
   transform-origin: center;
   transform:
     rotate(var(--glow-rotate, 0deg))
@@ -95,18 +95,22 @@
   z-index: 1;
   background: var(--dark-orb-gradient);
   background-repeat: no-repeat;
-  filter: opacity(var(--glow-opacity, 1));
+  opacity: var(--glow-opacity, 1);
+  filter: saturate(var(--gradient-strength)) contrast(var(--gradient-strength));
 }
 
 .heroOrb {
+  opacity: var(--glow-opacity, 1);
   filter:
     blur(var(--hero-glow-blur-mobile))
-    opacity(var(--glow-opacity, 1));
+    saturate(var(--gradient-strength))
+    contrast(var(--gradient-strength));
 }
 
 .paperGlow {
   z-index: 1;
-  filter: opacity(var(--glow-opacity, var(--paper-glow-opacity)));
+  opacity: var(--glow-opacity, var(--paper-glow-opacity));
+  filter: saturate(var(--gradient-strength)) contrast(var(--gradient-strength));
 }
 
 .orbOne {
