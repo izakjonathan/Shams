@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect } from "react";
 import { visualViewportHeight } from "../lib/viewport";
 
-// This component only ever does anything in the browser (it queries the
-// DOM and sets up an IntersectionObserver), so on the server it can safely
-// fall back to useEffect, which avoids React's "useLayoutEffect does
-// nothing on the server" warning during server rendering.
-const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
-
 const REVEAL_GROUPS: Array<{ root: string; items: string }> = [
-  { root: "#about", items: ".sectionIndex, .statementGrid > h2, .statementGrid > div > *" },
+  // The hero and About section form the initial editorial composition and must
+  // always paint in their final state. Concealing either after hydration caused
+  // visible blinking and large temporary gaps on iOS Safari.
   { root: "#mission", items: ".verticalText, .kicker, h2, .manifestoTags > span" },
   { root: "#lineup", items: ".sectionHeading .sectionIndex, .sectionHeading h2, .sectionHeading > p, .artistRow, .lineupNote" },
   { root: "#info", items: ".infoIntro > *, .infoCards > article" },
@@ -22,59 +18,47 @@ const REVEAL_GROUPS: Array<{ root: string; items: string }> = [
 ];
 
 /**
- * Renders nothing — attaches the scroll-reveal IntersectionObserver to
- * content across the whole page after mount. Kept as its own client
- * component so the rest of the page can stay server-rendered.
+ * Adds progressive reveal motion only to content that is safely below the
+ * initial viewport. Near-viewport content never receives a hidden state, so
+ * hydration cannot produce visible -> hidden -> visible blinking.
  */
 export function ScrollReveal() {
-  useIsomorphicLayoutEffect(() => {
+  useEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion || !("IntersectionObserver" in window)) return;
+
     const root = document.documentElement;
-    const revealItems: HTMLElement[] = [];
+    const animatedItems: HTMLElement[] = [];
     let routeTarget = "";
+
     try {
       routeTarget = sessionStorage.getItem("shf-route-target") ?? "";
       sessionStorage.removeItem("shf-route-target");
     } catch {}
+
     const suppressLineupMotion = routeTarget.startsWith("#artist-");
+    // Keep approximately the first two visual viewports completely static.
+    // This includes the full hero/About handoff on phones with dynamic chrome.
+    const staticPaintLimit = visualViewportHeight() * 2;
 
     REVEAL_GROUPS.forEach(({ root: rootSelector, items }) => {
       const groupRoot = document.querySelector<HTMLElement>(rootSelector);
       if (!groupRoot) return;
 
       Array.from(groupRoot.querySelectorAll<HTMLElement>(items)).forEach((item, index) => {
+        const shouldStayStatic =
+          item.getBoundingClientRect().top <= staticPaintLimit ||
+          (suppressLineupMotion && rootSelector === "#lineup");
+
+        if (shouldStayStatic) return;
+
         item.classList.add("revealItem");
         item.style.setProperty("--reveal-order", String(index % 4));
-        if (suppressLineupMotion && rootSelector === "#lineup") item.classList.add("isRevealed");
-        revealItems.push(item);
+        animatedItems.push(item);
       });
     });
 
-    const resetRevealItems = () => {
-      root.classList.remove("scrollRevealEnabled");
-      revealItems.forEach((item) => {
-        item.classList.remove("revealItem", "isRevealed");
-        item.style.removeProperty("--reveal-order");
-        item.style.removeProperty("will-change");
-      });
-    };
-
-    if (!revealItems.length) return;
-
-    if (reducedMotion || !("IntersectionObserver" in window)) {
-      revealItems.forEach((item) => item.classList.add("isRevealed"));
-      return resetRevealItems;
-    }
-
-    // Content already visible (or immediately adjacent to the first viewport)
-    // must never be painted once and then concealed during hydration. Mark it
-    // as revealed before enabling the global concealment selector.
-    const initialViewportLimit = visualViewportHeight() + 96;
-    revealItems.forEach((item) => {
-      if (item.getBoundingClientRect().top <= initialViewportLimit) {
-        item.classList.add("isRevealed");
-      }
-    });
+    if (!animatedItems.length) return;
 
     root.classList.add("scrollRevealEnabled");
 
@@ -91,34 +75,28 @@ export function ScrollReveal() {
           if (!entry.isIntersecting) return;
           const item = entry.target as HTMLElement;
           observer.unobserve(item);
-          // Promote only while this item is actually transitioning, then drop
-          // the layer again — pinning every item on the page at once (before
-          // it's even in view) was costing a lot of compositor overhead.
           item.style.willChange = "opacity, transform";
           item.addEventListener("transitionend", clearWillChange as EventListener);
           item.classList.add("isRevealed");
         });
       },
-      {
-        threshold: 0,
-        rootMargin: "0px 0px -9% 0px",
-      }
+      { threshold: 0, rootMargin: "0px 0px -9% 0px" }
     );
 
-    // Let the concealed state settle for one frame, then observe each content item.
     const frame = window.requestAnimationFrame(() => {
-      revealItems.forEach((item) => {
-        if (!item.classList.contains("isRevealed")) observer.observe(item);
-      });
+      animatedItems.forEach((item) => observer.observe(item));
     });
 
     return () => {
       window.cancelAnimationFrame(frame);
       observer.disconnect();
-      revealItems.forEach((item) => {
+      root.classList.remove("scrollRevealEnabled");
+      animatedItems.forEach((item) => {
         item.removeEventListener("transitionend", clearWillChange as EventListener);
+        item.classList.remove("revealItem", "isRevealed");
+        item.style.removeProperty("--reveal-order");
+        item.style.removeProperty("will-change");
       });
-      resetRevealItems();
     };
   }, []);
 

@@ -7,7 +7,7 @@ import splashArtwork from "../../public/images/splash-humanity-artwork.png";
 
 const MIN_HOLD_MS = 1100;
 const FONT_READY_TIMEOUT_MS = 1400;
-const SESSION_KEY = "shf-splash-seen-v2.1.8";
+const SESSION_KEY = "shf-splash-seen-v2.4.4";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {
@@ -66,6 +66,10 @@ export function SplashScreen() {
     const skipEnterAnimation = reducedMotion;
     const useRunway = shouldUseSplashRunway();
     const start = performance.now();
+    const navigationEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    const isFreshDocumentLoad = !navigationEntry || navigationEntry.type === "navigate" || navigationEntry.type === "reload";
+    const previousScrollRestoration = window.history.scrollRestoration;
+    if (isFreshDocumentLoad) window.history.scrollRestoration = "manual";
     let hasLoaded = document.readyState === "complete";
     let cancelEnterPaint: (() => void) | null = null;
     let cancelRunwayPaint: (() => void) | null = null;
@@ -73,12 +77,27 @@ export function SplashScreen() {
     let exitTimer = 0;
     let doneTimer = 0;
     let completed = false;
+    let topStabilizationFrame = 0;
+    let topStabilizationTimer = 0;
 
     const setShellInert = (inert: boolean) => {
       if (!shell) return;
       shell.inert = inert;
       if (inert) shell.setAttribute("aria-hidden", "true");
       else shell.removeAttribute("aria-hidden");
+    };
+
+    const holdFreshLoadAtTop = () => {
+      if (!isFreshDocumentLoad) return;
+      window.cancelAnimationFrame(topStabilizationFrame);
+      window.clearTimeout(topStabilizationTimer);
+      const enforce = () => window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      enforce();
+      topStabilizationFrame = window.requestAnimationFrame(() => {
+        enforce();
+        topStabilizationFrame = window.requestAnimationFrame(enforce);
+      });
+      topStabilizationTimer = window.setTimeout(enforce, 180);
     };
 
     const restoreNormalDocument = () => {
@@ -88,9 +107,10 @@ export function SplashScreen() {
       root.style.setProperty("--document-canvas-color", "var(--color-paper)");
       body.style.removeProperty("--document-canvas-color");
       setShellInert(false);
-      if (window.scrollY <= splashRunwayOffset() + 2) {
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      if (isFreshDocumentLoad || window.scrollY <= splashRunwayOffset() + 2) {
+        holdFreshLoadAtTop();
       }
+      window.history.scrollRestoration = previousScrollRestoration;
     };
 
     if (isRepeatVisit) {
@@ -143,7 +163,7 @@ export function SplashScreen() {
 
       // Prepare the live page while the splash is still fully opaque.
       root.classList.remove("splashRunwayActive");
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      holdFreshLoadAtTop();
       body.classList.remove("splashActive");
       body.classList.add("splashHandoff");
       root.classList.add("splashCanvasHandoff");
@@ -189,6 +209,9 @@ export function SplashScreen() {
       cancelHandoffPaint?.();
       window.clearTimeout(exitTimer);
       window.clearTimeout(doneTimer);
+      window.clearTimeout(topStabilizationTimer);
+      window.cancelAnimationFrame(topStabilizationFrame);
+      window.history.scrollRestoration = previousScrollRestoration;
       window.removeEventListener("load", handleLoad);
       if (!completed) restoreNormalDocument();
     };

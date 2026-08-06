@@ -145,7 +145,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.1.8")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.4.4")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.add("splashRunwayActive")')) {
@@ -350,7 +350,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.4.3") errors.push("package.json version must be 2.4.3.");
+if (packageJson.version !== "2.4.4") errors.push("package.json version must be 2.4.4.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -515,7 +515,7 @@ if (!previewBanner.includes("noindex,nofollow") || !previewBanner.includes("Exit
 if (!adminActions.includes("revalidateTag") || !adminActions.includes("CONTENT_TAGS")) errors.push("Publishing actions must invalidate the affected public content tag.");
 
 
-// v2.4.3 production runtime and server/client boundary guards.
+// v2.4.4 production runtime and server/client boundary guards.
 const contentIndex = readFileSync(resolve(root, "app/content/index.ts"), "utf8");
 const contentServerEntry = readFileSync(resolve(root, "app/content/server.ts"), "utf8");
 const siteHeaderSource = readFileSync(resolve(root, "app/components/SiteHeader.tsx"), "utf8");
@@ -533,7 +533,7 @@ if (!appSource.includes('from "./content/server"') && !appSource.includes('from 
 }
 
 
-// v2.4.3 runtime hardening and lazy database adapter.
+// v2.4.4 runtime hardening and lazy database adapter.
 const publicRepository242 = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
 const databaseRecords242 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
 const nextConfig242 = readFileSync(resolve(root, "next.config.ts"), "utf8");
@@ -547,12 +547,12 @@ for (const path of ["app/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx"
   if (!readFileSync(resolve(root, path), "utf8").includes('export const runtime = "nodejs";')) errors.push(`${path} must declare the Node.js runtime.`);
 }
 
-// v2.4.3 initial-paint stability guards.
+// v2.4.4 initial-paint stability guards.
 if (!splash.includes("document.fonts.ready") || !splash.includes("FONT_READY_TIMEOUT_MS")) {
   errors.push("Splash must wait boundedly for the display font before revealing the hero.");
 }
-if (!scrollReveal.includes("initialViewportLimit") || !scrollReveal.includes("visualViewportHeight() + 96")) {
-  errors.push("ScrollReveal must pre-reveal content in and immediately below the initial viewport.");
+if (!scrollReveal.includes("staticPaintLimit") || !scrollReveal.includes("visualViewportHeight() * 2") || scrollReveal.includes('{ root: "#about"')) {
+  errors.push("ScrollReveal must leave the hero/About composition static and animate only content safely below the initial viewports.");
 }
 if (/saturate\(var\(--gradient-strength\)\)|contrast\(var\(--gradient-strength\)\)/.test(gradients)) {
   errors.push("Large gradient layers must not use saturation/contrast filters; they cause avoidable Safari repaints.");
