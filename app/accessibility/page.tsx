@@ -3,6 +3,8 @@ import { InformationPage } from "../components/InformationPage";
 import { contentRepository } from "../content";
 import { publicContentRepository } from "../content/server";
 
+export const runtime = "nodejs";
+
 const content = contentRepository.getInformationPage("accessibility");
 
 export const metadata: Metadata = {

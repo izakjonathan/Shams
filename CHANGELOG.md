@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.4.2 — Production runtime-boundary hardening
+
+- Moved database public reads into a dedicated server-only adapter.
+- Lazy-loads PostgreSQL and Drizzle only when database content mode is selected.
+- Added explicit Node runtimes for public database pages, admin, and Draft Mode preview routes.
+- Externalized the Node-only `postgres` driver from Next.js server bundles.
+- Added runtime-boundary audits to prebuild and release verification.
+- Added conditional Vercel `npm ci` support once a lockfile is committed.
+- Preserved all approved public, Safari, transition, preview, and admin behavior.
+
 ## 2.4.1 — Server/client content-boundary fix
 
 - Removed the server-only public repository from the shared content barrel imported by Client Components.

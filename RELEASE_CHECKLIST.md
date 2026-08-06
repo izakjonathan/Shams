@@ -1,15 +1,18 @@
-# v2.4.1 release checklist
+# v2.4.2 release checklist
 
-- [x] Built from v2.4.0
-- [x] Removed server-only exports from the client-safe content barrel
-- [x] Added explicit server-only content entry
-- [x] Updated public Server Component imports
-- [x] Kept client and Edge routes free of PostgreSQL and `next/headers`
-- [x] Consolidated content cache tags
-- [x] Added regression audit guards for the import boundary
-- [x] Preserved database source switching, Draft Mode preview, and cache invalidation
-- [x] Preserved approved public design and Safari systems
-- [x] Theme generation, static audit, and release validation
-- [ ] Confirm full Vercel production build
-- [ ] Live PostgreSQL migration/read/write test
-- [ ] Deployed preview and real-iPhone regression pass
+- [x] Built from v2.4.1
+- [x] Moved database public reads into a dedicated server-only adapter
+- [x] Lazy-loaded the database adapter only in database mode
+- [x] Kept local content mode independent of PostgreSQL and Drizzle
+- [x] Declared Node runtime for database-backed pages, admin, and preview routes
+- [x] Externalized the Node-only PostgreSQL driver
+- [x] Kept client, metadata, manifest, sitemap, and Edge Open Graph graphs database-free
+- [x] Added a dedicated runtime-boundary audit
+- [x] Added boundary audit to prebuild and complete verification
+- [x] Added conditional Vercel `npm ci` support for a future committed lockfile
+- [x] Preserved public design, Safari systems, transitions, preview, and governance
+- [x] Theme generation, source audits, release validation, syntax, CSS, and ZIP integrity
+- [ ] Generate and commit `package-lock.json` on a network with all pinned packages
+- [ ] Confirm complete Vercel production build
+- [ ] Run live PostgreSQL migration/read/write/cache-invalidation test
+- [ ] Run deployed preview and real-iPhone regression matrix

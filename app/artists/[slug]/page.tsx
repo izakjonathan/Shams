@@ -7,6 +7,8 @@ import { PageCloseButton } from "../../components/PageCloseButton";
 import { contentRepository } from "../../content";
 import { publicContentRepository } from "../../content/server";
 
+export const runtime = "nodejs";
+
 const localArtists = contentRepository.getArtists();
 const event = contentRepository.getEvent();
 

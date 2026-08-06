@@ -2,6 +2,8 @@ import { draftMode } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminIdentity } from "../../admin/lib/auth";
 
+export const runtime = "nodejs";
+
 function safePath(value: string | null) {
   return value && value.startsWith("/") && !value.startsWith("//") ? value : "/";
 }

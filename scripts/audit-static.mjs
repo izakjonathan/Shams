@@ -349,7 +349,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.4.1") errors.push("package.json version must be 2.4.1.");
+if (packageJson.version !== "2.4.2") errors.push("package.json version must be 2.4.2.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -501,8 +501,12 @@ const publicRepository = readFileSync(resolve(root, "app/content/public-reposito
 const previewRoute = readFileSync(resolve(root, "app/api/preview/route.ts"), "utf8");
 const previewExit = readFileSync(resolve(root, "app/api/preview/exit/route.ts"), "utf8");
 const previewBanner = readFileSync(resolve(root, "app/components/PreviewBanner.tsx"), "utf8");
-for (const required of ["CONTENT_SOURCE", "CONTENT_DATABASE_FAILURE", "unstable_cache", "draftMode", "CONTENT_TAGS", "local-fallback"]) {
-  if (!publicRepository.includes(required)) errors.push(`Public database repository is missing: ${required}`);
+const databasePublicRecords = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
+for (const required of ["CONTENT_SOURCE", "CONTENT_DATABASE_FAILURE", "draftMode", "local-fallback"]) {
+  if (!publicRepository.includes(required)) errors.push(`Public database repository coordinator is missing: ${required}`);
+}
+for (const required of ["unstable_cache", "CONTENT_TAGS"]) {
+  if (!databasePublicRecords.includes(required)) errors.push(`Database public-record adapter is missing: ${required}`);
 }
 if (!previewRoute.includes("getAdminIdentity") || !previewRoute.includes(".enable()")) errors.push("Draft preview enable route must require an admin session and enable Draft Mode.");
 if (!previewExit.includes(".disable()")) errors.push("Draft preview exit route must disable Draft Mode.");
@@ -510,7 +514,7 @@ if (!previewBanner.includes("noindex,nofollow") || !previewBanner.includes("Exit
 if (!adminActions.includes("revalidateTag") || !adminActions.includes("CONTENT_TAGS")) errors.push("Publishing actions must invalidate the affected public content tag.");
 
 
-// v2.4.1 server/client content boundary guards.
+// v2.4.2 production runtime and server/client boundary guards.
 const contentIndex = readFileSync(resolve(root, "app/content/index.ts"), "utf8");
 const contentServerEntry = readFileSync(resolve(root, "app/content/server.ts"), "utf8");
 const siteHeaderSource = readFileSync(resolve(root, "app/components/SiteHeader.tsx"), "utf8");
@@ -527,6 +531,20 @@ if (!appSource.includes('from "./content/server"') && !appSource.includes('from 
   errors.push("Public server pages must import database-backed content from the explicit server entry.");
 }
 
+
+// v2.4.2 runtime hardening and lazy database adapter.
+const publicRepository242 = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
+const databaseRecords242 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
+const nextConfig242 = readFileSync(resolve(root, "next.config.ts"), "utf8");
+const package242 = readFileSync(resolve(root, "package.json"), "utf8");
+if (!publicRepository242.includes('await import(\n      "./database-public-records"')) errors.push("Database public records must be loaded lazily only in database mode.");
+if (publicRepository242.includes('from "../db/client"') || publicRepository242.includes('from "drizzle-orm"')) errors.push("The public repository coordinator must not import PostgreSQL or Drizzle directly.");
+if (!databaseRecords242.includes('import "server-only"') || !databaseRecords242.includes('from "../db/client"')) errors.push("The database public-record adapter must remain an explicit server-only module.");
+if (!nextConfig242.includes('serverExternalPackages: ["postgres"]')) errors.push("The postgres driver must be externalized from Next.js server bundles.");
+if (!package242.includes('"audit:boundaries"') || !package242.includes('npm run audit:boundaries')) errors.push("Runtime-boundary checks must be part of release scripts and prebuild.");
+for (const path of ["app/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx", "app/accessibility/page.tsx", "app/contact/page.tsx", "app/artists/[slug]/page.tsx", "app/admin/layout.tsx", "app/api/preview/route.ts", "app/api/preview/exit/route.ts"]) {
+  if (!readFileSync(resolve(root, path), "utf8").includes('export const runtime = "nodejs";')) errors.push(`${path} must declare the Node.js runtime.`);
+}
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);

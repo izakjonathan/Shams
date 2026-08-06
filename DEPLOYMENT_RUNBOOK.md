@@ -36,3 +36,14 @@ If a regression appears:
 2. Restore the previous confirmed ZIP baseline.
 3. Do not patch production directly.
 4. Reproduce the failure in a preview and add or update a regression test before the next promotion.
+
+## 6. v2.4 runtime-boundary verification
+
+Before enabling `CONTENT_SOURCE=database` in production:
+
+1. Run `npm run audit:boundaries`.
+2. Confirm the Vercel build contains no Client or Edge import trace to `app/db/client.ts`, `postgres`, `next/headers`, or `app/content/server.ts`.
+3. Confirm `CONTENT_SOURCE=local` builds without `DATABASE_URL`.
+4. Confirm `CONTENT_SOURCE=database` without `DATABASE_URL` fails according to `CONTENT_DATABASE_FAILURE`.
+5. Confirm authenticated Draft Mode uses the Node runtime and is `private, no-store`.
+6. Confirm manifest, sitemap, and Open Graph routes remain available without database access.

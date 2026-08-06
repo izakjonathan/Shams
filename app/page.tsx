@@ -11,6 +11,8 @@ import { contentRepository } from "./content";
 import { publicContentRepository } from "./content/server";
 import { safeExternalUrl, serializeJsonLd } from "./lib/site";
 
+export const runtime = "nodejs";
+
 const event = contentRepository.getEvent();
 const home = contentRepository.getHome();
 

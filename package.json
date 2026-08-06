@@ -1,6 +1,6 @@
 {
   "name": "shams-for-humanity",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,9 +11,10 @@
     "release:check": "npm run verify",
     "release:validate": "node scripts/validate-release.mjs",
     "audit:static": "node scripts/audit-static.mjs",
+    "audit:boundaries": "node scripts/check-runtime-boundaries.mjs",
     "theme:generate": "node scripts/generate-theme.mjs",
     "predev": "npm run theme:generate",
-    "prebuild": "npm run theme:generate",
+    "prebuild": "npm run theme:generate && npm run audit:boundaries",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",

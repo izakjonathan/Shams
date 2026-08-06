@@ -1,13 +1,16 @@
-# Shams for Humanity v2.4.1
+# Shams for Humanity v2.4.2
 
-Server/client content-boundary fix for the v2.4.0 database-backed public-content release.
+Production runtime-boundary hardening for the v2.4 database-backed public-content architecture.
 
 ## What changed
 
-- `app/content/index.ts` is now strictly client-safe and no longer re-exports database or Draft Mode code.
-- `app/content/server.ts` is the explicit server-only entry for `publicContentRepository`.
-- Server pages import database-backed content only through that server entry.
-- `SiteHeader`, manifest, Open Graph image generation, layout, sitemap, and other client/Edge consumers retain only local client-safe content imports.
-- Cache tags have one canonical definition in `app/content/cache-tags.ts`.
+- Database public reads now live in a dedicated `server-only` adapter.
+- The public repository loads that adapter dynamically only when `CONTENT_SOURCE=database`.
+- Local content mode remains independent of PostgreSQL, Drizzle, Draft Mode database reads, and Node-core driver modules.
+- All database-backed public pages, admin routes, and preview routes explicitly use the Node.js runtime.
+- The `postgres` driver is externalized from Next.js server bundles.
+- Client components, layout metadata, manifest, sitemap, and Edge Open Graph generation remain database-free.
+- A dedicated runtime-boundary audit runs during `prebuild` and the complete verification workflow.
+- Vercel automatically uses `npm ci` once a committed lockfile exists, while retaining `npm install` as a temporary fallback for this package.
 
-This prevents `next/headers`, `server-only`, Drizzle, and the Node PostgreSQL driver from entering client or Edge bundles. The public design, admin workflow, preview system, Safari handling, splash, menu, and route curtain are unchanged.
+The approved public design, splash, Safari canvas handling, footer-contact behavior, menu, editorial curtain, admin governance, Draft Mode preview, and content-source controls are unchanged.
