@@ -1,14 +1,17 @@
-# v2.6.2 release checklist
+# v2.7.0 release checklist
 
-- [x] Built from v2.6.1 stable baseline
-- [x] iOS Safari reveal enabled
-- [x] Hero and About excluded from reveal
-- [x] Initial viewport content pre-revealed
-- [x] Visible opacity and 28 px vertical motion
-- [x] Bounded stagger applied
-- [x] Reduced-motion bypass retained
-- [x] Observer, classes, and inline variables clean up
-- [x] No startup scroll manipulation restored
-- [x] Static audits pass
+- [x] Built from v2.6.2 stable baseline
+- [x] Gallery placed directly before Artists
+- [x] All 14 supplied images included
+- [x] Images converted to optimized WebP
+- [x] Full-viewport responsive crop
+- [x] Smooth opacity-only crossfade
+- [x] Centered yellow Agilera “Shams” overlay
+- [x] Slideshow pauses outside the viewport and in background tabs
+- [x] Reduced-motion static fallback
+- [x] No controls or additional copy added
+- [x] Content model and validation updated
+- [x] Static architecture audit runs all checks before success
+- [x] Release validation passes
 - [ ] Full dependency-backed Next.js build
-- [ ] Real-iPhone reveal QA
+- [ ] Real-iPhone gallery transition QA

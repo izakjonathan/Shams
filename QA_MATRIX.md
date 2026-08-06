@@ -112,3 +112,12 @@ Requires a configured preview database and admin credentials:
 - [ ] Reduced-motion mode shows all content immediately.
 - [ ] iOS Safari shows all content immediately with no reveal classes enabled.
 - [ ] Route navigation away from and back to home leaves no stale reveal classes.
+
+
+## Gallery
+- Confirm the gallery sits immediately before Artists.
+- Confirm all images fill the viewport without exposed background.
+- Confirm crossfades are smooth on iPhone Safari and desktop browsers.
+- Confirm “Shams” remains centered, yellow, and rendered in Agilera.
+- Confirm autoplay pauses when the gallery leaves the viewport or the tab is hidden.
+- Confirm reduced-motion mode keeps a static image.

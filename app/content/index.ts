@@ -9,6 +9,7 @@ export type {
   ContentStatus,
   EventContent,
   FaqEntry,
+  GalleryImage,
   HomeContent,
   InformationPageContent,
   InformationSection,

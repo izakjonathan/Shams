@@ -35,6 +35,12 @@ export interface Artist extends ContentRecord {
   readonly imagePosition?: string;
 }
 
+
+export interface GalleryImage extends ContentRecord {
+  readonly image: StaticImageData | string;
+  readonly alt: string;
+}
+
 export interface EventContent {
   readonly id: string;
   readonly status: ContentStatus;

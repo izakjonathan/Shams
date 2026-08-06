@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.6.2") errors.push("package.json version must be 2.6.2.");
+if (packageJson.version !== "2.7.0") errors.push("package.json version must be 2.7.0.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -627,14 +627,39 @@ if (!v260AdminEditor.includes("<StructuredFields") || !v260AdminEditor.includes(
 if (!v260AdminActions.includes("structuredData") || !v260AdminActions.includes("validateAdminRecord")) errors.push("Structured form writes must pass through canonical validation.");
 if (!v260AdminMedia.includes("Artist images") || !v260AdminMedia.includes("Edit artist media")) errors.push("Admin media QA workspace is missing.");
 if (!readFileSync(resolve(root, "app/admin/components/AdminNav.tsx"), "utf8").includes('/admin/media')) errors.push("Admin navigation must expose the media workspace.");
+// v2.6.2 visible reveal guards.
+if (lowerReveal.includes("isIOSWebKit")) errors.push("Lower-section reveal must not be blanket-disabled on iOS Safari.");
+if (!lowerReveal.includes('threshold: 0.04') || !lowerReveal.includes('rootMargin: "0px 0px -10% 0px"')) errors.push("Visible lower reveal observer settings are missing.");
+if (!motionRevealStyles.includes("--lower-reveal-distance: 28px") || !motionRevealStyles.includes("--lower-reveal-duration: 760ms") || !motionRevealStyles.includes("--lower-reveal-delay")) errors.push("Visible reveal motion tokens or stagger are missing.");
+
+// v2.7.0 event-atmosphere gallery guards.
+const eventGallery = readFileSync(resolve(root, "app/components/EventGallery.tsx"), "utf8");
+const galleryData = readFileSync(resolve(root, "app/content/data/gallery.ts"), "utf8");
+const galleryStyles = readFileSync(resolve(root, "app/styles/gallery.css"), "utf8");
+if (!publicHome245.includes("<EventGallery images={gallery} />") || publicHome245.indexOf("<EventGallery images={gallery} />") > publicHome245.indexOf('className="lineup section')) {
+  errors.push("The event gallery must render immediately before the Artists section.");
+}
+for (const required of [
+  'aria-label="Event atmosphere gallery"',
+  'SLIDE_INTERVAL_MS = 5200',
+  'prefersReducedMotion()',
+  'IntersectionObserver',
+  'eventGalleryTitle',
+]) {
+  if (!eventGallery.includes(required)) errors.push(`Event gallery behavior is missing: ${required}`);
+}
+if (!galleryStyles.includes("transition: opacity 1400ms") || !galleryStyles.includes("color: var(--color-accent)") || !galleryStyles.includes("font-family: var(--font-display)")) {
+  errors.push("Gallery must use an opacity crossfade and centered yellow Agilera overlay.");
+}
+if ((galleryData.match(/status: "published"/g) || []).length !== 14) errors.push("Gallery must include all 14 supplied images.");
+for (let index = 1; index <= 14; index += 1) {
+  const filename = `public/images/gallery/gallery-${String(index).padStart(2, "0")}.webp`;
+  if (!existsSync(resolve(root, filename))) errors.push(`Missing optimized gallery image: ${filename}`);
+}
+if (!globals.includes('@import "./styles/gallery.css";')) errors.push("Global CSS must import the gallery stylesheet.");
+
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
 }
 console.log("Static architecture audit passed.");
-
-
-// v2.6.2 visible reveal guards.
-if (lowerReveal.includes("isIOSWebKit")) errors.push("Lower-section reveal must not be blanket-disabled on iOS Safari.");
-if (!lowerReveal.includes('threshold: 0.04') || !lowerReveal.includes('rootMargin: "0px 0px -10% 0px"')) errors.push("Visible lower reveal observer settings are missing.");
-if (!motionRevealStyles.includes("--lower-reveal-distance: 28px") || !motionRevealStyles.includes("--lower-reveal-duration: 760ms") || !motionRevealStyles.includes("--lower-reveal-delay")) errors.push("Visible reveal motion tokens or stagger are missing.");

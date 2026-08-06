@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { FadeLink } from "./components/FadeLink";
 import { ArrowIcon } from "./components/ArrowIcon";
 import { FaqAccordion } from "./components/FaqAccordion";
+import { EventGallery } from "./components/EventGallery";
 import { NewsletterForm } from "./components/NewsletterForm";
 import { ProgrammeExplorer } from "./components/ProgrammeExplorer";
 import { SectionHeader } from "./components/SectionHeader";
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
+  const gallery = contentRepository.getGallery();
   const [artists, faqs, programme, tickets] = await Promise.all([
     publicContentRepository.getArtists(),
     publicContentRepository.getFaqs(),
@@ -86,6 +88,8 @@ export default async function Home() {
           <div className="manifestoTags">{home.mission.tags.map((tag) => <span key={tag}>* {tag}</span>)}</div>
         </div>
       </section>
+
+      <EventGallery images={gallery} />
 
       <section className="lineup section paperGlowSection" id="lineup">
         <div className="paperGlow glowOne" aria-hidden="true" />

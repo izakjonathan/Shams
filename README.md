@@ -1,13 +1,12 @@
-# Shams for Humanity v2.6.2
+# Shams for Humanity v2.7.0
 
-Visible, iOS-safe lower-section scroll reveal built from the stable v2.6.1 baseline.
+Event-atmosphere gallery release built from the stable v2.6.2 baseline.
 
 ## Included
-- Hero and About always render in their final visible state.
-- Reveal is enabled on iOS Safari and other modern browsers.
-- Only marked content clearly below the initial visual viewport is concealed.
-- A visible 28 px rise and opacity transition runs over 760 ms with a small bounded stagger.
-- Reduced-motion users and browsers without IntersectionObserver receive fully visible static content.
-- No startup scroll manipulation, transform-scaled gradients, or hero blur was reintroduced.
-
-The stable public design, splash dissolve, Safari canvas handling, route curtain, menu, database integration, and admin system remain unchanged.
+- A full-viewport image gallery immediately before the Artists section.
+- All 14 supplied Day Tripping photographs, optimized to WebP.
+- Smooth 1.4-second opacity crossfades with no sliding or transform animation.
+- A centered yellow “Shams” overlay using Agilera.
+- The slideshow runs only while the gallery is visible and pauses in background tabs.
+- Reduced-motion users receive a static first image.
+- The stable splash, gradients, Safari canvas handling, footer, menu, route curtain, scroll reveal, database content, and admin workflows are unchanged.

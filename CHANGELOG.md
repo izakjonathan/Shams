@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.7.0 — Event atmosphere gallery
+
+- Added a full-viewport gallery directly before the Artists section.
+- Added all 14 supplied Day Tripping photographs as optimized WebP assets.
+- Added smooth opacity-only crossfades and a centered yellow Agilera “Shams” overlay.
+- Added viewport-aware playback, background-tab pausing, and reduced-motion fallback.
+- Extended the typed content repository and validation for gallery records.
+
 ## 2.6.1
 
 - Added a new lower-section-only scroll reveal controller.

@@ -4,6 +4,7 @@ import type {
   ContactPageContent,
   EventContent,
   FaqEntry,
+  GalleryImage,
   HomeContent,
   InformationPageContent,
   NavigationItem,
@@ -45,6 +46,7 @@ function validateCollection<T extends ContentRecord>(records: readonly T[], name
 export function validateContent(input: {
   event: EventContent;
   artists: readonly Artist[];
+  gallery: readonly GalleryImage[];
   programme: readonly ProgrammeEntry[];
   tickets: readonly TicketTier[];
   faqs: readonly FaqEntry[];
@@ -67,6 +69,11 @@ export function validateContent(input: {
     assert(!slugs.has(artist.slug), `artists contains duplicate slug "${artist.slug}".`);
     assert(TIME_PATTERN.test(artist.time), `artists[${index}].time must use HH:MM.`);
     slugs.add(artist.slug);
+  });
+
+  validateCollection(input.gallery, "gallery");
+  input.gallery.forEach((image, index) => {
+    required(image.alt, `gallery[${index}].alt`);
   });
 
   validateCollection(input.programme, "programme");
