@@ -52,8 +52,8 @@ export default async function Home() {
           <p className="eyebrow">{home.hero.eyebrow}</p>
           <h1>{home.hero.titleLines.map((line, index) => <span key={line}>{line}{index < home.hero.titleLines.length - 1 && <br />}</span>)}</h1>
           <div className="heroActions">
-            <a className="button buttonPrimary" href="#tickets">{home.hero.primaryAction} <ArrowIcon /></a>
-            <a className="textLink" href="#about">{home.hero.secondaryAction} <span aria-hidden="true">↓</span></a>
+            <FadeLink className="button buttonPrimary" href="/#tickets">{home.hero.primaryAction} <ArrowIcon /></FadeLink>
+            <FadeLink className="textLink" href="/#about">{home.hero.secondaryAction} <span aria-hidden="true">↓</span></FadeLink>
           </div>
         </div>
         <div className="heroBottom">
@@ -72,7 +72,7 @@ export default async function Home() {
           <div>
             <p className="lead">{home.about.lead}</p>
             <p>{home.about.body}</p>
-            <a className="textLink dark" href="#mission">Our mission <ArrowIcon /></a>
+            <FadeLink className="textLink dark" href="/#mission">Our mission <ArrowIcon /></FadeLink>
           </div>
         </div>
       </section>

@@ -1,3 +1,3 @@
-# v2.4.6 initial-load determinism audit
+# v2.4.7 stale-fragment root-cause audit
 
-The persistent jump was caused by two architecture-level startup mutations: the splash runway changed real document scroll during hydration, and ScrollReveal introduced hidden states after server paint. Both systems are removed rather than retuned. The splash remains fixed and fully covers the visual viewport, while the homepage renders its final content state from the first visible frame.
+The persistent top-section jump was traced to site-generated URL fragments. Homepage and menu navigation wrote hashes such as `#about`; Safari correctly restored those fragments on reload, while the startup guard intentionally exempted all hashes. The screenshot geometry matches the `#about` target positioned beneath the fixed header. v2.4.7 makes hashes transient for site-originated navigation, clears stale fragments on reload, and preserves directly opened hash URLs.

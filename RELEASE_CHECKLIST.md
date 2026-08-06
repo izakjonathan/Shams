@@ -1,14 +1,9 @@
-# v2.4.6 release checklist
+# v2.4.7 release checklist
 
-- [x] Built from v2.4.4
-- [x] Removed public ScrollReveal runtime and concealment CSS
-- [x] Removed splash runway, runway variable, and startup scroll mutation
-- [x] Preserved splash artwork bleed and explicit Safari root colour
-- [x] Updated splash session key
-- [x] Runtime-boundary audit passes
+- [x] Built from v2.4.6
+- [x] Site-managed section links do not persist hashes
+- [x] Cross-route return hashes are cleared after destination positioning
+- [x] Reloads clear stale fragments before scroll pinning
+- [x] Direct first-navigation deep links remain supported
 - [x] Static architecture audit passes
 - [x] Release validation passes
-- [x] JavaScript syntax checks pass
-- [x] CSS brace validation passes
-- [ ] Full dependency-backed Next.js build
-- [ ] Real-iPhone Safari verification

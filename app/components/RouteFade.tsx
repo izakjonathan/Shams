@@ -64,6 +64,15 @@ function nextPaint() {
   return new Promise<void>((resolve) => afterPaint(resolve));
 }
 
+function clearManagedHash() {
+  if (!window.location.hash) return;
+  window.history.replaceState(
+    window.history.state,
+    "",
+    `${window.location.pathname}${window.location.search}`,
+  );
+}
+
 
 function focusElement(target: HTMLElement | null) {
   if (!target) return;
@@ -148,6 +157,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       target = document.querySelector<HTMLElement>("main#main-content");
     }
 
+    if (pending?.hash) clearManagedHash();
     if (pending?.focusOnArrival) focusElement(target);
   }, []);
 
@@ -199,11 +209,11 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     if (sameDocumentRoute) {
       const hash = destination.hash || "#top";
       const target = hash === "#top" ? null : document.getElementById(decodeURIComponent(hash.slice(1)));
-      window.history.pushState(window.history.state, "", hash);
       const behavior = prefersReducedMotion() ? "auto" : "smooth";
       if (hash === "#site-footer") scrollToDocumentBottom(behavior);
       else if (target) target.scrollIntoView({ behavior, block: "start" });
       else window.scrollTo({ top: 0, left: 0, behavior });
+      clearManagedHash();
       if (options?.focusOnArrival) focusElement(target ?? document.querySelector<HTMLElement>("main#main-content"));
       return;
     }
