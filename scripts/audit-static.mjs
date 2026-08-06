@@ -143,7 +143,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.5.0")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.6.0")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.remove("splashCanvasActive", "splashCanvasHandoff")')) {
@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.5.0") errors.push("package.json version must be 2.5.0.");
+if (packageJson.version !== "2.6.1") errors.push("package.json version must be 2.6.1.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -539,11 +539,11 @@ if (!appSource.includes('from "./content/server"') && !appSource.includes('from 
 
 
 
-// v2.5.0 stable restoration: startup must not mutate document scroll.
+// v2.6.0 stable restoration: startup must not mutate document scroll.
 if (layout.includes("initial-scroll-and-splash-gate") || layout.includes("initialScrollGuardActive") || layout.includes("scrollTo(0,0)") || layout.includes("__shamsReleaseInitialScrollGuard")) {
   errors.push("Diagnostic release must not contain the startup scroll guard or initial-load scroll mutation.");
 }
-if (!layout.includes('id="splash-session-gate"') || !layout.includes("shf-splash-seen-v2.5.0")) {
+if (!layout.includes('id="splash-session-gate"') || !layout.includes("shf-splash-seen-v2.6.0")) {
   errors.push("Diagnostic release must retain only the session splash gate.");
 }
 if (splash.includes("releaseInitialScrollGuard")) errors.push("Splash must not depend on startup scroll-guard cleanup.");
@@ -567,11 +567,26 @@ if (!splash.includes("document.fonts.ready") || !splash.includes("FONT_READY_TIM
   errors.push("Splash must wait boundedly for the display font before revealing the hero.");
 }
 if (existsSync(resolve(root, "app/components/ScrollReveal.tsx"))) {
-  errors.push("Progressive ScrollReveal must remain removed from the public runtime.");
+  errors.push("The legacy ScrollReveal controller must remain removed.");
 }
 const publicHome245 = readFileSync(resolve(root, "app/page.tsx"), "utf8");
-if (publicHome245.includes("ScrollReveal")) {
-  errors.push("Homepage must render in its final visible state without hydration concealment.");
+const lowerReveal = readFileSync(resolve(root, "app/components/LowerSectionReveal.tsx"), "utf8");
+const appShellReveal = readFileSync(resolve(root, "app/components/AppShell.tsx"), "utf8");
+const motionRevealStyles = readFileSync(resolve(root, "app/styles/motion.css"), "utf8");
+for (const required of [
+  'pathname !== "/"',
+  'prefersReducedMotion()',
+  'isIOSWebKit()',
+  'IntersectionObserver',
+  'INITIAL_VIEWPORT_BUFFER',
+  'data-lower-reveal',
+]) {
+  if (!lowerReveal.includes(required)) errors.push(`Safe lower-section reveal is missing: ${required}`);
+}
+if (!appShellReveal.includes("<LowerSectionReveal />")) errors.push("AppShell must mount the lower-section reveal controller.");
+if (!motionRevealStyles.includes("html.lowerRevealEnabled [data-lower-reveal].isLowerRevealPending")) errors.push("Lower-section reveal concealment must be opt-in after hydration.");
+if (/className=\"hero[^\"]*\"[^>]*data-lower-reveal/.test(publicHome245) || /id=\"about\"[^>]*data-lower-reveal/.test(publicHome245)) {
+  errors.push("Hero and About must never participate in scroll reveal.");
 }
 if ((splash + splashStyles + layout).includes("splashRunwayActive") || (splash + splashStyles).includes("safari-splash-scroll-offset") || splash.includes("scrollTo({ top: offset")) {
   errors.push("Splash must not mutate document scroll through a runway.");
@@ -590,7 +605,7 @@ if (!routeFade.includes("clearManagedHash()") || !routeFade.includes("if (pendin
 if (/href="#(?:about|mission|tickets)"/.test(readFileSync(resolve(root, "app/page.tsx"), "utf8"))) {
   errors.push("Homepage section controls must use managed FadeLink navigation instead of persistent raw hash anchors.");
 }
-// v2.5.0 deliberately does not mutate startup URL or scroll state.
+// v2.6.0 deliberately does not mutate startup URL or scroll state.
 
 // v2.4.8 deterministic managed-target navigation remains for in-app navigation.
 if (!routeFade.includes('href: `${destination.pathname}${destination.search}`')) {
@@ -599,6 +614,19 @@ if (!routeFade.includes('href: `${destination.pathname}${destination.search}`'))
 if (routeFade.includes('href: `${destination.pathname}${destination.search}${destination.hash}`')) {
   errors.push("Native hash navigation must not compete with RouteFade destination positioning.");
 }
+
+// v2.6.0 structured admin editing and media foundation.
+const structuredFields = readFileSync(resolve(root, "app/admin/components/StructuredFields.tsx"), "utf8");
+const v260AdminEditor = readFileSync(resolve(root, "app/admin/components/RecordEditor.tsx"), "utf8");
+const v260AdminActions = readFileSync(resolve(root, "app/admin/actions/content.ts"), "utf8");
+const v260AdminMedia = readFileSync(resolve(root, "app/admin/media/page.tsx"), "utf8");
+for (const required of ["Artist name", "Performance time", "Artist image", "Category", "Ticket type", "Question", "Sections JSON"]) {
+  if (!structuredFields.includes(required)) errors.push(`Structured admin editor is missing: ${required}`);
+}
+if (!v260AdminEditor.includes("<StructuredFields") || !v260AdminEditor.includes("Advanced record JSON")) errors.push("RecordEditor must use structured fields and retain read-only JSON diagnostics.");
+if (!v260AdminActions.includes("structuredData") || !v260AdminActions.includes("validateAdminRecord")) errors.push("Structured form writes must pass through canonical validation.");
+if (!v260AdminMedia.includes("Artist images") || !v260AdminMedia.includes("Edit artist media")) errors.push("Admin media QA workspace is missing.");
+if (!readFileSync(resolve(root, "app/admin/components/AdminNav.tsx"), "utf8").includes('/admin/media')) errors.push("Admin navigation must expose the media workspace.");
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);

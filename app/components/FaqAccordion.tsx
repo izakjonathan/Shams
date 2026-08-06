@@ -8,7 +8,7 @@ export function FaqAccordion({ faqs }: { faqs: readonly FaqEntry[] }) {
   const idPrefix = useId();
 
   return (
-    <div className="faqList">
+    <div className="faqList" data-lower-reveal>
       {faqs.map(({ question, answer }, index) => {
         const isOpen = openFaq === index;
         const buttonId = `${idPrefix}-button-${index}`;

@@ -25,7 +25,7 @@ export function ProgrammeExplorer({ entries }: ProgrammeExplorerProps) {
   );
 
   return (
-    <div className="programmeExplorer">
+    <div className="programmeExplorer" data-lower-reveal>
       <div className="programmeFilters" role="group" aria-label="Filter programme">
         {filters.map((filter) => (
           <button

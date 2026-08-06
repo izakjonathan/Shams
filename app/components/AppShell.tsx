@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { DocumentCanvasTone } from "./DocumentCanvasTone";
 import { RouteFade } from "./RouteFade";
 import { SplashScreen } from "./SplashScreen";
+import { LowerSectionReveal } from "./LowerSectionReveal";
 
 export function AppShell({ children, header, footer }: { children: ReactNode; header: ReactNode; footer: ReactNode }) {
   const pathname = usePathname();
@@ -28,6 +29,7 @@ export function AppShell({ children, header, footer }: { children: ReactNode; he
       <a className="skipLink" href="#main-content">Skip to content</a>
       <SplashScreen />
       <DocumentCanvasTone />
+      <LowerSectionReveal />
       <div className="siteShell">
         <RouteFade header={header}>{children}{footer}</RouteFade>
       </div>

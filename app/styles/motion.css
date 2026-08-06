@@ -31,3 +31,40 @@
     transition: none;
   }
 }
+
+/* ========================================================================== 
+   Lower-section scroll reveal — progressive enhancement only
+   ========================================================================== */
+
+:root {
+  --lower-reveal-distance: 18px;
+  --lower-reveal-duration: 620ms;
+  --lower-reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+ * Server-rendered content is visible by default. Only elements marked pending
+ * by the client controller are concealed, and iOS WebKit never enables this
+ * state. Hero and About are intentionally not marked for reveal.
+ */
+html.lowerRevealEnabled [data-lower-reveal].isLowerRevealPending {
+  opacity: 0;
+  transform: translate3d(0, var(--lower-reveal-distance), 0);
+  transition: none;
+}
+
+html.lowerRevealEnabled [data-lower-reveal].isLowerRevealVisible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity var(--lower-reveal-duration) var(--lower-reveal-ease),
+    transform var(--lower-reveal-duration) var(--lower-reveal-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.lowerRevealEnabled [data-lower-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

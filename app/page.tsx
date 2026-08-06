@@ -80,7 +80,7 @@ export default async function Home() {
       <section className="manifesto darkGlowSection" id="mission">
         <div className="darkGlow darkGlowOne" aria-hidden="true" />
         <p className="verticalText">SHAMS MEANS SUN</p>
-        <div className="manifestoContent">
+        <div className="manifestoContent" data-lower-reveal>
           <span className="kicker">{home.mission.kicker}</span>
           <h2>{home.mission.headingLines.map((line, index) => <span key={line}>{line}{index < home.mission.headingLines.length - 1 && <br />}</span>)}</h2>
           <div className="manifestoTags">{home.mission.tags.map((tag) => <span key={tag}>* {tag}</span>)}</div>
@@ -95,8 +95,9 @@ export default async function Home() {
           index="02 — ARTISTS"
           title={home.lineup.title}
           description={home.lineup.description}
+          reveal
         />
-        <div className="artistList">
+        <div className="artistList" data-lower-reveal>
           {artists.map((artist, index) => (
             <article className="artistRow" id={`artist-${artist.slug}`} key={artist.slug}>
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
@@ -115,16 +116,16 @@ export default async function Home() {
             </article>
           ))}
         </div>
-        <p className="lineupNote">{home.lineup.note}</p>
+        <p className="lineupNote" data-lower-reveal>{home.lineup.note}</p>
       </section>
 
       <section className="eventInfo" id="info">
-        <div className="infoIntro">
+        <div className="infoIntro" data-lower-reveal>
           <div className="sectionIndex light">03 — EVENT INFO</div>
           <h2>Everything you need for the day.</h2>
           <p>Designed to feel easy from arrival to the final track.</p>
         </div>
-        <div className="infoCards">
+        <div className="infoCards" data-lower-reveal>
           <article><span>01</span><h3>Date & time</h3><p>Sunday<br/>{event.date}<br/>{event.timeRange}</p></article>
           <article><span>02</span><h3>Location</h3><p>Copenhagen<br/>Venue revealed soon<br/>Easy public transport</p></article>
           <article><span>03</span><h3>Experience</h3><p>2 stages<br/>Food & drinks<br/>Art installations</p></article>
@@ -140,6 +141,7 @@ export default async function Home() {
           index="04 — PROGRAMME"
           title={home.programme.title}
           description={home.programme.description}
+          reveal
         />
         <ProgrammeExplorer entries={programme} />
       </section>
@@ -150,7 +152,7 @@ export default async function Home() {
         <div className="paperGlow glowOne" aria-hidden="true" />
         <div className="paperGlow glowTwo" aria-hidden="true" />
         <div className="paperGlow glowThree" aria-hidden="true" />
-        <SectionHeader index="06 — PRACTICAL" title={home.faq.title} />
+        <SectionHeader index="06 — PRACTICAL" title={home.faq.title} reveal />
         <FaqAccordion faqs={faqs} />
         <script
           type="application/ld+json"
@@ -159,7 +161,7 @@ export default async function Home() {
       </section>
 
       <section className="newsletter">
-        <div><span className="kicker">{home.newsletter.kicker}</span><h2>{home.newsletter.titleLines.map((line, index) => <span key={line}>{line}{index < home.newsletter.titleLines.length - 1 && <br />}</span>)}</h2></div>
+        <div data-lower-reveal><span className="kicker">{home.newsletter.kicker}</span><h2>{home.newsletter.titleLines.map((line, index) => <span key={line}>{line}{index < home.newsletter.titleLines.length - 1 && <br />}</span>)}</h2></div>
         <NewsletterForm />
       </section>
 

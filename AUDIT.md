@@ -1,11 +1,12 @@
-# v2.5.0 stable visual-restoration audit
+# v2.6.1 safe lower-section reveal audit
 
-- Built from the confirmed stable v2.4.9 initial-paint baseline.
-- Startup scroll guards and initial-load `scrollTo()` mutations remain absent.
-- Global gradient size is restored to 1.5.
-- Gradient strength remains 1.2.
-- Gradient enlargement uses direct width/height geometry and wash overscan only.
-- No `scale(var(--gradient-size))` transform is used.
-- Hero blur remains disabled.
-- Splash remains a single opacity dissolve.
-- Route, menu, footer canvas, database, preview, and admin systems are unchanged.
+- Built from the stable v2.6.0 baseline.
+- The legacy ScrollReveal implementation remains deleted.
+- Hero and About have no reveal markers and cannot be concealed during hydration.
+- Server-rendered content is visible by default.
+- Only marked lower-page elements can become pending after hydration.
+- Elements within 1.35 visual viewports are pre-revealed before concealment is enabled.
+- iOS WebKit is deliberately excluded pending dedicated real-device validation.
+- Reduced-motion and unsupported browsers receive static visible content.
+- One IntersectionObserver owns lower-section reveal lifecycle and is fully disconnected on cleanup.
+- No startup scroll guard, initial scrollTo, transform-scaled gradients or hero blur was restored.

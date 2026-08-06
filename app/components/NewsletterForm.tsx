@@ -5,7 +5,7 @@ export function NewsletterForm() {
   const isConfigured = Boolean(formAction);
 
   return (
-    <form action={formAction} method="post">
+    <form data-lower-reveal action={formAction} method="post">
       <label htmlFor="email">Email address</label>
       <div>
         <input

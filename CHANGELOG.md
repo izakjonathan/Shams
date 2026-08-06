@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.6.1
+
+- Added a new lower-section-only scroll reveal controller.
+- Kept Hero and About permanently visible.
+- Disabled reveal on iOS WebKit and under reduced motion.
+- Prevented hydration blinking by making concealment opt-in after initial viewport classification.
+- Preserved the stable no-scroll-guard and compositor-safe gradient architecture.
+
+## 2.6.0
+- Added structured type-specific admin forms.
+- Added artist media metadata previews and a media QA workspace.
+- Preserved canonical validation and publishing governance.
+
+
 ## 2.5.0 — Stable visual restoration
 
 - Restored the approved stronger gradient presence from the stable v2.4.9 baseline.

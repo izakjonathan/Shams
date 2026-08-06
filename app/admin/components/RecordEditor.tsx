@@ -2,6 +2,7 @@ import Link from "next/link";
 import { saveRecordAction } from "../actions/content";
 import { adminRouteForType } from "../lib/routes";
 import type { AdminContentType, AdminRecord } from "../lib/content-admin";
+import { StructuredFields } from "./StructuredFields";
 
 export function RecordEditor({ record, type, writable }: { record: AdminRecord; type: AdminContentType; writable: boolean }) {
   const route = adminRouteForType(type);
@@ -24,7 +25,9 @@ export function RecordEditor({ record, type, writable }: { record: AdminRecord; 
           <label>Sort order<input name="sortOrder" type="number" defaultValue={record.sortOrder} /></label>
           <label>Status<select name="status" defaultValue={record.status}><option value="draft">Draft</option><option value="placeholder">Placeholder</option><option value="published">Published</option><option value="archived">Archived</option></select></label>
         </div>
-        <label>Structured JSON<textarea name="data" defaultValue={JSON.stringify(record.data, null, 2)} spellCheck={false} /></label>
+        <input type="hidden" name="originalData" value={JSON.stringify(record.data)} />
+        <StructuredFields record={record} type={type} />
+        <details className="adminAdvanced"><summary>Advanced record JSON</summary><p>Read-only reference for debugging and migrations.</p><pre>{JSON.stringify(record.data, null, 2)}</pre></details>
         <div className="adminEditorActions">
           <button className="adminPrimaryButton" name="intent" value="save" type="submit" disabled={!writable}>Save changes</button>
           <button className="adminSecondaryButton" name="intent" value="publish" type="submit" disabled={!writable}>Publish</button>

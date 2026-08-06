@@ -112,7 +112,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <script
           id="splash-session-gate"
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var k="shf-splash-seen-v2.5.0";if(sessionStorage.getItem(k)==="1"){var root=document.documentElement;root.classList.add("splashSessionSeen");root.classList.remove("splashCanvasActive");}}catch(_){}})();`,
+            __html: `(function(){try{var k="shf-splash-seen-v2.6.0";if(sessionStorage.getItem(k)==="1"){var root=document.documentElement;root.classList.add("splashSessionSeen");root.classList.remove("splashCanvasActive");}}catch(_){}})();`,
           }}
         />
       </head>

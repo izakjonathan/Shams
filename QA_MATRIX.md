@@ -95,3 +95,20 @@ Requires a configured preview database and admin credentials:
 - Publishing invalidates the relevant content cache tag.
 - Error and local-fallback policies behave as configured.
 - Public layout, splash, curtain, menu, footer, and Safari canvas remain unchanged.
+
+## v2.6.0 structured admin QA
+- Open each content workspace and confirm the selected record renders type-specific fields.
+- Save artist, programme, ticket and FAQ edits and confirm canonical validation errors are surfaced for invalid values.
+- Verify artist image path/URL, alternative text and object-position preview in `/admin/media`.
+- Confirm publish, draft and archive actions still create audit entries and invalidate the matching public cache tag.
+- Verify legal/contact nested JSON fields reject invalid JSON before persistence.
+
+
+## v2.6.1 lower-section reveal QA
+
+- [ ] Hero and About are visible immediately on every load.
+- [ ] Mission and later marked content reveal once when entering the viewport on desktop Chromium and Firefox.
+- [ ] Reloading midway down the page never conceals currently visible content.
+- [ ] Reduced-motion mode shows all content immediately.
+- [ ] iOS Safari shows all content immediately with no reveal classes enabled.
+- [ ] Route navigation away from and back to home leaves no stale reveal classes.

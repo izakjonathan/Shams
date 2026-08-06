@@ -16,15 +16,15 @@ export function TicketSection({ tickets, ticketUrl }: TicketSectionProps) {
   return (
     <section className="tickets section darkGlowSection" id="tickets">
       <div className="darkGlow darkGlowOne" aria-hidden="true" />
-      <div className="ticketsHeader">
+      <div className="ticketsHeader" data-lower-reveal>
         <div className="sectionIndex">05 — TICKETS</div>
         <span>Limited capacity</span>
       </div>
-      <div className="ticketIntro">
+      <div className="ticketIntro" data-lower-reveal>
         <h2>Choose your way in.</h2>
         <p>Every ticket gives full access to the festival. The tiers simply offer different ways to support the shared purpose.</p>
       </div>
-      <div className="ticketGrid">
+      <div className="ticketGrid" data-lower-reveal>
         {tickets.map((ticket) => {
           const canPurchase = ticket.availability === "available" && Boolean(ticketUrl);
           return (
@@ -55,7 +55,7 @@ export function TicketSection({ tickets, ticketUrl }: TicketSectionProps) {
           );
         })}
       </div>
-      <div className="ticketFooter">
+      <div className="ticketFooter" data-lower-reveal>
         <p>All prices include fees. A portion of every ticket supports the festival’s humanitarian purpose.</p>
         <p>Ticket information remains placeholder content for now.</p>
       </div>

@@ -8,6 +8,7 @@ const items = [
   ["Tickets", "/admin/tickets"],
   ["FAQs", "/admin/faqs"],
   ["Pages", "/admin/pages"],
+  ["Media", "/admin/media"],
   ["Audit log", "/admin/audit"],
 ] as const;
 
