@@ -349,7 +349,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.4.0") errors.push("package.json version must be 2.4.0.");
+if (packageJson.version !== "2.4.1") errors.push("package.json version must be 2.4.1.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -508,6 +508,24 @@ if (!previewRoute.includes("getAdminIdentity") || !previewRoute.includes(".enabl
 if (!previewExit.includes(".disable()")) errors.push("Draft preview exit route must disable Draft Mode.");
 if (!previewBanner.includes("noindex,nofollow") || !previewBanner.includes("Exit preview")) errors.push("Draft preview must be visibly identified and excluded from indexing.");
 if (!adminActions.includes("revalidateTag") || !adminActions.includes("CONTENT_TAGS")) errors.push("Publishing actions must invalidate the affected public content tag.");
+
+
+// v2.4.1 server/client content boundary guards.
+const contentIndex = readFileSync(resolve(root, "app/content/index.ts"), "utf8");
+const contentServerEntry = readFileSync(resolve(root, "app/content/server.ts"), "utf8");
+const siteHeaderSource = readFileSync(resolve(root, "app/components/SiteHeader.tsx"), "utf8");
+if (contentIndex.includes("public-repository") || contentIndex.includes("publicContentRepository")) {
+  errors.push("Client-safe content index must not re-export the server-only public repository.");
+}
+if (!contentServerEntry.includes('import "server-only"') || !contentServerEntry.includes("publicContentRepository")) {
+  errors.push("Server public content must be exported through the explicit server-only content entry.");
+}
+if (siteHeaderSource.includes("content/server") || siteHeaderSource.includes("public-repository")) {
+  errors.push("Client header must not import the server-only content repository.");
+}
+if (!appSource.includes('from "./content/server"') && !appSource.includes('from "../content/server"') && !appSource.includes('from "../../content/server"')) {
+  errors.push("Public server pages must import database-backed content from the explicit server entry.");
+}
 
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));

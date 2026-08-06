@@ -6,7 +6,7 @@ import { requireAdmin } from "../lib/auth";
 import { saveAdminRecord, seedDatabase, type AdminContentType } from "../lib/content-admin";
 import { adminRouteForType } from "../lib/routes";
 import { parseContentStatus, validateAdminRecord } from "../../content/admin-validation";
-import { CONTENT_TAGS } from "../../content/public-repository";
+import { CONTENT_TAGS } from "../../content/cache-tags";
 
 const TYPES = new Set<AdminContentType>(["artist", "programme", "ticket", "faq", "page"]);
 

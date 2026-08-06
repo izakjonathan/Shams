@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { InformationPage } from "../components/InformationPage";
-import { contentRepository, publicContentRepository } from "../content";
+import { contentRepository } from "../content";
+import { publicContentRepository } from "../content/server";
 
 const content = contentRepository.getInformationPage("terms");
 

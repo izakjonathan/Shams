@@ -1,12 +1,13 @@
-# Shams for Humanity v2.4.0
+# Shams for Humanity v2.4.1
 
-Database-backed public content and authenticated Draft Mode preview, built from v2.3.0.
+Server/client content-boundary fix for the v2.4.0 database-backed public-content release.
 
-## Content source
+## What changed
 
-- `CONTENT_SOURCE=local` keeps the canonical local repository as the public source.
-- `CONTENT_SOURCE=database` reads published artists, programme, tickets, FAQs, and information pages from PostgreSQL.
-- `CONTENT_DATABASE_FAILURE=error` fails visibly on database errors.
-- `CONTENT_DATABASE_FAILURE=local-fallback` deliberately falls back to canonical local content.
+- `app/content/index.ts` is now strictly client-safe and no longer re-exports database or Draft Mode code.
+- `app/content/server.ts` is the explicit server-only entry for `publicContentRepository`.
+- Server pages import database-backed content only through that server entry.
+- `SiteHeader`, manifest, Open Graph image generation, layout, sitemap, and other client/Edge consumers retain only local client-safe content imports.
+- Cache tags have one canonical definition in `app/content/cache-tags.ts`.
 
-Admin preview enables Next.js Draft Mode and renders database drafts through the real public components. Publish actions invalidate content-type cache tags. Public design and Safari behavior are unchanged.
+This prevents `next/headers`, `server-only`, Drizzle, and the Node PostgreSQL driver from entering client or Edge bundles. The public design, admin workflow, preview system, Safari handling, splash, menu, and route curtain are unchanged.

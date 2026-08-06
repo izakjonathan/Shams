@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { ArrowIcon } from "../../components/ArrowIcon";
 import { ArtistNavigation } from "../../components/ArtistNavigation";
 import { PageCloseButton } from "../../components/PageCloseButton";
-import { contentRepository, publicContentRepository } from "../../content";
+import { contentRepository } from "../../content";
+import { publicContentRepository } from "../../content/server";
 
 const localArtists = contentRepository.getArtists();
 const event = contentRepository.getEvent();

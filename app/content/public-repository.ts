@@ -7,14 +7,7 @@ import { contentRecords } from "../db/schema";
 import { validateAdminRecord, type AdminContentType } from "./admin-validation";
 import { contentRepository } from "./repository";
 import type { Artist, ContentStatus, FaqEntry, InformationPageContent, ContactPageContent, ProgrammeEntry, TicketTier } from "./models";
-
-export const CONTENT_TAGS = {
-  artist: "content:artists",
-  programme: "content:programme",
-  ticket: "content:tickets",
-  faq: "content:faqs",
-  page: "content:pages",
-} as const;
+import { CONTENT_TAGS } from "./cache-tags";
 
 type PublicType = keyof typeof CONTENT_TAGS;
 type FailurePolicy = "error" | "local-fallback";

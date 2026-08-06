@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { FadeLink } from "../components/FadeLink";
 import { PageCloseButton } from "../components/PageCloseButton";
-import { contentRepository, publicContentRepository } from "../content";
+import { contentRepository } from "../content";
+import { publicContentRepository } from "../content/server";
 
 const content = contentRepository.getContactPage();
 

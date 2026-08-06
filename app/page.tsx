@@ -7,7 +7,8 @@ import { ProgrammeExplorer } from "./components/ProgrammeExplorer";
 import { ScrollReveal } from "./components/ScrollReveal";
 import { SectionHeader } from "./components/SectionHeader";
 import { TicketSection } from "./components/TicketSection";
-import { contentRepository, publicContentRepository } from "./content";
+import { contentRepository } from "./content";
+import { publicContentRepository } from "./content/server";
 import { safeExternalUrl, serializeJsonLd } from "./lib/site";
 
 const event = contentRepository.getEvent();

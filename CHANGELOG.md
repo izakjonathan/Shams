@@ -1,13 +1,12 @@
 # Changelog
 
-## 2.4.0 — Database-backed public content and preview mode
+## 2.4.1 — Server/client content-boundary fix
 
-- Added a server-only public repository with local/database source switching.
-- Database mode exposes only published records to normal visitors.
-- Authenticated Draft Mode renders drafts through the real public site.
-- Added tagged caching and targeted invalidation after admin writes.
-- Added explicit error versus local-fallback database policy.
-
+- Removed the server-only public repository from the shared content barrel imported by Client Components.
+- Added an explicit `app/content/server.ts` entry for database-backed public content.
+- Prevented `next/headers`, Drizzle, and the Node PostgreSQL driver from entering client and Edge bundles.
+- Consolidated cache tags and added regression audit guards.
+- Preserved the v2.4.0 public-content source switch, Draft Mode preview, and targeted revalidation.
 
 ## 2.3.0 — Admin publishing and governance workflow
 
