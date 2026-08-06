@@ -7,7 +7,7 @@ import splashArtwork from "../../public/images/splash-humanity-artwork.png";
 
 const MIN_HOLD_MS = 1100;
 const FONT_READY_TIMEOUT_MS = 1400;
-const SESSION_KEY = "shf-splash-seen-v2.4.8";
+const SESSION_KEY = "shf-splash-seen-v2.4.9";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {
@@ -28,12 +28,6 @@ function markSplashSeen(): void {
   }
 }
 
-function releaseInitialScrollGuard(): void {
-  const guardedWindow = window as Window & {
-    __shamsReleaseInitialScrollGuard?: () => void;
-  };
-  guardedWindow.__shamsReleaseInitialScrollGuard?.();
-}
 
 type SplashStage = "entering" | "active" | "exiting" | "done";
 
@@ -79,7 +73,6 @@ export function SplashScreen() {
       root.style.setProperty("--document-canvas-color", "var(--color-paper)");
       body.style.removeProperty("--document-canvas-color");
       setShellInert(false);
-      releaseInitialScrollGuard();
     };
 
     if (isRepeatVisit) {

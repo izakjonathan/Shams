@@ -29,13 +29,6 @@ body {
 }
 
 
-/* During direct-load startup, disable scroll anchoring while Safari is being
- * pinned to the intended top position. The class is removed atomically when
- * the splash handoff (or repeat-visit startup) completes. */
-html.initialScrollGuardActive,
-html.initialScrollGuardActive body {
-  overflow-anchor: none;
-}
 
 /* Safari 26 can cache the previous root colour beneath its bottom toolbar.
  * Use an explicit class and literal colour at the true document bottom so the

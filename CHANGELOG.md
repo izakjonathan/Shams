@@ -1,3 +1,10 @@
+## 2.4.9 — Diagnostic initial-paint isolation
+
+- Removed the startup scroll guard and all initial-load scroll mutation.
+- Temporarily restored gradient size to 1 and removed global transform enlargement.
+- Disabled hero blur.
+- Simplified splash animation to a single opacity dissolve.
+
 # Changelog
 
 ## 2.4.6 — Deterministic startup scroll guard

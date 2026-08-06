@@ -1,3 +1,9 @@
-# v2.4.8 stale-fragment root-cause audit
+# v2.4.9 diagnostic isolation audit
 
-The persistent top-section jump was traced to site-generated URL fragments. Homepage and menu navigation wrote hashes such as `#about`; Safari correctly restored those fragments on reload, while the startup guard intentionally exempted all hashes. The screenshot geometry matches the `#about` target positioned beneath the fixed header. v2.4.8 makes hashes transient for site-originated navigation, clears stale fragments on reload, and preserves directly opened hash URLs.
+- Startup document scroll guard removed.
+- No initial-load `scrollTo()` calls remain.
+- Global gradient size is temporarily 1.
+- Global gradient enlargement transform removed.
+- Hero gradient blur disabled.
+- Splash uses a single overlay-opacity dissolve.
+- Route, menu, footer-canvas, database, preview, and admin systems are unchanged.

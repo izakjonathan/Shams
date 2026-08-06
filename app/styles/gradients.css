@@ -11,10 +11,10 @@
  *
  * 1 = approved original appearance, 1.15 = 15% larger/stronger,
  * 0.85 = 15% smaller/weaker.
- * Current approved values: size 1.5, strength 1.2.
+ * Diagnostic isolation values: size 1, strength 1.2.
  */
 :root {
-  --gradient-size: 1.5;
+  --gradient-size: 1;
   --gradient-strength: 1.2;
 }
 
@@ -40,7 +40,7 @@
   z-index: 0;
   pointer-events: none;
   opacity: min(1, var(--gradient-strength));
-  transform: scale(var(--gradient-size));
+  transform: none;
   transform-origin: center;
   background-repeat: no-repeat;
 }
@@ -80,8 +80,7 @@
   transform-origin: center;
   transform:
     rotate(var(--glow-rotate, 0deg))
-    scale(var(--glow-scale-x, 1), var(--glow-scale-y, 1))
-    scale(var(--gradient-size));
+    scale(var(--glow-scale-x, 1), var(--glow-scale-y, 1));
 }
 
 .heroOrb,
@@ -99,7 +98,7 @@
 
 .heroOrb {
   opacity: min(1, calc(var(--glow-opacity, 1) + (var(--gradient-strength) - 1)));
-  filter: blur(var(--hero-glow-blur-mobile));
+  filter: none;
 }
 
 .paperGlow {
@@ -383,7 +382,7 @@
   }
 
   .heroOrb {
-    filter: blur(var(--hero-glow-blur-desktop));
+    filter: none;
   }
 
   .orbOne {

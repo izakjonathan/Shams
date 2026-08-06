@@ -1,8 +1,8 @@
 /* ========================================================================== 
-   20 — Splash animation states
+   20 — Diagnostic splash animation states
    ========================================================================== */
 
-/* Opacity-only animation avoids expensive Safari blur/scale compositor layers. */
-.splashScreen.isEntering .splashScreenArtWrap { opacity: 0; }
+/* The artwork is fully painted from mount; only the final overlay dissolves. */
+.splashScreen.isEntering .splashScreenArtWrap,
 .splashScreen.isActive .splashScreenArtWrap { opacity: 1; }
 .splashScreen.isExiting { opacity: 0; }

@@ -1,3 +1,5 @@
-# Shams for Humanity v2.4.7
+# Shams for Humanity v2.4.9
 
-Deterministic internal section navigation. Site-originated section links no longer leave persistent URL fragments that Safari can restore on reload. True external/direct hash links remain supported on first navigation. All v2.4.6 public design, Safari canvas, splash, route curtain, database content, preview, and admin behavior is preserved.
+Diagnostic initial-paint isolation release built from v2.4.8.
+
+This release removes startup scroll mutation, global gradient enlargement, hero blur, and splash artwork entry animation so the remaining Safari issue can be isolated without changing route navigation, footer canvas handling, database content, or admin workflows.

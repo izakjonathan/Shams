@@ -143,7 +143,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.4.8")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.4.9")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.remove("splashCanvasActive", "splashCanvasHandoff")')) {
@@ -263,15 +263,22 @@ if (!programmeTickets.includes("overflow-x: auto") || !programmeTickets.includes
 
 // v1.8.0 restores the approved v1.7.7 hero and exposes only two safe master controls.
 for (const required of [
-  "--gradient-size: 1.5", "--gradient-strength: 1.2",
+  "--gradient-size: 1", "--gradient-strength: 1.2",
   ".hero::before", ".paperGlowSection::before",
-  "scale(var(--gradient-size))",
   "calc(var(--glow-opacity, 1) + (var(--gradient-strength) - 1))",
   "--glow-w: 108vw", "--glow-h: 76vw",
   "--glow-w: 84vw", "--glow-h: 94vw",
   "--glow-w: 66vw", "--glow-h: 52vw",
 ]) {
   if (!gradients.includes(required)) errors.push(`Simplified gradient control or approved hero geometry is missing: ${required}`);
+}
+
+if (gradients.includes("scale(var(--gradient-size))") || gradients.includes("blur(var(--hero-glow-blur")) {
+  errors.push("Diagnostic release must not use global gradient enlargement or hero blur.");
+}
+if (!gradients.includes("--gradient-size: 1")) errors.push("Diagnostic gradient size must be 1.");
+if (!readFileSync(resolve(root, "app/styles/splash-states.css"), "utf8").includes("only the final overlay dissolves")) {
+  errors.push("Diagnostic splash must use one overlay-opacity dissolve.");
 }
 for (const forbidden of [
   "--gradient-shape-x", "--gradient-shape-y", "--gradient-rotation",
@@ -345,7 +352,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.4.8") errors.push("package.json version must be 2.4.8.");
+if (packageJson.version !== "2.4.9") errors.push("package.json version must be 2.4.9.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -529,20 +536,14 @@ if (!appSource.includes('from "./content/server"') && !appSource.includes('from 
 
 
 
-// v2.4.8 startup scroll-restoration guard.
-for (const required of [
-  'id="initial-scroll-and-splash-gate"',
-  '__shamsReleaseInitialScrollGuard',
-  'type==="back_forward"',
-  'history.scrollRestoration="manual"',
-  'root.classList.add("initialScrollGuardActive")',
-]) {
-  if (!layout.includes(required)) errors.push(`Initial startup scroll guard is missing: ${required}`);
+// v2.4.9 diagnostic isolation: startup must not mutate document scroll.
+if (layout.includes("initial-scroll-and-splash-gate") || layout.includes("initialScrollGuardActive") || layout.includes("scrollTo(0,0)") || layout.includes("__shamsReleaseInitialScrollGuard")) {
+  errors.push("Diagnostic release must not contain the startup scroll guard or initial-load scroll mutation.");
 }
-if (!splash.includes('releaseInitialScrollGuard()')) errors.push("Splash cleanup must release the startup scroll guard.");
-if (!base.includes("html.initialScrollGuardActive") || !base.includes("overflow-anchor: none")) {
-  errors.push("Startup scroll guard must temporarily disable scroll anchoring.");
+if (!layout.includes('id="splash-session-gate"') || !layout.includes("shf-splash-seen-v2.4.9")) {
+  errors.push("Diagnostic release must retain only the session splash gate.");
 }
+if (splash.includes("releaseInitialScrollGuard")) errors.push("Splash must not depend on startup scroll-guard cleanup.");
 
 // v2.4.8 runtime hardening and lazy database adapter.
 const publicRepository242 = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
@@ -586,20 +587,14 @@ if (!routeFade.includes("clearManagedHash()") || !routeFade.includes("if (pendin
 if (/href="#(?:about|mission|tickets)"/.test(readFileSync(resolve(root, "app/page.tsx"), "utf8"))) {
   errors.push("Homepage section controls must use managed FadeLink navigation instead of persistent raw hash anchors.");
 }
-if (!layout.includes('if(managed[location.hash]){history.replaceState')) {
-  errors.push("Known stale internal fragments must clear before startup scroll pinning on every direct load.");
-}
+// v2.4.9 diagnostic release deliberately does not mutate startup URL or scroll state.
 
-
-// v2.4.8 deterministic managed-target navigation.
+// v2.4.8 deterministic managed-target navigation remains for in-app navigation.
 if (!routeFade.includes('href: `${destination.pathname}${destination.search}`')) {
   errors.push("Cross-route navigation must not pass managed fragments into router.push/replace.");
 }
 if (routeFade.includes('href: `${destination.pathname}${destination.search}${destination.hash}`')) {
   errors.push("Native hash navigation must not compete with RouteFade destination positioning.");
-}
-if (!layout.includes('var managed={"#top":1,"#about":1')) {
-  errors.push("Known legacy Shams fragments must be removed before first-paint anchor restoration.");
 }
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
