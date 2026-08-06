@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.8.0") errors.push("package.json version must be 2.8.0.");
+if (packageJson.version !== "2.9.0") errors.push("package.json version must be 2.9.0.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -684,6 +684,25 @@ if (!structuredFields.includes('type === "gallery"') || !structuredFields.includ
 if (!v260AdminActions.includes('type === "gallery"') || !v260AdminActions.includes('CONTENT_TAGS[type]')) errors.push("Gallery form writes must validate and invalidate the public cache tag.");
 if (!publicHome245.includes('publicContentRepository.getGallery()')) errors.push("Homepage gallery must use the public repository so published database records can power it.");
 
+
+// v2.9.0 revision history and rollback governance.
+const revisionDbSchema = readFileSync(resolve(root, "app/db/schema.ts"), "utf8");
+const revisionAdminContent = readFileSync(resolve(root, "app/admin/lib/content-admin.ts"), "utf8");
+const revisionAdminActions = readFileSync(resolve(root, "app/admin/actions/content.ts"), "utf8");
+const revisionAdminNav = readFileSync(resolve(root, "app/admin/components/AdminNav.tsx"), "utf8");
+const revisionAdminEditor = readFileSync(resolve(root, "app/admin/components/RecordEditor.tsx"), "utf8");
+for (const required of ["contentRevisions", "content_revisions", "recordType", "snapshot"]) {
+  if (!revisionDbSchema.includes(required)) errors.push(`Revision schema is missing: ${required}`);
+}
+for (const required of ["listRecentRevisions", "listRecordRevisions", "restoreAdminRevision", "before:restore", "validateAdminRecord"]) {
+  if (!revisionAdminContent.includes(required)) errors.push(`Revision repository behavior is missing: ${required}`);
+}
+if (!revisionAdminActions.includes("restoreRevisionAction") || !revisionAdminActions.includes("revalidateTag")) errors.push("Revision restore action must restore, revalidate, and redirect safely.");
+if (!revisionAdminNav.includes('/admin/revisions')) errors.push("Admin navigation must expose revision history.");
+if (!revisionAdminEditor.includes("Revision history")) errors.push("Record editor must link to record revision history.");
+for (const path of ["app/admin/revisions/page.tsx", "app/admin/revisions/[type]/[id]/page.tsx", "app/db/migrations/0002_content_revisions.sql"]) {
+  if (!existsSync(resolve(root, path))) errors.push(`Missing revision workflow file: ${path}`);
+}
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);

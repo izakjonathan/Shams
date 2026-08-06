@@ -3,7 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "../lib/auth";
-import { saveAdminRecord, seedDatabase, type AdminContentType } from "../lib/content-admin";
+import { restoreAdminRevision, saveAdminRecord, seedDatabase, type AdminContentType } from "../lib/content-admin";
 import { adminRouteForType } from "../lib/routes";
 import { parseContentStatus, validateAdminRecord } from "../../content/admin-validation";
 import { CONTENT_TAGS } from "../../content/cache-tags";
@@ -68,4 +68,17 @@ export async function saveRecordAction(formData: FormData) {
   revalidatePath(`/admin/${route}`);
   revalidateTag(CONTENT_TAGS[type], "max");
   redirect(`/admin/${route}?saved=1`);
+}
+
+export async function restoreRevisionAction(formData: FormData) {
+  const actor = await requireAdmin();
+  const revisionId = String(formData.get("revisionId") ?? "").trim();
+  const expectedUpdatedAt = String(formData.get("expectedUpdatedAt") ?? "").trim() || null;
+  if (!revisionId) throw new Error("Revision ID is required.");
+  const restored = await restoreAdminRevision(actor, revisionId, expectedUpdatedAt);
+  const route = adminRouteForType(restored.type);
+  revalidatePath(`/admin/${route}`);
+  revalidatePath(`/admin/revisions/${restored.type}/${encodeURIComponent(restored.id)}`);
+  revalidateTag(CONTENT_TAGS[restored.type], "max");
+  redirect(`/admin/${route}?edit=${encodeURIComponent(restored.id)}&restored=1`);
 }

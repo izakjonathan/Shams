@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.9.0 — Revision history and rollback governance
+
+- Added append-only content revision snapshots.
+- Added global and record-specific revision history workspaces.
+- Added stale-safe, validated one-click rollback.
+- Preserves the current state before restoring an older revision.
+- Revalidates public content and records audit attribution after restore.
+
 ## 2.8.0 — Gallery admin and publishing integration
 
 - Added a dedicated admin gallery workspace with ordering, status, image path, alt text, and previews.

@@ -129,3 +129,12 @@ Requires a configured preview database and admin credentials:
 - Public local mode: verify all 14 canonical images remain available.
 - Public database mode: verify only published gallery records render in sort order.
 - Media QA: verify missing image and missing alt-text states are visible.
+
+## v2.9.0 revision and rollback checks
+
+- Save an artist change and confirm the previous state appears under Revision history.
+- Change status from draft to published and verify the prior status snapshot is retained.
+- Restore a revision and confirm the current state is first preserved as another revision.
+- Confirm the restored record passes canonical validation and updates the public preview after revalidation.
+- Open the same revision history in two sessions; change the record in one and verify stale restoration is rejected in the other.
+- Verify revision history is unavailable but fails safely when `DATABASE_URL` is not configured.

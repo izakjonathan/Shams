@@ -2,10 +2,11 @@ import "server-only";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { contentRepository } from "../../content";
+import { validateAdminRecord } from "../../content/admin-validation";
 import type { ContentStatus } from "../../content/models";
 import packageJson from "../../../package.json";
 import { getDatabase, isDatabaseConfigured } from "../../db/client";
-import { auditLogs, contentRecords } from "../../db/schema";
+import { auditLogs, contentRecords, contentRevisions } from "../../db/schema";
 
 export type AdminContentType = "artist" | "gallery" | "programme" | "ticket" | "faq" | "page";
 
@@ -17,6 +18,28 @@ export interface AdminRecord {
   sortOrder: number;
   data: Record<string, unknown>;
   updatedAt: string | null;
+}
+
+export interface AdminRevision {
+  id: string;
+  recordType: AdminContentType;
+  recordId: string;
+  actor: string;
+  reason: string;
+  snapshot: AdminRecord;
+  createdAt: string;
+}
+
+function revisionSnapshot(record: AdminRecord): AdminRecord {
+  return {
+    id: record.id,
+    type: record.type,
+    slug: record.slug,
+    status: record.status,
+    sortOrder: record.sortOrder,
+    data: record.data,
+    updatedAt: record.updatedAt,
+  };
 }
 
 function normalize(value: unknown): unknown {
@@ -91,6 +114,16 @@ export async function saveAdminRecord(actor: string, record: AdminRecord, expect
   }
 
   const now = new Date();
+  if (before) {
+    await db.insert(contentRevisions).values({
+      id: randomUUID(),
+      recordType: before.type,
+      recordId: before.id,
+      actor,
+      reason: before.status === record.status ? "before:update" : `before:status:${before.status}->${record.status}`,
+      snapshot: revisionSnapshot(before),
+    });
+  }
   const publishedAt = record.status === "published" ? now : null;
   await db.insert(contentRecords).values({ id: record.id, type: record.type, slug: record.slug, status: record.status, sortOrder: record.sortOrder, data: record.data, updatedAt: now, publishedAt }).onConflictDoUpdate({
     target: contentRecords.id,
@@ -103,6 +136,87 @@ export async function saveAdminRecord(actor: string, record: AdminRecord, expect
     before: before ? { slug: before.slug, status: before.status, sortOrder: before.sortOrder, data: before.data } : null,
     after: { slug: record.slug, status: record.status, sortOrder: record.sortOrder, data: record.data },
   });
+}
+
+export async function listRecentRevisions(limit = 100): Promise<AdminRevision[]> {
+  if (!isDatabaseConfigured()) return [];
+  const rows = await getDatabase().select().from(contentRevisions)
+    .orderBy(desc(contentRevisions.createdAt))
+    .limit(Math.max(1, Math.min(limit, 250)));
+  return rows.map((row) => ({
+    id: row.id,
+    recordType: row.recordType as AdminContentType,
+    recordId: row.recordId,
+    actor: row.actor,
+    reason: row.reason,
+    snapshot: row.snapshot as AdminRecord,
+    createdAt: row.createdAt.toISOString(),
+  }));
+}
+
+export async function listRecordRevisions(type: AdminContentType, id: string, limit = 50): Promise<AdminRevision[]> {
+  if (!isDatabaseConfigured()) return [];
+  const rows = await getDatabase().select().from(contentRevisions)
+    .where(and(eq(contentRevisions.recordType, type), eq(contentRevisions.recordId, id)))
+    .orderBy(desc(contentRevisions.createdAt))
+    .limit(Math.max(1, Math.min(limit, 100)));
+  return rows.map((row) => ({
+    id: row.id,
+    recordType: row.recordType as AdminContentType,
+    recordId: row.recordId,
+    actor: row.actor,
+    reason: row.reason,
+    snapshot: row.snapshot as AdminRecord,
+    createdAt: row.createdAt.toISOString(),
+  }));
+}
+
+export async function restoreAdminRevision(actor: string, revisionId: string, expectedUpdatedAt: string | null) {
+  if (!isDatabaseConfigured()) throw new Error("DATABASE_URL is not configured.");
+  const db = getDatabase();
+  const [row] = await db.select().from(contentRevisions).where(eq(contentRevisions.id, revisionId)).limit(1);
+  if (!row) throw new Error("Revision not found.");
+  const snapshot = row.snapshot as AdminRecord;
+  const validatedData = validateAdminRecord(snapshot.data, {
+    id: snapshot.id,
+    type: snapshot.type,
+    slug: snapshot.slug,
+    status: snapshot.status,
+    sortOrder: snapshot.sortOrder,
+  });
+  const current = await getAdminRecord(snapshot.type, snapshot.id);
+  if (!current) throw new Error("The current record no longer exists.");
+  if (current.updatedAt && expectedUpdatedAt && current.updatedAt !== expectedUpdatedAt) {
+    throw new Error("This record changed after you opened its history. Reload before restoring.");
+  }
+
+  const now = new Date();
+  await db.insert(contentRevisions).values({
+    id: randomUUID(),
+    recordType: current.type,
+    recordId: current.id,
+    actor,
+    reason: `before:restore:${revisionId}`,
+    snapshot: revisionSnapshot(current),
+  });
+  await db.update(contentRecords).set({
+    slug: snapshot.slug,
+    status: snapshot.status,
+    sortOrder: snapshot.sortOrder,
+    data: validatedData,
+    updatedAt: now,
+    publishedAt: snapshot.status === "published" ? now : null,
+  }).where(and(eq(contentRecords.type, snapshot.type), eq(contentRecords.id, snapshot.id)));
+  await db.insert(auditLogs).values({
+    id: randomUUID(),
+    actor,
+    action: `restore:${revisionId}`,
+    recordType: snapshot.type,
+    recordId: snapshot.id,
+    before: revisionSnapshot(current),
+    after: revisionSnapshot({ ...snapshot, data: validatedData, updatedAt: now.toISOString() }),
+  });
+  return { type: snapshot.type, id: snapshot.id };
 }
 
 export async function listAuditEntries(limit = 100) {

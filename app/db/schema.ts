@@ -37,3 +37,19 @@ export const auditLogs = pgTable(
     createdIndex: index("audit_logs_created_idx").on(table.createdAt),
   }),
 );
+
+export const contentRevisions = pgTable(
+  "content_revisions",
+  {
+    id: text("id").primaryKey(),
+    recordType: text("record_type").notNull(),
+    recordId: text("record_id").notNull(),
+    actor: text("actor").notNull(),
+    reason: text("reason").notNull(),
+    snapshot: jsonb("snapshot").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => ({
+    recordIndex: index("content_revisions_record_idx").on(table.recordType, table.recordId, table.createdAt),
+  }),
+);

@@ -19,3 +19,7 @@
 ## Rollback
 
 Set `CONTENT_SOURCE=local` and redeploy. The canonical typed local repository remains intact and does not depend on PostgreSQL. No frontend rollback or component changes are required.
+
+## Revision history (v2.9.0)
+
+Run `app/db/migrations/0002_content_revisions.sql` after the original content migration. Each database-backed save captures the previous canonical record in `content_revisions`. Restoring an older revision first captures the current state, then validates and applies the selected snapshot, writes an audit entry, and invalidates the affected public content cache tag.

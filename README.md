@@ -1,16 +1,14 @@
-# Shams for Humanity v2.8.0
+# Shams for Humanity v2.9.0
 
-Built from the confirmed v2.7.1 public baseline.
+Revision history and rollback governance release, built from the confirmed v2.8.0 gallery-admin baseline.
 
-## Gallery admin and publishing integration
+## Added
 
-- Adds a dedicated `/admin/gallery` workspace.
-- Gallery images can be ordered, described, drafted, published, or archived.
-- Adds structured image-path and alternative-text fields with a visual preview.
-- Adds gallery assets to the shared admin media QA workspace.
-- Seeds all canonical local gallery records into PostgreSQL.
-- Public database mode reads published gallery records through the existing repository adapter.
-- Gallery publishing invalidates a dedicated `content:gallery` cache tag.
-- Draft Mode preview uses the real homepage gallery.
+- Persistent content revisions for every database-backed record update.
+- Record-specific revision timelines in `/admin/revisions/[type]/[id]`.
+- A global `/admin/revisions` workspace.
+- One-click restoration with stale-edit protection.
+- Automatic preservation of the current state before every restore.
+- Audit-log entries and targeted public cache invalidation for restores.
 
-The approved v2.7.1 gallery design, 3.6-second cadence, 0.9-second crossfade, lower-section reveal, stable splash, Safari canvas/footer handling, menu, route curtain, and public typography remain unchanged.
+The public website, gallery timing, lower-section reveal, splash, gradients, Safari canvas/footer handling, menu, editorial curtain, database public content, Draft Mode, and structured admin forms are unchanged.

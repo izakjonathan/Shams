@@ -1,18 +1,15 @@
-# v2.8.0 release checklist
+# v2.9.0 release checklist
 
-- [x] Built from v2.7.1
-- [x] Added Gallery admin navigation and workspace
-- [x] Added structured gallery media fields
-- [x] Added canonical gallery admin validation
-- [x] Included gallery records in database seeding
-- [x] Added database-backed published gallery reads
-- [x] Added gallery cache tagging and publish invalidation
-- [x] Added gallery media QA overview
-- [x] Preserved public gallery design and timing
-- [x] Runtime-boundary audit passed
-- [x] Static architecture audit passed
-- [x] Release validation passed
-- [x] ZIP integrity checked
-- [ ] Dependency-backed Next.js production build
-- [ ] Live PostgreSQL seed/edit/publish test
-- [ ] Real-iPhone public gallery QA
+- [x] Built from v2.8.0
+- [x] Added `content_revisions` migration and Drizzle schema
+- [x] Capture previous state before database writes
+- [x] Added global and record-specific revision pages
+- [x] Added validated, stale-safe restore action
+- [x] Preserve current state before every restore
+- [x] Add audit and cache invalidation on restore
+- [x] Preserve public design and runtime behavior
+- [x] Static architecture audit passes
+- [x] Release validation passes
+- [ ] Run migration against production PostgreSQL
+- [ ] Verify save → revise → restore with a deployed preview
+- [ ] Run dependency-backed TypeScript and Next.js build

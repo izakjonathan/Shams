@@ -13,6 +13,7 @@ export function RecordEditor({ record, type, writable }: { record: AdminRecord; 
         <div className="adminEditorMeta">
           <span>{writable ? "Database writes enabled" : "Connect DATABASE_URL to edit"}</span>
           <Link href={`/admin/preview/${type}/${encodeURIComponent(record.id)}`}>Preview record</Link>
+          <Link href={`/admin/revisions/${type}/${encodeURIComponent(record.id)}`}>Revision history</Link>
         </div>
       </div>
       <form action={saveRecordAction}>
