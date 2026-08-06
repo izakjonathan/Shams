@@ -5,27 +5,22 @@ import { usePathname } from "next/navigation";
 import { prefersReducedMotion } from "../lib/motion";
 
 const SELECTOR = "[data-lower-reveal]";
-const INITIAL_VIEWPORT_BUFFER = 0.35;
-
-function isIOSWebKit(): boolean {
-  const ua = navigator.userAgent;
-  const iosDevice = /iP(?:hone|ad|od)/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  const webKit = /AppleWebKit/i.test(ua);
-  const alternateIOSBrowser = /(CriOS|FxiOS|EdgiOS|OPiOS)/i.test(ua);
-  return iosDevice && webKit && !alternateIOSBrowser;
-}
+const INITIAL_VIEWPORT_BUFFER = 0.08;
+const STAGGER_STEP_MS = 45;
+const MAX_STAGGER_ITEMS = 5;
 
 function viewportHeight(): number {
   return window.visualViewport?.height ?? window.innerHeight;
 }
 
 /**
- * Progressive enhancement for content safely below the initial viewport.
+ * Progressive enhancement for lower-page content.
  *
- * The public page is fully visible in server HTML. Concealment is enabled only
- * after hydration, only for lower-page elements, and never on iOS WebKit or
- * when reduced motion is requested. This avoids the visible → hidden → visible
- * hydration regression that affected the previous reveal implementation.
+ * Server HTML remains visible by default. During the pre-paint layout phase,
+ * only marked elements clearly below the initial visual viewport are placed in
+ * a pending state. Hero and About have no reveal markers and can never be
+ * concealed. This keeps first paint deterministic while allowing the effect on
+ * iOS Safari and other modern browsers.
  */
 export function LowerSectionReveal() {
   const pathname = usePathname();
@@ -37,8 +32,7 @@ export function LowerSectionReveal() {
     const elements = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR));
     if (elements.length === 0) return;
 
-    const revealEverything = prefersReducedMotion() || isIOSWebKit() || !("IntersectionObserver" in window);
-    if (revealEverything) {
+    if (prefersReducedMotion() || !("IntersectionObserver" in window)) {
       for (const element of elements) element.classList.add("isLowerRevealVisible");
       return;
     }
@@ -46,14 +40,19 @@ export function LowerSectionReveal() {
     const initialLimit = viewportHeight() * (1 + INITIAL_VIEWPORT_BUFFER);
     const pending: HTMLElement[] = [];
 
-    for (const element of elements) {
+    for (const [index, element] of elements.entries()) {
       const rect = element.getBoundingClientRect();
       if (rect.top <= initialLimit) {
         element.classList.add("isLowerRevealVisible");
-      } else {
-        element.classList.add("isLowerRevealPending");
-        pending.push(element);
+        continue;
       }
+
+      element.style.setProperty(
+        "--lower-reveal-delay",
+        `${(index % MAX_STAGGER_ITEMS) * STAGGER_STEP_MS}ms`,
+      );
+      element.classList.add("isLowerRevealPending");
+      pending.push(element);
     }
 
     if (pending.length === 0) return;
@@ -71,8 +70,8 @@ export function LowerSectionReveal() {
         }
       },
       {
-        threshold: 0.08,
-        rootMargin: "0px 0px -8% 0px",
+        threshold: 0.04,
+        rootMargin: "0px 0px -10% 0px",
       },
     );
 
@@ -83,6 +82,7 @@ export function LowerSectionReveal() {
       root.classList.remove("lowerRevealEnabled");
       for (const element of elements) {
         element.classList.remove("isLowerRevealPending", "isLowerRevealVisible");
+        element.style.removeProperty("--lower-reveal-delay");
       }
     };
   }, [pathname]);

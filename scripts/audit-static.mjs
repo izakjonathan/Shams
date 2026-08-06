@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.6.1") errors.push("package.json version must be 2.6.1.");
+if (packageJson.version !== "2.6.2") errors.push("package.json version must be 2.6.2.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -576,9 +576,9 @@ const motionRevealStyles = readFileSync(resolve(root, "app/styles/motion.css"), 
 for (const required of [
   'pathname !== "/"',
   'prefersReducedMotion()',
-  'isIOSWebKit()',
   'IntersectionObserver',
   'INITIAL_VIEWPORT_BUFFER',
+  'STAGGER_STEP_MS',
   'data-lower-reveal',
 ]) {
   if (!lowerReveal.includes(required)) errors.push(`Safe lower-section reveal is missing: ${required}`);
@@ -633,3 +633,8 @@ if (errors.length) {
 }
 console.log("Static architecture audit passed.");
 
+
+// v2.6.2 visible reveal guards.
+if (lowerReveal.includes("isIOSWebKit")) errors.push("Lower-section reveal must not be blanket-disabled on iOS Safari.");
+if (!lowerReveal.includes('threshold: 0.04') || !lowerReveal.includes('rootMargin: "0px 0px -10% 0px"')) errors.push("Visible lower reveal observer settings are missing.");
+if (!motionRevealStyles.includes("--lower-reveal-distance: 28px") || !motionRevealStyles.includes("--lower-reveal-duration: 760ms") || !motionRevealStyles.includes("--lower-reveal-delay")) errors.push("Visible reveal motion tokens or stagger are missing.");

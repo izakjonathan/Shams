@@ -1,12 +1,13 @@
-# Shams for Humanity v2.6.1
+# Shams for Humanity v2.6.2
 
-Safe lower-section scroll reveal built from the confirmed stable v2.6.0 baseline.
+Visible, iOS-safe lower-section scroll reveal built from the stable v2.6.1 baseline.
 
 ## Included
 - Hero and About always render in their final visible state.
-- Reveal is limited to selected lower-page content.
-- iOS WebKit, reduced-motion users and browsers without IntersectionObserver receive fully visible static content.
-- Concealment is applied only after hydration and only to elements safely below the initial viewport.
-- No startup scroll manipulation, gradient transform scaling or hero blur was reintroduced.
+- Reveal is enabled on iOS Safari and other modern browsers.
+- Only marked content clearly below the initial visual viewport is concealed.
+- A visible 28 px rise and opacity transition runs over 760 ms with a small bounded stagger.
+- Reduced-motion users and browsers without IntersectionObserver receive fully visible static content.
+- No startup scroll manipulation, transform-scaled gradients, or hero blur was reintroduced.
 
-The public design, stable splash dissolve, gradients, Safari canvas handling, route curtain, menu and admin system remain unchanged.
+The stable public design, splash dissolve, Safari canvas handling, route curtain, menu, database integration, and admin system remain unchanged.

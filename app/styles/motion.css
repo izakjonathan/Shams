@@ -37,8 +37,8 @@
    ========================================================================== */
 
 :root {
-  --lower-reveal-distance: 18px;
-  --lower-reveal-duration: 620ms;
+  --lower-reveal-distance: 28px;
+  --lower-reveal-duration: 760ms;
   --lower-reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -59,6 +59,7 @@ html.lowerRevealEnabled [data-lower-reveal].isLowerRevealVisible {
   transition:
     opacity var(--lower-reveal-duration) var(--lower-reveal-ease),
     transform var(--lower-reveal-duration) var(--lower-reveal-ease);
+  transition-delay: var(--lower-reveal-delay, 0ms);
 }
 
 @media (prefers-reduced-motion: reduce) {
