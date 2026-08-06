@@ -73,3 +73,14 @@ This matrix documents checks required before a production promotion. It does not
 | Contact mail links | Chromium + mobile WebKit | Installed mail-client handoff |
 | Admin route isolation | Chromium + mobile WebKit | Configured credentials and database writes |
 | Approved visual surfaces | Opt-in Chromium screenshots | Safari font and compositor rendering |
+
+## v2.3.0 admin publishing workflow
+
+Requires a configured preview database and admin credentials:
+
+- Seed records and confirm the audit log records the seed.
+- Open a record, edit it in a second session, then confirm the stale first session is rejected.
+- Confirm duplicate slugs are rejected within the same content type.
+- Save, publish, move to draft, and archive each record type.
+- Confirm protected record previews require authentication.
+- Confirm FAQ and information-page list links stay inside `/admin/faqs` and `/admin/pages`.

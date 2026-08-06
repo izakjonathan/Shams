@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { adminRouteForType } from "../lib/routes";
 import type { AdminContentType, AdminRecord } from "../lib/content-admin";
 
 function title(record: AdminRecord) {
@@ -10,12 +11,13 @@ function title(record: AdminRecord) {
 }
 
 export function RecordList({ records, type, source }: { records: AdminRecord[]; type: AdminContentType; source: "local" | "database" }) {
+  const route = adminRouteForType(type);
   return (
     <div className="adminPanel">
       <div className="adminPanelHeader"><span>{records.length} records</span><span className={`adminSource adminSource--${source}`}>{source}</span></div>
       <div className="adminTable" role="table">
         {records.map((record) => (
-          <Link className="adminRow" href={`/admin/${type === "artist" ? "artists" : type}?edit=${encodeURIComponent(record.id)}`} key={record.id}>
+          <Link className="adminRow" href={`/admin/${route}?edit=${encodeURIComponent(record.id)}`} key={record.id}>
             <span className="adminOrder">{String(record.sortOrder).padStart(2, "0")}</span>
             <strong>{title(record)}</strong>
             <span>{record.slug ?? record.id}</span>

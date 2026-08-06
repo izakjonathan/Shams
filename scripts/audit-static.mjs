@@ -349,7 +349,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.2.0") errors.push("package.json version must be 2.2.0.");
+if (packageJson.version !== "2.3.0") errors.push("package.json version must be 2.3.0.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -471,6 +471,28 @@ if (!splashTests.includes("repeat visits skip the splash") || !splashTests.inclu
 const qualityWorkflow = readFileSync(resolve(root, ".github/workflows/quality.yml"), "utf8");
 if (!qualityWorkflow.includes("package-lock.json is required") || !qualityWorkflow.includes("npm ci") || !qualityWorkflow.includes("playwright install")) {
   errors.push("CI must enforce a lockfile, use npm ci, and install Playwright browsers.");
+}
+
+
+// v2.3.0 admin publishing and governance guards.
+const adminContent = readFileSync(resolve(root, "app/admin/lib/content-admin.ts"), "utf8");
+const adminPublishingActions = readFileSync(resolve(root, "app/admin/actions/content.ts"), "utf8");
+const adminEditor = readFileSync(resolve(root, "app/admin/components/RecordEditor.tsx"), "utf8");
+const adminRoutes = readFileSync(resolve(root, "app/admin/lib/routes.ts"), "utf8");
+for (const required of ["expectedUpdatedAt", "Slug \"", "listAuditEntries", "status:"]) {
+  if (!adminContent.includes(required)) errors.push(`Admin publishing safety is missing: ${required}`);
+}
+for (const required of ["intent === \"publish\"", "adminRouteForType", "expectedUpdatedAt"]) {
+  if (!adminPublishingActions.includes(required)) errors.push(`Admin publishing action is missing: ${required}`);
+}
+for (const required of ["Preview record", "Publish", "Move to draft", "Archive"]) {
+  if (!adminEditor.includes(required)) errors.push(`Admin editor workflow is missing: ${required}`);
+}
+if (!adminRoutes.includes('if (type === "faq") return "faqs"') || !adminRoutes.includes('if (type === "page") return "pages"')) {
+  errors.push("Admin content routes must use canonical plural route names.");
+}
+for (const path of ["app/admin/audit/page.tsx", "app/admin/preview/[type]/[id]/page.tsx"]) {
+  if (!existsSync(resolve(root, path))) errors.push(`Missing v2.3.0 admin workflow file: ${path}`);
 }
 
 if (errors.length) {

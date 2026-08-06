@@ -8,6 +8,7 @@ const items = [
   ["Tickets", "/admin/tickets"],
   ["FAQs", "/admin/faqs"],
   ["Pages", "/admin/pages"],
+  ["Audit log", "/admin/audit"],
 ] as const;
 
 export function AdminNav({ identity }: { identity: string }) {

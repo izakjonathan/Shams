@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.3.0 — Admin publishing and governance workflow
+
+- Added explicit save, publish, draft, and archive actions.
+- Added protected record previews and a database audit-log workspace.
+- Added stale-edit and duplicate-slug protection.
+- Fixed FAQ and information-page admin routing.
+- Preserved the public frontend and verification foundation.
+
 ## 2.2.0 — Verification and regression foundation
 
 - Added Playwright smoke projects for Chromium and mobile WebKit.

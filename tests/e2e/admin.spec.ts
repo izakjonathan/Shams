@@ -11,3 +11,11 @@ test("unauthenticated admin workspace redirects to login", async ({ page }) => {
   await page.goto("/admin/artists");
   await expect(page).toHaveURL(/\/admin\/login/);
 });
+
+test("protected preview and audit routes require authentication", async ({ page }) => {
+  await page.goto("/admin/audit");
+  await expect(page).toHaveURL(/\/admin\/login/);
+
+  await page.goto("/admin/preview/artist/artist-01");
+  await expect(page).toHaveURL(/\/admin\/login/);
+});

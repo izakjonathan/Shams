@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "../lib/auth";
 import { saveAdminRecord, seedDatabase, type AdminContentType } from "../lib/content-admin";
+import { adminRouteForType } from "../lib/routes";
 import { parseContentStatus, validateAdminRecord } from "../../content/admin-validation";
 
 const TYPES = new Set<AdminContentType>(["artist", "programme", "ticket", "faq", "page"]);
@@ -20,7 +21,9 @@ export async function saveRecordAction(formData: FormData) {
   if (!TYPES.has(type)) throw new Error("Invalid content type.");
   const id = String(formData.get("id") ?? "").trim();
   const slug = String(formData.get("slug") ?? "").trim() || null;
-  const status = parseContentStatus(formData.get("status"));
+  const requestedStatus = parseContentStatus(formData.get("status"));
+  const intent = String(formData.get("intent") ?? "save");
+  const status = intent === "publish" ? "published" : intent === "draft" ? "draft" : intent === "archive" ? "archived" : requestedStatus;
   const sortOrder = Number(formData.get("sortOrder") ?? 0);
   const raw = String(formData.get("data") ?? "{}");
   if (!id || !Number.isFinite(sortOrder)) throw new Error("Invalid record metadata.");
@@ -30,8 +33,9 @@ export async function saveRecordAction(formData: FormData) {
   if ("sortOrder" in prepared || type !== "page") prepared.sortOrder = sortOrder;
   if (slug) prepared.slug = slug;
   const data = validateAdminRecord(prepared, { id, type, slug, status, sortOrder });
-  await saveAdminRecord(actor, { id, type, slug, status, sortOrder, data });
-  const route = type === "artist" ? "artists" : type === "faq" ? "faqs" : type === "page" ? "pages" : type;
+  const expectedUpdatedAt = String(formData.get("expectedUpdatedAt") ?? "").trim() || null;
+  await saveAdminRecord(actor, { id, type, slug, status, sortOrder, data, updatedAt: expectedUpdatedAt }, expectedUpdatedAt);
+  const route = adminRouteForType(type);
   revalidatePath(`/admin/${route}`);
   redirect(`/admin/${route}?saved=1`);
 }
