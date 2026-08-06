@@ -1,3 +1,13 @@
+# Changelog
+
+## 2.5.0 — Stable visual restoration
+
+- Restored the approved stronger gradient presence from the stable v2.4.9 baseline.
+- Set gradient size to 1.5 and strength to 1.2.
+- Replaced runtime scale enlargement with direct gradient-layer geometry and wash overscan.
+- Kept startup scroll mutation, hero blur, and splash-entry transforms removed.
+- Preserved the stable opacity-only splash handoff and all public/admin architecture.
+
 ## 2.4.9 — Diagnostic initial-paint isolation
 
 - Removed the startup scroll guard and all initial-load scroll mutation.

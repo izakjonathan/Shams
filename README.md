@@ -1,5 +1,5 @@
-# Shams for Humanity v2.4.9
+# Shams for Humanity v2.5.0
 
-Diagnostic initial-paint isolation release built from v2.4.8.
+Stable visual-restoration release built from the confirmed stable v2.4.9 diagnostic baseline.
 
-This release removes startup scroll mutation, global gradient enlargement, hero blur, and splash artwork entry animation so the remaining Safari issue can be isolated without changing route navigation, footer canvas handling, database content, or admin workflows.
+The approved stronger gradient presence is restored without reintroducing startup scroll mutation, transform-based gradient enlargement, hero blur, or splash-entry animation. Gradient size is expressed through direct layer geometry and wash overscan, while the stable opacity-only splash handoff remains unchanged.

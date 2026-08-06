@@ -11,10 +11,11 @@
  *
  * 1 = approved original appearance, 1.15 = 15% larger/stronger,
  * 0.85 = 15% smaller/weaker.
- * Diagnostic isolation values: size 1, strength 1.2.
+ * Stable visual restoration values: size 1.5, strength 1.2.
+ * Size is baked into gradient-layer geometry so no runtime scale transform is used.
  */
 :root {
-  --gradient-size: 1;
+  --gradient-size: 1.5;
   --gradient-strength: 1.2;
 }
 
@@ -36,7 +37,7 @@
 .paperGlowSection::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -25%;
   z-index: 0;
   pointer-events: none;
   opacity: min(1, var(--gradient-strength));
@@ -107,8 +108,8 @@
 }
 
 .orbOne {
-  --glow-w: 108vw;
-  --glow-h: 76vw;
+  --glow-w: 162vw;
+  --glow-h: 114vw;
   --glow-right: -34%;
   --glow-top: -2%;
   --glow-rotate: 18deg;
@@ -117,8 +118,8 @@
 }
 
 .orbTwo {
-  --glow-w: 84vw;
-  --glow-h: 94vw;
+  --glow-w: 126vw;
+  --glow-h: 141vw;
   --glow-left: -36%;
   --glow-bottom: -8%;
   --glow-rotate: -30deg;
@@ -127,8 +128,8 @@
 }
 
 .orbThree {
-  --glow-w: 66vw;
-  --glow-h: 52vw;
+  --glow-w: 99vw;
+  --glow-h: 78vw;
   --glow-left: 28%;
   --glow-bottom: 2%;
   --glow-rotate: 24deg;
@@ -189,18 +190,18 @@
   --section-wash-1: radial-gradient(ellipse 96% 64% at 3% 10%, rgb(var(--color-accent-rgb) / 0.5) 0%, rgb(var(--color-accent-rgb) / 0.24) 42%, transparent 80%);
   --section-wash-2: radial-gradient(ellipse 88% 56% at 100% 52%, rgb(var(--color-accent-rgb) / 0.34) 0%, rgb(var(--color-accent-rgb) / 0.14) 44%, transparent 82%);
   --section-wash-3: radial-gradient(ellipse 70% 42% at 35% 100%, rgb(var(--color-accent-rgb) / 0.2) 0%, transparent 78%);
-  --section-glow-1-w: 118vw;
-  --section-glow-1-h: 92vw;
+  --section-glow-1-w: 177vw;
+  --section-glow-1-h: 138vw;
   --section-glow-1-left: -62vw;
   --section-glow-1-top: -24vw;
   --section-glow-1-opacity: 0.78;
-  --section-glow-2-w: 104vw;
-  --section-glow-2-h: 100vw;
+  --section-glow-2-w: 156vw;
+  --section-glow-2-h: 150vw;
   --section-glow-2-right: -66vw;
   --section-glow-2-top: 24%;
   --section-glow-2-opacity: 0.62;
-  --section-glow-3-w: 110vw;
-  --section-glow-3-h: 62vw;
+  --section-glow-3-w: 165vw;
+  --section-glow-3-h: 93vw;
   --section-glow-3-left: 8vw;
   --section-glow-3-bottom: -34vw;
   --section-glow-3-opacity: 0.5;
@@ -210,13 +211,13 @@
   --section-wash-1: radial-gradient(ellipse 88% 58% at 100% 12%, rgb(var(--color-accent-rgb) / 0.42), transparent 80%);
   --section-wash-2: radial-gradient(ellipse 76% 46% at 0% 72%, rgb(var(--color-accent-rgb) / 0.25), transparent 78%);
   --section-wash-3: none;
-  --section-glow-1-w: 112vw;
-  --section-glow-1-h: 86vw;
+  --section-glow-1-w: 168vw;
+  --section-glow-1-h: 129vw;
   --section-glow-1-right: -62vw;
   --section-glow-1-top: -18vw;
   --section-glow-1-opacity: 0.7;
-  --section-glow-2-w: 98vw;
-  --section-glow-2-h: 102vw;
+  --section-glow-2-w: 147vw;
+  --section-glow-2-h: 153vw;
   --section-glow-2-left: -62vw;
   --section-glow-2-bottom: -34vw;
   --section-glow-2-opacity: 0.55;
@@ -231,24 +232,24 @@
   --section-wash-1: radial-gradient(ellipse 88% 56% at 4% 14%, rgb(var(--color-accent-rgb) / 0.459) 0%, rgb(var(--color-accent-rgb) / 0.27) 34%, rgb(var(--color-accent-rgb) / 0.108) 56%, transparent 82%);
   --section-wash-2: radial-gradient(ellipse 78% 48% at 100% 48%, rgb(var(--color-accent-rgb) / 0.378) 0%, rgb(var(--color-accent-rgb) / 0.189) 34%, rgb(var(--color-accent-rgb) / 0.068) 56%, transparent 80%);
   --section-wash-3: radial-gradient(ellipse 84% 44% at 24% 96%, rgb(var(--color-accent-rgb) / 0.27) 0%, rgb(var(--color-accent-rgb) / 0.135) 36%, rgb(var(--color-accent-rgb) / 0.054) 58%, transparent 80%);
-  --section-glow-1-w: 118vw;
-  --section-glow-1-h: 86vw;
+  --section-glow-1-w: 177vw;
+  --section-glow-1-h: 129vw;
   --section-glow-1-left: -56vw;
   --section-glow-1-top: -12vw;
   --section-glow-1-rotate: 18deg;
   --section-glow-1-scale-x: 1.18;
   --section-glow-1-scale-y: 0.86;
   --section-glow-1-opacity: 0.9;
-  --section-glow-2-w: 104vw;
-  --section-glow-2-h: 94vw;
+  --section-glow-2-w: 156vw;
+  --section-glow-2-h: 141vw;
   --section-glow-2-right: -58vw;
   --section-glow-2-top: 36%;
   --section-glow-2-rotate: -24deg;
   --section-glow-2-scale-x: 0.98;
   --section-glow-2-scale-y: 1.18;
   --section-glow-2-opacity: 0.76;
-  --section-glow-3-w: 104vw;
-  --section-glow-3-h: 58vw;
+  --section-glow-3-w: 156vw;
+  --section-glow-3-h: 87vw;
   --section-glow-3-left: -2vw;
   --section-glow-3-bottom: -28vw;
   --section-glow-3-rotate: 26deg;
@@ -261,24 +262,24 @@
   --section-wash-1: radial-gradient(ellipse 82% 50% at 98% 8%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.095) 58%, transparent 82%);
   --section-wash-2: radial-gradient(ellipse 70% 44% at 2% 48%, rgb(var(--color-accent-rgb) / 0.297) 0%, rgb(var(--color-accent-rgb) / 0.149) 34%, rgb(var(--color-accent-rgb) / 0.068) 56%, transparent 78%);
   --section-wash-3: radial-gradient(ellipse 92% 48% at 58% 100%, rgb(var(--color-accent-rgb) / 0.27) 0%, rgb(var(--color-accent-rgb) / 0.135) 36%, rgb(var(--color-accent-rgb) / 0.054) 58%, transparent 80%);
-  --section-glow-1-w: 116vw;
-  --section-glow-1-h: 82vw;
+  --section-glow-1-w: 174vw;
+  --section-glow-1-h: 123vw;
   --section-glow-1-right: -56vw;
   --section-glow-1-top: -14vw;
   --section-glow-1-rotate: -18deg;
   --section-glow-1-scale-x: 1.22;
   --section-glow-1-scale-y: 0.86;
   --section-glow-1-opacity: 0.88;
-  --section-glow-2-w: 100vw;
-  --section-glow-2-h: 108vw;
+  --section-glow-2-w: 150vw;
+  --section-glow-2-h: 162vw;
   --section-glow-2-left: -58vw;
   --section-glow-2-top: 34%;
   --section-glow-2-rotate: 24deg;
   --section-glow-2-scale-x: 0.88;
   --section-glow-2-scale-y: 1.16;
   --section-glow-2-opacity: 0.76;
-  --section-glow-3-w: 112vw;
-  --section-glow-3-h: 60vw;
+  --section-glow-3-w: 168vw;
+  --section-glow-3-h: 90vw;
   --section-glow-3-right: -22vw;
   --section-glow-3-bottom: -28vw;
   --section-glow-3-rotate: 16deg;
@@ -291,24 +292,24 @@
   --section-wash-1: radial-gradient(ellipse 86% 50% at 16% 6%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.095) 58%, transparent 80%);
   --section-wash-2: radial-gradient(ellipse 90% 54% at 90% 34%, rgb(var(--color-accent-rgb) / 0.351) 0%, rgb(var(--color-accent-rgb) / 0.189) 36%, rgb(var(--color-accent-rgb) / 0.081) 58%, transparent 80%);
   --section-wash-3: radial-gradient(ellipse 76% 44% at 42% 100%, rgb(var(--color-accent-rgb) / 0.243) 0%, rgb(var(--color-accent-rgb) / 0.135) 34%, rgb(var(--color-accent-rgb) / 0.054) 56%, transparent 78%);
-  --section-glow-1-w: 114vw;
-  --section-glow-1-h: 84vw;
+  --section-glow-1-w: 171vw;
+  --section-glow-1-h: 126vw;
   --section-glow-1-left: -50vw;
   --section-glow-1-top: -14vw;
   --section-glow-1-rotate: 16deg;
   --section-glow-1-scale-x: 1.16;
   --section-glow-1-scale-y: 0.9;
   --section-glow-1-opacity: 0.86;
-  --section-glow-2-w: 118vw;
-  --section-glow-2-h: 104vw;
+  --section-glow-2-w: 177vw;
+  --section-glow-2-h: 156vw;
   --section-glow-2-right: -62vw;
   --section-glow-2-top: 28%;
   --section-glow-2-rotate: -24deg;
   --section-glow-2-scale-x: 0.94;
   --section-glow-2-scale-y: 1.16;
   --section-glow-2-opacity: 0.78;
-  --section-glow-3-w: 106vw;
-  --section-glow-3-h: 58vw;
+  --section-glow-3-w: 159vw;
+  --section-glow-3-h: 87vw;
   --section-glow-3-left: 4vw;
   --section-glow-3-bottom: -28vw;
   --section-glow-3-rotate: 28deg;
@@ -321,24 +322,24 @@
   --section-wash-1: radial-gradient(ellipse 78% 46% at 96% 8%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.081) 58%, transparent 80%);
   --section-wash-2: radial-gradient(ellipse 66% 40% at 2% 56%, rgb(var(--color-accent-rgb) / 0.27) 0%, rgb(var(--color-accent-rgb) / 0.135) 34%, rgb(var(--color-accent-rgb) / 0.054) 56%, transparent 78%);
   --section-wash-3: radial-gradient(ellipse 84% 46% at 74% 100%, rgb(var(--color-accent-rgb) / 0.243) 0%, rgb(var(--color-accent-rgb) / 0.121) 36%, rgb(var(--color-accent-rgb) / 0.054) 58%, transparent 80%);
-  --section-glow-1-w: 114vw;
-  --section-glow-1-h: 82vw;
+  --section-glow-1-w: 171vw;
+  --section-glow-1-h: 123vw;
   --section-glow-1-right: -56vw;
   --section-glow-1-top: -14vw;
   --section-glow-1-rotate: -16deg;
   --section-glow-1-scale-x: 1.2;
   --section-glow-1-scale-y: 0.86;
   --section-glow-1-opacity: 0.88;
-  --section-glow-2-w: 102vw;
-  --section-glow-2-h: 106vw;
+  --section-glow-2-w: 153vw;
+  --section-glow-2-h: 159vw;
   --section-glow-2-left: -60vw;
   --section-glow-2-top: 34%;
   --section-glow-2-rotate: 22deg;
   --section-glow-2-scale-x: 0.9;
   --section-glow-2-scale-y: 1.16;
   --section-glow-2-opacity: 0.74;
-  --section-glow-3-w: 110vw;
-  --section-glow-3-h: 58vw;
+  --section-glow-3-w: 165vw;
+  --section-glow-3-h: 87vw;
   --section-glow-3-right: -20vw;
   --section-glow-3-bottom: -28vw;
   --section-glow-3-rotate: 22deg;
@@ -386,60 +387,60 @@
   }
 
   .orbOne {
-    --glow-w: 92vw;
-    --glow-h: 64vw;
+    --glow-w: 138vw;
+    --glow-h: 96vw;
     --glow-right: -24%;
     --glow-top: -4%;
   }
 
   .orbTwo {
-    --glow-w: 72vw;
-    --glow-h: 82vw;
+    --glow-w: 108vw;
+    --glow-h: 123vw;
     --glow-left: -22%;
     --glow-bottom: -10%;
   }
 
   .orbThree {
-    --glow-w: 58vw;
-    --glow-h: 42vw;
+    --glow-w: 87vw;
+    --glow-h: 63vw;
     --glow-left: 30%;
     --glow-bottom: 4%;
   }
 
   .statement {
-    --section-glow-1-w: 76vw;
-    --section-glow-1-h: 52vw;
-    --section-glow-2-w: 66vw;
-    --section-glow-2-h: 64vw;
-    --section-glow-3-w: 74vw;
-    --section-glow-3-h: 38vw;
+    --section-glow-1-w: 114vw;
+    --section-glow-1-h: 78vw;
+    --section-glow-2-w: 99vw;
+    --section-glow-2-h: 96vw;
+    --section-glow-3-w: 111vw;
+    --section-glow-3-h: 57vw;
   }
 
   .lineup {
-    --section-glow-1-w: 74vw;
-    --section-glow-1-h: 50vw;
-    --section-glow-2-w: 64vw;
-    --section-glow-2-h: 70vw;
-    --section-glow-3-w: 76vw;
-    --section-glow-3-h: 40vw;
+    --section-glow-1-w: 111vw;
+    --section-glow-1-h: 75vw;
+    --section-glow-2-w: 96vw;
+    --section-glow-2-h: 105vw;
+    --section-glow-3-w: 114vw;
+    --section-glow-3-h: 60vw;
   }
 
   .programme {
-    --section-glow-1-w: 74vw;
-    --section-glow-1-h: 52vw;
-    --section-glow-2-w: 76vw;
-    --section-glow-2-h: 68vw;
-    --section-glow-3-w: 72vw;
-    --section-glow-3-h: 38vw;
+    --section-glow-1-w: 111vw;
+    --section-glow-1-h: 78vw;
+    --section-glow-2-w: 114vw;
+    --section-glow-2-h: 102vw;
+    --section-glow-3-w: 108vw;
+    --section-glow-3-h: 57vw;
   }
 
   .faq {
-    --section-glow-1-w: 74vw;
-    --section-glow-1-h: 50vw;
-    --section-glow-2-w: 64vw;
-    --section-glow-2-h: 70vw;
-    --section-glow-3-w: 74vw;
-    --section-glow-3-h: 38vw;
+    --section-glow-1-w: 111vw;
+    --section-glow-1-h: 75vw;
+    --section-glow-2-w: 96vw;
+    --section-glow-2-h: 105vw;
+    --section-glow-3-w: 111vw;
+    --section-glow-3-h: 57vw;
   }
 
 }
