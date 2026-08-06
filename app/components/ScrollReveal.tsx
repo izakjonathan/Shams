@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect } from "react";
+import { visualViewportHeight } from "../lib/viewport";
 
 // This component only ever does anything in the browser (it queries the
 // DOM and sets up an IntersectionObserver), so on the server it can safely
@@ -64,6 +65,16 @@ export function ScrollReveal() {
       revealItems.forEach((item) => item.classList.add("isRevealed"));
       return resetRevealItems;
     }
+
+    // Content already visible (or immediately adjacent to the first viewport)
+    // must never be painted once and then concealed during hydration. Mark it
+    // as revealed before enabling the global concealment selector.
+    const initialViewportLimit = visualViewportHeight() + 96;
+    revealItems.forEach((item) => {
+      if (item.getBoundingClientRect().top <= initialViewportLimit) {
+        item.classList.add("isRevealed");
+      }
+    });
 
     root.classList.add("scrollRevealEnabled");
 

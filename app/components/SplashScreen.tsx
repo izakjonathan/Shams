@@ -6,6 +6,7 @@ import { afterPaint, cssTimeMs, prefersReducedMotion } from "../lib/motion";
 import splashArtwork from "../../public/images/splash-humanity-artwork.png";
 
 const MIN_HOLD_MS = 1100;
+const FONT_READY_TIMEOUT_MS = 1400;
 const SESSION_KEY = "shf-splash-seen-v2.1.8";
 let hasShownSplashInMemory = false;
 
@@ -123,9 +124,22 @@ export function SplashScreen() {
       cancelEnterPaint = afterPaint(() => setStage("active"));
     }
 
-    const beginExit = () => {
+    const waitForDisplayFont = async () => {
+      if (!("fonts" in document)) return;
+      await Promise.race([
+        document.fonts.ready,
+        new Promise<void>((resolve) => window.setTimeout(resolve, FONT_READY_TIMEOUT_MS)),
+      ]);
+    };
+
+    const beginExit = async () => {
       if (hasBegunExit.current) return;
       hasBegunExit.current = true;
+
+      // Keep the artwork fully opaque until the display font has either loaded
+      // or reached a bounded timeout. This prevents a Times-to-Agilera swap
+      // from occurring after the hero is already visible.
+      await waitForDisplayFont();
 
       // Prepare the live page while the splash is still fully opaque.
       root.classList.remove("splashRunwayActive");

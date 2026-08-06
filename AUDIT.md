@@ -1,4 +1,4 @@
-# v2.4.2 production runtime-boundary audit
+# v2.4.3 production runtime-boundary audit
 
 ## Scope
 

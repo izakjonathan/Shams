@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.4.2 — Production runtime-boundary hardening
+## 2.4.3 — Production runtime-boundary hardening
 
 - Moved database public reads into a dedicated server-only adapter.
 - Lazy-loads PostgreSQL and Drizzle only when database content mode is selected.

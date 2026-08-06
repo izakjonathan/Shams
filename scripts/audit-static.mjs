@@ -59,6 +59,8 @@ if (/\[data-live-route\][^{]*\{[^}]*transform\s*:/s.test(transitions)) {
 if (!transitions.includes("z-index: 45")) errors.push("Curtain must remain below the fixed site header.");
 
 const fadeLink = readFileSync(resolve(root, "app/components/FadeLink.tsx"), "utf8");
+const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "utf8");
+const scrollReveal = readFileSync(resolve(root, "app/components/ScrollReveal.tsx"), "utf8");
 if (fadeLink.includes("morphSource")) errors.push("FadeLink still passes obsolete morph source data.");
 
 const base = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -126,7 +128,6 @@ for (const required of ["readonly id: string", "readonly sortOrder: number", "da
   if (!(programmeComponent + programmeContent + contentModels).includes(required)) errors.push(`Programme CMS preparation is missing: ${required}`);
 }
 
-const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "utf8");
 const splashStyles = readFileSync(resolve(root, "app/styles/splash.css"), "utf8");
 if (!splash.includes("splash-humanity-artwork.png")) errors.push("Splash must use the supplied humanity artwork.");
 if (!splashStyles.includes("background-color: transparent") || !splashStyles.includes("min-height: 100svh") || !splashStyles.includes("height: 100dvh")) {
@@ -270,7 +271,7 @@ for (const required of [
   "--gradient-size: 1.5", "--gradient-strength: 1.2",
   ".hero::before", ".paperGlowSection::before",
   "scale(var(--gradient-size))",
-  "filter: saturate(var(--gradient-strength)) contrast(var(--gradient-strength))",
+  "calc(var(--glow-opacity, 1) + (var(--gradient-strength) - 1))",
   "--glow-w: 108vw", "--glow-h: 76vw",
   "--glow-w: 84vw", "--glow-h: 94vw",
   "--glow-w: 66vw", "--glow-h: 52vw",
@@ -349,7 +350,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.4.2") errors.push("package.json version must be 2.4.2.");
+if (packageJson.version !== "2.4.3") errors.push("package.json version must be 2.4.3.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -425,8 +426,8 @@ if (!routeFade.includes("function focusElement") || !routeFade.includes("focusEl
 if (existsSync(resolve(root, "public/images/splash-humanity-artwork.jpeg"))) {
   errors.push("The unused legacy splash JPEG must not remain in the release package.");
 }
-if (!gradients.includes("contrast(var(--gradient-strength))")) {
-  errors.push("Gradient strength above 1 must have a visible effect rather than relying only on clamped opacity.");
+if (!gradients.includes("calc(var(--glow-opacity, 1) + (var(--gradient-strength) - 1))")) {
+  errors.push("Gradient strength above 1 must use bounded opacity amplification without full-layer colour filters.");
 }
 if (!packageJson.engines || packageJson.engines.node !== "22.x") {
   errors.push("The release must pin the intended Node major for Vercel builds.");
@@ -514,7 +515,7 @@ if (!previewBanner.includes("noindex,nofollow") || !previewBanner.includes("Exit
 if (!adminActions.includes("revalidateTag") || !adminActions.includes("CONTENT_TAGS")) errors.push("Publishing actions must invalidate the affected public content tag.");
 
 
-// v2.4.2 production runtime and server/client boundary guards.
+// v2.4.3 production runtime and server/client boundary guards.
 const contentIndex = readFileSync(resolve(root, "app/content/index.ts"), "utf8");
 const contentServerEntry = readFileSync(resolve(root, "app/content/server.ts"), "utf8");
 const siteHeaderSource = readFileSync(resolve(root, "app/components/SiteHeader.tsx"), "utf8");
@@ -532,7 +533,7 @@ if (!appSource.includes('from "./content/server"') && !appSource.includes('from 
 }
 
 
-// v2.4.2 runtime hardening and lazy database adapter.
+// v2.4.3 runtime hardening and lazy database adapter.
 const publicRepository242 = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
 const databaseRecords242 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
 const nextConfig242 = readFileSync(resolve(root, "next.config.ts"), "utf8");
@@ -544,6 +545,17 @@ if (!nextConfig242.includes('serverExternalPackages: ["postgres"]')) errors.push
 if (!package242.includes('"audit:boundaries"') || !package242.includes('npm run audit:boundaries')) errors.push("Runtime-boundary checks must be part of release scripts and prebuild.");
 for (const path of ["app/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx", "app/accessibility/page.tsx", "app/contact/page.tsx", "app/artists/[slug]/page.tsx", "app/admin/layout.tsx", "app/api/preview/route.ts", "app/api/preview/exit/route.ts"]) {
   if (!readFileSync(resolve(root, path), "utf8").includes('export const runtime = "nodejs";')) errors.push(`${path} must declare the Node.js runtime.`);
+}
+
+// v2.4.3 initial-paint stability guards.
+if (!splash.includes("document.fonts.ready") || !splash.includes("FONT_READY_TIMEOUT_MS")) {
+  errors.push("Splash must wait boundedly for the display font before revealing the hero.");
+}
+if (!scrollReveal.includes("initialViewportLimit") || !scrollReveal.includes("visualViewportHeight() + 96")) {
+  errors.push("ScrollReveal must pre-reveal content in and immediately below the initial viewport.");
+}
+if (/saturate\(var\(--gradient-strength\)\)|contrast\(var\(--gradient-strength\)\)/.test(gradients)) {
+  errors.push("Large gradient layers must not use saturation/contrast filters; they cause avoidable Safari repaints.");
 }
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));

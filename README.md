@@ -1,4 +1,4 @@
-# Shams for Humanity v2.4.2
+# Shams for Humanity v2.4.3
 
 Production runtime-boundary hardening for the v2.4 database-backed public-content architecture.
 

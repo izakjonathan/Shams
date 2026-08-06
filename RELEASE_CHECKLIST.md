@@ -1,4 +1,4 @@
-# v2.4.2 release checklist
+# v2.4.3 release checklist
 
 - [x] Built from v2.4.1
 - [x] Moved database public reads into a dedicated server-only adapter
