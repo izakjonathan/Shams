@@ -1,4 +1,4 @@
-# v2.4.7 release checklist
+# v2.4.8 release checklist
 
 - [x] Built from v2.4.6
 - [x] Site-managed section links do not persist hashes

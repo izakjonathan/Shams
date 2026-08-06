@@ -224,7 +224,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     const nextKind = options?.transitionKind ?? inferTransitionKind(current.pathname, destination.pathname);
     setKind(nextKind);
     pendingRef.current = {
-      href: `${destination.pathname}${destination.search}${destination.hash}`,
+      href: `${destination.pathname}${destination.search}`,
       hash: destination.hash || null,
       focusOnArrival: Boolean(options?.focusOnArrival),
       replace: Boolean(options?.replace),

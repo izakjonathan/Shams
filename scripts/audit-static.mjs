@@ -143,7 +143,7 @@ if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
 const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
-if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.4.7")) {
+if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.4.8")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
 if (!splash.includes('root.classList.remove("splashCanvasActive", "splashCanvasHandoff")')) {
@@ -345,7 +345,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.4.7") errors.push("package.json version must be 2.4.7.");
+if (packageJson.version !== "2.4.8") errors.push("package.json version must be 2.4.8.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -529,7 +529,7 @@ if (!appSource.includes('from "./content/server"') && !appSource.includes('from 
 
 
 
-// v2.4.7 startup scroll-restoration guard.
+// v2.4.8 startup scroll-restoration guard.
 for (const required of [
   'id="initial-scroll-and-splash-gate"',
   '__shamsReleaseInitialScrollGuard',
@@ -544,7 +544,7 @@ if (!base.includes("html.initialScrollGuardActive") || !base.includes("overflow-
   errors.push("Startup scroll guard must temporarily disable scroll anchoring.");
 }
 
-// v2.4.7 runtime hardening and lazy database adapter.
+// v2.4.8 runtime hardening and lazy database adapter.
 const publicRepository242 = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
 const databaseRecords242 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
 const nextConfig242 = readFileSync(resolve(root, "next.config.ts"), "utf8");
@@ -558,7 +558,7 @@ for (const path of ["app/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx"
   if (!readFileSync(resolve(root, path), "utf8").includes('export const runtime = "nodejs";')) errors.push(`${path} must declare the Node.js runtime.`);
 }
 
-// v2.4.7 initial-load determinism guards.
+// v2.4.8 initial-load determinism guards.
 if (!splash.includes("document.fonts.ready") || !splash.includes("FONT_READY_TIMEOUT_MS")) {
   errors.push("Splash must wait boundedly for the display font before revealing the hero.");
 }
@@ -576,7 +576,7 @@ if (/saturate\(var\(--gradient-strength\)\)|contrast\(var\(--gradient-strength\)
   errors.push("Large gradient layers must not use saturation/contrast filters; they cause avoidable Safari repaints.");
 }
 
-// v2.4.7 managed section navigation must not leave stale URL fragments that Safari restores on reload.
+// v2.4.8 managed section navigation must not leave stale URL fragments that Safari restores on reload.
 if (routeFade.includes('window.history.pushState(window.history.state, "", hash)')) {
   errors.push("Managed same-page navigation must not persist section hashes in browser history.");
 }
@@ -586,10 +586,21 @@ if (!routeFade.includes("clearManagedHash()") || !routeFade.includes("if (pendin
 if (/href="#(?:about|mission|tickets)"/.test(readFileSync(resolve(root, "app/page.tsx"), "utf8"))) {
   errors.push("Homepage section controls must use managed FadeLink navigation instead of persistent raw hash anchors.");
 }
-if (!layout.includes('if(location.hash&&type==="reload"){history.replaceState')) {
-  errors.push("Reloads with stale internal fragments must clear the fragment before startup scroll pinning.");
+if (!layout.includes('if(managed[location.hash]){history.replaceState')) {
+  errors.push("Known stale internal fragments must clear before startup scroll pinning on every direct load.");
 }
 
+
+// v2.4.8 deterministic managed-target navigation.
+if (!routeFade.includes('href: `${destination.pathname}${destination.search}`')) {
+  errors.push("Cross-route navigation must not pass managed fragments into router.push/replace.");
+}
+if (routeFade.includes('href: `${destination.pathname}${destination.search}${destination.hash}`')) {
+  errors.push("Native hash navigation must not compete with RouteFade destination positioning.");
+}
+if (!layout.includes('var managed={"#top":1,"#about":1')) {
+  errors.push("Known legacy Shams fragments must be removed before first-paint anchor restoration.");
+}
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);
