@@ -35,8 +35,8 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "2.1.9") {
-  errors.push(`package.json version must be 2.1.9 for this release (found ${pkg.version}).`);
+if (pkg.version !== "2.2.0") {
+  errors.push(`package.json version must be 2.2.0 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [
@@ -64,6 +64,15 @@ for (const path of [
   "scripts/generate-theme.mjs",
   "app/theme.json",
   "app/theme.generated.css",
+  "playwright.config.ts",
+  "tests/e2e/splash.spec.ts",
+  "tests/e2e/public-navigation.spec.ts",
+  "tests/e2e/accessibility-motion.spec.ts",
+  "tests/e2e/admin.spec.ts",
+  "tests/visual/approved-surfaces.spec.ts",
+  "scripts/verify-release.mjs",
+  ".github/workflows/quality.yml",
+  "DEPLOYMENT_RUNBOOK.md",
 ]) {
   if (!existsSync(resolve(root, path))) errors.push(`Missing required release file: ${path}`);
 }

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.2.0 — Verification and regression foundation
+
+- Added Playwright smoke projects for Chromium and mobile WebKit.
+- Added first/repeat splash lifecycle tests.
+- Added menu, artist navigation, legal footer return, programme, reduced-motion, contact, and admin-route smoke coverage.
+- Added an opt-in visual regression harness for approved public surfaces.
+- Added a unified release verification command.
+- Added a GitHub Actions quality gate with traces and report artifacts.
+- Added deployment, preview verification, real-device, and rollback documentation.
+- Preserved all approved visual, Safari, transition, content, and admin systems.
+
 ## 2.1.9 — Constitution alignment phase one
 
 - Added type-specific validation before admin database writes.

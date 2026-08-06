@@ -349,7 +349,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.1.9") errors.push("package.json version must be 2.1.9.");
+if (packageJson.version !== "2.2.0") errors.push("package.json version must be 2.2.0.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -433,6 +433,44 @@ if (!packageJson.engines || packageJson.engines.node !== "22.x") {
 }
 if (!existsSync(resolve(root, "CHANGELOG.md")) || !existsSync(resolve(root, "QA_MATRIX.md"))) {
   errors.push("Constitution alignment releases require a changelog and documented QA matrix.");
+}
+
+
+// v2.2.0 verification and regression foundation guards.
+const playwrightConfig = readFileSync(resolve(root, "playwright.config.ts"), "utf8");
+const packageScripts = packageJson.scripts ?? {};
+for (const required of ["test:e2e", "test:visual", "test:visual:update", "verify"]) {
+  if (!packageScripts[required]) errors.push(`Verification script is missing: ${required}`);
+}
+if (packageJson.devDependencies?.["@playwright/test"] !== "1.62.0") {
+  errors.push("Playwright must be pinned for the v2.2.0 verification baseline.");
+}
+for (const required of ["chromium", "webkit-mobile", "visual-chromium", 'trace: "on-first-retry"', "webServer"]) {
+  if (!playwrightConfig.includes(required)) errors.push(`Playwright configuration is missing: ${required}`);
+}
+for (const file of [
+  "tests/e2e/splash.spec.ts",
+  "tests/e2e/public-navigation.spec.ts",
+  "tests/e2e/accessibility-motion.spec.ts",
+  "tests/e2e/admin.spec.ts",
+  "tests/visual/approved-surfaces.spec.ts",
+  "scripts/verify-release.mjs",
+  ".github/workflows/quality.yml",
+  "DEPLOYMENT_RUNBOOK.md",
+]) {
+  if (!existsSync(resolve(root, file))) errors.push(`Missing verification foundation file: ${file}`);
+}
+const publicNavigationTests = readFileSync(resolve(root, "tests/e2e/public-navigation.spec.ts"), "utf8");
+for (const required of ["mobile menu", "artist page", "information page", "programme filters"]) {
+  if (!publicNavigationTests.includes(required)) errors.push(`Public navigation smoke coverage is missing: ${required}`);
+}
+const splashTests = readFileSync(resolve(root, "tests/e2e/splash.spec.ts"), "utf8");
+if (!splashTests.includes("repeat visits skip the splash") || !splashTests.includes("records the session")) {
+  errors.push("Splash smoke coverage must include first-visit handoff and repeat-visit suppression.");
+}
+const qualityWorkflow = readFileSync(resolve(root, ".github/workflows/quality.yml"), "utf8");
+if (!qualityWorkflow.includes("package-lock.json is required") || !qualityWorkflow.includes("npm ci") || !qualityWorkflow.includes("playwright install")) {
+  errors.push("CI must enforce a lockfile, use npm ci, and install Playwright browsers.");
 }
 
 if (errors.length) {

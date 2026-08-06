@@ -1,6 +1,6 @@
 {
   "name": "shams-for-humanity",
-  "version": "2.1.9",
+  "version": "2.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,7 +8,7 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run build",
-    "release:check": "npm run release:validate && npm run audit:static && npm run typecheck && npm run build",
+    "release:check": "npm run verify",
     "release:validate": "node scripts/validate-release.mjs",
     "audit:static": "node scripts/audit-static.mjs",
     "theme:generate": "node scripts/generate-theme.mjs",
@@ -16,7 +16,12 @@
     "prebuild": "npm run theme:generate",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test:e2e": "playwright test --project=chromium --project=webkit-mobile",
+    "test:e2e:headed": "playwright test --project=chromium --project=webkit-mobile --headed",
+    "test:visual": "playwright test --project=visual-chromium",
+    "test:visual:update": "playwright test --project=visual-chromium --update-snapshots",
+    "verify": "node scripts/verify-release.mjs"
   },
   "dependencies": {
     "next": "16.2.10",
@@ -30,7 +35,8 @@
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
     "typescript": "5.9.3",
-    "drizzle-kit": "0.31.4"
+    "drizzle-kit": "0.31.4",
+    "@playwright/test": "1.62.0"
   },
   "packageManager": "npm@10.9.4",
   "engines": {

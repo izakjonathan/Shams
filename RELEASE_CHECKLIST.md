@@ -1,22 +1,36 @@
-# v2.1.9 release checklist
+# v2.2.0 release checklist
 
-- [x] Built from v2.1.8
-- [x] Shams visual identity and Safari systems unchanged
-- [x] Admin writes receive type-specific validation
-- [x] Admin status values use the canonical status vocabulary
-- [x] Seed audit version derives from package version
-- [x] Same-route focus restoration uses temporary tabindex cleanup
-- [x] Gradient strength 1.2 has a non-clamped visual effect
-- [x] Unused old splash JPEG removed
-- [x] Node 22 major pinned
-- [x] Changelog added
-- [x] QA matrix added
-- [x] Release validation passes
-- [x] Static architecture audit passes
-- [x] Script syntax checks pass
-- [x] CSS brace validation passes
-- [x] ZIP integrity passes
-- [ ] Clean `npm ci` completed — blocked until a valid package lock can be generated from a registry containing all pinned packages
-- [ ] Full TypeScript and Next.js production build completed
-- [ ] Real database admin write validation completed
-- [ ] Real-iPhone Safari matrix completed
+## Source and architecture
+
+- [x] Built from v2.1.9
+- [x] Approved visual and Safari systems preserved
+- [x] Playwright configuration added
+- [x] Public navigation smoke tests added
+- [x] Splash lifecycle smoke tests added
+- [x] Accessibility and reduced-motion smoke tests added
+- [x] Admin-route isolation smoke tests added
+- [x] Visual regression harness added
+- [x] CI quality-gate workflow added
+- [x] Deployment and rollback runbook added
+
+## Verified in this environment
+
+- [x] Theme generation
+- [x] Release configuration validation
+- [x] Static architecture audit
+- [x] Validation-script syntax
+- [x] CSS brace validation
+- [x] ZIP integrity
+
+## Must be completed in a networked development environment
+
+- [ ] Generate and commit `package-lock.json`
+- [ ] Run `npm ci`
+- [ ] Run TypeScript check
+- [ ] Run production Next.js build
+- [ ] Install Playwright Chromium and WebKit
+- [ ] Run smoke tests
+- [ ] Review and commit approved visual baselines
+- [ ] Run database migration and admin-write tests
+- [ ] Verify on a deployed Vercel preview
+- [ ] Verify Safari canvas and footer on a real iPhone

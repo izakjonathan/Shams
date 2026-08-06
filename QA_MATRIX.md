@@ -59,3 +59,17 @@ This matrix documents checks required before a production promotion. It does not
 - Run admin login and one non-production write
 - Inspect runtime logs
 - Retain the prior ZIP/deployment for rollback
+
+## v2.2.0 automation mapping
+
+| Requirement | Automated project | Remaining manual evidence |
+|---|---|---|
+| Splash first/repeat visit | Chromium + mobile WebKit | Real iPhone toolbar states |
+| Mobile menu lifecycle | Mobile WebKit | Real-device interruption and rotation |
+| Artist open/close curtain | Chromium + mobile WebKit | Swipe-back consistency on iPhone |
+| Legal-page footer return | Chromium + mobile WebKit | Expanded/collapsed Safari toolbar |
+| Programme filters | Chromium + mobile WebKit | Long translated content |
+| Reduced motion | Chromium + mobile WebKit | iOS system setting |
+| Contact mail links | Chromium + mobile WebKit | Installed mail-client handoff |
+| Admin route isolation | Chromium + mobile WebKit | Configured credentials and database writes |
+| Approved visual surfaces | Opt-in Chromium screenshots | Safari font and compositor rendering |
