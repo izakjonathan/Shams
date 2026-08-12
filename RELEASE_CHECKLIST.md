@@ -1,15 +1,17 @@
-# v2.9.0 release checklist
+# v2.9.1 release checklist
 
-- [x] Built from v2.8.0
-- [x] Added `content_revisions` migration and Drizzle schema
-- [x] Capture previous state before database writes
-- [x] Added global and record-specific revision pages
-- [x] Added validated, stale-safe restore action
-- [x] Preserve current state before every restore
-- [x] Add audit and cache invalidation on restore
-- [x] Preserve public design and runtime behavior
-- [x] Static architecture audit passes
-- [x] Release validation passes
-- [ ] Run migration against production PostgreSQL
-- [ ] Verify save → revise → restore with a deployed preview
-- [ ] Run dependency-backed TypeScript and Next.js build
+- [x] Built from the confirmed v2.9.0 revision-history baseline.
+- [x] Added manual GitHub Actions for migrate, verify, and seed.
+- [x] Added deterministic migration registry and migration checksum protection.
+- [x] Added schema/table/column/index/migration verification.
+- [x] Added safe initial seed protection and explicit refresh opt-in.
+- [x] Added canonical seed snapshot for the v2.9.1 baseline.
+- [x] Database workflows install runtime dependencies only and do not require Playwright.
+- [x] Vercel content source remains unchanged by database workflows.
+- [x] Static architecture audit passes.
+- [x] Release configuration validation passes.
+- [ ] Run Database — Migrate against the connected Neon database.
+- [ ] Run Database — Verify against Neon.
+- [ ] Run Database — Seed with refresh_existing=false.
+- [ ] Verify `/admin` against the seeded database.
+- [ ] Switch CONTENT_SOURCE only after database QA passes.

@@ -1,6 +1,6 @@
 {
   "name": "shams-for-humanity",
-  "version": "2.9.0",
+  "version": "2.9.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -16,13 +16,15 @@
     "predev": "npm run theme:generate",
     "prebuild": "npm run theme:generate && npm run audit:boundaries",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "node scripts/db-migrate.mjs",
     "db:studio": "drizzle-kit studio",
     "test:e2e": "playwright test --project=chromium --project=webkit-mobile",
     "test:e2e:headed": "playwright test --project=chromium --project=webkit-mobile --headed",
     "test:visual": "playwright test --project=visual-chromium",
     "test:visual:update": "playwright test --project=visual-chromium --update-snapshots",
-    "verify": "node scripts/verify-release.mjs"
+    "verify": "node scripts/verify-release.mjs",
+    "db:verify": "node scripts/db-verify.mjs",
+    "db:seed": "node scripts/db-seed.mjs"
   },
   "dependencies": {
     "next": "16.2.10",

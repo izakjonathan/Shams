@@ -47,3 +47,8 @@ Before enabling `CONTENT_SOURCE=database` in production:
 4. Confirm `CONTENT_SOURCE=database` without `DATABASE_URL` fails according to `CONTENT_DATABASE_FAILURE`.
 5. Confirm authenticated Draft Mode uses the Node runtime and is `private, no-store`.
 6. Confirm manifest, sitemap, and Open Graph routes remain available without database access.
+
+
+## Database administration from iPad
+
+Use the manual GitHub Actions documented in `DATABASE_GITHUB_ACTIONS.md`. Database migrations and seeding must not run automatically during Vercel builds.

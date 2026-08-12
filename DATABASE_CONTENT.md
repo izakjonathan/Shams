@@ -23,3 +23,7 @@ Set `CONTENT_SOURCE=local` and redeploy. The canonical typed local repository re
 ## Revision history (v2.9.0)
 
 Run `app/db/migrations/0002_content_revisions.sql` after the original content migration. Each database-backed save captures the previous canonical record in `content_revisions`. Restoring an older revision first captures the current state, then validates and applies the selected snapshot, writes an audit entry, and invalidates the affected public content cache tag.
+
+## GitHub Actions database administration (v2.9.1)
+
+Database schema operations are intentionally outside the public/admin runtime. Use the manual GitHub Actions in `.github/workflows/database-*.yml` and the instructions in `DATABASE_GITHUB_ACTIONS.md`. The canonical seed preserves local statuses; placeholder records must be explicitly published before switching `CONTENT_SOURCE=database`.

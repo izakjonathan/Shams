@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.9.1 — GitHub Actions database administration
+
+- Added manual Migrate, Verify, and Seed database workflows for iPad-first operation.
+- Added a deterministic migration registry with SHA-256 checksum protection.
+- Added read-only schema, index, and migration verification.
+- Added safe initial seeding with explicit opt-in before refreshing an existing database.
+- Added a versioned canonical seed snapshot and GitHub actor attribution in the audit log.
+
 ## 2.9.0 — Revision history and rollback governance
 
 - Added append-only content revision snapshots.
@@ -55,6 +63,14 @@
 - Simplified splash animation to a single opacity dissolve.
 
 # Changelog
+
+## 2.9.1 — GitHub Actions database administration
+
+- Added manual Migrate, Verify, and Seed database workflows for iPad-first operation.
+- Added a deterministic migration registry with SHA-256 checksum protection.
+- Added read-only schema, index, and migration verification.
+- Added safe initial seeding with explicit opt-in before refreshing an existing database.
+- Added a versioned canonical seed snapshot and GitHub actor attribution in the audit log.
 
 ## 2.4.6 — Deterministic startup scroll guard
 

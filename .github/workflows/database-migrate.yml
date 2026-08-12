@@ -1,0 +1,32 @@
+name: Database — Migrate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shams-production-database
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    name: Migrate Neon database
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install database runtime dependencies
+        run: npm install --no-save --no-audit --no-fund postgres@3.4.7
+      - name: Apply migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:migrate
+      - name: Verify schema after migration
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:verify

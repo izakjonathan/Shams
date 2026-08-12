@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.9.0") errors.push("package.json version must be 2.9.0.");
+if (packageJson.version !== "2.9.1") errors.push("package.json version must be 2.9.1.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -703,6 +703,33 @@ if (!revisionAdminEditor.includes("Revision history")) errors.push("Record edito
 for (const path of ["app/admin/revisions/page.tsx", "app/admin/revisions/[type]/[id]/page.tsx", "app/db/migrations/0002_content_revisions.sql"]) {
   if (!existsSync(resolve(root, path))) errors.push(`Missing revision workflow file: ${path}`);
 }
+
+// v2.9.1 iPad-first GitHub Actions database administration.
+const dbMigrateScript = readFileSync(resolve(root, "scripts/db-migrate.mjs"), "utf8");
+const dbVerifyScript = readFileSync(resolve(root, "scripts/db-verify.mjs"), "utf8");
+const dbSeedScript = readFileSync(resolve(root, "scripts/db-seed.mjs"), "utf8");
+const dbSeedData = JSON.parse(readFileSync(resolve(root, "scripts/db-seed-data.json"), "utf8"));
+const dbMigrateWorkflow = readFileSync(resolve(root, ".github/workflows/database-migrate.yml"), "utf8");
+const dbVerifyWorkflow = readFileSync(resolve(root, ".github/workflows/database-verify.yml"), "utf8");
+const dbSeedWorkflow = readFileSync(resolve(root, ".github/workflows/database-seed.yml"), "utf8");
+for (const required of ["shams_migrations", "checksum", "app/db/migrations", "sql.begin"]) {
+  if (!dbMigrateScript.includes(required)) errors.push(`Database migrator is missing: ${required}`);
+}
+for (const required of ["information_schema.tables", "information_schema.columns", "pg_indexes", "Migration checksum mismatch", "content_records"]) {
+  if (!dbVerifyScript.includes(required)) errors.push(`Database verifier is missing: ${required}`);
+}
+for (const required of ["ALLOW_RESEED", "Initial seed aborted", "seed:initial", "seed:refresh", "sql.begin"]) {
+  if (!dbSeedScript.includes(required)) errors.push(`Database seed safety is missing: ${required}`);
+}
+if (dbSeedData.version !== "2.9.1" || !Array.isArray(dbSeedData.records) || dbSeedData.records.length < 1) errors.push("Database seed snapshot must be versioned and non-empty.");
+for (const [name, workflow] of [["migrate", dbMigrateWorkflow], ["verify", dbVerifyWorkflow], ["seed", dbSeedWorkflow]]) {
+  if (!workflow.includes("workflow_dispatch") || !workflow.includes("secrets.DATABASE_URL") || !workflow.includes("shams-production-database")) errors.push(`Database ${name} workflow must be manual, secret-backed, and concurrency-protected.`);
+  if (!workflow.includes("npm install --no-save --no-audit --no-fund postgres@3.4.7")) errors.push(`Database ${name} workflow must install only the pinned PostgreSQL runtime dependency.`);
+}
+if (!dbSeedWorkflow.includes("refresh_existing") || !dbSeedWorkflow.includes("ALLOW_RESEED")) errors.push("Database seed workflow must require explicit refresh_existing input before overwriting content.");
+const package291 = JSON.parse(readFileSync(resolve(root, "package.json"), "utf8"));
+for (const script of ["db:migrate", "db:verify", "db:seed"]) if (!package291.scripts?.[script]) errors.push(`package.json is missing ${script}.`);
+
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));
   process.exit(1);

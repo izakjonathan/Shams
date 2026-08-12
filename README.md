@@ -1,14 +1,14 @@
-# Shams for Humanity v2.9.0
+# Shams for Humanity v2.9.1
 
-Revision history and rollback governance release, built from the confirmed v2.8.0 gallery-admin baseline.
+GitHub Actions database-administration release, built from the confirmed v2.9.0 revision-history baseline.
 
 ## Added
 
-- Persistent content revisions for every database-backed record update.
-- Record-specific revision timelines in `/admin/revisions/[type]/[id]`.
-- A global `/admin/revisions` workspace.
-- One-click restoration with stale-edit protection.
-- Automatic preservation of the current state before every restore.
-- Audit-log entries and targeted public cache invalidation for restores.
+- Manual **Database — Migrate**, **Database — Verify**, and **Database — Seed** GitHub Actions for an iPad-first workflow.
+- Deterministic SQL migration registry with checksum protection.
+- Read-only schema and migration verification.
+- Safe initial seed with explicit opt-in before refreshing an already populated database.
+- Versioned canonical seed snapshot and audit attribution.
+- `DATABASE_GITHUB_ACTIONS.md` with the complete Vercel + GitHub + Neon rollout sequence.
 
-The public website, gallery timing, lower-section reveal, splash, gradients, Safari canvas/footer handling, menu, editorial curtain, database public content, Draft Mode, and structured admin forms are unchanged.
+The public website, gallery, scroll reveal, stable splash, gradients, Safari canvas/footer handling, route curtain, menu, database-backed public content, Draft Mode, structured admin forms, audit log, and revision/rollback workflow are unchanged.

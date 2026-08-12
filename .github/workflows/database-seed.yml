@@ -1,0 +1,44 @@
+name: Database — Seed
+
+on:
+  workflow_dispatch:
+    inputs:
+      refresh_existing:
+        description: "Overwrite matching database records with the checked-in local baseline. Leave false for the safe initial seed."
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shams-production-database
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    name: Seed Neon database
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install database runtime dependencies
+        run: npm install --no-save --no-audit --no-fund postgres@3.4.7
+      - name: Verify schema before seed
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:verify
+      - name: Seed canonical content
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ALLOW_RESEED: ${{ inputs.refresh_existing }}
+          DB_ADMIN_ACTOR: github:${{ github.actor }}
+        run: npm run db:seed
+      - name: Verify database after seed
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:verify

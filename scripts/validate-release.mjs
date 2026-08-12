@@ -35,8 +35,8 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "2.9.0") {
-  errors.push(`package.json version must be 2.9.0 for this release (found ${pkg.version}).`);
+if (pkg.version !== "2.9.1") {
+  errors.push(`package.json version must be 2.9.1 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [
@@ -79,6 +79,15 @@ for (const path of [
   "scripts/verify-release.mjs",
   ".github/workflows/quality.yml",
   "DEPLOYMENT_RUNBOOK.md",
+  "DATABASE_GITHUB_ACTIONS.md",
+  "scripts/db-common.mjs",
+  "scripts/db-migrate.mjs",
+  "scripts/db-verify.mjs",
+  "scripts/db-seed.mjs",
+  "scripts/db-seed-data.json",
+  ".github/workflows/database-migrate.yml",
+  ".github/workflows/database-verify.yml",
+  ".github/workflows/database-seed.yml",
 ]) {
   if (!existsSync(resolve(root, path))) errors.push(`Missing required release file: ${path}`);
 }
