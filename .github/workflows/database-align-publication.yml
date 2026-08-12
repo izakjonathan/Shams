@@ -1,0 +1,38 @@
+name: Database — Align Publication
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shams-production-database
+  cancel-in-progress: false
+
+jobs:
+  align:
+    name: Align baseline publication states
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install database runtime dependencies
+        run: npm install --no-save --no-audit --no-fund postgres@3.4.7
+      - name: Verify schema before alignment
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:verify
+      - name: Align visible baseline records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DB_ADMIN_ACTOR: github:${{ github.actor }}
+        run: npm run db:align-publication
+      - name: Verify database after alignment
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          REQUIRE_BASELINE_PUBLISHED: "true"
+        run: npm run db:verify

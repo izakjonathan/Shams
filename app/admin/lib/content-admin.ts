@@ -89,9 +89,12 @@ export async function seedDatabase(actor: string) {
   const allTypes: AdminContentType[] = ["artist", "gallery", "programme", "ticket", "faq", "page"];
   for (const type of allTypes) {
     for (const record of localAdminRecords(type)) {
-      await db.insert(contentRecords).values({ id: record.id, type: record.type, slug: record.slug, status: record.status, sortOrder: record.sortOrder, data: record.data, updatedAt: new Date() }).onConflictDoUpdate({
+      const baselineStatus: ContentStatus = record.status === "placeholder" ? "published" : record.status;
+      const baselineData = record.status === "placeholder" ? { ...record.data, status: baselineStatus } : record.data;
+      const publishedAt = baselineStatus === "published" ? new Date() : null;
+      await db.insert(contentRecords).values({ id: record.id, type: record.type, slug: record.slug, status: baselineStatus, sortOrder: record.sortOrder, data: baselineData, updatedAt: new Date(), publishedAt }).onConflictDoUpdate({
         target: contentRecords.id,
-        set: { slug: record.slug, status: record.status, sortOrder: record.sortOrder, data: record.data, updatedAt: new Date() },
+        set: { slug: record.slug, status: baselineStatus, sortOrder: record.sortOrder, data: baselineData, updatedAt: new Date(), publishedAt },
       });
     }
   }

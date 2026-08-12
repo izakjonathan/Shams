@@ -1,6 +1,6 @@
 # Database administration from iPad — GitHub Actions
 
-Shams v2.9.1 uses the same operating model as Baros:
+Shams v2.9.2 uses the same operating model as Baros:
 
 - Vercel owns the deployed application's Neon environment variables.
 - GitHub Actions owns manual database administration.
@@ -31,7 +31,7 @@ From the GitHub mobile/web interface open **Actions** and run the workflows in t
 
 3. **Database — Seed**
    - First run: leave `refresh_existing` set to **false**.
-   - Seeds the checked-in canonical v2.9.1 local content into an empty database.
+   - Seeds the checked-in canonical v2.9.2 local content into an empty database.
    - Refuses to overwrite an already-populated database unless `refresh_existing=true` is explicitly selected.
    - Writes an audit-log record showing the GitHub actor and baseline version.
    - Runs Verify before and after the seed.
@@ -71,3 +71,7 @@ CONTENT_DATABASE_FAILURE=local-fallback
 - Keep `refresh_existing=false` for normal seeding. `true` intentionally overwrites matching canonical records and can replace admin edits.
 - The GitHub workflows use the `DATABASE_URL` GitHub secret; they do not read Vercel environment variables automatically. They install only the pinned `postgres@3.4.7` maintenance dependency, so Playwright or other development packages cannot block database administration.
 - Rotate the Neon credential immediately if a connection string is exposed.
+
+## Existing v2.9.1 database: publication alignment
+
+If the database was seeded before v2.9.2, run **Database — Align Publication** once after deploying this release. It promotes only canonical records that are still `placeholder` to `published`. It does not replace edited JSON/content, and it leaves `draft` and `archived` records untouched. Run **Database — Verify** afterwards.

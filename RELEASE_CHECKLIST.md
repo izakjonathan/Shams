@@ -1,17 +1,11 @@
-# v2.9.1 release checklist
+# v2.9.2 release checklist
 
-- [x] Built from the confirmed v2.9.0 revision-history baseline.
-- [x] Added manual GitHub Actions for migrate, verify, and seed.
-- [x] Added deterministic migration registry and migration checksum protection.
-- [x] Added schema/table/column/index/migration verification.
-- [x] Added safe initial seed protection and explicit refresh opt-in.
-- [x] Added canonical seed snapshot for the v2.9.1 baseline.
-- [x] Database workflows install runtime dependencies only and do not require Playwright.
-- [x] Vercel content source remains unchanged by database workflows.
-- [x] Static architecture audit passes.
-- [x] Release configuration validation passes.
-- [ ] Run Database — Migrate against the connected Neon database.
-- [ ] Run Database — Verify against Neon.
-- [ ] Run Database — Seed with refresh_existing=false.
-- [ ] Verify `/admin` against the seeded database.
-- [ ] Switch CONTENT_SOURCE only after database QA passes.
+- [x] Built from v2.9.1.
+- [x] Canonical seed records mirror the current local public site as published.
+- [x] Added status-only publication alignment script.
+- [x] Added manual GitHub Database — Align Publication workflow.
+- [x] Alignment leaves draft/archived records untouched.
+- [x] Alignment records revisions and audit entries.
+- [x] Added strict baseline-publication verification mode.
+- [x] Existing database/public/admin architecture preserved.
+- [x] Static source audits and release validation pass.

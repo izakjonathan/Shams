@@ -90,6 +90,22 @@ try {
   } else {
     console.log("Database verification passed.");
   }
+
+  if (/^(1|true|yes)$/i.test(process.env.REQUIRE_BASELINE_PUBLISHED ?? "")) {
+    const seed = JSON.parse(await readFile(resolve(process.cwd(), "scripts/db-seed-data.json"), "utf8"));
+    const expectedIds = seed.records.filter((record) => record.status === "published").map((record) => record.id);
+    const unpublished = await sql`
+      SELECT id, type, status
+      FROM content_records
+      WHERE id = ANY(${expectedIds}) AND status <> 'published'
+      ORDER BY type, id
+    `;
+    if (unpublished.length) {
+      throw new Error(`Baseline publication verification failed: ${unpublished.map((row) => `${row.type}:${row.id}=${row.status}`).join(", ")}`);
+    }
+    console.log(`Baseline publication state verified for ${expectedIds.length} canonical public record(s).`);
+  }
+
 } finally {
   await sql.end({ timeout: 5 });
 }

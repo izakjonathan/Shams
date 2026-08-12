@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.9.1") errors.push("package.json version must be 2.9.1.");
+if (packageJson.version !== "2.9.2") errors.push("package.json version must be 2.9.2.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -704,7 +704,7 @@ for (const path of ["app/admin/revisions/page.tsx", "app/admin/revisions/[type]/
   if (!existsSync(resolve(root, path))) errors.push(`Missing revision workflow file: ${path}`);
 }
 
-// v2.9.1 iPad-first GitHub Actions database administration.
+// v2.9.2 iPad-first GitHub Actions database administration.
 const dbMigrateScript = readFileSync(resolve(root, "scripts/db-migrate.mjs"), "utf8");
 const dbVerifyScript = readFileSync(resolve(root, "scripts/db-verify.mjs"), "utf8");
 const dbSeedScript = readFileSync(resolve(root, "scripts/db-seed.mjs"), "utf8");
@@ -721,7 +721,7 @@ for (const required of ["information_schema.tables", "information_schema.columns
 for (const required of ["ALLOW_RESEED", "Initial seed aborted", "seed:initial", "seed:refresh", "sql.begin"]) {
   if (!dbSeedScript.includes(required)) errors.push(`Database seed safety is missing: ${required}`);
 }
-if (dbSeedData.version !== "2.9.1" || !Array.isArray(dbSeedData.records) || dbSeedData.records.length < 1) errors.push("Database seed snapshot must be versioned and non-empty.");
+if (dbSeedData.version !== "2.9.2" || !Array.isArray(dbSeedData.records) || dbSeedData.records.length < 1) errors.push("Database seed snapshot must be versioned and non-empty.");
 for (const [name, workflow] of [["migrate", dbMigrateWorkflow], ["verify", dbVerifyWorkflow], ["seed", dbSeedWorkflow]]) {
   if (!workflow.includes("workflow_dispatch") || !workflow.includes("secrets.DATABASE_URL") || !workflow.includes("shams-production-database")) errors.push(`Database ${name} workflow must be manual, secret-backed, and concurrency-protected.`);
   if (!workflow.includes("npm install --no-save --no-audit --no-fund postgres@3.4.7")) errors.push(`Database ${name} workflow must install only the pinned PostgreSQL runtime dependency.`);
@@ -729,6 +729,14 @@ for (const [name, workflow] of [["migrate", dbMigrateWorkflow], ["verify", dbVer
 if (!dbSeedWorkflow.includes("refresh_existing") || !dbSeedWorkflow.includes("ALLOW_RESEED")) errors.push("Database seed workflow must require explicit refresh_existing input before overwriting content.");
 const package291 = JSON.parse(readFileSync(resolve(root, "package.json"), "utf8"));
 for (const script of ["db:migrate", "db:verify", "db:seed"]) if (!package291.scripts?.[script]) errors.push(`package.json is missing ${script}.`);
+
+// v2.9.2 baseline publication alignment.
+const dbAlignPublication = readFileSync(resolve(root, "scripts/db-align-publication.mjs"), "utf8");
+const dbAlignWorkflow = readFileSync(resolve(root, ".github/workflows/database-align-publication.yml"), "utf8");
+if (!package291.scripts?.["db:align-publication"]) errors.push("package.json is missing db:align-publication.");
+if (!dbAlignPublication.includes("status === \"placeholder\"") || !dbAlignPublication.includes("content_revisions") || !dbAlignPublication.includes("audit_logs") || !dbAlignPublication.includes("draft") || !dbAlignPublication.includes("archived")) errors.push("Database publication alignment must be status-only, revisioned, audited, and preserve draft/archive states.");
+if (!dbAlignWorkflow.includes("workflow_dispatch") || !dbAlignWorkflow.includes("REQUIRE_BASELINE_PUBLISHED") || !dbAlignWorkflow.includes("secrets.DATABASE_URL")) errors.push("Database publication alignment workflow must be manual, verified, and secret-backed.");
+if (dbSeedData.version !== "2.9.2" || dbSeedData.records.some((record) => record.status !== "published" || record.data?.status !== "published")) errors.push("v2.9.2 canonical seed records must mirror the currently visible local baseline as published.");
 
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));

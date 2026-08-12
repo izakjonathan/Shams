@@ -1,17 +1,17 @@
 {
-  "version": "2.9.1",
+  "version": "2.9.2",
   "records": [
     {
       "id": "artist-01",
       "type": "artist",
       "slug": "nour",
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 1,
       "data": {
         "id": "artist-01",
         "sortOrder": 1,
         "slug": "nour",
-        "status": "placeholder",
+        "status": "published",
         "name": "Nour",
         "type": "Live",
         "time": "18:30",
@@ -51,13 +51,13 @@
       "id": "artist-02",
       "type": "artist",
       "slug": "maya-al-khalil",
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 2,
       "data": {
         "id": "artist-02",
         "sortOrder": 2,
         "slug": "maya-al-khalil",
-        "status": "placeholder",
+        "status": "published",
         "name": "Maya Al Khalil",
         "type": "DJ Set",
         "time": "20:00",
@@ -97,13 +97,13 @@
       "id": "artist-03",
       "type": "artist",
       "slug": "aisha-devi",
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 3,
       "data": {
         "id": "artist-03",
         "sortOrder": 3,
         "slug": "aisha-devi",
-        "status": "placeholder",
+        "status": "published",
         "name": "Aïsha Devi",
         "type": "Live A/V",
         "time": "21:30",
@@ -143,13 +143,13 @@
       "id": "artist-04",
       "type": "artist",
       "slug": "sama-abdulhadi",
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 4,
       "data": {
         "id": "artist-04",
         "sortOrder": 4,
         "slug": "sama-abdulhadi",
-        "status": "placeholder",
+        "status": "published",
         "name": "Sama' Abdulhadi",
         "type": "DJ Set",
         "time": "23:00",
@@ -189,13 +189,13 @@
       "id": "artist-05",
       "type": "artist",
       "slug": "habibi-funk",
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 5,
       "data": {
         "id": "artist-05",
         "sortOrder": 5,
         "slug": "habibi-funk",
-        "status": "placeholder",
+        "status": "published",
         "name": "Habibi Funk",
         "type": "DJ Set",
         "time": "00:30",
@@ -234,13 +234,13 @@
       "id": "artist-06",
       "type": "artist",
       "slug": "community-choir",
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 6,
       "data": {
         "id": "artist-06",
         "sortOrder": 6,
         "slug": "community-choir",
-        "status": "placeholder",
+        "status": "published",
         "name": "Community Choir",
         "type": "Opening",
         "time": "17:00",
@@ -489,7 +489,7 @@
       "id": "community-opening",
       "type": "programme",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 20,
       "data": {
         "id": "community-opening",
@@ -499,14 +499,14 @@
         "description": "A shared opening moment introducing the purpose behind the gathering.",
         "stage": "Sun stage",
         "category": "community",
-        "status": "placeholder"
+        "status": "published"
       }
     },
     {
       "id": "artist-conversation",
       "type": "programme",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 30,
       "data": {
         "id": "artist-conversation",
@@ -516,14 +516,14 @@
         "description": "A short hosted exchange on culture, care and collective action.",
         "stage": "Listening room",
         "category": "conversation",
-        "status": "placeholder"
+        "status": "published"
       }
     },
     {
       "id": "live-programme",
       "type": "programme",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 40,
       "data": {
         "id": "live-programme",
@@ -533,14 +533,14 @@
         "description": "The first sequence of live performances begins across both stages.",
         "stage": "Sun + Moon stages",
         "category": "music",
-        "status": "placeholder"
+        "status": "published"
       }
     },
     {
       "id": "shared-table",
       "type": "programme",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 50,
       "data": {
         "id": "shared-table",
@@ -550,14 +550,14 @@
         "description": "A slower interval for food, conversation and movement through the installations.",
         "stage": "Festival grounds",
         "category": "community",
-        "status": "placeholder"
+        "status": "published"
       }
     },
     {
       "id": "night-programme",
       "type": "programme",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 60,
       "data": {
         "id": "night-programme",
@@ -567,14 +567,14 @@
         "description": "Selectors and live sets carry the gathering into its late programme.",
         "stage": "Sun + Moon stages",
         "category": "music",
-        "status": "placeholder"
+        "status": "published"
       }
     },
     {
       "id": "closing-sessions",
       "type": "programme",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 70,
       "data": {
         "id": "closing-sessions",
@@ -584,7 +584,7 @@
         "description": "The final collaborative performances and closing listening sessions.",
         "stage": "Moon stage",
         "category": "music",
-        "status": "placeholder"
+        "status": "published"
       }
     },
     {
@@ -608,7 +608,7 @@
       "id": "ticket-01",
       "type": "ticket",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 1,
       "data": {
         "id": "ticket-01",
@@ -619,7 +619,7 @@
         "price": 195,
         "currency": "DKK",
         "availability": "sold-out",
-        "status": "placeholder",
+        "status": "published",
         "includes": [
           "Full festival access",
           "All stages and installations"
@@ -630,7 +630,7 @@
       "id": "ticket-02",
       "type": "ticket",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 2,
       "data": {
         "id": "ticket-02",
@@ -641,7 +641,7 @@
         "price": 275,
         "currency": "DKK",
         "availability": "available",
-        "status": "placeholder",
+        "status": "published",
         "includes": [
           "Full festival access",
           "All stages and installations",
@@ -654,7 +654,7 @@
       "id": "ticket-03",
       "type": "ticket",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 3,
       "data": {
         "id": "ticket-03",
@@ -665,7 +665,7 @@
         "price": 395,
         "currency": "DKK",
         "availability": "available",
-        "status": "placeholder",
+        "status": "published",
         "includes": [
           "Everything in general admission",
           "Additional solidarity contribution"
@@ -676,12 +676,12 @@
       "id": "faq-01",
       "type": "faq",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 1,
       "data": {
         "id": "faq-01",
         "sortOrder": 1,
-        "status": "placeholder",
+        "status": "published",
         "question": "Where does the event take place?",
         "answer": "The first edition is planned for Copenhagen. The final venue and access details will be announced to ticket holders."
       }
@@ -690,12 +690,12 @@
       "id": "faq-02",
       "type": "faq",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 2,
       "data": {
         "id": "faq-02",
         "sortOrder": 2,
-        "status": "placeholder",
+        "status": "published",
         "question": "Is the event accessible?",
         "answer": "Yes. We are designing step-free routes, accessible toilets, seating areas and a quiet space. Contact us for individual access needs."
       }
@@ -704,12 +704,12 @@
       "id": "faq-03",
       "type": "faq",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 3,
       "data": {
         "id": "faq-03",
         "sortOrder": 3,
-        "status": "placeholder",
+        "status": "published",
         "question": "What does my ticket support?",
         "answer": "A transparent share of proceeds supports humanitarian organisations and community-led initiatives."
       }
@@ -718,12 +718,12 @@
       "id": "faq-04",
       "type": "faq",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 4,
       "data": {
         "id": "faq-04",
         "sortOrder": 4,
-        "status": "placeholder",
+        "status": "published",
         "question": "Can I volunteer?",
         "answer": "Yes. Volunteer registration will open with roles across hospitality, production, access and guest care."
       }
@@ -732,12 +732,12 @@
       "id": "page-privacy",
       "type": "page",
       "slug": "privacy",
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 0,
       "data": {
         "id": "page-privacy",
         "slug": "privacy",
-        "status": "placeholder",
+        "status": "published",
         "index": "01 — PRIVACY",
         "title": "Privacy, in plain language.",
         "intro": "This draft explains what information Shams for Humanity may collect, why we use it and the choices available to you. It must be reviewed when the final organizer, providers and contact details are confirmed.",
@@ -835,12 +835,12 @@
       "id": "page-terms",
       "type": "page",
       "slug": "terms",
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 0,
       "data": {
         "id": "page-terms",
         "slug": "terms",
-        "status": "placeholder",
+        "status": "published",
         "index": "02 — TERMS",
         "title": "Clear terms for a shared day.",
         "intro": "These are draft website and event terms. Final ticketing, organizer and venue terms must be inserted and legally reviewed before public ticket sales begin.",
@@ -932,12 +932,12 @@
       "id": "page-accessibility",
       "type": "page",
       "slug": "accessibility",
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 0,
       "data": {
         "id": "page-accessibility",
         "slug": "accessibility",
-        "status": "placeholder",
+        "status": "published",
         "index": "03 — ACCESSIBILITY",
         "title": "A festival designed for access.",
         "intro": "This draft sets out our intended website and event access approach. Exact venue facilities and booking procedures will be confirmed when the venue is announced.",
@@ -1012,11 +1012,11 @@
       "id": "page-contact",
       "type": "page",
       "slug": null,
-      "status": "placeholder",
+      "status": "published",
       "sortOrder": 0,
       "data": {
         "id": "page-contact",
-        "status": "placeholder",
+        "status": "published",
         "index": "04 — CONTACT",
         "titleLines": [
           "Let’s talk",

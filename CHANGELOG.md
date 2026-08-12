@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.9.2 — Seed publication alignment
+
+- Baseline seed records now publish to match the currently visible local public site.
+- Added safe status-only GitHub publication alignment for databases seeded before v2.9.2.
+- Alignment preserves record content, drafts and archives, while recording revisions and audit entries.
+- Added baseline publication verification mode.
+
+
 ## 2.9.1 — GitHub Actions database administration
 
 - Added manual Migrate, Verify, and Seed database workflows for iPad-first operation.

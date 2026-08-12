@@ -1,24 +1,11 @@
-# v2.9.1 database administration audit
+# v2.9.2 seed publication alignment audit
 
-This release adds database operations only. Public rendering and admin content-editing behavior are intentionally unchanged.
-
-## Verified source architecture
-
-- Database workflows are `workflow_dispatch` only.
-- Migrate, Verify, and Seed share a GitHub concurrency group so destructive operations cannot overlap.
-- Database credentials are accepted only through `secrets.DATABASE_URL`.
-- Migration files are applied in lexical numeric order.
-- Applied migration names and SHA-256 checksums are stored in `shams_migrations`.
-- An applied migration with a changed checksum fails rather than silently re-running.
-- Verification is read-only and checks tables, columns, indexes, migration registration, checksums, and content counts.
-- Initial seeding fails if content already exists unless `refresh_existing=true` is explicitly selected.
-- Seed operations are transactional and append an audit-log record with the GitHub actor.
-- Database workflows install only pinned `postgres@3.4.7`, avoiding Next.js, Playwright, and unrelated dependencies entirely.
-
-## Production invariants preserved
-
-- No public layout or CSS changes.
-- No splash, Safari, footer, gradient, gallery, reveal, menu, or route-curtain changes.
-- No automatic migration during Vercel build or application startup.
-- No database-maintenance controls added to `/admin`.
-- `CONTENT_SOURCE` remains an explicit Vercel setting.
+- Canonical seed snapshot version is 2.9.2.
+- All 39 records already visible in the bundled local public site seed with top-level `published` status.
+- `data.status` is synchronized with the database record status.
+- Database public reads remain published-only; placeholder visibility was not weakened.
+- Existing Neon data can be aligned using a status-only GitHub Action without overwriting record content.
+- Alignment preserves draft and archived decisions.
+- Every automatic placeholder→published change records both a revision snapshot and audit log entry.
+- Database verification can require all canonical baseline records to be published.
+- Existing public design, preview, admin editing, Safari handling, gallery, motion, and rollback behavior are unchanged.
