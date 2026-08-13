@@ -1,6 +1,6 @@
 {
   "name": "shams-for-humanity",
-  "version": "2.9.2",
+  "version": "2.9.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -25,7 +25,8 @@
     "verify": "node scripts/verify-release.mjs",
     "db:verify": "node scripts/db-verify.mjs",
     "db:seed": "node scripts/db-seed.mjs",
-    "db:align-publication": "node scripts/db-align-publication.mjs"
+    "db:align-publication": "node scripts/db-align-publication.mjs",
+    "db:repair-records": "node scripts/db-repair-records.mjs"
   },
   "dependencies": {
     "next": "16.2.10",

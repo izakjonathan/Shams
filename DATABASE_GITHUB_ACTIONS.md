@@ -75,3 +75,16 @@ CONTENT_DATABASE_FAILURE=local-fallback
 ## Existing v2.9.1 database: publication alignment
 
 If the database was seeded before v2.9.2, run **Database — Align Publication** once after deploying this release. It promotes only canonical records that are still `placeholder` to `published`. It does not replace edited JSON/content, and it leaves `draft` and `archived` records untouched. Run **Database — Verify** afterwards.
+
+
+## Repair existing record metadata — v2.9.3
+
+Use this only when **Database — Verify** reports JSON/database metadata drift or when upgrading a database seeded before v2.9.3.
+
+1. Open **Actions → Database — Repair Records**.
+2. Tap **Run workflow** on `main`.
+3. Enter `REPAIR` in the confirmation field.
+4. Run the workflow and wait for green status.
+5. The workflow automatically runs Database Verify after repair.
+
+The repair preserves questions, answers, artist copy, programme details, images, ticket content, publication status and sort-order columns. It only synchronizes duplicated JSON metadata with the authoritative database columns.

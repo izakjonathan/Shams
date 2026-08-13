@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.9.3 — Database record normalization and repair
+
+- Made database columns authoritative for record metadata at the public read boundary.
+- Normalizes legacy/malformed JSON metadata before canonical validation.
+- Normalizes database records when opened in admin and older revision snapshots when restored.
+- Added manual **Database — Repair Records** GitHub Action for existing Neon data.
+- Repair preserves editorial fields and status while recording revision snapshots and audit entries.
+- Extended database verification to fail on JSON/database metadata drift.
+
 ## 2.9.2 — Seed publication alignment
 
 - Baseline seed records now publish to match the currently visible local public site.

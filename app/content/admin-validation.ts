@@ -159,6 +159,15 @@ export function parseContentStatus(value: unknown): ContentStatus {
   return status;
 }
 
+
+export function normalizeAdminRecordData(dataInput: unknown, metadata: AdminRecordMetadata): Record<string, unknown> {
+  const source = object(dataInput, "data");
+  const data: Record<string, unknown> = { ...source, id: metadata.id, status: metadata.status };
+  if (metadata.type !== "page" || "sortOrder" in source) data.sortOrder = metadata.sortOrder;
+  if (metadata.slug) data.slug = metadata.slug;
+  return data;
+}
+
 export function validateAdminRecord(dataInput: unknown, metadata: AdminRecordMetadata): Record<string, unknown> {
   const data = object(dataInput, "data");
   validateCommon(data, metadata);

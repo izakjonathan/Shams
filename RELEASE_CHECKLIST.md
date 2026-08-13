@@ -1,11 +1,13 @@
-# v2.9.2 release checklist
+# v2.9.3 release checklist
 
-- [x] Built from v2.9.1.
-- [x] Canonical seed records mirror the current local public site as published.
-- [x] Added status-only publication alignment script.
-- [x] Added manual GitHub Database — Align Publication workflow.
-- [x] Alignment leaves draft/archived records untouched.
-- [x] Alignment records revisions and audit entries.
-- [x] Added strict baseline-publication verification mode.
-- [x] Existing database/public/admin architecture preserved.
-- [x] Static source audits and release validation pass.
+- [x] Built from v2.9.2.
+- [x] Database columns are authoritative for stable record metadata.
+- [x] Public database reads normalize metadata before canonical validation.
+- [x] Admin database reads normalize legacy records before editing.
+- [x] Revision restore normalizes older snapshots before validation.
+- [x] Added guarded Database — Repair Records GitHub Action.
+- [x] Repair preserves editorial fields and publication status.
+- [x] Repair writes revision and audit entries.
+- [x] Database Verify detects metadata drift.
+- [x] Existing public design, motion, Safari, gallery, admin and preview behavior preserved.
+- [x] Static audits and release validation pass.

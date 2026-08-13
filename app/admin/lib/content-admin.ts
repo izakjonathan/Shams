@@ -2,7 +2,7 @@ import "server-only";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import { contentRepository } from "../../content";
-import { validateAdminRecord } from "../../content/admin-validation";
+import { normalizeAdminRecordData, validateAdminRecord } from "../../content/admin-validation";
 import type { ContentStatus } from "../../content/models";
 import packageJson from "../../../package.json";
 import { getDatabase, isDatabaseConfigured } from "../../db/client";
@@ -74,13 +74,18 @@ export async function listAdminRecords(type: AdminContentType) {
   if (!isDatabaseConfigured()) return { source: "local" as const, records: localAdminRecords(type) };
   const db = getDatabase();
   const rows = await db.select().from(contentRecords).where(eq(contentRecords.type, type)).orderBy(asc(contentRecords.sortOrder));
-  return { source: "database" as const, records: rows.map((row) => ({ ...row, type: row.type as AdminContentType, status: row.status as ContentStatus, data: row.data as Record<string, unknown>, updatedAt: row.updatedAt.toISOString() })) };
+  return { source: "database" as const, records: rows.map((row) => {
+    const metadata = { id: row.id, type: row.type as AdminContentType, slug: row.slug, status: row.status as ContentStatus, sortOrder: row.sortOrder };
+    return { ...row, type: metadata.type, status: metadata.status, data: normalizeAdminRecordData(row.data, metadata), updatedAt: row.updatedAt.toISOString() };
+  }) };
 }
 
 export async function getAdminRecord(type: AdminContentType, id: string) {
   if (!isDatabaseConfigured()) return localAdminRecords(type).find((record) => record.id === id) ?? null;
   const [row] = await getDatabase().select().from(contentRecords).where(and(eq(contentRecords.type, type), eq(contentRecords.id, id))).limit(1);
-  return row ? { ...row, type: row.type as AdminContentType, status: row.status as ContentStatus, data: row.data as Record<string, unknown>, updatedAt: row.updatedAt.toISOString() } : null;
+  if (!row) return null;
+  const metadata = { id: row.id, type: row.type as AdminContentType, slug: row.slug, status: row.status as ContentStatus, sortOrder: row.sortOrder };
+  return { ...row, type: metadata.type, status: metadata.status, data: normalizeAdminRecordData(row.data, metadata), updatedAt: row.updatedAt.toISOString() };
 }
 
 export async function seedDatabase(actor: string) {
@@ -180,13 +185,17 @@ export async function restoreAdminRevision(actor: string, revisionId: string, ex
   const [row] = await db.select().from(contentRevisions).where(eq(contentRevisions.id, revisionId)).limit(1);
   if (!row) throw new Error("Revision not found.");
   const snapshot = row.snapshot as AdminRecord;
-  const validatedData = validateAdminRecord(snapshot.data, {
+  const snapshotMetadata = {
     id: snapshot.id,
     type: snapshot.type,
     slug: snapshot.slug,
     status: snapshot.status,
     sortOrder: snapshot.sortOrder,
-  });
+  };
+  const validatedData = validateAdminRecord(
+    normalizeAdminRecordData(snapshot.data, snapshotMetadata),
+    snapshotMetadata,
+  );
   const current = await getAdminRecord(snapshot.type, snapshot.id);
   if (!current) throw new Error("The current record no longer exists.");
   if (current.updatedAt && expectedUpdatedAt && current.updatedAt !== expectedUpdatedAt) {

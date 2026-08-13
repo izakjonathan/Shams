@@ -1,7 +1,7 @@
-# Shams for Humanity v2.9.2
+# Shams for Humanity v2.9.3
 
-Seed Publication Alignment.
+Database Record Normalization & Repair.
 
-This release keeps the v2.9.1 GitHub Actions database operating model and fixes the baseline publication mismatch discovered during database preview testing. Canonical records that are already visible on the local public site now seed as `published`, so a freshly seeded database mirrors the existing public frontend instead of hiding placeholder-status records.
+This release fixes the database/public-reader mismatch discovered during Neon preview testing. Database columns are now authoritative for stable record metadata (`id`, `status`, `sortOrder`, and `slug` where applicable). Existing JSON payloads are normalized at the server boundary before canonical validation, so older or partially edited records cannot crash the public site merely because duplicated metadata is missing inside `data`.
 
-For already-seeded databases, run the manual **Database — Align Publication** GitHub Action. It changes only records still in `placeholder` state, preserves their edited content, creates revision snapshots and audit entries, and leaves deliberate `draft` or `archived` records untouched.
+For databases already seeded before v2.9.3, run the manual **Database — Repair Records** GitHub Action once with confirmation `REPAIR`, then run **Database — Verify**. The repair changes metadata fields only, preserves editorial content and publication states, and records a revision plus audit entry for every changed record.

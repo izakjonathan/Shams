@@ -1,0 +1,39 @@
+name: Database — Repair Records
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type REPAIR to normalize existing content-record JSON metadata'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shams-production-database
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    name: Normalize Neon content records
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install database runtime dependency
+        run: npm install --no-save --no-audit --no-fund postgres@3.4.7
+      - name: Repair record metadata
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DB_ADMIN_ACTOR: github:${{ github.actor }}
+          REPAIR_CONFIRMATION: ${{ inputs.confirmation }}
+        run: npm run db:repair-records
+      - name: Verify repaired database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:verify

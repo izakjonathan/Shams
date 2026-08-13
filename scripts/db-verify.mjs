@@ -82,6 +82,23 @@ try {
       FROM content_records
     `;
     console.log(`Content records: ${counts.total} total (${counts.published} published, ${counts.draft} draft, ${counts.placeholder} placeholder, ${counts.archived} archived).`);
+
+    const metadataMismatches = await sql`
+      SELECT id, type, slug, status, sort_order, data
+      FROM content_records
+      WHERE jsonb_typeof(data) <> 'object'
+         OR COALESCE(data->>'id', '') <> id
+         OR COALESCE(data->>'status', '') <> status
+         OR (type <> 'page' AND COALESCE(data->>'sortOrder', '') <> sort_order::text)
+         OR (slug IS NOT NULL AND COALESCE(data->>'slug', '') <> slug)
+      ORDER BY type, sort_order, id
+    `;
+    if (metadataMismatches.length) {
+      const sample = metadataMismatches.slice(0, 12).map((row) => `${row.type}:${row.id}`).join(", ");
+      errors.push(`Content JSON metadata mismatch in ${metadataMismatches.length} record(s): ${sample}${metadataMismatches.length > 12 ? ", …" : ""}. Run Database — Repair Records.`);
+    } else {
+      console.log("Content JSON metadata matches authoritative database columns.");
+    }
   }
 
   if (errors.length) {

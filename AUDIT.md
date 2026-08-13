@@ -1,11 +1,13 @@
-# v2.9.2 seed publication alignment audit
+# v2.9.3 database record normalization audit
 
-- Canonical seed snapshot version is 2.9.2.
-- All 39 records already visible in the bundled local public site seed with top-level `published` status.
-- `data.status` is synchronized with the database record status.
-- Database public reads remain published-only; placeholder visibility was not weakened.
-- Existing Neon data can be aligned using a status-only GitHub Action without overwriting record content.
-- Alignment preserves draft and archived decisions.
-- Every automatic placeholder→published change records both a revision snapshot and audit log entry.
-- Database verification can require all canonical baseline records to be published.
-- Existing public design, preview, admin editing, Safari handling, gallery, motion, and rollback behavior are unchanged.
+Root cause confirmed from Vercel runtime logs: existing `content_records` rows had authoritative metadata in database columns but some JSON `data` objects lacked matching `id`, `status`, `sortOrder`, or `slug` values. Canonical validation treated the duplicated JSON metadata as mandatory and crashed database-backed public rendering.
+
+Corrections:
+
+- Public reads construct canonical metadata from database columns before validation.
+- Admin reads use the same normalization, preventing malformed legacy payloads from propagating.
+- Revision restore normalizes historical snapshots before validation.
+- Existing Neon records can be backfilled with a guarded, revisioned, audited GitHub Action.
+- Database verification now reports metadata drift before a deployment is considered healthy.
+- Repair does not change editorial content, order columns, slug columns, publication status, or timestamps other than `updated_at`.
+- No public visual, Safari, transition, gallery, or motion behavior changed.

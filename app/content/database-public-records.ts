@@ -4,7 +4,7 @@ import { unstable_cache } from "next/cache";
 import { and, asc, eq } from "drizzle-orm";
 import { getDatabase, isDatabaseConfigured } from "../db/client";
 import { contentRecords } from "../db/schema";
-import { validateAdminRecord, type AdminContentType } from "./admin-validation";
+import { normalizeAdminRecordData, validateAdminRecord, type AdminContentType } from "./admin-validation";
 import type { ContentStatus } from "./models";
 import { CONTENT_TAGS } from "./cache-tags";
 
@@ -33,15 +33,16 @@ async function queryDatabase(type: PublicContentType, includeDrafts: boolean) {
         )
         .orderBy(asc(contentRecords.sortOrder), asc(contentRecords.id));
 
-  return rows.map((row) =>
-    validateAdminRecord(row.data, {
+  return rows.map((row) => {
+    const metadata = {
       id: row.id,
       type: row.type as AdminContentType,
       slug: row.slug,
       status: row.status as ContentStatus,
       sortOrder: row.sortOrder,
-    }),
-  );
+    };
+    return validateAdminRecord(normalizeAdminRecordData(row.data, metadata), metadata);
+  });
 }
 
 const cachedPublishedReaders: Record<
