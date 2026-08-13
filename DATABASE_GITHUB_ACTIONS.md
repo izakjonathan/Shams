@@ -88,3 +88,7 @@ Use this only when **Database — Verify** reports JSON/database metadata drift 
 5. The workflow automatically runs Database Verify after repair.
 
 The repair preserves questions, answers, artist copy, programme details, images, ticket content, publication status and sort-order columns. It only synchronizes duplicated JSON metadata with the authoritative database columns.
+
+## Complete older record shapes — v2.9.4
+
+Databases seeded by older releases may contain valid editorial content but omit fields that were added later to the canonical type shape (for example `page.index` or nested section metadata). v2.9.4 completes only missing baseline fields at the read boundary; values already stored in Neon always win. Run **Database — Repair Records** with confirmation `REPAIR` once to permanently backfill those missing canonical fields, then run **Database — Verify**.

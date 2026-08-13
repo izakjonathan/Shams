@@ -7,6 +7,7 @@ import { contentRecords } from "../db/schema";
 import { normalizeAdminRecordData, validateAdminRecord, type AdminContentType } from "./admin-validation";
 import type { ContentStatus } from "./models";
 import { CONTENT_TAGS } from "./cache-tags";
+import { completeRecordFromCanonicalBaseline } from "./canonical-record-completion";
 
 export type PublicContentType = keyof typeof CONTENT_TAGS;
 
@@ -41,7 +42,8 @@ async function queryDatabase(type: PublicContentType, includeDrafts: boolean) {
       status: row.status as ContentStatus,
       sortOrder: row.sortOrder,
     };
-    return validateAdminRecord(normalizeAdminRecordData(row.data, metadata), metadata);
+    const completed = completeRecordFromCanonicalBaseline(metadata.type, metadata.id, row.data);
+    return validateAdminRecord(normalizeAdminRecordData(completed, metadata), metadata);
   });
 }
 
@@ -51,32 +53,32 @@ const cachedPublishedReaders: Record<
 > = {
   artist: unstable_cache(
     () => queryDatabase("artist", false),
-    ["public-artists-v2"],
+    ["public-artists-v3"],
     { tags: [CONTENT_TAGS.artist] },
   ),
   gallery: unstable_cache(
     () => queryDatabase("gallery", false),
-    ["public-gallery-v1"],
+    ["public-gallery-v2"],
     { tags: [CONTENT_TAGS.gallery] },
   ),
   programme: unstable_cache(
     () => queryDatabase("programme", false),
-    ["public-programme-v2"],
+    ["public-programme-v3"],
     { tags: [CONTENT_TAGS.programme] },
   ),
   ticket: unstable_cache(
     () => queryDatabase("ticket", false),
-    ["public-tickets-v2"],
+    ["public-tickets-v3"],
     { tags: [CONTENT_TAGS.ticket] },
   ),
   faq: unstable_cache(
     () => queryDatabase("faq", false),
-    ["public-faqs-v2"],
+    ["public-faqs-v3"],
     { tags: [CONTENT_TAGS.faq] },
   ),
   page: unstable_cache(
     () => queryDatabase("page", false),
-    ["public-pages-v2"],
+    ["public-pages-v3"],
     { tags: [CONTENT_TAGS.page] },
   ),
 };

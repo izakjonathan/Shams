@@ -99,6 +99,22 @@ try {
     } else {
       console.log("Content JSON metadata matches authoritative database columns.");
     }
+
+    const seed = JSON.parse(await readFile(resolve(process.cwd(), "scripts/db-seed-data.json"), "utf8"));
+    const baselineById = new Map(seed.records.map((record) => [record.id, record]));
+    const rowsForShape = await sql`SELECT id, type, data FROM content_records ORDER BY type, id`;
+    const incomplete = [];
+    for (const row of rowsForShape) {
+      const baseline = baselineById.get(row.id);
+      if (!baseline || !row.data || typeof row.data !== "object" || Array.isArray(row.data)) continue;
+      const missing = Object.keys(baseline.data).filter((key) => !(key in row.data));
+      if (missing.length) incomplete.push(`${row.type}:${row.id}[${missing.join(",")}]`);
+    }
+    if (incomplete.length) {
+      errors.push(`Canonical content fields missing in ${incomplete.length} record(s): ${incomplete.slice(0, 10).join(", ")}${incomplete.length > 10 ? ", …" : ""}. Run Database — Repair Records.`);
+    } else {
+      console.log("Canonical top-level content fields are present in all baseline records.");
+    }
   }
 
   if (errors.length) {

@@ -1,4 +1,4 @@
-# v2.9.3 database record normalization audit
+# v2.9.4 database record normalization audit
 
 Root cause confirmed from Vercel runtime logs: existing `content_records` rows had authoritative metadata in database columns but some JSON `data` objects lacked matching `id`, `status`, `sortOrder`, or `slug` values. Canonical validation treated the duplicated JSON metadata as mandatory and crashed database-backed public rendering.
 

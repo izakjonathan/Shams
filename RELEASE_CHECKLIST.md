@@ -1,6 +1,6 @@
-# v2.9.3 release checklist
+# v2.9.4 release checklist
 
-- [x] Built from v2.9.2.
+- [x] Built from v2.9.3.
 - [x] Database columns are authoritative for stable record metadata.
 - [x] Public database reads normalize metadata before canonical validation.
 - [x] Admin database reads normalize legacy records before editing.

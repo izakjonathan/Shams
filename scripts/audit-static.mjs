@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.9.3") errors.push("package.json version must be 2.9.3.");
+if (packageJson.version !== "2.9.4") errors.push("package.json version must be 2.9.4.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
@@ -721,7 +721,7 @@ for (const required of ["information_schema.tables", "information_schema.columns
 for (const required of ["ALLOW_RESEED", "Initial seed aborted", "seed:initial", "seed:refresh", "sql.begin"]) {
   if (!dbSeedScript.includes(required)) errors.push(`Database seed safety is missing: ${required}`);
 }
-if (dbSeedData.version !== "2.9.3" || !Array.isArray(dbSeedData.records) || dbSeedData.records.length < 1) errors.push("Database seed snapshot must be versioned and non-empty.");
+if (dbSeedData.version !== "2.9.4" || !Array.isArray(dbSeedData.records) || dbSeedData.records.length < 1) errors.push("Database seed snapshot must be versioned and non-empty.");
 for (const [name, workflow] of [["migrate", dbMigrateWorkflow], ["verify", dbVerifyWorkflow], ["seed", dbSeedWorkflow]]) {
   if (!workflow.includes("workflow_dispatch") || !workflow.includes("secrets.DATABASE_URL") || !workflow.includes("shams-production-database")) errors.push(`Database ${name} workflow must be manual, secret-backed, and concurrency-protected.`);
   if (!workflow.includes("npm install --no-save --no-audit --no-fund postgres@3.4.7")) errors.push(`Database ${name} workflow must install only the pinned PostgreSQL runtime dependency.`);
@@ -736,20 +736,27 @@ const dbAlignWorkflow = readFileSync(resolve(root, ".github/workflows/database-a
 if (!package291.scripts?.["db:align-publication"]) errors.push("package.json is missing db:align-publication.");
 if (!dbAlignPublication.includes("status === \"placeholder\"") || !dbAlignPublication.includes("content_revisions") || !dbAlignPublication.includes("audit_logs") || !dbAlignPublication.includes("draft") || !dbAlignPublication.includes("archived")) errors.push("Database publication alignment must be status-only, revisioned, audited, and preserve draft/archive states.");
 if (!dbAlignWorkflow.includes("workflow_dispatch") || !dbAlignWorkflow.includes("REQUIRE_BASELINE_PUBLISHED") || !dbAlignWorkflow.includes("secrets.DATABASE_URL")) errors.push("Database publication alignment workflow must be manual, verified, and secret-backed.");
-if (dbSeedData.version !== "2.9.3" || dbSeedData.records.some((record) => record.status !== "published" || record.data?.status !== "published")) errors.push("v2.9.2 canonical seed records must mirror the currently visible local baseline as published.");
+if (dbSeedData.version !== "2.9.4" || dbSeedData.records.some((record) => record.status !== "published" || record.data?.status !== "published")) errors.push("v2.9.4 canonical seed records must mirror the currently visible local baseline as published.");
 
-// v2.9.3 database record normalization and repair guards.
+// v2.9.4 database record normalization and repair guards.
 const dbPublicRecords293 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
 const adminValidation293 = readFileSync(resolve(root, "app/content/admin-validation.ts"), "utf8");
 const dbRepair293 = readFileSync(resolve(root, "scripts/db-repair-records.mjs"), "utf8");
 const dbRepairWorkflow293 = readFileSync(resolve(root, ".github/workflows/database-repair-records.yml"), "utf8");
 const dbVerify293 = readFileSync(resolve(root, "scripts/db-verify.mjs"), "utf8");
 if (!adminValidation293.includes("normalizeAdminRecordData")) errors.push("Database boundary normalization helper is missing.");
-if (!dbPublicRecords293.includes("normalizeAdminRecordData(row.data, metadata)")) errors.push("Public database records must normalize authoritative metadata before validation.");
+if (!dbPublicRecords293.includes("normalizeAdminRecordData(completed, metadata)")) errors.push("Public database records must normalize authoritative metadata before validation.");
 if (!packageJson.scripts?.["db:repair-records"]) errors.push("package.json is missing db:repair-records.");
-for (const required of ["before:metadata-normalization", "repair:normalize-record-metadata", "REPAIR_CONFIRMATION"]) if (!dbRepair293.includes(required)) errors.push(`Database repair safety/audit behavior is missing: ${required}`);
+for (const required of ["before:canonical-record-repair", "repair:complete-canonical-record", "REPAIR_CONFIRMATION"]) if (!dbRepair293.includes(required)) errors.push(`Database repair safety/audit behavior is missing: ${required}`);
 if (!dbRepairWorkflow293.includes("workflow_dispatch") || !dbRepairWorkflow293.includes("npm run db:repair-records") || !dbRepairWorkflow293.includes("npm run db:verify")) errors.push("Database record repair GitHub workflow is incomplete.");
 if (!dbVerify293.includes("Content JSON metadata mismatch") || !dbVerify293.includes("Database — Repair Records")) errors.push("Database verification must detect record JSON metadata drift and direct operators to repair it.");
+
+if (!dbPublicRecords293.includes("completeRecordFromCanonicalBaseline")) errors.push("Public database records must complete missing canonical fields before validation.");
+if (!dbVerify293.includes("Canonical content fields missing")) errors.push("Database verification must detect incomplete canonical record shapes.");
+for (const route of ["app/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx", "app/accessibility/page.tsx", "app/contact/page.tsx", "app/artists/[slug]/page.tsx"]) {
+  const source = readFileSync(resolve(root, route), "utf8");
+  if (!source.includes('export const dynamic = "force-dynamic"')) errors.push(`${route} must avoid build-time database prerendering in database mode.`);
+}
 
 if (errors.length) {
   errors.forEach((error) => console.error(`ERROR: ${error}`));

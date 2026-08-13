@@ -1,6 +1,16 @@
 # Changelog
 
-## 2.9.3 — Database record normalization and repair
+
+## v2.9.4 — Canonical Database Shape Completion
+
+- Completes only missing fields in older Neon JSON payloads from the current checked-in canonical baseline before validation.
+- Existing database/editorial values always win; missing defaults no longer crash public rendering.
+- Extends Database — Repair Records to permanently backfill missing canonical fields as well as authoritative metadata, with revision and audit protection.
+- Extends Database — Verify to detect missing canonical top-level fields.
+- Forces database-backed public routes to render at runtime so a live database inconsistency cannot fail the Vercel production build during prerender.
+- Bumps public-content cache generations to prevent stale invalid records from surviving the repair.
+
+## 2.9.4 — Database record normalization and repair
 
 - Made database columns authoritative for record metadata at the public read boundary.
 - Normalizes legacy/malformed JSON metadata before canonical validation.

@@ -8,6 +8,7 @@ import { contentRepository } from "../../content";
 import { publicContentRepository } from "../../content/server";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const localArtists = contentRepository.getArtists();
 const event = contentRepository.getEvent();

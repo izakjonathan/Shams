@@ -12,6 +12,7 @@ import { publicContentRepository } from "./content/server";
 import { safeExternalUrl, serializeJsonLd } from "./lib/site";
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 const event = contentRepository.getEvent();
 const home = contentRepository.getHome();
