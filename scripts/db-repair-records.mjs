@@ -62,9 +62,9 @@ try {
 
       for (const { row, next } of repairs) {
         const before = snapshot(row);
-        await tx`INSERT INTO content_revisions (id, record_type, record_id, actor, reason, snapshot) VALUES (${randomUUID()}, ${row.type}, ${row.id}, ${actor}, 'before:canonical-record-repair', ${JSON.stringify(before)}::jsonb)`;
-        await tx`UPDATE content_records SET data = ${JSON.stringify(next)}::jsonb, updated_at = now() WHERE id = ${row.id}`;
-        await tx`INSERT INTO audit_logs (id, actor, action, record_type, record_id, before, after) VALUES (${randomUUID()}, ${actor}, 'repair:complete-canonical-record', ${row.type}, ${row.id}, ${JSON.stringify(row.data)}::jsonb, ${JSON.stringify(next)}::jsonb)`;
+        await tx`INSERT INTO content_revisions (id, record_type, record_id, actor, reason, snapshot) VALUES (${randomUUID()}, ${row.type}, ${row.id}, ${actor}, 'before:canonical-record-repair', ${tx.json(before)})`;
+        await tx`UPDATE content_records SET data = ${tx.json(next)}, updated_at = now() WHERE id = ${row.id}`;
+        await tx`INSERT INTO audit_logs (id, actor, action, record_type, record_id, before, after) VALUES (${randomUUID()}, ${actor}, 'repair:complete-canonical-record', ${row.type}, ${row.id}, ${tx.json(row.data)}, ${tx.json(next)})`;
         console.log(`Repaired ${row.type}:${row.id}.`);
       }
   }

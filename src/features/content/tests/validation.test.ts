@@ -1,3 +1,4 @@
+import { publicImageOrBaseline } from "../media-path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -24,4 +25,21 @@ test("nested page states and duplicate IDs are rejected", () => {
   const sections = page.data.sections as Record<string, unknown>[];
   assert.throws(() => validateAdminRecord({ ...page.data, sections: [{ ...sections[0], status: "invalid" }] }, page));
   assert.throws(() => validateAdminRecord({ ...page.data, sections: [sections[0], sections[0]] }, page));
+});
+
+test("legacy public media uses the same record baseline without changing stored data", () => {
+  const artist = records.find((r) => r.type === "artist")!;
+  for (const image of ["https://legacy.example/image.jpg", "/public/images/artists/old.webp", "", null, { src: "/old/asset.jpg" }]) {
+    const original = { ...artist.data, image, name: "Keep editorial name" };
+    const rendered = { ...original, image: publicImageOrBaseline(image, artist.data.image) };
+    assert.equal(rendered.name, "Keep editorial name");
+    assert.equal(original.image, image);
+    assert.doesNotThrow(() => validateAdminRecord(rendered, artist));
+    assert.throws(() => validateAdminRecord(original, artist));
+  }
+  const current = "/images/artists/artist-03.webp";
+  assert.equal(publicImageOrBaseline(current, artist.data.image), current);
+  const staticAsset = { src: "/_next/static/media/artist.a1b2.webp", width: 800, height: 800 };
+  assert.equal(publicImageOrBaseline(staticAsset, artist.data.image), staticAsset);
+  assert.throws(() => publicImageOrBaseline("https://bad.example/a.jpg", undefined));
 });

@@ -88,7 +88,7 @@ test("shared login counter caps attempts and expired windows reset", async () =>
   assert.equal(await consumeAttempt(db, "test"), false);
   assert.equal(await consumeAttempt(db, "test"), false);
 });
-test("maintenance CLIs preserve editorial values and intentional draft states", { skip: process.env.PGLITE_TEST === "true" ? "PGlite socket could not execute the locked CLI seed; real PostgreSQL CI is required." : false }, async () => {
+test("maintenance CLIs preserve editorial values and intentional draft states", async () => {
   await reset();
   const run = (file: string, extra: Record<string, string> = {}) => execFileSync(process.execPath, [file], { env: { ...process.env, DATABASE_URL: target, ...extra }, timeout: 30000, stdio: "pipe" });
   run("scripts/db-seed.mjs");

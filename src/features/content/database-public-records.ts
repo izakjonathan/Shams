@@ -7,7 +7,8 @@ import { contentRecords } from "../../db/schema";
 import { normalizeAdminRecordData, validateAdminRecord, type AdminContentType } from "./admin-validation";
 import type { ContentStatus } from "./models";
 import { CONTENT_TAGS } from "./cache-tags";
-import { completeRecordFromCanonicalBaseline } from "./canonical-record-completion";
+import { isLocalMedia, publicImageOrBaseline } from "./media-path";
+import { canonicalImageForRecord, completeRecordFromCanonicalBaseline } from "./canonical-record-completion";
 
 export type PublicContentType = keyof typeof CONTENT_TAGS;
 
@@ -43,7 +44,15 @@ async function queryDatabase(type: PublicContentType, includeDrafts: boolean) {
       sortOrder: row.sortOrder,
     };
     const completed = completeRecordFromCanonicalBaseline(metadata.type, metadata.id, row.data);
-    const data = validateAdminRecord(normalizeAdminRecordData(completed, metadata), metadata);
+    const normalized = normalizeAdminRecordData(completed, metadata);
+    if ((metadata.type === "artist" || metadata.type === "gallery") && !isLocalMedia(normalized.image)) {
+      // Legacy records were accepted before strict image-path validation. Keep
+      // all editorial fields and DB bytes; use only this same record's canonical
+      // asset for rendering, never an arbitrary external URL or another artist.
+      normalized.image = publicImageOrBaseline(normalized.image, canonicalImageForRecord(metadata.type, metadata.id));
+      console.warn(`[public content] Using canonical media for ${metadata.type}:${metadata.id}. Review the saved image path in the studio.`);
+    }
+    const data = validateAdminRecord(normalized, metadata);
     if (!includeDrafts && metadata.type === "page") {
       for (const key of ["sections", "routes"]) {
         if (Array.isArray(data[key])) data[key] = data[key].filter((item: { status?: string }) => item.status === "published" || item.status === "placeholder");
@@ -59,12 +68,12 @@ const cachedPublishedReaders: Record<
 > = {
   artist: unstable_cache(
     () => queryDatabase("artist", false),
-    ["public-artists-v3"],
+    ["public-artists-v4"],
     { revalidate: 60, tags: [CONTENT_TAGS.artist] },
   ),
   gallery: unstable_cache(
     () => queryDatabase("gallery", false),
-    ["public-gallery-v2"],
+    ["public-gallery-v3"],
     { revalidate: 60, tags: [CONTENT_TAGS.gallery] },
   ),
   programme: unstable_cache(

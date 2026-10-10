@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.10.1 — Production media compatibility fix
+
+- Corrects the strict image-validation regression observed after deploying 2.10.0: existing unsupported artist/gallery media renders using the same record’s canonical local asset, retaining every editorial field and leaving stored data unchanged. Saves still reject unsupported media; records without a valid matching fallback still fail explicitly.
+- Fixes CLI JSONB parameter encoding with explicit tx.json wrappers for content, revision and audit objects.
+- Bumps artist/gallery cache generations and adds a legacy-media regression test.
+- Renders the social-preview star with the existing icon SVG path, avoiding the failed external dynamic glyph download.
+
+
 ## 2.10.0 — Handover candidate
 
 - Relocates baseline code into src/app and feature domains; adds required handover documentation.

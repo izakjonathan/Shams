@@ -34,14 +34,14 @@ try {
         const [before] = await tx`SELECT * FROM content_records WHERE id = ${record.id} FOR UPDATE`;
         if (before) {
           const snapshot = { id: before.id, type: before.type, slug: before.slug, status: before.status, sortOrder: before.sort_order, data: before.data, updatedAt: new Date(before.updated_at).toISOString() };
-          await tx`INSERT INTO content_revisions (id, record_type, record_id, actor, reason, snapshot) VALUES (${randomUUID()}, ${before.type}, ${before.id}, ${actor}, 'before:seed:refresh', ${JSON.stringify(snapshot)}::jsonb)`;
-          await tx`INSERT INTO audit_logs (id, actor, action, record_type, record_id, before, after) VALUES (${randomUUID()}, ${actor}, 'seed:refresh:record', ${before.type}, ${before.id}, ${JSON.stringify(snapshot)}::jsonb, ${JSON.stringify(record)}::jsonb)`;
+          await tx`INSERT INTO content_revisions (id, record_type, record_id, actor, reason, snapshot) VALUES (${randomUUID()}, ${before.type}, ${before.id}, ${actor}, 'before:seed:refresh', ${tx.json(snapshot)})`;
+          await tx`INSERT INTO audit_logs (id, actor, action, record_type, record_id, before, after) VALUES (${randomUUID()}, ${actor}, 'seed:refresh:record', ${before.type}, ${before.id}, ${tx.json(snapshot)}, ${tx.json(record)})`;
         }
       }
       const publishedAt = record.status === "published" ? new Date() : null;
       await tx`
         INSERT INTO content_records (id, type, slug, status, sort_order, data, updated_at, published_at)
-        VALUES (${record.id}, ${record.type}, ${record.slug}, ${record.status}, ${record.sortOrder}, ${JSON.stringify(record.data)}::jsonb, now(), ${publishedAt})
+        VALUES (${record.id}, ${record.type}, ${record.slug}, ${record.status}, ${record.sortOrder}, ${tx.json(record.data)}, now(), ${publishedAt})
         ON CONFLICT (id) DO UPDATE SET
           type = EXCLUDED.type,
           slug = EXCLUDED.slug,
@@ -54,7 +54,7 @@ try {
     }
     await tx`
       INSERT INTO audit_logs (id, actor, action, record_type, record_id, after)
-      VALUES (${randomUUID()}, ${actor}, ${allowReseed ? "seed:refresh" : "seed:initial"}, 'all', 'local-content', ${JSON.stringify({ version: seed.version, records: seed.records.length })}::jsonb)
+      VALUES (${randomUUID()}, ${actor}, ${allowReseed ? "seed:refresh" : "seed:initial"}, 'all', 'local-content', ${tx.json({ version: seed.version, records: seed.records.length })})
     `;
   });
 

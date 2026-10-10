@@ -1,3 +1,4 @@
+import { isLocalMedia } from "./media-path";
 import type { ContentStatus, ProgrammeCategory, TicketAvailability } from "./models";
 
 export type AdminContentType = "artist" | "gallery" | "programme" | "ticket" | "faq" | "page";
@@ -38,11 +39,9 @@ function stringArray(value: unknown, path: string): string[] {
 }
 
 function image(value: unknown, path: string) {
-  const src = typeof value === "string" ? value : object(value, path).src;
-  const text = string(src, path);
-  // Only bundled public media are supported by the current CSP/image config.
-  if (!/^\/(?:images|_next\/static\/media)\/[a-zA-Z0-9_./-]+\.(?:webp|png|jpe?g|avif)$/i.test(text) || text.includes("..") || text.includes("//")) fail(`${path} must be a local image path.`);
+  if (!isLocalMedia(value)) fail(`${path} must be a local image path.`);
 }
+
 function nestedMetadata(item: Record<string, unknown>, path: string) {
   string(item.id, `${path}.id`);
   if (!Number.isInteger(item.sortOrder)) fail(`${path}.sortOrder must be an integer.`);

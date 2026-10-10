@@ -59,7 +59,9 @@ export default async function OpengraphImage() {
             display: "flex",
           }}
         >
-          ✦
+          <svg width="44" height="44" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M32 10c1.2 8 3 14.4 6.8 18.2C42.6 32 49 33.8 57 35c-8 1.2-14.4 3-18.2 6.8C35 45.6 33.2 52 32 60c-1.2-8-3-14.4-6.8-18.2C21.4 38 15 36.2 7 35c8-1.2 14.4-3 18.2-6.8C29 24.4 30.8 18 32 10z" fill={siteTheme.ink} />
+          </svg>
         </div>
         <div
           style={{

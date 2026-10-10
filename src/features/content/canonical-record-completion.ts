@@ -64,3 +64,7 @@ export function completeRecordFromCanonicalBaseline(
   if (!baseline) return data;
   return fillMissingCanonicalFields(baseline, data);
 }
+
+export function canonicalImageForRecord(type: AdminContentType, id: string): unknown {
+  return baselineRecords(type).find((record) => record.id === id)?.image;
+}

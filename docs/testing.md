@@ -1,3 +1,13 @@
+# 2.10.1 regression verification
+
+Passed: eight unit tests, TypeScript, static/runtime audits, lint (four unchanged admin-image warnings), release validation and production build. The isolated SQL suite now passes six tests, including the actual seed/repair/alignment CLIs; three real-PostgreSQL concurrency/error cases remain skipped in PGlite. The earlier CLI failure was traced to JSONB parameter encoding and fixed with tx.json; it is no longer treated as an emulation limitation.
+
+`node scripts/test-public-media-local.mjs` runs an isolated PostgreSQL-compatible fixture and the built Next server in database mode. With unsupported legacy media values on artists/gallery, homepage, Nour's artist page and sitemap returned 200 without the error boundary; edited artist text remained visible. The social-preview endpoint returned a valid PNG with no dynamic star-glyph download error. This is a server HTTP regression check, not a full mobile-browser or production-data certification. Run it after `npm run build`; it never uses production credentials.
+
+The original 2.10.0 record below is historical; browser/production gates still apply.
+
+---
+
 # Testing and evidence
 Review date: 10 October 2026. Commands were executed against candidate 2.10.0; no tests wrote to production.
 

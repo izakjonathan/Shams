@@ -53,13 +53,13 @@ try {
 
       await tx`
         INSERT INTO content_revisions (id, record_type, record_id, actor, reason, snapshot)
-        VALUES (${randomUUID()}, ${row.type}, ${row.id}, ${actor}, 'before:baseline-publication-alignment', ${JSON.stringify(before)}::jsonb)
+        VALUES (${randomUUID()}, ${row.type}, ${row.id}, ${actor}, 'before:baseline-publication-alignment', ${tx.json(before)})
       `;
 
       await tx`
         UPDATE content_records
         SET status = 'published',
-            data = ${JSON.stringify(nextData)}::jsonb,
+            data = ${tx.json(nextData)},
             updated_at = now(),
             published_at = COALESCE(published_at, now())
         WHERE id = ${row.id} AND status = 'placeholder'
@@ -73,8 +73,8 @@ try {
           'status:placeholder->published:baseline-alignment',
           ${row.type},
           ${row.id},
-          ${JSON.stringify({ status: "placeholder", dataStatus: row.data?.status ?? null })}::jsonb,
-          ${JSON.stringify({ status: "published", dataStatus: "published" })}::jsonb
+          ${tx.json({ status: "placeholder", dataStatus: row.data?.status ?? null })},
+          ${tx.json({ status: "published", dataStatus: "published" })}
         )
       `;
     }

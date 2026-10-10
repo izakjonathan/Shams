@@ -1,3 +1,19 @@
+# 2.10.1 correction — 10 October 2026
+
+Production advanced to commit `5aabe8bc00be389f6bb4a12bfab6f3b249fc3620`, deployment `dpl_EGVa69DTyqCifPUorPXGjiuUFLkN`, after the 2.10.0 ZIP was supplied. The runtime logs now confirm `/` throws `[admin content] artist.image must be a local image path.` The new strict validator introduced a compatibility regression against existing database media values. Exact saved paths could not be inspected because direct database DNS access remained unavailable; do not claim a specific legacy path format was observed.
+
+2.10.1 fixes the public read boundary: valid local media still wins; unsupported legacy media on a known canonical artist/gallery record uses that same record's approved local image. Editorial text, status, order and all stored database bytes remain unchanged. The studio still shows the saved value and strict save validation prevents reintroducing unsupported media. Unknown records without a supported local image/canonical fallback still fail explicitly; this is not a blanket local-content fallback. A warning identifies records requiring image-path review. Artist/gallery cache generations are bumped.
+
+The isolated database-mode reproduction also exposed a maintenance JSON binding defect: raw PostgreSQL scripts passed pre-stringified JSON into a JSONB parameter, which produced a JSON string rather than an object. Seed, repair and alignment now use the driver’s explicit `tx.json` parameter wrapper for data, snapshots and audit payloads. This fixes the typed JSONB write path instead of weakening the object constraint.
+
+A separate `/opengraph-image` log showed failed dynamic font download for the star glyph. The existing icon path now renders as inline SVG, avoiding external glyph fetching. This change preserves the established star identity.
+
+A regression test covers unsupported string/object/null legacy paths, preserved editorial values, valid current local and static-import media, unchanged stored input and failure without an approved fallback. The updated candidate requires deployment by the owner; this review has not deployed or edited production data. The handover gates in the original review below still apply. Baseline for this correction is deployed 2.10.0; earlier 2.9.4 audit details remain historical.
+
+Verification for 2.10.1: eight unit tests, types, lint/static/runtime/release checks and production build passed. SQL subset: six passed, three skipped; the CLI seed/repair/alignment test now passes. Database-mode HTTP regression using legacy media values passed homepage, artist, sitemap and editorial-text preservation. Social preview returned a valid PNG without the dynamic-glyph font error. Chromium/WebKit and the actual production database remain unverified. This package is not yet deployed.
+
+---
+
 # Shams frontend/backend handover review — candidate 2.10.0
 
 Review date: 10 October 2026. **The revised code is buildable and prepared for owner review; final production handover is conditional on the explicit gates below.** No commit, push, deployment, production migration, login attempt or editorial write was made by this review.

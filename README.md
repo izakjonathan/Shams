@@ -1,5 +1,5 @@
-# Shams for Humanity — 2.10.0
-A Next.js festival website with a single-administrator PostgreSQL content studio. This handover candidate extends the deployed 2.9.4 code, preserves its visual system and relocates implementation into feature domains.
+# Shams for Humanity — 2.10.1
+A Next.js festival website with a single-administrator PostgreSQL content studio. This handover candidate corrects the deployed 2.10.0 media-validation regression and extends the original 2.9.4 code, preserves its visual system and relocates implementation into feature domains.
 
 **Start with [APPLY_CHANGES.md](APPLY_CHANGES.md) when applying the ZIP. Remove the old root `app/` directory; Next.js otherwise ignores `src/app`.**
 
