@@ -1,4 +1,6 @@
 import "server-only";
+import { findAdminAccount } from "./accounts";
+import { verifyPassword } from "./passwords";
 import { cookies, draftMode } from "next/headers";
 import { redirect } from "next/navigation";
 import { adminConfigured, createSessionToken, readSessionIdentity, safeEqual, SESSION_MAX_AGE } from "./session";
@@ -8,14 +10,29 @@ function config() {
   return { email: process.env.ADMIN_EMAIL?.trim().toLowerCase() ?? "", password: process.env.ADMIN_PASSWORD ?? "", secret: process.env.ADMIN_SESSION_SECRET ?? "" };
 }
 export function isAdminConfigured() { return adminConfigured(config()); }
-export function verifyCredentials(email: string, password: string) {
+export async function verifyCredentials(email: string, password: string) {
   const value = config();
   const emailMatches = safeEqual(email.trim().toLowerCase(), value.email);
   const passwordMatches = safeEqual(password, value.password);
-  return adminConfigured(value) && emailMatches && passwordMatches;
+  if (!adminConfigured(value)) return false;
+  if (emailMatches) return passwordMatches;
+  const account = await findAdminAccount(email.trim().toLowerCase());
+  const verified = await verifyPassword(password, account?.passwordHash);
+  return Boolean(account?.enabled && verified);
 }
-export async function createAdminSession(email: string) {
-  const token = createSessionToken(email, config());
+export async function createAdminSession(email: string, password: string) {
+  const value = config();
+  const identity = email.trim().toLowerCase();
+  let token: string;
+  if (safeEqual(identity, value.email)) {
+    if (!safeEqual(password, value.password)) throw new Error("Credentials changed during sign-in.");
+    token = createSessionToken(identity, value);
+  }
+  else {
+    const account = await findAdminAccount(identity);
+    if (!account?.enabled || !await verifyPassword(password, account.passwordHash)) throw new Error("Credentials changed during sign-in.");
+    token = `db.${createSessionToken(identity, { email: identity, password: `${account.passwordHash}:${account.sessionVersion}`, secret: value.secret })}`;
+  }
   (await cookies()).set(COOKIE_NAME, token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: SESSION_MAX_AGE });
 }
 export async function clearAdminSession() {
@@ -23,10 +40,27 @@ export async function clearAdminSession() {
   (await draftMode()).disable();
 }
 export async function getAdminIdentity() {
-  return readSessionIdentity((await cookies()).get(COOKIE_NAME)?.value, config());
+  const token = (await cookies()).get(COOKIE_NAME)?.value;
+  const value = config();
+  if (!token?.startsWith("db.")) return readSessionIdentity(token, value);
+  if (!adminConfigured(value) || token.length > 2048) return null;
+  try {
+    const payload = JSON.parse(Buffer.from(token.slice(3).split(".")[0], "base64url").toString("utf8")) as { email?: unknown };
+    if (typeof payload.email !== "string" || payload.email.length > 254 || payload.email === value.email) return null;
+    const account = await findAdminAccount(payload.email);
+    if (!account?.enabled) return null;
+    return readSessionIdentity(token.slice(3), { email: account.email, password: `${account.passwordHash}:${account.sessionVersion}`, secret: value.secret });
+  } catch { return null; }
 }
 export async function requireAdmin(): Promise<string> {
   const identity = await getAdminIdentity();
   if (!identity) redirect("/admin/login");
+  return identity;
+}
+
+export function isOwnerIdentity(identity: string) { return safeEqual(identity, config().email); }
+export async function requireOwner() {
+  const identity = await requireAdmin();
+  if (!isOwnerIdentity(identity)) throw new Error("Only the owner can manage admin accounts.");
   return identity;
 }

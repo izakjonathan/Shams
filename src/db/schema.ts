@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { check, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { boolean, check, index, integer, jsonb, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const contentRecords = pgTable(
   "content_records",
@@ -66,4 +66,15 @@ export const adminLoginAttempts = pgTable("admin_login_attempts", {
 }, (table) => ({
   attemptsCheck: check("admin_login_attempts_attempts_check", sql`${table.attempts} BETWEEN 1 AND 11`),
   windowIndex: index("admin_login_attempts_window_idx").on(table.windowStart),
+}));
+
+export const adminAccounts = pgTable("admin_accounts", {
+  email: text("email").primaryKey(),
+  passwordHash: text("password_hash").notNull(),
+  enabled: boolean("enabled").notNull().default(true),
+  sessionVersion: integer("session_version").notNull().default(1),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, table => ({
+  emailCheck: check("admin_accounts_email_check", sql`${table.email} = lower(${table.email}) AND length(${table.email}) <= 254`),
+  versionCheck: check("admin_accounts_session_version_check", sql`${table.sessionVersion} > 0`),
 }));

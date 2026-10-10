@@ -24,7 +24,7 @@ before(async () => {
 after(async () => { await client.end({ timeout: 5 }); });
 test("all migrations apply once, including constraints and throttle storage", async () => {
   const ledger = await client`SELECT name FROM shams_migrations ORDER BY name`;
-  assert.equal(ledger.length, 3);
+  assert.equal(ledger.length, 4);
   assert.equal((await client`SELECT count(*)::int count FROM pg_constraint WHERE conrelid='content_records'::regclass AND contype='c'`)[0].count, 3);
 });
 test("save records exact recovery snapshots and preserves first publication timestamp", async () => {

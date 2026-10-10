@@ -6,7 +6,7 @@ import { createDatabaseClient, safeDatabaseLabel } from "./db-common.mjs";
 const sql = createDatabaseClient();
 const errors = [];
 const migrationsDir = resolve(process.cwd(), "src/db/migrations");
-const requiredTables = ["content_records", "audit_logs", "content_revisions", "shams_migrations", "admin_login_attempts"];
+const requiredTables = ["content_records", "audit_logs", "content_revisions", "shams_migrations", "admin_login_attempts", "admin_accounts"];
 const requiredIndexes = [
   "content_records_public_idx",
   "admin_login_attempts_window_idx",
@@ -22,6 +22,7 @@ const requiredColumns = {
   audit_logs: ["id", "actor", "action", "record_type", "record_id", "before", "after", "created_at"],
   content_revisions: ["id", "record_type", "record_id", "actor", "reason", "snapshot", "created_at"],
   admin_login_attempts: ["key", "attempts", "window_start"],
+  admin_accounts: ["email", "password_hash", "enabled", "session_version", "created_at"],
   shams_migrations: ["name", "checksum", "applied_at"],
 };
 
@@ -46,7 +47,7 @@ try {
     SELECT table_name, column_name
     FROM information_schema.columns
     WHERE table_schema = 'public'
-      AND table_name IN ('content_records', 'audit_logs', 'content_revisions', 'shams_migrations', 'admin_login_attempts')
+      AND table_name IN ('content_records', 'audit_logs', 'content_revisions', 'shams_migrations', 'admin_login_attempts', 'admin_accounts')
   `;
   const columnsByTable = new Map();
   for (const row of columns) {

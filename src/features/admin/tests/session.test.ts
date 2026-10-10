@@ -36,3 +36,28 @@ test("login distinguishes incorrect credentials, genuine limits and unavailable 
   assert.equal(safeDatabaseErrorCode({ cause: { code: "42P01", message: "private SQL" } }), "42P01");
   assert.equal(safeDatabaseErrorCode({ code: "private connection string" }), undefined);
 });
+
+
+import { hashPassword, verifyPassword, normalizeAdminEmail } from "../server/passwords";
+test("admin passwords use unique salts, reject wrong passwords and validate inputs", async () => {
+  const password = "synthetic-password-for-test";
+  const first = await hashPassword(password), second = await hashPassword(password);
+  assert.notEqual(first, second);
+  assert.ok(!first.includes(password));
+  assert.equal(await verifyPassword(password, first), true);
+  assert.equal(await verifyPassword("wrong", first), false);
+  assert.equal(await verifyPassword(password, undefined), false);
+  assert.equal(await verifyPassword(password, "malformed"), false);
+  assert.equal(normalizeAdminEmail("  Person@Example.test "), "person@example.test");
+  assert.throws(() => normalizeAdminEmail("bad"));
+  await assert.rejects(hashPassword("too-short"));
+  await assert.rejects(hashPassword("x".repeat(257)));
+});
+test("database-account session binding invalidates on password or version change", () => {
+  const account = { email: "editor@example.test", password: "hash:1", secret: config.secret };
+  const token = createSessionToken(account.email, account, now);
+  assert.equal(readSessionIdentity(token, account, now), account.email);
+  assert.equal(readSessionIdentity(token, { ...account, password: "hash:2" }, now), null);
+  assert.equal(readSessionIdentity(token, { ...account, password: "new-hash:1" }, now), null);
+  assert.equal(readSessionIdentity(token, config, now), null);
+});

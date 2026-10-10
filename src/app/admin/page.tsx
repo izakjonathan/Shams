@@ -1,12 +1,13 @@
 import { randomUUID } from "node:crypto";
-import { requireAdmin } from "../../features/admin/server/auth";
+import { AdminAccounts } from "../../features/admin/components/AdminAccounts";
+import { requireAdmin, isOwnerIdentity } from "../../features/admin/server/auth";
 import { listAdminRecords, localAdminRecords } from "../../features/admin/server/content-admin";
 import { isContentWritable } from "../../features/admin/server/write-policy";
 import { SimpleCollection } from "../../features/admin/components/SimpleEditor";
 import type { AdminContentType } from "../../features/admin/types";
 const sections = [["artist", "Artists"], ["gallery", "Gallery"], ["programme", "Programme"], ["ticket", "Tickets"], ["faq", "FAQs"], ["page", "Contact & information"]] as const;
-export default async function AdminOverview({ searchParams }: { searchParams: Promise<{ saved?: string; section?: string }> }) {
-  await requireAdmin();
+export default async function AdminOverview({ searchParams }: { searchParams: Promise<{ saved?: string; section?: string; adminSaved?: string }> }) {
+  const identity = await requireAdmin();
   const params = await searchParams;
   const collections = await Promise.all(sections.map(async ([type, label]) => ({ type, label, ...await listAdminRecords(type) })));
   const writable = isContentWritable();
@@ -21,5 +22,6 @@ export default async function AdminOverview({ searchParams }: { searchParams: Pr
       const template = baseline ? { ...baseline, id, slug: type === "artist" ? "" : null, status: "draft" as const, sortOrder: (records.at(-1)?.sortOrder ?? 0) + 1, updatedAt: null, data: { ...baseline.data, id, status: "draft", ...(type === "artist" ? { name: "", slug: "" } : type === "faq" ? { question: "", answer: "" } : {}) } } : undefined;
       return <SimpleCollection key={type} type={type} label={label} records={type === "page" ? records.filter(record => record.id !== "page-home") : records} writable={writable} template={template} selected={type === "page" && params.section === "page:page-home" ? undefined : params.section} />;
     })}
+    {isOwnerIdentity(identity) && <AdminAccounts writable={writable} saved={Boolean(params.adminSaved)} />}
   </div>;
 }
