@@ -19,9 +19,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: Install database runtime dependencies
-        run: npm install --no-save --no-audit --no-fund postgres@3.4.7
+        run: npm ci --no-audit --no-fund
       - name: Verify database
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.10.0 — Handover candidate
+
+- Relocates baseline code into src/app and feature domains; adds required handover documentation.
+- Adds reproducible lockfile, Node 24, patched Next/Drizzle, lint/unit/SQL quality gates.
+- Hardens sessions, shared login throttle and default read-only previews.
+- Makes save/restore revisions and audit writes atomic with locked version checks; missing-only studio seed preserves edits.
+- Adds migration 0003, migration serialization, maintenance row locks and refreshed database verification.
+- Uses published data for sitemap/event structured data, checks draft-preview identity, removes archived-page fallback and immediately expires publication cache tags.
+- Adds bounded public cache revalidation, accurate studio database counts, safe action feedback, URL/media validation and gallery pause controls.
+- Retains existing visual design and public routes. Runtime audit clean; development advisories and real PostgreSQL/browser/production gates remain documented.
+
+
 
 ## v2.9.4 — Canonical Database Shape Completion
 
@@ -119,7 +131,7 @@
 ## 2.4.1 — Server/client content-boundary fix
 
 - Removed the server-only public repository from the shared content barrel imported by Client Components.
-- Added an explicit `app/content/server.ts` entry for database-backed public content.
+- Added an explicit `src/features/content/server.ts` entry for database-backed public content.
 - Prevented `next/headers`, Drizzle, and the Node PostgreSQL driver from entering client and Edge bundles.
 - Consolidated cache tags and added regression audit guards.
 - Preserved the v2.4.0 public-content source switch, Draft Mode preview, and targeted revalidation.

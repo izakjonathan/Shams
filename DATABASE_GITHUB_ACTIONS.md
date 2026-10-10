@@ -1,3 +1,5 @@
+> Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
+
 # Database administration from iPad — GitHub Actions
 
 Shams v2.9.2 uses the same operating model as Baros:
@@ -20,7 +22,7 @@ From the GitHub mobile/web interface open **Actions** and run the workflows in t
 
 1. **Database — Migrate**
    - Creates the Shams migration registry if needed.
-   - Applies every numbered SQL file under `app/db/migrations/` in order.
+   - Applies every numbered SQL file under `src/db/migrations/` in order.
    - Refuses to continue if an already-applied migration file was edited later.
    - Automatically runs schema verification afterward.
 

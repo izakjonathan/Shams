@@ -24,7 +24,7 @@ function filesIn(directory) {
   return result;
 }
 
-for (const path of filesIn(resolve(root, "app"))) {
+for (const path of filesIn(resolve(root, "src"))) {
   const source = readFileSync(path, "utf8");
   const label = relative(root, path);
   if (/^["']use client["'];/m.test(source)) {
@@ -39,14 +39,14 @@ for (const path of filesIn(resolve(root, "app"))) {
   }
 }
 
-const sharedIndex = readFileSync(resolve(root, "app/content/index.ts"), "utf8");
+const sharedIndex = readFileSync(resolve(root, "src/features/content/index.ts"), "utf8");
 for (const forbidden of ["public-repository", "database-public-records", "./server", "../db/"]) {
   if (sharedIndex.includes(forbidden)) {
-    errors.push(`app/content/index.ts exposes server-only content through the shared barrel: ${forbidden}`);
+    errors.push(`src/features/content/index.ts exposes server-only content through the shared barrel: ${forbidden}`);
   }
 }
 
-const metadataFiles = ["app/manifest.ts", "app/sitemap.ts", "app/opengraph-image.tsx", "app/layout.tsx"];
+const metadataFiles = ["src/app/manifest.ts", "src/app/opengraph-image.tsx", "src/app/layout.tsx"];
 for (const file of metadataFiles) {
   const source = readFileSync(resolve(root, file), "utf8");
   if (/content\/server|publicContentRepository|database-public-records|db\/client/.test(source)) {
@@ -55,15 +55,15 @@ for (const file of metadataFiles) {
 }
 
 const nodePages = [
-  "app/page.tsx",
-  "app/privacy/page.tsx",
-  "app/terms/page.tsx",
-  "app/accessibility/page.tsx",
-  "app/contact/page.tsx",
-  "app/artists/[slug]/page.tsx",
-  "app/admin/layout.tsx",
-  "app/api/preview/route.ts",
-  "app/api/preview/exit/route.ts",
+  "src/app/page.tsx",
+  "src/app/privacy/page.tsx",
+  "src/app/terms/page.tsx",
+  "src/app/accessibility/page.tsx",
+  "src/app/contact/page.tsx",
+  "src/app/artists/[slug]/page.tsx",
+  "src/app/admin/layout.tsx",
+  "src/app/api/preview/route.ts",
+  "src/app/api/preview/exit/route.ts",
 ];
 for (const file of nodePages) {
   const source = readFileSync(resolve(root, file), "utf8");

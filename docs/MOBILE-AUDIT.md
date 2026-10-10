@@ -1,3 +1,5 @@
+> Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
+
 # Mobile audit — v1.0.1
 
 The full site shell and every component category were reviewed at 320, 360, 390, 430, 768 and 1024 CSS pixels.

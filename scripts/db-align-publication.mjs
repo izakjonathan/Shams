@@ -24,11 +24,13 @@ try {
   console.log(`Publication alignment target: ${safeDatabaseLabel()}`);
   if (!publishIds.length) throw new Error("The canonical seed contains no records marked published.");
 
-  const rows = await sql`
+  await sql.begin(async (tx) => {
+    await tx.unsafe("SET LOCAL lock_timeout = '15s'; SET LOCAL statement_timeout = '120s'");
+  const rows = await tx`
     SELECT id, type, slug, status, sort_order, data, updated_at, published_at
     FROM content_records
     WHERE id = ANY(${publishIds})
-    ORDER BY type, sort_order, id
+    ORDER BY type, sort_order, id FOR UPDATE
   `;
 
   const candidates = rows.filter((row) => row.status === "placeholder");
@@ -42,10 +44,9 @@ try {
 
   if (!candidates.length) {
     console.log("No placeholder records require publication alignment.");
-    process.exit(0);
+    return;
   }
 
-  await sql.begin(async (tx) => {
     for (const row of candidates) {
       const before = snapshot(row);
       const nextData = { ...row.data, status: "published" };
@@ -77,9 +78,9 @@ try {
         )
       `;
     }
-  });
 
   console.log(`Publication alignment complete. Published ${candidates.length} existing placeholder record(s) without replacing their content.`);
+  });
 } finally {
   await sql.end({ timeout: 5 });
 }

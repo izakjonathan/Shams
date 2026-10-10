@@ -5,9 +5,11 @@ import { createDatabaseClient, safeDatabaseLabel } from "./db-common.mjs";
 
 const sql = createDatabaseClient();
 const errors = [];
-const migrationsDir = resolve(process.cwd(), "app/db/migrations");
-const requiredTables = ["content_records", "audit_logs", "content_revisions", "shams_migrations"];
+const migrationsDir = resolve(process.cwd(), "src/db/migrations");
+const requiredTables = ["content_records", "audit_logs", "content_revisions", "shams_migrations", "admin_login_attempts"];
 const requiredIndexes = [
+  "content_records_public_idx",
+  "admin_login_attempts_window_idx",
   "content_records_type_idx",
   "content_records_status_idx",
   "content_records_type_slug_unique",
@@ -19,6 +21,7 @@ const requiredColumns = {
   content_records: ["id", "type", "slug", "status", "sort_order", "data", "created_at", "updated_at", "published_at"],
   audit_logs: ["id", "actor", "action", "record_type", "record_id", "before", "after", "created_at"],
   content_revisions: ["id", "record_type", "record_id", "actor", "reason", "snapshot", "created_at"],
+  admin_login_attempts: ["key", "attempts", "window_start"],
   shams_migrations: ["name", "checksum", "applied_at"],
 };
 
@@ -43,7 +46,7 @@ try {
     SELECT table_name, column_name
     FROM information_schema.columns
     WHERE table_schema = 'public'
-      AND table_name IN ('content_records', 'audit_logs', 'content_revisions', 'shams_migrations')
+      AND table_name IN ('content_records', 'audit_logs', 'content_revisions', 'shams_migrations', 'admin_login_attempts')
   `;
   const columnsByTable = new Map();
   for (const row of columns) {
@@ -83,6 +86,8 @@ try {
     `;
     console.log(`Content records: ${counts.total} total (${counts.published} published, ${counts.draft} draft, ${counts.placeholder} placeholder, ${counts.archived} archived).`);
 
+    const invalid = await sql`SELECT id FROM content_records WHERE type NOT IN ('artist','gallery','programme','ticket','faq','page') OR status NOT IN ('draft','placeholder','published','archived') OR jsonb_typeof(data) <> 'object'`;
+    for (const row of invalid) errors.push(`Invalid legacy record: ${row.id}`);
     const metadataMismatches = await sql`
       SELECT id, type, slug, status, sort_order, data
       FROM content_records

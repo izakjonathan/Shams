@@ -35,41 +35,41 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "2.9.4") {
-  errors.push(`package.json version must be 2.9.4 for this release (found ${pkg.version}).`);
+if (pkg.version !== "2.10.0") {
+  errors.push(`package.json version must be 2.10.0 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [
-  "app/error.tsx",
-  "app/global-error.tsx",
+  "src/app/error.tsx",
+  "src/app/global-error.tsx",
   "RELEASE_CHECKLIST.md",
   ".env.example",
-  "app/privacy/page.tsx",
-  "app/terms/page.tsx",
-  "app/accessibility/page.tsx",
-  "app/contact/page.tsx",
-  "app/components/ArtistNavigation.tsx",
-  "app/components/SectionHeader.tsx",
-  "app/components/ProgrammeExplorer.tsx",
-  "app/components/TicketSection.tsx",
-  "app/components/EventGallery.tsx",
-  "app/admin/gallery/page.tsx",
-  "app/content/admin-validation.ts",
-  "app/content/cache-tags.ts",
-  "app/content/data/gallery.ts",
-  "app/styles/gallery.css",
-  "app/styles/programme-tickets.css",
-  "app/styles/components.css",
-  "app/styles/route-curtain.css",
-  "app/styles/footer.css",
-  "app/lib/viewport.ts",
-  "app/lib/motion.ts",
-  "app/components/RouteFade.tsx",
-  "app/components/FadeLink.tsx",
+  "src/app/privacy/page.tsx",
+  "src/app/terms/page.tsx",
+  "src/app/accessibility/page.tsx",
+  "src/app/contact/page.tsx",
+  "src/features/site/components/ArtistNavigation.tsx",
+  "src/components/SectionHeader.tsx",
+  "src/features/site/components/ProgrammeExplorer.tsx",
+  "src/features/site/components/TicketSection.tsx",
+  "src/features/site/components/EventGallery.tsx",
+  "src/app/admin/gallery/page.tsx",
+  "src/features/content/admin-validation.ts",
+  "src/features/content/cache-tags.ts",
+  "src/features/content/data/gallery.ts",
+  "src/styles/gallery.css",
+  "src/styles/programme-tickets.css",
+  "src/styles/components.css",
+  "src/styles/route-curtain.css",
+  "src/styles/footer.css",
+  "src/lib/viewport.ts",
+  "src/lib/motion.ts",
+  "src/features/site/components/RouteFade.tsx",
+  "src/components/FadeLink.tsx",
   "scripts/audit-static.mjs",
   "scripts/generate-theme.mjs",
-  "app/theme.json",
-  "app/theme.generated.css",
+  "src/styles/theme.json",
+  "src/styles/theme.generated.css",
   "playwright.config.ts",
   "tests/e2e/splash.spec.ts",
   "tests/e2e/public-navigation.spec.ts",
@@ -103,12 +103,12 @@ if (indexing && siteUrl?.hostname.endsWith(".vercel.app")) {
 
 if (indexing) {
   const launchFiles = [
-    "app/content/admin-validation.ts",
+    "src/features/content/admin-validation.ts",
   "CHANGELOG.md",
   "QA_MATRIX.md",
-  "app/content/data/contact.ts",
-    "app/content/data/information-pages.ts",
-    "app/content/data/event.ts",
+  "src/features/content/data/contact.ts",
+    "src/features/content/data/information-pages.ts",
+    "src/features/content/data/event.ts",
   ];
   const draftPattern = /(?:@[^\s"']+\.example\b|to be confirmed|address to be confirmed|replace this address before publication)/i;
   for (const path of launchFiles) {

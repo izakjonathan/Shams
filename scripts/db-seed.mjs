@@ -25,7 +25,19 @@ try {
 
   console.log(`${allowReseed ? "Refreshing" : "Seeding"} ${seed.records.length} canonical content records from baseline ${seed.version}.`);
   await sql.begin(async (tx) => {
+    await tx.unsafe("SET LOCAL lock_timeout = '15s'; SET LOCAL statement_timeout = '120s'");
+    await tx`LOCK TABLE content_records IN SHARE ROW EXCLUSIVE MODE`;
+    const [lockedCount] = await tx`SELECT count(*)::int AS count FROM content_records`;
+    if (lockedCount.count > 0 && !allowReseed) throw new Error("Initial seed aborted: records were added concurrently.");
     for (const record of seed.records) {
+      if (allowReseed) {
+        const [before] = await tx`SELECT * FROM content_records WHERE id = ${record.id} FOR UPDATE`;
+        if (before) {
+          const snapshot = { id: before.id, type: before.type, slug: before.slug, status: before.status, sortOrder: before.sort_order, data: before.data, updatedAt: new Date(before.updated_at).toISOString() };
+          await tx`INSERT INTO content_revisions (id, record_type, record_id, actor, reason, snapshot) VALUES (${randomUUID()}, ${before.type}, ${before.id}, ${actor}, 'before:seed:refresh', ${JSON.stringify(snapshot)}::jsonb)`;
+          await tx`INSERT INTO audit_logs (id, actor, action, record_type, record_id, before, after) VALUES (${randomUUID()}, ${actor}, 'seed:refresh:record', ${before.type}, ${before.id}, ${JSON.stringify(snapshot)}::jsonb, ${JSON.stringify(record)}::jsonb)`;
+        }
+      }
       const publishedAt = record.status === "published" ? new Date() : null;
       await tx`
         INSERT INTO content_records (id, type, slug, status, sort_order, data, updated_at, published_at)

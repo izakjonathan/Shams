@@ -1,3 +1,5 @@
+> Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
+
 # v2.4.2 production verification guide
 
 ## Required local/Vercel gates
@@ -47,10 +49,10 @@ Expected: database read failures are logged and canonical local content is serve
 
 The Vercel log must not show a Client or Edge import trace containing:
 
-- `app/content/server.ts`
-- `app/content/public-repository.ts`
-- `app/content/database-public-records.ts`
-- `app/db/client.ts`
+- `src/features/content/server.ts`
+- `src/features/content/public-repository.ts`
+- `src/features/content/database-public-records.ts`
+- `src/db/client.ts`
 - `postgres`
 - `next/headers`
 

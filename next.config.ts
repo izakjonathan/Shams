@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { safeExternalUrl } from "./app/lib/site";
+import { safeExternalUrl } from "./src/lib/site";
 
 // The newsletter form posts directly to an external provider, so its origin
 // (only) needs a form-action allowance. Ticket links are plain <a> tags, not

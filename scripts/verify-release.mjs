@@ -6,6 +6,8 @@ const steps = [
   ["release validation", "npm", ["run", "release:validate"]],
   ["static architecture audit", "npm", ["run", "audit:static"]],
   ["runtime-boundary audit", "npm", ["run", "audit:boundaries"]],
+  ["ESLint", "npm", ["run", "lint"]],
+  ["unit tests", "npm", ["run", "test"]],
   ["TypeScript", "npm", ["run", "typecheck"]],
   ["production build", "npm", ["run", "build"]],
 ];

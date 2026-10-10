@@ -1,6 +1,6 @@
 {
   "name": "shams-for-humanity",
-  "version": "2.9.4",
+  "version": "2.10.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -26,25 +26,34 @@
     "db:verify": "node scripts/db-verify.mjs",
     "db:seed": "node scripts/db-seed.mjs",
     "db:align-publication": "node scripts/db-align-publication.mjs",
-    "db:repair-records": "node scripts/db-repair-records.mjs"
+    "db:repair-records": "node scripts/db-repair-records.mjs",
+    "lint": "eslint .",
+    "test": "node --import tsx --test src/features/admin/tests/session.test.ts src/features/content/tests/validation.test.ts",
+    "test:db": "node --conditions=react-server --import tsx --test src/features/admin/tests/database.test.ts"
   },
   "dependencies": {
-    "next": "16.2.10",
+    "drizzle-orm": "0.45.4",
+    "next": "16.4.0",
+    "postgres": "3.4.7",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "drizzle-orm": "0.44.5",
-    "postgres": "3.4.7"
+    "server-only": "0.0.1"
   },
   "devDependencies": {
-    "@types/node": "22.0.0",
+    "@electric-sql/pglite": "0.5.8",
+    "@electric-sql/pglite-socket": "0.2.11",
+    "@playwright/test": "1.62.0",
+    "@types/node": "24.19.2",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "typescript": "5.9.3",
-    "drizzle-kit": "0.31.4",
-    "@playwright/test": "1.62.0"
+    "drizzle-kit": "0.31.11",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.0",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
   },
   "packageManager": "npm@10.9.4",
   "engines": {
-    "node": "22.x"
+    "node": "24.x"
   }
 }

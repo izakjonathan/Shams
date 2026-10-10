@@ -1,3 +1,5 @@
+> Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
+
 # Component standard
 
 Every new Studio UI component should include:

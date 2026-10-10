@@ -5,20 +5,40 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: test-only-password
+          POSTGRES_DB: shams_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - name: Require reproducible install
         run: test -f package-lock.json || (echo "package-lock.json is required before CI can pass" && exit 1)
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
+      - name: PostgreSQL regression tests
+        run: npm run test:db
+        env:
+          DATABASE_TEST_URL: postgresql://postgres:test-only-password@127.0.0.1:5432/shams_test
       - run: npm run verify
       - name: Upload Playwright report
         if: always()

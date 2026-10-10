@@ -13,7 +13,7 @@ function walk(directory) {
   }
 }
 
-walk(resolve(root, "app"));
+walk(resolve(root, "src"));
 const joined = textFiles.map((path) => readFileSync(path, "utf8")).join("\n");
 
 for (const obsolete of [
@@ -25,12 +25,12 @@ for (const obsolete of [
   if (joined.includes(obsolete)) errors.push(`Obsolete system remains referenced: ${obsolete}`);
 }
 
-const globals = readFileSync(resolve(root, "app/globals.css"), "utf8");
+const globals = readFileSync(resolve(root, "src/styles/globals.css"), "utf8");
 if (globals.indexOf("responsive.css") < globals.indexOf("artists.css")) {
   errors.push("responsive.css must be imported after page/component styles.");
 }
 
-const routeFade = readFileSync(resolve(root, "app/components/RouteFade.tsx"), "utf8");
+const routeFade = readFileSync(resolve(root, "src/features/site/components/RouteFade.tsx"), "utf8");
 for (const required of [
   "WATCHDOG_MS", "scrollRestoration", "aria-busy", "router.prefetch",
   "routeTransitionVeil", "onTransitionEnd",
@@ -42,7 +42,7 @@ if (!routeFade.includes('data-live-route')) errors.push("RouteFade must explicit
 if (!routeFade.includes('router.push(pending.href, { scroll: false })')) errors.push("Route changes must disable automatic Next.js scrolling.");
 if (!routeFade.includes('event.propertyName !== "transform"')) errors.push("Curtain lifecycle must react only to transform transition completion.");
 
-const transitions = readFileSync(resolve(root, "app/styles/route-curtain.css"), "utf8");
+const transitions = readFileSync(resolve(root, "src/styles/route-curtain.css"), "utf8");
 for (const required of [
   "routeTransitionVeil", "data-route-phase", "route-curtain-open-duration",
   "route-curtain-close-duration", "route-curtain-switch-duration",
@@ -58,17 +58,17 @@ if (/\[data-live-route\][^{]*\{[^}]*transform\s*:/s.test(transitions)) {
 }
 if (!transitions.includes("z-index: 45")) errors.push("Curtain must remain below the fixed site header.");
 
-const fadeLink = readFileSync(resolve(root, "app/components/FadeLink.tsx"), "utf8");
-const splash = readFileSync(resolve(root, "app/components/SplashScreen.tsx"), "utf8");
+const fadeLink = readFileSync(resolve(root, "src/components/FadeLink.tsx"), "utf8");
+const splash = readFileSync(resolve(root, "src/features/site/components/SplashScreen.tsx"), "utf8");
 if (fadeLink.includes("morphSource")) errors.push("FadeLink still passes obsolete morph source data.");
 
-const base = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
+const base = readFileSync(resolve(root, "src/styles/base.css"), "utf8");
 if (!/h1,\s*h2,\s*h3,\s*h4,\s*h5,\s*h6\s*\{[^}]*font-family:\s*var\(--font-display\)/s.test(base)) {
   errors.push("Semantic headings must use the global Agilera display-font control.");
 }
 
 
-const typography = readFileSync(resolve(root, "app/styles/typography.css"), "utf8");
+const typography = readFileSync(resolve(root, "src/styles/typography.css"), "utf8");
 for (const required of [
   "--leading-display-hero", "--leading-display-section",
   ".informationBody h2", ".artistHeroCopy h1", ".sectionHeading h2",
@@ -76,12 +76,12 @@ for (const required of [
 ]) {
   if (!typography.includes(required)) errors.push(`Typography system is missing: ${required}`);
 }
-if (!globals.includes('styles/typography.css')) errors.push("Global typography stylesheet must be imported.");
+if (!globals.includes('./typography.css')) errors.push("Global typography stylesheet must be imported.");
 if (/\.informationBody h2\s*\{[^}]*line-height:\s*(?:normal|1(?:\.2)?)/s.test(typography)) {
   errors.push("Information headings must use compact Agilera line-height controls.");
 }
 
-const information = readFileSync(resolve(root, "app/styles/information.css"), "utf8");
+const information = readFileSync(resolve(root, "src/styles/information.css"), "utf8");
 if (!information.includes(".informationPage") || !information.includes("background: var(--color-accent)")) {
   errors.push("Information routes must use the flat yellow page background.");
 }
@@ -89,11 +89,11 @@ if (/informationHero[^}]*gradient|contactHero[^}]*gradient|organizerBlock[^}]*gr
   errors.push("Information and contact routes must not restore gradients.");
 }
 
-const closeButton = readFileSync(resolve(root, "app/components/PageCloseButton.tsx"), "utf8");
+const closeButton = readFileSync(resolve(root, "src/components/PageCloseButton.tsx"), "utf8");
 if (!closeButton.includes('href = "/#site-footer"') || !closeButton.includes("CrossIcon")) {
   errors.push("Information-page close control must return to the footer and use the custom cross icon.");
 }
-const closeStyles = readFileSync(resolve(root, "app/styles/close-control.css"), "utf8");
+const closeStyles = readFileSync(resolve(root, "src/styles/close-control.css"), "utf8");
 if (!closeStyles.includes(".pageCloseButtonVisual") || !closeStyles.includes("border: 1px solid var(--color-ink)")) {
   errors.push("Close control visuals must live on an absolute child with an unfilled black circular outline.");
 }
@@ -101,10 +101,10 @@ if (!/\.pageCloseButton\s*\{[^}]*position:\s*fixed[^}]*border:\s*0[^}]*backgroun
   errors.push("The fixed close-control wrapper must remain visually transparent for Safari tint isolation.");
 }
 
-const footer = readFileSync(resolve(root, "app/components/SiteFooter.tsx"), "utf8");
+const footer = readFileSync(resolve(root, "src/features/site/components/SiteFooter.tsx"), "utf8");
 if (!footer.includes('id="site-footer"')) errors.push("Footer must expose the site-footer destination anchor.");
-const homepage = readFileSync(resolve(root, "app/styles/homepage.css"), "utf8");
-const footerStyles = readFileSync(resolve(root, "app/styles/footer.css"), "utf8");
+const homepage = readFileSync(resolve(root, "src/styles/homepage.css"), "utf8");
+const footerStyles = readFileSync(resolve(root, "src/styles/footer.css"), "utf8");
 if (!/\.siteFooter\s*\{[^}]*min-height:\s*100svh/s.test(footerStyles)) {
   errors.push("Footer must be at least one small viewport high.");
 }
@@ -116,10 +116,10 @@ if (!routeFade.includes('hash === "#site-footer"') || !routeFade.includes("scrol
 if (/\.siteFooter\s*\{/.test(homepage) || /\.siteFooter\s*\{/.test(information)) {
   errors.push("Global footer geometry must live only in footer.css.");
 }
-const programmeComponent = readFileSync(resolve(root, "app/components/ProgrammeExplorer.tsx"), "utf8");
-const programmeTickets = readFileSync(resolve(root, "app/styles/programme-tickets.css"), "utf8");
-const programmeContent = readFileSync(resolve(root, "app/content/data/programme.ts"), "utf8");
-const contentModels = readFileSync(resolve(root, "app/content/models.ts"), "utf8");
+const programmeComponent = readFileSync(resolve(root, "src/features/site/components/ProgrammeExplorer.tsx"), "utf8");
+const programmeTickets = readFileSync(resolve(root, "src/styles/programme-tickets.css"), "utf8");
+const programmeContent = readFileSync(resolve(root, "src/features/content/data/programme.ts"), "utf8");
+const contentModels = readFileSync(resolve(root, "src/features/content/models.ts"), "utf8");
 if (!programmeComponent.includes("programmeEntryTime") || programmeComponent.includes("programmeEntryNumber")) {
   errors.push("Programme entries must render editorial times instead of ordinal numbers.");
 }
@@ -127,7 +127,7 @@ for (const required of ["readonly id: string", "readonly sortOrder: number", "da
   if (!(programmeComponent + programmeContent + contentModels).includes(required)) errors.push(`Programme CMS preparation is missing: ${required}`);
 }
 
-const splashStyles = readFileSync(resolve(root, "app/styles/splash.css"), "utf8");
+const splashStyles = readFileSync(resolve(root, "src/styles/splash.css"), "utf8");
 if (!splash.includes("splash-humanity-artwork.png")) errors.push("Splash must use the supplied humanity artwork.");
 if (!splashStyles.includes("background-color: transparent") || !splashStyles.includes("min-height: 100svh") || !splashStyles.includes("height: 100dvh")) {
   errors.push("Splash overlay must cover the full safe viewport while its wrapper remains visually transparent.");
@@ -142,7 +142,7 @@ for (const required of [
 if (/html\.splashCanvasActive[\s\S]*background-image:\s*url\(/.test(splashStyles)) {
   errors.push("Safari splash tinting must use an explicit sampled root colour, not a root background image.");
 }
-const layout = readFileSync(resolve(root, "app/layout.tsx"), "utf8");
+const layout = readFileSync(resolve(root, "src/app/layout.tsx"), "utf8");
 if (!layout.includes("splashCanvasActive") || !layout.includes("shf-splash-seen-v2.6.0")) {
   errors.push("Root layout must activate the sampled splash canvas and use the current session key.");
 }
@@ -181,7 +181,7 @@ if (!/html\.splashCanvasActive\.splashCanvasHandoff[\s\S]*--document-canvas-colo
 if (/\.splashExiting \.siteShell\s*\{[^}]*transition-delay/s.test(splashStyles)) {
   errors.push("Splash exit must not delay revealing the destination site.");
 }
-if (/\.splashScreen\.isExiting \.splashScreenArtWrap\s*\{[^}]*filter:\s*blur/s.test(readFileSync(resolve(root, "app/styles/splash-states.css"), "utf8"))) {
+if (/\.splashScreen\.isExiting \.splashScreenArtWrap\s*\{[^}]*filter:\s*blur/s.test(readFileSync(resolve(root, "src/styles/splash-states.css"), "utf8"))) {
   errors.push("Splash exit must not blur the blue artwork over the destination.");
 }
 
@@ -201,7 +201,7 @@ if (/(?:^|[;{])\s*visibility:\s*hidden/m.test(transitions)) {
 if (!base.includes("--document-canvas-color: var(--color-paper)") || !base.includes("background-color: var(--document-canvas-color)")) {
   errors.push("html/body need an immediate server-rendered paper canvas fallback.");
 }
-const canvasTone = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
+const canvasTone = readFileSync(resolve(root, "src/features/site/components/DocumentCanvasTone.tsx"), "utf8");
 for (const required of ["visualViewportHeight", "elementFromPoint", "isAtDocumentBottom", "pendingCount >= 2", "if (!candidate) return"]) {
   if (!canvasTone.includes(required)) errors.push(`DocumentCanvasTone is missing visual-viewport stability hardening: ${required}`);
 }
@@ -217,12 +217,12 @@ if (routeFade.includes("routeTransitionActive") || routeFade.includes("routeFade
 }
 if (canvasTone.includes("dataset.canvasTone")) errors.push("DocumentCanvasTone must not write unused canvas-tone data attributes.");
 // v1.7.6 centralized theme and gradient architecture.
-const themeSource = readFileSync(resolve(root, "app/theme.json"), "utf8");
-const generatedTheme = readFileSync(resolve(root, "app/theme.generated.css"), "utf8");
-const designSystem = readFileSync(resolve(root, "app/design-system.css"), "utf8");
-const gradients = readFileSync(resolve(root, "app/styles/gradients.css"), "utf8");
-const homepageStyles = readFileSync(resolve(root, "app/styles/homepage.css"), "utf8");
-const artistStyles = readFileSync(resolve(root, "app/styles/artists.css"), "utf8");
+const themeSource = readFileSync(resolve(root, "src/styles/theme.json"), "utf8");
+const generatedTheme = readFileSync(resolve(root, "src/styles/theme.generated.css"), "utf8");
+const designSystem = readFileSync(resolve(root, "src/styles/design-system.css"), "utf8");
+const gradients = readFileSync(resolve(root, "src/styles/gradients.css"), "utf8");
+const homepageStyles = readFileSync(resolve(root, "src/styles/homepage.css"), "utf8");
+const artistStyles = readFileSync(resolve(root, "src/styles/artists.css"), "utf8");
 
 for (const required of ["paper", "ink", "accent", "white", "dark", "ticketDark"]) {
   if (!themeSource.includes(`"${required}"`)) errors.push(`Theme source is missing palette key: ${required}`);
@@ -280,7 +280,7 @@ if (!gradients.includes("--gradient-size: 1.5")) errors.push("Stable restored gr
 if (!gradients.includes("inset: -25%")) errors.push("Stable gradient washes must use direct overscan geometry.");
 if (gradients.includes("scale(var(--gradient-size))")) errors.push("Runtime gradient scale transforms must remain removed.");
 if (gradients.includes("blur(var(--hero-glow-blur")) errors.push("Hero gradient blur must remain disabled.");
-if (!readFileSync(resolve(root, "app/styles/splash-states.css"), "utf8").includes("only the final overlay dissolves")) {
+if (!readFileSync(resolve(root, "src/styles/splash-states.css"), "utf8").includes("only the final overlay dissolves")) {
   errors.push("Stable splash must use one overlay-opacity dissolve.");
 }
 for (const forbidden of [
@@ -322,14 +322,14 @@ if (!footerStyles.includes('min-height: 100dvh') || !footerStyles.includes('.sit
 
 // v2.1.0 typed content architecture
 const requiredContentFiles = [
-  "app/content/models.ts",
-  "app/content/validation.ts",
-  "app/content/repository.ts",
-  "app/content/navigation-repository.ts",
-  "app/content/data/home.ts",
-  "app/content/data/information-pages.ts",
-  "app/content/data/contact.ts",
-  "app/content/data/navigation.ts",
+  "src/features/content/models.ts",
+  "src/features/content/validation.ts",
+  "src/features/content/repository.ts",
+  "src/features/content/navigation-repository.ts",
+  "src/features/content/data/home.ts",
+  "src/features/content/data/information-pages.ts",
+  "src/features/content/data/contact.ts",
+  "src/features/content/data/navigation.ts",
 ];
 for (const file of requiredContentFiles) {
   if (!existsSync(join(root, file))) errors.push(`Missing typed content architecture file: ${file}`);
@@ -343,47 +343,42 @@ if (!appSource.includes("validateContent")) errors.push("Content repository must
 
 
 const adminRequired = [
-  "app/admin/page.tsx",
-  "app/admin/login/page.tsx",
-  "app/admin/lib/auth.ts",
-  "app/admin/lib/content-admin.ts",
-  "app/db/schema.ts",
-  "app/db/migrations/0001_content_admin.sql",
+  "src/app/admin/page.tsx",
+  "src/app/admin/login/page.tsx",
+  "src/features/admin/server/auth.ts",
+  "src/features/admin/server/content-admin.ts",
+  "src/db/schema.ts",
+  "src/db/migrations/0001_content_admin.sql",
   "drizzle.config.ts",
 ];
 for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.9.4") errors.push("package.json version must be 2.9.4.");
+if (packageJson.version !== "2.10.0") errors.push("package.json version must be 2.10.0.");
 // v2.1.8 footer canvas permanence guards
-const canvasToneV217 = readFileSync(resolve(root, "app/components/DocumentCanvasTone.tsx"), "utf8");
-const baseCssV217 = readFileSync(resolve(root, "app/styles/base.css"), "utf8");
+const canvasToneV217 = readFileSync(resolve(root, "src/features/site/components/DocumentCanvasTone.tsx"), "utf8");
+const baseCssV217 = readFileSync(resolve(root, "src/styles/base.css"), "utf8");
 if (!canvasToneV217.includes("footerTouchesVisualViewportBottom")) errors.push("Document canvas must detect footer contact with the visual viewport bottom.");
 if (!canvasToneV217.includes("footerTouchesVisualViewportBottom() || isAtDocumentBottom()")) errors.push("Footer canvas lock must not depend only on exact document-end metrics.");
 if (!baseCssV217.includes("html.documentCanvasAtFooter body::after")) errors.push("Footer canvas state must provide a non-layout black Safari underlay.");
 if (!baseCssV217.includes("body::after") || !baseCssV217.includes("display: none")) errors.push("The Safari footer underlay must be display:none outside footer state.");
-if (readFileSync(resolve(root, "app/styles/footer.css"), "utf8").includes("footerCanvasBleed")) errors.push("Footer must not regain flow-based canvas bleed that increases its height.");
+if (readFileSync(resolve(root, "src/styles/footer.css"), "utf8").includes("footerCanvasBleed")) errors.push("Footer must not regain flow-based canvas bleed that increases its height.");
 
 // v2.1.8 artist arrow size regression guard
-const responsiveCss = readFileSync(resolve(root, "app/styles/responsive.css"), "utf8");
+const responsiveCss = readFileSync(resolve(root, "src/styles/responsive.css"), "utf8");
 if (/\.artistArrow\s*\{[^}]*width:\s*44px/s.test(responsiveCss) || /\.artistArrow\s*\{[^}]*margin:\s*-5px/s.test(responsiveCss)) {
   errors.push("Homepage artist arrow buttons must not reintroduce the oversized mobile override.");
 }
 
 // v2.1.8 admin authentication type safety
-const adminAuth = readFileSync(resolve(root, "app/admin/lib/auth.ts"), "utf8");
-if (!adminAuth.includes("const encoder = new TextEncoder()") || !adminAuth.includes("timingSafeEqual(left, right)")) {
-  errors.push("Admin authentication must use TextEncoder-backed Uint8Array values for timingSafeEqual.");
-}
-if (adminAuth.includes("timingSafeEqual(Buffer.from")) {
-  errors.push("Do not pass generic Buffer values directly to timingSafeEqual; this fails Node 22 type checking.");
-}
+const sessionAuth = readFileSync(resolve(root, "src/features/admin/server/session.ts"), "utf8");
+if (!sessionAuth.includes("timingSafeEqual") || !sessionAuth.includes('createHash("sha256")') || !sessionAuth.includes("parts.length !== 2")) errors.push("Admin sessions must use fixed-length comparisons and reject malformed tokens.");
 
 if (!packageJson.dependencies?.["drizzle-orm"] || !packageJson.dependencies?.postgres) errors.push("Database dependencies are missing.");
 
 // v2.1.8 motion/runtime cleanup
-const motionHelpers = readFileSync(resolve(root, "app/lib/motion.ts"), "utf8");
+const motionHelpers = readFileSync(resolve(root, "src/lib/motion.ts"), "utf8");
 for (const required of ["prefersReducedMotion", "cssTimeMs", "afterPaint"]) {
   if (!motionHelpers.includes(required)) errors.push(`Shared motion helper is missing: ${required}`);
 }
@@ -400,22 +395,22 @@ if (!canvasTone.includes("isIOSWebKit") || !canvasTone.includes("SETTLE_DELAY_MS
   errors.push("DocumentCanvasTone must avoid continuous dynamic sampling on non-iOS engines and resample after toolbar settling.");
 }
 if (canvasTone.includes("scheduleTwice")) errors.push("Legacy double-rAF canvas scheduling must not remain.");
-const appShell = readFileSync(resolve(root, "app/components/AppShell.tsx"), "utf8");
+const appShell = readFileSync(resolve(root, "src/features/site/components/AppShell.tsx"), "utf8");
 for (const obsolete of ["splashEntering", "splashHolding", "splashHandoffActive"]) {
   if (appShell.includes(obsolete)) errors.push(`Obsolete AppShell splash cleanup state remains: ${obsolete}`);
 }
 if (!splash.includes('cssTimeMs("--duration-splash-enter"') || !splash.includes('cssTimeMs("--duration-splash-exit"')) {
   errors.push("Splash JavaScript timing must derive from the design-system CSS tokens.");
 }
-if (!readFileSync(resolve(root, "app/components/SiteHeader.tsx"), "utf8").includes('cssTimeMs("--duration-menu"')) {
+if (!readFileSync(resolve(root, "src/features/site/components/SiteHeader.tsx"), "utf8").includes('cssTimeMs("--duration-menu"')) {
   errors.push("Menu fallback timing must derive from the shared CSS duration token.");
 }
 
 
 // v2.1.9 Constitution alignment phase-one guards.
-const adminActions = readFileSync(resolve(root, "app/admin/actions/content.ts"), "utf8");
-const adminValidation = readFileSync(resolve(root, "app/content/admin-validation.ts"), "utf8");
-const contentAdmin = readFileSync(resolve(root, "app/admin/lib/content-admin.ts"), "utf8");
+const adminActions = readFileSync(resolve(root, "src/features/admin/actions/content.ts"), "utf8");
+const adminValidation = readFileSync(resolve(root, "src/features/content/admin-validation.ts"), "utf8");
+const contentAdmin = readFileSync(resolve(root, "src/features/admin/server/content-admin.ts"), "utf8");
 if (!adminActions.includes("validateAdminRecord") || !adminActions.includes("parseContentStatus")) {
   errors.push("Admin writes must pass through canonical type-specific validation before persistence.");
 }
@@ -434,7 +429,7 @@ if (existsSync(resolve(root, "public/images/splash-humanity-artwork.jpeg"))) {
 if (!gradients.includes("calc(var(--glow-opacity, 1) + (var(--gradient-strength) - 1))")) {
   errors.push("Gradient strength above 1 must use bounded opacity amplification without full-layer colour filters.");
 }
-if (!packageJson.engines || packageJson.engines.node !== "22.x") {
+if (!packageJson.engines || packageJson.engines.node !== "24.x") {
   errors.push("The release must pin the intended Node major for Vercel builds.");
 }
 if (!existsSync(resolve(root, "CHANGELOG.md")) || !existsSync(resolve(root, "QA_MATRIX.md"))) {
@@ -481,11 +476,11 @@ if (!qualityWorkflow.includes("package-lock.json is required") || !qualityWorkfl
 
 
 // v2.3.0 admin publishing and governance guards.
-const adminContent = readFileSync(resolve(root, "app/admin/lib/content-admin.ts"), "utf8");
-const adminPublishingActions = readFileSync(resolve(root, "app/admin/actions/content.ts"), "utf8");
-const adminEditor = readFileSync(resolve(root, "app/admin/components/RecordEditor.tsx"), "utf8");
-const adminRoutes = readFileSync(resolve(root, "app/admin/lib/routes.ts"), "utf8");
-for (const required of ["expectedUpdatedAt", "Slug \"", "listAuditEntries", "status:"]) {
+const adminContent = readFileSync(resolve(root, "src/features/admin/server/content-admin.ts"), "utf8") + readFileSync(resolve(root, "src/features/admin/server/record-writer.ts"), "utf8");
+const adminPublishingActions = readFileSync(resolve(root, "src/features/admin/actions/content.ts"), "utf8");
+const adminEditor = readFileSync(resolve(root, "src/features/admin/components/RecordEditor.tsx"), "utf8");
+const adminRoutes = readFileSync(resolve(root, "src/features/admin/server/routes.ts"), "utf8");
+for (const required of ["expectedUpdatedAt", "checkVersion", "listAuditEntries", "status:"]) {
   if (!adminContent.includes(required)) errors.push(`Admin publishing safety is missing: ${required}`);
 }
 for (const required of ["intent === \"publish\"", "adminRouteForType", "expectedUpdatedAt"]) {
@@ -497,17 +492,17 @@ for (const required of ["Preview record", "Publish", "Move to draft", "Archive"]
 if (!adminRoutes.includes('if (type === "faq") return "faqs"') || !adminRoutes.includes('if (type === "page") return "pages"')) {
   errors.push("Admin content routes must use canonical plural route names.");
 }
-for (const path of ["app/admin/audit/page.tsx", "app/admin/preview/[type]/[id]/page.tsx"]) {
+for (const path of ["src/app/admin/audit/page.tsx", "src/app/admin/preview/[type]/[id]/page.tsx"]) {
   if (!existsSync(resolve(root, path))) errors.push(`Missing v2.3.0 admin workflow file: ${path}`);
 }
 
 
 // v2.4.0 database-backed public content and preview guards.
-const publicRepository = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
-const previewRoute = readFileSync(resolve(root, "app/api/preview/route.ts"), "utf8");
-const previewExit = readFileSync(resolve(root, "app/api/preview/exit/route.ts"), "utf8");
-const previewBanner = readFileSync(resolve(root, "app/components/PreviewBanner.tsx"), "utf8");
-const databasePublicRecords = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
+const publicRepository = readFileSync(resolve(root, "src/features/content/public-repository.ts"), "utf8");
+const previewRoute = readFileSync(resolve(root, "src/app/api/preview/route.ts"), "utf8");
+const previewExit = readFileSync(resolve(root, "src/app/api/preview/exit/route.ts"), "utf8");
+const previewBanner = readFileSync(resolve(root, "src/features/site/components/PreviewBanner.tsx"), "utf8");
+const databasePublicRecords = readFileSync(resolve(root, "src/features/content/database-public-records.ts"), "utf8");
 for (const required of ["CONTENT_SOURCE", "CONTENT_DATABASE_FAILURE", "draftMode", "local-fallback"]) {
   if (!publicRepository.includes(required)) errors.push(`Public database repository coordinator is missing: ${required}`);
 }
@@ -517,13 +512,13 @@ for (const required of ["unstable_cache", "CONTENT_TAGS"]) {
 if (!previewRoute.includes("getAdminIdentity") || !previewRoute.includes(".enable()")) errors.push("Draft preview enable route must require an admin session and enable Draft Mode.");
 if (!previewExit.includes(".disable()")) errors.push("Draft preview exit route must disable Draft Mode.");
 if (!previewBanner.includes("noindex,nofollow") || !previewBanner.includes("Exit preview")) errors.push("Draft preview must be visibly identified and excluded from indexing.");
-if (!adminActions.includes("revalidateTag") || !adminActions.includes("CONTENT_TAGS")) errors.push("Publishing actions must invalidate the affected public content tag.");
+if (!adminActions.includes("updateTag") || !adminActions.includes("CONTENT_TAGS")) errors.push("Publishing actions must invalidate the affected public content tag.");
 
 
 // v2.4.4 production runtime and server/client boundary guards.
-const contentIndex = readFileSync(resolve(root, "app/content/index.ts"), "utf8");
-const contentServerEntry = readFileSync(resolve(root, "app/content/server.ts"), "utf8");
-const siteHeaderSource = readFileSync(resolve(root, "app/components/SiteHeader.tsx"), "utf8");
+const contentIndex = readFileSync(resolve(root, "src/features/content/index.ts"), "utf8");
+const contentServerEntry = readFileSync(resolve(root, "src/features/content/server.ts"), "utf8");
+const siteHeaderSource = readFileSync(resolve(root, "src/features/site/components/SiteHeader.tsx"), "utf8");
 if (contentIndex.includes("public-repository") || contentIndex.includes("publicContentRepository")) {
   errors.push("Client-safe content index must not re-export the server-only public repository.");
 }
@@ -533,7 +528,7 @@ if (!contentServerEntry.includes('import "server-only"') || !contentServerEntry.
 if (siteHeaderSource.includes("content/server") || siteHeaderSource.includes("public-repository")) {
   errors.push("Client header must not import the server-only content repository.");
 }
-if (!appSource.includes('from "./content/server"') && !appSource.includes('from "../content/server"') && !appSource.includes('from "../../content/server"')) {
+if (!appSource.includes("features/content/server")) {
   errors.push("Public server pages must import database-backed content from the explicit server entry.");
 }
 
@@ -549,16 +544,16 @@ if (!layout.includes('id="splash-session-gate"') || !layout.includes("shf-splash
 if (splash.includes("releaseInitialScrollGuard")) errors.push("Splash must not depend on startup scroll-guard cleanup.");
 
 // v2.4.8 runtime hardening and lazy database adapter.
-const publicRepository242 = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
-const databaseRecords242 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
+const publicRepository242 = readFileSync(resolve(root, "src/features/content/public-repository.ts"), "utf8");
+const databaseRecords242 = readFileSync(resolve(root, "src/features/content/database-public-records.ts"), "utf8");
 const nextConfig242 = readFileSync(resolve(root, "next.config.ts"), "utf8");
 const package242 = readFileSync(resolve(root, "package.json"), "utf8");
 if (!publicRepository242.includes('await import(\n      "./database-public-records"')) errors.push("Database public records must be loaded lazily only in database mode.");
 if (publicRepository242.includes('from "../db/client"') || publicRepository242.includes('from "drizzle-orm"')) errors.push("The public repository coordinator must not import PostgreSQL or Drizzle directly.");
-if (!databaseRecords242.includes('import "server-only"') || !databaseRecords242.includes('from "../db/client"')) errors.push("The database public-record adapter must remain an explicit server-only module.");
+if (!databaseRecords242.includes('import "server-only"') || !databaseRecords242.includes('from "../../db/client"')) errors.push("The database public-record adapter must remain an explicit server-only module.");
 if (!nextConfig242.includes('serverExternalPackages: ["postgres"]')) errors.push("The postgres driver must be externalized from Next.js server bundles.");
 if (!package242.includes('"audit:boundaries"') || !package242.includes('npm run audit:boundaries')) errors.push("Runtime-boundary checks must be part of release scripts and prebuild.");
-for (const path of ["app/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx", "app/accessibility/page.tsx", "app/contact/page.tsx", "app/artists/[slug]/page.tsx", "app/admin/layout.tsx", "app/api/preview/route.ts", "app/api/preview/exit/route.ts"]) {
+for (const path of ["src/app/page.tsx", "src/app/privacy/page.tsx", "src/app/terms/page.tsx", "src/app/accessibility/page.tsx", "src/app/contact/page.tsx", "src/app/artists/[slug]/page.tsx", "src/app/admin/layout.tsx", "src/app/api/preview/route.ts", "src/app/api/preview/exit/route.ts"]) {
   if (!readFileSync(resolve(root, path), "utf8").includes('export const runtime = "nodejs";')) errors.push(`${path} must declare the Node.js runtime.`);
 }
 
@@ -569,10 +564,10 @@ if (!splash.includes("document.fonts.ready") || !splash.includes("FONT_READY_TIM
 if (existsSync(resolve(root, "app/components/ScrollReveal.tsx"))) {
   errors.push("The legacy ScrollReveal controller must remain removed.");
 }
-const publicHome245 = readFileSync(resolve(root, "app/page.tsx"), "utf8");
-const lowerReveal = readFileSync(resolve(root, "app/components/LowerSectionReveal.tsx"), "utf8");
-const appShellReveal = readFileSync(resolve(root, "app/components/AppShell.tsx"), "utf8");
-const motionRevealStyles = readFileSync(resolve(root, "app/styles/motion.css"), "utf8");
+const publicHome245 = readFileSync(resolve(root, "src/app/page.tsx"), "utf8");
+const lowerReveal = readFileSync(resolve(root, "src/features/site/components/LowerSectionReveal.tsx"), "utf8");
+const appShellReveal = readFileSync(resolve(root, "src/features/site/components/AppShell.tsx"), "utf8");
+const motionRevealStyles = readFileSync(resolve(root, "src/styles/motion.css"), "utf8");
 for (const required of [
   'pathname !== "/"',
   'prefersReducedMotion()',
@@ -602,7 +597,7 @@ if (routeFade.includes('window.history.pushState(window.history.state, "", hash)
 if (!routeFade.includes("clearManagedHash()") || !routeFade.includes("if (pending?.hash) clearManagedHash()")) {
   errors.push("Managed same-page and cross-route hash destinations must clean their temporary URL fragment after positioning.");
 }
-if (/href="#(?:about|mission|tickets)"/.test(readFileSync(resolve(root, "app/page.tsx"), "utf8"))) {
+if (/href="#(?:about|mission|tickets)"/.test(readFileSync(resolve(root, "src/app/page.tsx"), "utf8"))) {
   errors.push("Homepage section controls must use managed FadeLink navigation instead of persistent raw hash anchors.");
 }
 // v2.6.0 deliberately does not mutate startup URL or scroll state.
@@ -616,26 +611,26 @@ if (routeFade.includes('href: `${destination.pathname}${destination.search}${des
 }
 
 // v2.6.0 structured admin editing and media foundation.
-const structuredFields = readFileSync(resolve(root, "app/admin/components/StructuredFields.tsx"), "utf8");
-const v260AdminEditor = readFileSync(resolve(root, "app/admin/components/RecordEditor.tsx"), "utf8");
-const v260AdminActions = readFileSync(resolve(root, "app/admin/actions/content.ts"), "utf8");
-const v260AdminMedia = readFileSync(resolve(root, "app/admin/media/page.tsx"), "utf8");
+const structuredFields = readFileSync(resolve(root, "src/features/admin/components/StructuredFields.tsx"), "utf8");
+const v260AdminEditor = readFileSync(resolve(root, "src/features/admin/components/RecordEditor.tsx"), "utf8");
+const v260AdminActions = readFileSync(resolve(root, "src/features/admin/actions/content.ts"), "utf8");
+const v260AdminMedia = readFileSync(resolve(root, "src/app/admin/media/page.tsx"), "utf8");
 for (const required of ["Artist name", "Performance time", "Artist image", "Category", "Ticket type", "Question", "Sections JSON"]) {
   if (!structuredFields.includes(required)) errors.push(`Structured admin editor is missing: ${required}`);
 }
 if (!v260AdminEditor.includes("<StructuredFields") || !v260AdminEditor.includes("Advanced record JSON")) errors.push("RecordEditor must use structured fields and retain read-only JSON diagnostics.");
 if (!v260AdminActions.includes("structuredData") || !v260AdminActions.includes("validateAdminRecord")) errors.push("Structured form writes must pass through canonical validation.");
 if (!v260AdminMedia.includes("Artist images") || !v260AdminMedia.includes("Edit artist media")) errors.push("Admin media QA workspace is missing.");
-if (!readFileSync(resolve(root, "app/admin/components/AdminNav.tsx"), "utf8").includes('/admin/media')) errors.push("Admin navigation must expose the media workspace.");
+if (!readFileSync(resolve(root, "src/features/admin/components/AdminNav.tsx"), "utf8").includes('/admin/media')) errors.push("Admin navigation must expose the media workspace.");
 // v2.6.2 visible reveal guards.
 if (lowerReveal.includes("isIOSWebKit")) errors.push("Lower-section reveal must not be blanket-disabled on iOS Safari.");
 if (!lowerReveal.includes('threshold: 0.04') || !lowerReveal.includes('rootMargin: "0px 0px -10% 0px"')) errors.push("Visible lower reveal observer settings are missing.");
 if (!motionRevealStyles.includes("--lower-reveal-distance: 28px") || !motionRevealStyles.includes("--lower-reveal-duration: 760ms") || !motionRevealStyles.includes("--lower-reveal-delay")) errors.push("Visible reveal motion tokens or stagger are missing.");
 
 // v2.7.1 event-atmosphere gallery and reveal guards.
-const eventGallery = readFileSync(resolve(root, "app/components/EventGallery.tsx"), "utf8");
-const galleryData = readFileSync(resolve(root, "app/content/data/gallery.ts"), "utf8");
-const galleryStyles = readFileSync(resolve(root, "app/styles/gallery.css"), "utf8");
+const eventGallery = readFileSync(resolve(root, "src/features/site/components/EventGallery.tsx"), "utf8");
+const galleryData = readFileSync(resolve(root, "src/features/content/data/gallery.ts"), "utf8");
+const galleryStyles = readFileSync(resolve(root, "src/styles/gallery.css"), "utf8");
 if (!publicHome245.includes("<EventGallery images={gallery} />") || publicHome245.indexOf("<EventGallery images={gallery} />") > publicHome245.indexOf('className="lineup section')) {
   errors.push("The event gallery must render immediately before the Artists section.");
 }
@@ -656,17 +651,17 @@ for (let index = 1; index <= 14; index += 1) {
   const filename = `public/images/gallery/gallery-${String(index).padStart(2, "0")}.webp`;
   if (!existsSync(resolve(root, filename))) errors.push(`Missing optimized gallery image: ${filename}`);
 }
-if (!globals.includes('@import "./styles/gallery.css";')) errors.push("Global CSS must import the gallery stylesheet.");
+if (!globals.includes('@import "./gallery.css";')) errors.push("Global CSS must import the gallery stylesheet.");
 
 
 // v2.8.0 gallery admin, database publication, and preview integration.
-const adminGalleryPage = readFileSync(resolve(root, "app/admin/gallery/page.tsx"), "utf8");
-const adminValidation280 = readFileSync(resolve(root, "app/content/admin-validation.ts"), "utf8");
-const adminContent280 = readFileSync(resolve(root, "app/admin/lib/content-admin.ts"), "utf8");
-const cacheTags280 = readFileSync(resolve(root, "app/content/cache-tags.ts"), "utf8");
-const publicRepository280 = readFileSync(resolve(root, "app/content/public-repository.ts"), "utf8");
-const databaseRecords280 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
-const adminNav280 = readFileSync(resolve(root, "app/admin/components/AdminNav.tsx"), "utf8");
+const adminGalleryPage = readFileSync(resolve(root, "src/app/admin/gallery/page.tsx"), "utf8");
+const adminValidation280 = readFileSync(resolve(root, "src/features/content/admin-validation.ts"), "utf8");
+const adminContent280 = readFileSync(resolve(root, "src/features/admin/server/content-admin.ts"), "utf8") + readFileSync(resolve(root, "src/features/admin/types.ts"), "utf8");
+const cacheTags280 = readFileSync(resolve(root, "src/features/content/cache-tags.ts"), "utf8");
+const publicRepository280 = readFileSync(resolve(root, "src/features/content/public-repository.ts"), "utf8");
+const databaseRecords280 = readFileSync(resolve(root, "src/features/content/database-public-records.ts"), "utf8");
+const adminNav280 = readFileSync(resolve(root, "src/features/admin/components/AdminNav.tsx"), "utf8");
 for (const required of [
   'type AdminContentType = "artist" | "gallery"',
   'type === "gallery" ? contentRepository.getGallery()',
@@ -686,21 +681,21 @@ if (!publicHome245.includes('publicContentRepository.getGallery()')) errors.push
 
 
 // v2.9.0 revision history and rollback governance.
-const revisionDbSchema = readFileSync(resolve(root, "app/db/schema.ts"), "utf8");
-const revisionAdminContent = readFileSync(resolve(root, "app/admin/lib/content-admin.ts"), "utf8");
-const revisionAdminActions = readFileSync(resolve(root, "app/admin/actions/content.ts"), "utf8");
-const revisionAdminNav = readFileSync(resolve(root, "app/admin/components/AdminNav.tsx"), "utf8");
-const revisionAdminEditor = readFileSync(resolve(root, "app/admin/components/RecordEditor.tsx"), "utf8");
+const revisionDbSchema = readFileSync(resolve(root, "src/db/schema.ts"), "utf8");
+const revisionAdminContent = readFileSync(resolve(root, "src/features/admin/server/content-admin.ts"), "utf8") + readFileSync(resolve(root, "src/features/admin/server/record-writer.ts"), "utf8");
+const revisionAdminActions = readFileSync(resolve(root, "src/features/admin/actions/content.ts"), "utf8");
+const revisionAdminNav = readFileSync(resolve(root, "src/features/admin/components/AdminNav.tsx"), "utf8");
+const revisionAdminEditor = readFileSync(resolve(root, "src/features/admin/components/RecordEditor.tsx"), "utf8");
 for (const required of ["contentRevisions", "content_revisions", "recordType", "snapshot"]) {
   if (!revisionDbSchema.includes(required)) errors.push(`Revision schema is missing: ${required}`);
 }
-for (const required of ["listRecentRevisions", "listRecordRevisions", "restoreAdminRevision", "before:restore", "validateAdminRecord"]) {
+for (const required of ["listRecentRevisions", "listRecordRevisions", "restoreAdminRevision", "`before:${reason}`", "validateAdminRecord"]) {
   if (!revisionAdminContent.includes(required)) errors.push(`Revision repository behavior is missing: ${required}`);
 }
-if (!revisionAdminActions.includes("restoreRevisionAction") || !revisionAdminActions.includes("revalidateTag")) errors.push("Revision restore action must restore, revalidate, and redirect safely.");
+if (!revisionAdminActions.includes("restoreRevisionAction") || !revisionAdminActions.includes("updateTag")) errors.push("Revision restore action must restore, revalidate, and redirect safely.");
 if (!revisionAdminNav.includes('/admin/revisions')) errors.push("Admin navigation must expose revision history.");
 if (!revisionAdminEditor.includes("Revision history")) errors.push("Record editor must link to record revision history.");
-for (const path of ["app/admin/revisions/page.tsx", "app/admin/revisions/[type]/[id]/page.tsx", "app/db/migrations/0002_content_revisions.sql"]) {
+for (const path of ["src/app/admin/revisions/page.tsx", "src/app/admin/revisions/[type]/[id]/page.tsx", "src/db/migrations/0002_content_revisions.sql"]) {
   if (!existsSync(resolve(root, path))) errors.push(`Missing revision workflow file: ${path}`);
 }
 
@@ -712,7 +707,7 @@ const dbSeedData = JSON.parse(readFileSync(resolve(root, "scripts/db-seed-data.j
 const dbMigrateWorkflow = readFileSync(resolve(root, ".github/workflows/database-migrate.yml"), "utf8");
 const dbVerifyWorkflow = readFileSync(resolve(root, ".github/workflows/database-verify.yml"), "utf8");
 const dbSeedWorkflow = readFileSync(resolve(root, ".github/workflows/database-seed.yml"), "utf8");
-for (const required of ["shams_migrations", "checksum", "app/db/migrations", "sql.begin"]) {
+for (const required of ["shams_migrations", "checksum", "src/db/migrations", "sql.begin"]) {
   if (!dbMigrateScript.includes(required)) errors.push(`Database migrator is missing: ${required}`);
 }
 for (const required of ["information_schema.tables", "information_schema.columns", "pg_indexes", "Migration checksum mismatch", "content_records"]) {
@@ -721,10 +716,10 @@ for (const required of ["information_schema.tables", "information_schema.columns
 for (const required of ["ALLOW_RESEED", "Initial seed aborted", "seed:initial", "seed:refresh", "sql.begin"]) {
   if (!dbSeedScript.includes(required)) errors.push(`Database seed safety is missing: ${required}`);
 }
-if (dbSeedData.version !== "2.9.4" || !Array.isArray(dbSeedData.records) || dbSeedData.records.length < 1) errors.push("Database seed snapshot must be versioned and non-empty.");
+if (dbSeedData.version !== "2.10.0" || !Array.isArray(dbSeedData.records) || dbSeedData.records.length < 1) errors.push("Database seed snapshot must be versioned and non-empty.");
 for (const [name, workflow] of [["migrate", dbMigrateWorkflow], ["verify", dbVerifyWorkflow], ["seed", dbSeedWorkflow]]) {
   if (!workflow.includes("workflow_dispatch") || !workflow.includes("secrets.DATABASE_URL") || !workflow.includes("shams-production-database")) errors.push(`Database ${name} workflow must be manual, secret-backed, and concurrency-protected.`);
-  if (!workflow.includes("npm install --no-save --no-audit --no-fund postgres@3.4.7")) errors.push(`Database ${name} workflow must install only the pinned PostgreSQL runtime dependency.`);
+  if (!workflow.includes("npm ci")) errors.push(`Database ${name} workflow must install reproducible locked dependencies.`);
 }
 if (!dbSeedWorkflow.includes("refresh_existing") || !dbSeedWorkflow.includes("ALLOW_RESEED")) errors.push("Database seed workflow must require explicit refresh_existing input before overwriting content.");
 const package291 = JSON.parse(readFileSync(resolve(root, "package.json"), "utf8"));
@@ -735,12 +730,12 @@ const dbAlignPublication = readFileSync(resolve(root, "scripts/db-align-publicat
 const dbAlignWorkflow = readFileSync(resolve(root, ".github/workflows/database-align-publication.yml"), "utf8");
 if (!package291.scripts?.["db:align-publication"]) errors.push("package.json is missing db:align-publication.");
 if (!dbAlignPublication.includes("status === \"placeholder\"") || !dbAlignPublication.includes("content_revisions") || !dbAlignPublication.includes("audit_logs") || !dbAlignPublication.includes("draft") || !dbAlignPublication.includes("archived")) errors.push("Database publication alignment must be status-only, revisioned, audited, and preserve draft/archive states.");
-if (!dbAlignWorkflow.includes("workflow_dispatch") || !dbAlignWorkflow.includes("REQUIRE_BASELINE_PUBLISHED") || !dbAlignWorkflow.includes("secrets.DATABASE_URL")) errors.push("Database publication alignment workflow must be manual, verified, and secret-backed.");
-if (dbSeedData.version !== "2.9.4" || dbSeedData.records.some((record) => record.status !== "published" || record.data?.status !== "published")) errors.push("v2.9.4 canonical seed records must mirror the currently visible local baseline as published.");
+if (!dbAlignWorkflow.includes("workflow_dispatch") || !dbAlignWorkflow.includes("npm run db:verify") || dbAlignWorkflow.includes("REQUIRE_BASELINE_PUBLISHED: \"true\"") || !dbAlignWorkflow.includes("secrets.DATABASE_URL")) errors.push("Database publication alignment workflow must be manual, verified, and secret-backed.");
+if (dbSeedData.version !== "2.10.0" || dbSeedData.records.some((record) => record.status !== "published" || record.data?.status !== "published")) errors.push("v2.9.4 canonical seed records must mirror the currently visible local baseline as published.");
 
 // v2.9.4 database record normalization and repair guards.
-const dbPublicRecords293 = readFileSync(resolve(root, "app/content/database-public-records.ts"), "utf8");
-const adminValidation293 = readFileSync(resolve(root, "app/content/admin-validation.ts"), "utf8");
+const dbPublicRecords293 = readFileSync(resolve(root, "src/features/content/database-public-records.ts"), "utf8");
+const adminValidation293 = readFileSync(resolve(root, "src/features/content/admin-validation.ts"), "utf8");
 const dbRepair293 = readFileSync(resolve(root, "scripts/db-repair-records.mjs"), "utf8");
 const dbRepairWorkflow293 = readFileSync(resolve(root, ".github/workflows/database-repair-records.yml"), "utf8");
 const dbVerify293 = readFileSync(resolve(root, "scripts/db-verify.mjs"), "utf8");
@@ -753,7 +748,7 @@ if (!dbVerify293.includes("Content JSON metadata mismatch") || !dbVerify293.incl
 
 if (!dbPublicRecords293.includes("completeRecordFromCanonicalBaseline")) errors.push("Public database records must complete missing canonical fields before validation.");
 if (!dbVerify293.includes("Canonical content fields missing")) errors.push("Database verification must detect incomplete canonical record shapes.");
-for (const route of ["app/page.tsx", "app/privacy/page.tsx", "app/terms/page.tsx", "app/accessibility/page.tsx", "app/contact/page.tsx", "app/artists/[slug]/page.tsx"]) {
+for (const route of ["src/app/page.tsx", "src/app/privacy/page.tsx", "src/app/terms/page.tsx", "src/app/accessibility/page.tsx", "src/app/contact/page.tsx", "src/app/artists/[slug]/page.tsx"]) {
   const source = readFileSync(resolve(root, route), "utf8");
   if (!source.includes('export const dynamic = "force-dynamic"')) errors.push(`${route} must avoid build-time database prerendering in database mode.`);
 }

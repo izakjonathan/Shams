@@ -1,3 +1,5 @@
+> Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
+
 # Database content rollout and rollback
 
 ## Safe rollout
@@ -22,7 +24,7 @@ Set `CONTENT_SOURCE=local` and redeploy. The canonical typed local repository re
 
 ## Revision history (v2.9.0)
 
-Run `app/db/migrations/0002_content_revisions.sql` after the original content migration. Each database-backed save captures the previous canonical record in `content_revisions`. Restoring an older revision first captures the current state, then validates and applies the selected snapshot, writes an audit entry, and invalidates the affected public content cache tag.
+Run `src/db/migrations/0002_content_revisions.sql` after the original content migration. Each database-backed save captures the previous canonical record in `content_revisions`. Restoring an older revision first captures the current state, then validates and applies the selected snapshot, writes an audit entry, and invalidates the affected public content cache tag.
 
 ## GitHub Actions database administration (v2.9.4)
 

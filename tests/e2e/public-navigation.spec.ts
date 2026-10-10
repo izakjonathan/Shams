@@ -16,7 +16,7 @@ test("mobile menu opens, closes, and returns interaction to the page", async ({ 
   await expect(page.locator("main")).toHaveJSProperty("inert", true);
 
   await page.getByRole("button", { name: "Close navigation menu" }).click();
-  await expect(page.getByRole("navigation", { name: "Site navigation" })).toBeDetached();
+  await expect(page.getByRole("navigation", { name: "Site navigation" })).not.toBeAttached();
   await expect(page.locator("main")).toHaveJSProperty("inert", false);
 });
 

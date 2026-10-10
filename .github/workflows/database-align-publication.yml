@@ -19,9 +19,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
       - name: Install database runtime dependencies
-        run: npm install --no-save --no-audit --no-fund postgres@3.4.7
+        run: npm ci --no-audit --no-fund
       - name: Verify schema before alignment
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -34,5 +34,4 @@ jobs:
       - name: Verify database after alignment
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          REQUIRE_BASELINE_PUBLISHED: "true"
         run: npm run db:verify

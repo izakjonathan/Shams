@@ -49,7 +49,9 @@ function snapshot(row) {
 try {
   console.log(`Record repair target: ${safeDatabaseLabel()}`);
   if (confirmation !== "REPAIR") throw new Error('Safety check failed. Run with confirmation "REPAIR".');
-  const rows = await sql`SELECT id, type, slug, status, sort_order, data, updated_at, published_at FROM content_records ORDER BY type, sort_order, id`;
+  await sql.begin(async (tx) => {
+    await tx.unsafe("SET LOCAL lock_timeout = '15s'; SET LOCAL statement_timeout = '120s'");
+  const rows = await tx`SELECT id, type, slug, status, sort_order, data, updated_at, published_at FROM content_records ORDER BY type, sort_order, id FOR UPDATE`;
   const repairs = [];
   for (const row of rows) {
     const next = normalizeData(row);
@@ -57,7 +59,7 @@ try {
   }
   console.log(`Scanned ${rows.length} content record(s); ${repairs.length} require canonical completion or metadata normalization.`);
   if (repairs.length) {
-    await sql.begin(async (tx) => {
+
       for (const { row, next } of repairs) {
         const before = snapshot(row);
         await tx`INSERT INTO content_revisions (id, record_type, record_id, actor, reason, snapshot) VALUES (${randomUUID()}, ${row.type}, ${row.id}, ${actor}, 'before:canonical-record-repair', ${JSON.stringify(before)}::jsonb)`;
@@ -65,9 +67,9 @@ try {
         await tx`INSERT INTO audit_logs (id, actor, action, record_type, record_id, before, after) VALUES (${randomUUID()}, ${actor}, 'repair:complete-canonical-record', ${row.type}, ${row.id}, ${JSON.stringify(row.data)}::jsonb, ${JSON.stringify(next)}::jsonb)`;
         console.log(`Repaired ${row.type}:${row.id}.`);
       }
-    });
   }
   console.log(`Record repair complete. Updated ${repairs.length} record(s) without overwriting existing editorial values or publication states.`);
+  });
 } finally {
   await sql.end({ timeout: 5 });
 }

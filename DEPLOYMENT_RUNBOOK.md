@@ -1,3 +1,5 @@
+> Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
+
 # Deployment and rollback runbook
 
 ## 1. Prepare the release
@@ -42,7 +44,7 @@ If a regression appears:
 Before enabling `CONTENT_SOURCE=database` in production:
 
 1. Run `npm run audit:boundaries`.
-2. Confirm the Vercel build contains no Client or Edge import trace to `app/db/client.ts`, `postgres`, `next/headers`, or `app/content/server.ts`.
+2. Confirm the Vercel build contains no Client or Edge import trace to `src/db/client.ts`, `postgres`, `next/headers`, or `src/features/content/server.ts`.
 3. Confirm `CONTENT_SOURCE=local` builds without `DATABASE_URL`.
 4. Confirm `CONTENT_SOURCE=database` without `DATABASE_URL` fails according to `CONTENT_DATABASE_FAILURE`.
 5. Confirm authenticated Draft Mode uses the Node runtime and is `private, no-store`.
