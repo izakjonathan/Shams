@@ -1,4 +1,4 @@
-import { publicImageOrBaseline } from "../media-path";
+import { MEDIA_PLACEHOLDER, publicImageOrBaseline } from "../media-path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -41,5 +41,8 @@ test("legacy public media uses the same record baseline without changing stored 
   assert.equal(publicImageOrBaseline(current, artist.data.image), current);
   const staticAsset = { src: "/_next/static/media/artist.a1b2.webp", width: 800, height: 800 };
   assert.equal(publicImageOrBaseline(staticAsset, artist.data.image), staticAsset);
-  assert.throws(() => publicImageOrBaseline("https://bad.example/a.jpg", undefined));
+  assert.equal(publicImageOrBaseline("https://bad.example/a.jpg", undefined), MEDIA_PLACEHOLDER);
+  assert.equal(publicImageOrBaseline(null, { src: "https://bad.example/a.jpg" }), MEDIA_PLACEHOLDER);
+  const custom = { ...artist, id: "custom-artist", slug: "custom-artist" };
+  assert.doesNotThrow(() => validateAdminRecord({ ...artist.data, id: custom.id, slug: custom.slug, image: publicImageOrBaseline(null, undefined) }, custom));
 });

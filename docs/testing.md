@@ -1,3 +1,9 @@
+# 2.10.2 custom-record verification
+
+Eight unit tests, types, lint/static/runtime checks and production build pass. The built server's database-mode fixture includes custom artist and gallery records without baseline images. It validates homepage, existing/custom artist pages, visible custom text and neutral placeholder, sitemap and the social-preview PNG. Set DATABASE_POOL_MAX=1 only in the PGlite fixture to avoid the emulator's multi-connection protocol collision; default application pool remains 3, configurable between 1 and 10. Actual production data and full browser/real-PostgreSQL gates remain unverified.
+
+---
+
 # 2.10.1 regression verification
 
 Passed: eight unit tests, TypeScript, static/runtime audits, lint (four unchanged admin-image warnings), release validation and production build. The isolated SQL suite now passes six tests, including the actual seed/repair/alignment CLIs; three real-PostgreSQL concurrency/error cases remain skipped in PGlite. The earlier CLI failure was traced to JSONB parameter encoding and fixed with tx.json; it is no longer treated as an emulation limitation.

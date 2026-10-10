@@ -7,7 +7,7 @@ import { contentRecords } from "../../db/schema";
 import { normalizeAdminRecordData, validateAdminRecord, type AdminContentType } from "./admin-validation";
 import type { ContentStatus } from "./models";
 import { CONTENT_TAGS } from "./cache-tags";
-import { isLocalMedia, publicImageOrBaseline } from "./media-path";
+import { MEDIA_PLACEHOLDER, isLocalMedia, publicImageOrBaseline } from "./media-path";
 import { canonicalImageForRecord, completeRecordFromCanonicalBaseline } from "./canonical-record-completion";
 
 export type PublicContentType = keyof typeof CONTENT_TAGS;
@@ -50,7 +50,11 @@ async function queryDatabase(type: PublicContentType, includeDrafts: boolean) {
       // all editorial fields and DB bytes; use only this same record's canonical
       // asset for rendering, never an arbitrary external URL or another artist.
       normalized.image = publicImageOrBaseline(normalized.image, canonicalImageForRecord(metadata.type, metadata.id));
-      console.warn(`[public content] Using canonical media for ${metadata.type}:${metadata.id}. Review the saved image path in the studio.`);
+      if (normalized.image === MEDIA_PLACEHOLDER) {
+        if (metadata.type === "artist") normalized.imageAlt = "Artist photograph unavailable";
+        else normalized.alt = "Gallery photograph unavailable";
+      }
+      console.warn(`[public content] Using safe media fallback for ${metadata.type}:${metadata.id}. Review the saved image path in the studio.`);
     }
     const data = validateAdminRecord(normalized, metadata);
     if (!includeDrafts && metadata.type === "page") {
@@ -68,12 +72,12 @@ const cachedPublishedReaders: Record<
 > = {
   artist: unstable_cache(
     () => queryDatabase("artist", false),
-    ["public-artists-v4"],
+    ["public-artists-v5"],
     { revalidate: 60, tags: [CONTENT_TAGS.artist] },
   ),
   gallery: unstable_cache(
     () => queryDatabase("gallery", false),
-    ["public-gallery-v3"],
+    ["public-gallery-v4"],
     { revalidate: 60, tags: [CONTENT_TAGS.gallery] },
   ),
   programme: unstable_cache(

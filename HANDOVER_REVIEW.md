@@ -1,3 +1,15 @@
+# 2.10.2 correction — custom media without baseline
+
+Baseline: main commit `39668f13d4ba7699e7edab7f44ae4446609984e7`, deployment `dpl_Dw37qdd7Rj8cY7bP4hca4KytH79A` (2.10.1). Current runtime logs show `The image has no supported local asset or canonical fallback.` Thus 2.10.1 still failed when neither media source was supported. Exact production record IDs/values remain unverified due database access limits.
+
+2.10.2 retains valid editorial media first, then a matching approved canonical asset, then a bundled neutral star placeholder. It never substitutes another artist's portrait. Placeholder alternative text accurately announces that the photograph is unavailable. Existing text/status/order and stored bytes remain unchanged; unsupported uploaded/external media still requires editorial correction before strict studio save. Artist/gallery cache generations are advanced. This corrects the previous overly strict failure path rather than relaxing the external-image policy.
+
+A custom-artist fixture with no canonical entry now exercises the built database-mode homepage, its own artist route and the placeholder, in addition to the known baseline record and sitemap/social preview. The isolated HTTP fixture uses DATABASE_POOL_MAX=1 because PGlite cannot reliably multiplex the application’s concurrent protocol connections. The application exposes that bounded setting (1–10); Production retains the default pool of 3 unless explicitly configured. This addresses an emulation protocol limitation, not the live image failure.
+
+Verification: eight unit tests, types, static/runtime audits, lint (four existing warnings) and production build passed. Database-mode HTTP checks passed homepage, known artist, custom artist with no canonical entry, sitemap and PNG social preview. The earlier review and checks below are historical; real PostgreSQL concurrency, browser/mobile and production acceptance remain required. No deployment or production data change was performed by this correction.
+
+---
+
 # 2.10.1 correction — 10 October 2026
 
 Production advanced to commit `5aabe8bc00be389f6bb4a12bfab6f3b249fc3620`, deployment `dpl_EGVa69DTyqCifPUorPXGjiuUFLkN`, after the 2.10.0 ZIP was supplied. The runtime logs now confirm `/` throws `[admin content] artist.image must be a local image path.` The new strict validator introduced a compatibility regression against existing database media values. Exact saved paths could not be inspected because direct database DNS access remained unavailable; do not claim a specific legacy path format was observed.

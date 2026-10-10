@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.10.2 — Custom record media fallback
+
+- Corrects the remaining public-read failure when neither saved media nor a matching canonical asset is available. Such records now render a bundled neutral star placeholder with truthful alternative text; their content/publication/database values are preserved.
+- Adds database-mode HTTP coverage for a custom artist without a canonical entry, plus unit checks for missing/invalid fallbacks.
+- Advances artist/gallery cache generations.
+
+
 ## 2.10.1 — Production media compatibility fix
 
 - Corrects the strict image-validation regression observed after deploying 2.10.0: existing unsupported artist/gallery media renders using the same record’s canonical local asset, retaining every editorial field and leaving stored data unchanged. Saves still reject unsupported media; records without a valid matching fallback still fail explicitly.
