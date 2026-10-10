@@ -1,3 +1,9 @@
+# 2.10.3 login verification
+
+Nine unit tests, TypeScript, static/runtime audits, lint (four existing warnings) and production build pass. The database-mode built-server fixture drops only its isolated login-counter table and uses synthetic credentials. Real form POSTs verify normal wrong-password feedback, correct-password setup/session creation, wrong-password feedback after setup and genuine rate limiting. Storage-outage/failed-setup decisions are unit tested and remain fail-closed. This is a local PostgreSQL-compatible server test, not production database/MFA/browser certification.
+
+---
+
 # 2.10.2 custom-record verification
 
 Eight unit tests, types, lint/static/runtime checks and production build pass. The built server's database-mode fixture includes custom artist and gallery records without baseline images. It validates homepage, existing/custom artist pages, visible custom text and neutral placeholder, sitemap and the social-preview PNG. Set DATABASE_POOL_MAX=1 only in the PGlite fixture to avoid the emulator's multi-connection protocol collision; default application pool remains 3, configurable between 1 and 10. Actual production data and full browser/real-PostgreSQL gates remain unverified.

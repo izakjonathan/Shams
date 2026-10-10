@@ -21,3 +21,18 @@ test("preview redirects cannot escape the same origin", () => {
   for (const value of ["//evil.test", "/\\evil.test", "https://evil.test", "/\n/evil.test", null]) assert.equal(safePreviewUrl(value, origin).href, `${origin}/`);
   assert.equal(safePreviewUrl("/artists/nour?draft=1#bio", origin).href, `${origin}/artists/nour?draft=1#bio`);
 });
+
+import { loginOutcome, safeDatabaseErrorCode } from "../server/login-policy";
+test("login distinguishes incorrect credentials, genuine limits and unavailable storage", async () => {
+  const initialize = async () => { throw new Error("Must not initialize"); };
+  assert.equal(await loginOutcome(false, "allowed", initialize), "credentials");
+  assert.equal(await loginOutcome(true, "allowed", initialize), "success");
+  assert.equal(await loginOutcome(true, "limited", initialize), "throttled");
+  assert.equal(await loginOutcome(false, "unavailable", initialize), "protection-unavailable");
+  assert.equal(await loginOutcome(true, "unavailable", initialize), "protection-unavailable");
+  assert.equal(await loginOutcome(false, "missing-schema", initialize), "credentials");
+  assert.equal(await loginOutcome(true, "missing-schema", async () => "allowed"), "success");
+  assert.equal(await loginOutcome(true, "missing-schema", async () => "unavailable"), "protection-unavailable");
+  assert.equal(safeDatabaseErrorCode({ cause: { code: "42P01", message: "private SQL" } }), "42P01");
+  assert.equal(safeDatabaseErrorCode({ code: "private connection string" }), undefined);
+});

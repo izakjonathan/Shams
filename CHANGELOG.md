@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.10.3 — Admin login storage recovery
+
+- Separates genuine login limits from unavailable security storage/configuration; database failures no longer tell users to wait 15 minutes.
+- After credentials verify, a missing login-counter table can be provisioned transactionally under the migration lock. This touches only login security storage, not editorial records or the migration ledger. Other database/permission failures remain fail-closed.
+- Uses typed counter RETURNING rows and rejects malformed responses as storage errors, instead of incorrectly blocking every login.
+- Adds Vercel's overwritten forwarded-IP header fallback and built-server form-post tests for wrong credentials, missing-table recovery, session creation and actual attempt limiting.
+
+
 ## 2.10.2 — Custom record media fallback
 
 - Corrects the remaining public-read failure when neither saved media nor a matching canonical asset is available. Such records now render a bundled neutral star placeholder with truthful alternative text; their content/publication/database values are preserved.

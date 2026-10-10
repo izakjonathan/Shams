@@ -1,3 +1,6 @@
+# Login storage recovery in 2.10.3
+A missing login-counter table can be initialized by the sign-in flow only after the configured credentials verify. The operation is transactional, idempotent and limited to security counter storage. It does not apply/mark migration 0003 or alter content. Complete migrations still need normal operator execution. Database outages/permissions failures stay fail-closed with a setup error; actual repeated attempts still have a 15-minute limit.
+
 # Development and deployment workflow
 1. Create a branch from the confirmed production commit; retain a recoverable baseline tag/backup. Apply the complete ZIP with the deletion manifest and review `git diff` before committing.
 2. Run Node 24 `npm ci`; use isolated local/preview database credentials. Never copy production DATABASE_URL into tests or checked-in files.

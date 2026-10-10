@@ -1,0 +1,3 @@
+# Decision 002 — authenticated login-counter bootstrap
+
+The original limiter denied every login when its table was missing, disguising schema/connection failures as a temporary rate limit. Use distinct states. A verified configured password authorizes only additive creation of the exact missing login-counter table and index under the migration lock. Invalid credentials never initialize schema; existing storage is never cleared and real attempt limits still apply. Other database failures do not bypass security. This is a scoped operational bootstrap, not automatic editorial migrations. The complete migration and database verification remain separate handover gates.

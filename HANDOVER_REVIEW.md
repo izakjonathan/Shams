@@ -1,3 +1,15 @@
+# 2.10.3 correction — admin login storage errors
+
+Baseline: deployed main `bfff6070959963af5d01897b9d2762c0cd01715c`, deployment `dpl_Fvs7bjbJHS145vzVCVJiQVe3J5KQ`. One controlled wrong-credential POST reproduced the screenshot's throttled redirect; the runtime log reported `[admin login] Login protection is unavailable.` This proves a protection-storage error was mislabeled as a 15-minute attempt limit. The exact production SQL cause remains unknown because the deployed code suppressed it.
+
+The revised flow differentiates allowed, limited, missing-schema and unavailable states. Missing-table initialization is allowed only after the configured credentials verify; wrong credentials never execute DDL. The transaction creates only the exact admin_login_attempts table/index under the same advisory lock as migrations. No content, revisions, audit history or migration ledger is changed. This narrow, idempotent security-storage recovery is an explicit exception to migration-only provisioning; complete migration 0003 still needs normal operator execution. A disconnected/read-only/permission-denied database does not grant access and now shows a setup/storage error instead of “wait 15 minutes.”
+
+The built-server reproduction also exposed invalid/empty raw counter responses after schema errors; the old code treated NaN as a denied attempt instead of a storage error. A to_regclass preflight now checks table presence without preparing an INSERT against a missing relation. The counter now uses typed INSERT RETURNING mapping; invalid values are a storage failure. A Vercel-only x-forwarded-for fallback uses its overwritten proxy header, rather than putting all missing-header traffic in one shared bucket. Reference: https://vercel.com/docs/headers/request-headers.
+
+Passed: nine unit tests, types, lint/static/runtime audits, production build and six isolated SQL tests (three real-PostgreSQL cases still skipped). Verification covers actual Server Action form POSTs: wrong credentials with a deliberately missing counter table; correct credentials provision storage and receive the session cookie/redirect; subsequent wrong credentials show the normal credential error; actual repeated attempts still enforce the limit, including correct credentials after the cap. Pure policy tests cover database outage, failed setup and configuration-independent failure decisions. Public database-mode routes/social image and all prior handover caveats remain relevant. No owner credential or production editorial data was used in these isolated tests. The package has not been deployed by this review.
+
+---
+
 # 2.10.2 correction — custom media without baseline
 
 Baseline: main commit `39668f13d4ba7699e7edab7f44ae4446609984e7`, deployment `dpl_Dw37qdd7Rj8cY7bP4hca4KytH79A` (2.10.1). Current runtime logs show `The image has no supported local asset or canonical fallback.` Thus 2.10.1 still failed when neither media source was supported. Exact production record IDs/values remain unverified due database access limits.
