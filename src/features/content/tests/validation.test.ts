@@ -46,3 +46,13 @@ test("legacy public media uses the same record baseline without changing stored 
   const custom = { ...artist, id: "custom-artist", slug: "custom-artist" };
   assert.doesNotThrow(() => validateAdminRecord({ ...artist.data, id: custom.id, slug: custom.slug, image: publicImageOrBaseline(null, undefined) }, custom));
 });
+
+
+test("homepage copy validates every nested field and cannot gain a public slug", () => {
+  const home = records.find(record => record.id === "page-home")!;
+  assert.ok(home);
+  assert.doesNotThrow(() => validateAdminRecord(home.data, home));
+  assert.throws(() => validateAdminRecord({ ...home.data, hero: { ...(home.data.hero as object), titleLines: [] } }, home));
+  assert.throws(() => validateAdminRecord({ ...home.data, mission: { ...(home.data.mission as object), tags: [42] } }, home));
+  assert.throws(() => validateAdminRecord(home.data, { ...home, slug: "home" }));
+});

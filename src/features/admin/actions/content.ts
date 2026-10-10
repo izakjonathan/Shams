@@ -3,9 +3,10 @@
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect, unstable_rethrow } from "next/navigation";
 import { requireAdmin } from "../server/auth";
-import { getAdminRecord, restoreAdminRevision, saveAdminRecord, seedDatabase, type AdminContentType } from "../server/content-admin";
+import { getAdminRecord, localAdminRecords, listAdminRecords, moveAdminRecord, restoreAdminRevision, saveAdminRecord, seedDatabase, type AdminContentType } from "../server/content-admin";
 import { adminRouteForType } from "../server/routes";
 import { parseContentStatus, validateAdminRecord } from "../../content/admin-validation";
+import { HOME_FIELDS, HOME_ARRAY_FIELDS } from "../../content/home-fields";
 import { CONTENT_TAGS } from "../../content/cache-tags";
 
 const TYPES = new Set<AdminContentType>(["artist", "gallery", "programme", "ticket", "faq", "page"]);
@@ -27,6 +28,7 @@ function jsonField(value: FormDataEntryValue | null, label: string): unknown {
 }
 
 function structuredData(type: AdminContentType, formData: FormData, original: Record<string, unknown>): Record<string, unknown> {
+  if (type === "page" && original.id === "page-home") return { ...original, ...Object.fromEntries(Object.entries(HOME_FIELDS).map(([group, definition]) => [group, Object.fromEntries(Object.keys(definition.fields).map(key => [key, HOME_ARRAY_FIELDS.has(key) ? lines(formData.get(`home:${group}:${key}`)) : String(formData.get(`home:${group}:${key}`) ?? "").trim()]))])) };
   if (type === "artist") return { ...original,
     name: String(formData.get("name") ?? "").trim(), type: String(formData.get("artistType") ?? "").trim(),
     time: String(formData.get("time") ?? "").trim(), stage: String(formData.get("stage") ?? "").trim(),
@@ -42,8 +44,8 @@ function structuredData(type: AdminContentType, formData: FormData, original: Re
   if (type === "programme") return { ...original, time: String(formData.get("time") ?? "").trim(), label: String(formData.get("label") ?? "").trim(), description: String(formData.get("description") ?? "").trim(), category: String(formData.get("category") ?? "").trim(), stage: String(formData.get("stage") ?? "").trim() };
   if (type === "ticket") return { ...original, type: String(formData.get("ticketType") ?? "").trim(), badge: String(formData.get("badge") ?? "").trim(), description: String(formData.get("description") ?? "").trim(), price: Number(formData.get("price") ?? 0), currency: String(formData.get("currency") ?? "").trim(), availability: String(formData.get("availability") ?? "").trim(), featured: formData.get("featured") === "on", includes: lines(formData.get("includes")) };
   if (type === "faq") return { ...original, question: String(formData.get("question") ?? "").trim(), answer: String(formData.get("answer") ?? "").trim() };
-  if ("routes" in original) return { ...original, index: String(formData.get("index") ?? "").trim(), titleLines: lines(formData.get("titleLines")), intro: String(formData.get("intro") ?? "").trim(), routes: jsonField(formData.get("routesJson"), "Contact routes"), organizer: jsonField(formData.get("organizerJson"), "Organizer") };
-  return { ...original, index: String(formData.get("index") ?? "").trim(), title: String(formData.get("title") ?? "").trim(), intro: String(formData.get("intro") ?? "").trim(), updated: String(formData.get("updated") ?? "").trim(), sections: jsonField(formData.get("sectionsJson"), "Page sections") };
+  if ("routes" in original) return { ...original, index: String(formData.get("index") ?? "").trim(), titleLines: lines(formData.get("titleLines")), intro: String(formData.get("intro") ?? "").trim(), routes: formData.has("routesJson") ? jsonField(formData.get("routesJson"), "Contact routes") : (original.routes as Record<string, unknown>[]).map((route, index) => ({ ...route, ...Object.fromEntries(["label", "address", "note"].map(key => [key, String(formData.get(`route:${index}:${key}`) ?? "").trim()])) })), organizer: formData.has("organizerJson") ? jsonField(formData.get("organizerJson"), "Organizer") : Object.fromEntries(Object.keys(original.organizer as Record<string, unknown>).map(key => [key, String(formData.get(`organizer:${key}`) ?? "").trim()])) };
+  return { ...original, index: String(formData.get("index") ?? "").trim(), title: String(formData.get("title") ?? "").trim(), intro: String(formData.get("intro") ?? "").trim(), updated: String(formData.get("updated") ?? "").trim(), sections: formData.has("sectionsJson") ? jsonField(formData.get("sectionsJson"), "Page sections") : (original.sections as Record<string, unknown>[]).map((section, index) => ({ ...section, heading: String(formData.get(`section:${index}:heading`) ?? "").trim(), ...Object.fromEntries(["paragraphs", "items"].filter(key => Array.isArray(section[key])).map(key => [key, lines(formData.get(`section:${index}:${key}`))])) })) };
 }
 
 export async function saveRecordAction(formData: FormData) {
@@ -57,7 +59,7 @@ export async function saveRecordAction(formData: FormData) {
   const status = intent === "publish" ? "published" : intent === "draft" ? "draft" : intent === "archive" ? "archived" : requestedStatus;
   const sortOrder = Number(formData.get("sortOrder") ?? 0);
   if (!id || id.length > 160 || !Number.isInteger(sortOrder) || sortOrder < -2147483648 || sortOrder > 2147483647) throw new Error("Invalid record metadata.");
-  const current = await getAdminRecord(type, id);
+  const current = await getAdminRecord(type, id) ?? (type === "page" && id === "page-home" ? localAdminRecords("page").find(record => record.id === id) : null);
   if (!current) throw new Error("Record not found. Reload the content list.");
   const original = current.data;
   const prepared: Record<string, unknown> = { ...structuredData(type, formData, original as Record<string, unknown>), id, status };
@@ -69,6 +71,7 @@ export async function saveRecordAction(formData: FormData) {
   const route = adminRouteForType(type);
   revalidatePath(`/admin/${route}`);
   updateTag(CONTENT_TAGS[type]);
+  if (formData.get("returnRoute") === "simple") redirect(`/admin?saved=1&section=${encodeURIComponent(`${type}:${id}`)}#section-${id === "page-home" ? "home" : type}`);
   redirect(`/admin/${route}?saved=1`);
 }
 
@@ -100,5 +103,42 @@ export async function saveRecordFormAction(_state: { error: string }, formData: 
 }
 export async function restoreRevisionFormAction(_state: { error: string }, formData: FormData): Promise<{ error: string }> {
   try { await restoreRevisionAction(formData); return { error: "" }; }
+  catch (error) { unstable_rethrow(error); return formError(error); }
+}
+
+export async function createRecordFormAction(_state: { error: string }, formData: FormData): Promise<{ error: string }> {
+  try {
+    const actor = await requireAdmin();
+    const type = String(formData.get("type")) as AdminContentType;
+    if (!TYPES.has(type) || type === "page") throw new Error("Invalid record type.");
+    const id = String(formData.get("id") ?? "");
+    if (!new RegExp(`^${type}-[0-9a-f-]{36}$`).test(id)) throw new Error("Invalid record ID.");
+    if (await getAdminRecord(type, id)) throw new Error("This record changed. Reload before saving.");
+    const baseline = localAdminRecords(type)[0];
+    if (!baseline) throw new Error("Invalid record template.");
+    const rows = (await listAdminRecords(type)).records;
+    const sortOrder = Math.min(2147483647, Math.max(0, ...rows.map(row => row.sortOrder)) + 1);
+    const slug = type === "artist" ? String(formData.get("slug") ?? "").trim() : null;
+    const data = validateAdminRecord({ ...structuredData(type, formData, baseline.data), id, status: "draft", sortOrder, ...(slug ? { slug } : {}) }, { id, type, slug, status: "draft", sortOrder });
+    await saveAdminRecord(actor, { id, type, slug, status: "draft", sortOrder, data, updatedAt: null }, null);
+    updateTag(CONTENT_TAGS[type]); revalidatePath("/admin");
+    redirect(`/admin?saved=1&section=${encodeURIComponent(`${type}:${id}`)}#section-${id === "page-home" ? "home" : type}`);
+  } catch (error) { unstable_rethrow(error); return formError(error); }
+}
+export async function moveRecordAction(formData: FormData) {
+  const actor = await requireAdmin();
+  const type = String(formData.get("type")) as AdminContentType;
+  if (!TYPES.has(type) || type === "page") throw new Error("Invalid record type.");
+  const id = String(formData.get("id"));
+  const direction = Number(formData.get("direction"));
+  if (direction !== -1 && direction !== 1) throw new Error("Invalid record direction.");
+  const expected = String(formData.get("expectedUpdatedAt") ?? "") || null;
+  await moveAdminRecord(actor, type, id, expected, direction);
+  updateTag(CONTENT_TAGS[type]); revalidatePath("/admin");
+  redirect(`/admin?saved=1&section=${encodeURIComponent(`${type}:${id}`)}#section-${id === "page-home" ? "home" : type}`);
+}
+
+export async function moveRecordFormAction(_state: { error: string }, formData: FormData): Promise<{ error: string }> {
+  try { await moveRecordAction(formData); return { error: "" }; }
   catch (error) { unstable_rethrow(error); return formError(error); }
 }

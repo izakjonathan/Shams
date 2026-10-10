@@ -13,15 +13,15 @@ import { publicContentRepository } from "../../../features/content/server";
 import { safeExternalUrl, serializeJsonLd } from "../../../lib/site";
 
 const event = contentRepository.getEvent();
-const home = contentRepository.getHome();
 
 export async function HomePage({ editing = false }: { editing?: boolean }) {
-  const [artists, gallery, faqs, programme, tickets] = await Promise.all([
+  const [artists, gallery, faqs, programme, tickets, home] = await Promise.all([
     publicContentRepository.getArtists(),
     publicContentRepository.getGallery(),
     publicContentRepository.getFaqs(),
     publicContentRepository.getProgramme(),
     publicContentRepository.getTickets(),
+    publicContentRepository.getHome(),
   ]);
   const faqJsonLd = {
     "@context": "https://schema.org",

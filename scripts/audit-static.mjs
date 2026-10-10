@@ -355,7 +355,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.10.4") errors.push("package.json version must be 2.10.4.");
+if (packageJson.version !== "2.10.5") errors.push("package.json version must be 2.10.5.");
 // v2.1.8 footer canvas permanence guards
 const canvasToneV217 = readFileSync(resolve(root, "src/features/site/components/DocumentCanvasTone.tsx"), "utf8");
 const baseCssV217 = readFileSync(resolve(root, "src/styles/base.css"), "utf8");
@@ -615,7 +615,7 @@ const structuredFields = readFileSync(resolve(root, "src/features/admin/componen
 const v260AdminEditor = readFileSync(resolve(root, "src/features/admin/components/RecordEditor.tsx"), "utf8");
 const v260AdminActions = readFileSync(resolve(root, "src/features/admin/actions/content.ts"), "utf8");
 const v260AdminMedia = readFileSync(resolve(root, "src/app/admin/media/page.tsx"), "utf8");
-for (const required of ["Artist name", "Performance time", "Artist image", "Category", "Ticket type", "Question", "Sections JSON"]) {
+for (const required of ["Artist name", "Performance time", "Artist image", "Category", "Ticket type", "Question", "Text — one paragraph per line"]) {
   if (!structuredFields.includes(required)) errors.push(`Structured admin editor is missing: ${required}`);
 }
 if (!v260AdminEditor.includes("<StructuredFields") || !v260AdminEditor.includes("Advanced record JSON")) errors.push("RecordEditor must use structured fields and retain read-only JSON diagnostics.");
@@ -674,7 +674,7 @@ if (!cacheTags280.includes('gallery: "content:gallery"')) errors.push("Gallery p
 if (!publicRepository280.includes('getGallery: async () => records("gallery")')) errors.push("Public gallery must read through the database-capable public repository.");
 if (!databaseRecords280.includes('queryDatabase("gallery", false)') || !databaseRecords280.includes("CONTENT_TAGS.gallery")) errors.push("Published database gallery records must be cached and tagged.");
 if (!adminGalleryPage.includes('listAdminRecords("gallery")') || !adminGalleryPage.includes('RecordEditor')) errors.push("Admin gallery workspace is missing.");
-if (!adminNav280.includes('/admin/gallery')) errors.push("Admin navigation must expose the gallery workspace.");
+if (!adminNav280.includes('/admin') || !readFileSync(resolve(root, 'src/app/admin/page.tsx'), 'utf8').includes('["gallery", "Gallery"]')) errors.push("Admin navigation must expose the gallery workspace.");
 if (!structuredFields.includes('type === "gallery"') || !structuredFields.includes("Gallery image")) errors.push("Gallery needs structured image and alt-text fields.");
 if (!v260AdminActions.includes('type === "gallery"') || !v260AdminActions.includes('CONTENT_TAGS[type]')) errors.push("Gallery form writes must validate and invalidate the public cache tag.");
 if (!publicHome245.includes('publicContentRepository.getGallery()')) errors.push("Homepage gallery must use the public repository so published database records can power it.");
@@ -716,7 +716,7 @@ for (const required of ["information_schema.tables", "information_schema.columns
 for (const required of ["ALLOW_RESEED", "Initial seed aborted", "seed:initial", "seed:refresh", "sql.begin"]) {
   if (!dbSeedScript.includes(required)) errors.push(`Database seed safety is missing: ${required}`);
 }
-if (dbSeedData.version !== "2.10.4" || !Array.isArray(dbSeedData.records) || dbSeedData.records.length < 1) errors.push("Database seed snapshot must be versioned and non-empty.");
+if (dbSeedData.version !== "2.10.5" || !Array.isArray(dbSeedData.records) || dbSeedData.records.length < 1) errors.push("Database seed snapshot must be versioned and non-empty.");
 for (const [name, workflow] of [["migrate", dbMigrateWorkflow], ["verify", dbVerifyWorkflow], ["seed", dbSeedWorkflow]]) {
   if (!workflow.includes("workflow_dispatch") || !workflow.includes("secrets.DATABASE_URL") || !workflow.includes("shams-production-database")) errors.push(`Database ${name} workflow must be manual, secret-backed, and concurrency-protected.`);
   if (!workflow.includes("npm ci")) errors.push(`Database ${name} workflow must install reproducible locked dependencies.`);
@@ -731,7 +731,7 @@ const dbAlignWorkflow = readFileSync(resolve(root, ".github/workflows/database-a
 if (!package291.scripts?.["db:align-publication"]) errors.push("package.json is missing db:align-publication.");
 if (!dbAlignPublication.includes("status === \"placeholder\"") || !dbAlignPublication.includes("content_revisions") || !dbAlignPublication.includes("audit_logs") || !dbAlignPublication.includes("draft") || !dbAlignPublication.includes("archived")) errors.push("Database publication alignment must be status-only, revisioned, audited, and preserve draft/archive states.");
 if (!dbAlignWorkflow.includes("workflow_dispatch") || !dbAlignWorkflow.includes("npm run db:verify") || dbAlignWorkflow.includes("REQUIRE_BASELINE_PUBLISHED: \"true\"") || !dbAlignWorkflow.includes("secrets.DATABASE_URL")) errors.push("Database publication alignment workflow must be manual, verified, and secret-backed.");
-if (dbSeedData.version !== "2.10.4" || dbSeedData.records.some((record) => record.status !== "published" || record.data?.status !== "published")) errors.push("v2.9.4 canonical seed records must mirror the currently visible local baseline as published.");
+if (dbSeedData.version !== "2.10.5" || dbSeedData.records.some((record) => record.status !== "published" || record.data?.status !== "published")) errors.push("v2.9.4 canonical seed records must mirror the currently visible local baseline as published.");
 
 // v2.9.4 database record normalization and repair guards.
 const dbPublicRecords293 = readFileSync(resolve(root, "src/features/content/database-public-records.ts"), "utf8");

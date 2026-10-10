@@ -48,6 +48,7 @@ function baselineRecords(type: AdminContentType): readonly Record<string, unknow
   if (type === "ticket") return contentRepository.getTickets() as unknown as Record<string, unknown>[];
   if (type === "faq") return contentRepository.getFaqs() as unknown as Record<string, unknown>[];
   return [
+    contentRepository.getHome(),
     contentRepository.getInformationPage("privacy"),
     contentRepository.getInformationPage("terms"),
     contentRepository.getInformationPage("accessibility"),

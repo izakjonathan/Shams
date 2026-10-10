@@ -1,25 +1,5 @@
 import Link from "next/link";
 import { logoutAction } from "../actions/auth";
-
-const items = [
-  ["Edit site", "/admin"],
-  ["Artists", "/admin/artists"],
-  ["Gallery", "/admin/gallery"],
-  ["Programme", "/admin/programme"],
-  ["Tickets", "/admin/tickets"],
-  ["FAQs", "/admin/faqs"],
-  ["Pages", "/admin/pages"],
-  ["Media", "/admin/media"],
-  ["Revisions", "/admin/revisions"],
-  ["Audit log", "/admin/audit"],
-] as const;
-
 export function AdminNav({ identity }: { identity: string }) {
-  return (
-    <aside className="adminSidebar">
-      <div><p className="adminEyebrow">SHAMS ADMIN</p><strong>SHAMS / HUMANITY</strong></div>
-      <nav aria-label="Admin navigation">{items.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav>
-      <div className="adminAccount"><span>{identity}</span><form action={logoutAction}><button type="submit">Sign out</button></form></div>
-    </aside>
-  );
+  return <header className="simpleToolbar"><Link href="/admin" className="simpleBrand">SHAMS / HUMANITY</Link><div><Link href="/" target="_blank" rel="noreferrer">View website ↗</Link><form action={logoutAction}><button>Sign out</button></form><details><summary>Tools</summary><nav aria-label="Admin tools"><Link href="/admin/media">Media</Link><Link href="/admin/revisions">Revisions</Link><Link href="/admin/audit">Audit log</Link></nav></details></div><span className="srOnly">Signed in as {identity}</span></header>;
 }

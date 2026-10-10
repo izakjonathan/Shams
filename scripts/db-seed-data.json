@@ -1,5 +1,5 @@
 {
-  "version": "2.10.4",
+  "version": "2.10.5",
   "records": [
     {
       "id": "artist-01",
@@ -17,7 +17,7 @@
         "time": "18:30",
         "stage": "Sun Stage",
         "origin": "Copenhagen / Beirut",
-        "genre": "Alternative pop · electronic",
+        "genre": "Alternative pop \u00b7 electronic",
         "pronouns": "they / them",
         "shortBio": "A luminous live set where intimate songwriting meets spacious electronic production.",
         "biography": [
@@ -63,7 +63,7 @@
         "time": "20:00",
         "stage": "Orbit Stage",
         "origin": "London / Beirut",
-        "genre": "Club · experimental · regional rhythms",
+        "genre": "Club \u00b7 experimental \u00b7 regional rhythms",
         "pronouns": "she / her",
         "shortBio": "A wide-ranging selector connecting contemporary club music with unexpected regional and archival sounds.",
         "biography": [
@@ -104,16 +104,16 @@
         "sortOrder": 3,
         "slug": "aisha-devi",
         "status": "published",
-        "name": "Aïsha Devi",
+        "name": "A\u00efsha Devi",
         "type": "Live A/V",
         "time": "21:30",
         "stage": "Sun Stage",
         "origin": "Switzerland",
-        "genre": "Electronic · vocal · audiovisual",
+        "genre": "Electronic \u00b7 vocal \u00b7 audiovisual",
         "pronouns": "she / her",
         "shortBio": "An immersive audiovisual performance where voice, bass and light become a single physical language.",
         "biography": [
-          "Aïsha Devi’s work explores the voice as material, signal and force. Her performances move beyond conventional song form into a highly physical encounter between sound, body and space.",
+          "A\u00efsha Devi\u2019s work explores the voice as material, signal and force. Her performances move beyond conventional song form into a highly physical encounter between sound, body and space.",
           "At Shams for Humanity, the live show will transform the Sun Stage through a synchronized audiovisual environment. This placeholder text is intended only to demonstrate the final editorial structure."
         ],
         "quote": "Sound can dissolve the border between the individual and the room.",
@@ -201,7 +201,7 @@
         "time": "00:30",
         "stage": "Sun Stage",
         "origin": "Berlin",
-        "genre": "Arabic funk · soul · disco",
+        "genre": "Arabic funk \u00b7 soul \u00b7 disco",
         "shortBio": "A celebratory selection of funk, soul, disco and other recordings from across the Arab world and its diasporas.",
         "biography": [
           "Habibi Funk brings together music discovered through deep archival research, reissue work and long-term relationships with artists and their families. The result is a joyful but carefully contextualized listening experience.",
@@ -246,7 +246,7 @@
         "time": "17:00",
         "stage": "Garden",
         "origin": "Copenhagen",
-        "genre": "Collective voice · participatory performance",
+        "genre": "Collective voice \u00b7 participatory performance",
         "shortBio": "A specially assembled community choir opening the festival through shared voice, welcome and collective presence.",
         "biography": [
           "The Shams Community Choir brings together singers with different levels of experience for a performance rooted in participation rather than perfection. The project is developed through a short series of open rehearsals.",
@@ -738,7 +738,7 @@
         "id": "page-privacy",
         "slug": "privacy",
         "status": "published",
-        "index": "01 — PRIVACY",
+        "index": "01 \u2014 PRIVACY",
         "title": "Privacy, in plain language.",
         "intro": "This draft explains what information Shams for Humanity may collect, why we use it and the choices available to you. It must be reviewed when the final organizer, providers and contact details are confirmed.",
         "updated": "27 July 2026",
@@ -749,7 +749,7 @@
             "status": "placeholder",
             "heading": "Who is responsible",
             "paragraphs": [
-              "Shams for Humanity is responsible for the personal information processed through this website and its event communications. Before launch, this section will be updated with the organizer’s legal name, postal address, CVR number and direct privacy contact.",
+              "Shams for Humanity is responsible for the personal information processed through this website and its event communications. Before launch, this section will be updated with the organizer\u2019s legal name, postal address, CVR number and direct privacy contact.",
               "Draft contact: privacy@shamsforhumanity.example. Replace this address before publication."
             ]
           },
@@ -841,7 +841,7 @@
         "id": "page-terms",
         "slug": "terms",
         "status": "published",
-        "index": "02 — TERMS",
+        "index": "02 \u2014 TERMS",
         "title": "Clear terms for a shared day.",
         "intro": "These are draft website and event terms. Final ticketing, organizer and venue terms must be inserted and legally reviewed before public ticket sales begin.",
         "updated": "27 July 2026",
@@ -852,7 +852,7 @@
             "status": "placeholder",
             "heading": "About these terms",
             "paragraphs": [
-              "These terms apply to your use of the Shams for Humanity website and, once tickets are available, to attendance at the event unless the ticket provider or venue presents additional terms. The organizer’s final legal identity and contact details will be added before launch."
+              "These terms apply to your use of the Shams for Humanity website and, once tickets are available, to attendance at the event unless the ticket provider or venue presents additional terms. The organizer\u2019s final legal identity and contact details will be added before launch."
             ]
           },
           {
@@ -861,7 +861,7 @@
             "status": "placeholder",
             "heading": "Tickets and payment",
             "paragraphs": [
-              "Tickets will be sold through an external ticket provider. Prices, fees, payment methods and booking confirmation will be shown during checkout. The provider’s purchasing terms will form part of the agreement and should be read before payment.",
+              "Tickets will be sold through an external ticket provider. Prices, fees, payment methods and booking confirmation will be shown during checkout. The provider\u2019s purchasing terms will form part of the agreement and should be read before payment.",
               "A booking is complete only when the ticket provider has accepted payment and issued a confirmation. Do not publish this section until the final ticket provider and ticket conditions have been confirmed."
             ]
           },
@@ -871,7 +871,7 @@
             "status": "placeholder",
             "heading": "Refunds, cancellation and changes",
             "paragraphs": [
-              "The final refund policy will explain what happens if the event is cancelled, postponed, moved or materially changed. Festival programmes may change because of artist availability, safety requirements or circumstances outside the organizer’s reasonable control.",
+              "The final refund policy will explain what happens if the event is cancelled, postponed, moved or materially changed. Festival programmes may change because of artist availability, safety requirements or circumstances outside the organizer\u2019s reasonable control.",
               "Any limitation on refunds must be consistent with applicable consumer law and the final ticket-provider agreement. Placeholder wording should not be relied on when handling a real claim."
             ]
           },
@@ -921,7 +921,7 @@
             "status": "placeholder",
             "heading": "Responsibility and contact",
             "paragraphs": [
-              "Nothing in these terms excludes responsibility that cannot legally be excluded. The final version should define the organizer’s responsibility, complaint process, governing law and dispute-resolution information after professional review.",
+              "Nothing in these terms excludes responsibility that cannot legally be excluded. The final version should define the organizer\u2019s responsibility, complaint process, governing law and dispute-resolution information after professional review.",
               "For current questions, use the Contact page. Replace all placeholder addresses before public launch."
             ]
           }
@@ -938,7 +938,7 @@
         "id": "page-accessibility",
         "slug": "accessibility",
         "status": "published",
-        "index": "03 — ACCESSIBILITY",
+        "index": "03 \u2014 ACCESSIBILITY",
         "title": "A festival designed for access.",
         "intro": "This draft sets out our intended website and event access approach. Exact venue facilities and booking procedures will be confirmed when the venue is announced.",
         "updated": "27 July 2026",
@@ -1017,9 +1017,9 @@
       "data": {
         "id": "page-contact",
         "status": "published",
-        "index": "04 — CONTACT",
+        "index": "04 \u2014 CONTACT",
         "titleLines": [
-          "Let’s talk",
+          "Let\u2019s talk",
           "under the sun."
         ],
         "intro": "Choose the most relevant route below. All addresses are placeholders and must be replaced before launch.",
@@ -1062,6 +1062,66 @@
           "CVR number": "To be confirmed",
           "Postal address": "To be confirmed",
           "Responsible contact": "To be confirmed"
+        }
+      }
+    },
+    {
+      "id": "page-home",
+      "type": "page",
+      "slug": null,
+      "status": "published",
+      "sortOrder": 0,
+      "data": {
+        "id": "page-home",
+        "status": "published",
+        "hero": {
+          "edition": "01 / FIRST EDITION",
+          "descriptor": "MUSIC \u00b7 ART \u00b7 SOLIDARITY",
+          "eyebrow": "A gathering in support of collective care",
+          "titleLines": [
+            "Shams for",
+            "Humanity"
+          ],
+          "primaryAction": "Get tickets",
+          "secondaryAction": "Discover the festival",
+          "footerLineOne": "One day. Two stages.",
+          "footerLineTwo": "A shared purpose."
+        },
+        "about": {
+          "heading": "Where culture becomes a force for care.",
+          "lead": "Shams for Humanity is an independent festival bringing people together through music, visual art, food and conversation.",
+          "body": "Built around solidarity rather than spectacle, the event creates space for discovery, connection and meaningful action. A portion of every ticket supports trusted humanitarian initiatives."
+        },
+        "mission": {
+          "kicker": "OUR GUIDING IDEA",
+          "headingLines": [
+            "Music can move bodies.",
+            "Community can move worlds."
+          ],
+          "tags": [
+            "Listen",
+            "Gather",
+            "Act"
+          ]
+        },
+        "lineup": {
+          "title": "First wave",
+          "description": "Live performances, boundary-pushing selectors and collaborative moments across two stages.",
+          "note": "More artists, talks and installations to be announced."
+        },
+        "programme": {
+          "title": "A day in motion",
+          "description": "Move between sound, food, ideas and collective experiences at your own pace."
+        },
+        "faq": {
+          "title": "Good to know"
+        },
+        "newsletter": {
+          "kicker": "STAY CLOSE",
+          "titleLines": [
+            "News from",
+            "under the sun."
+          ]
         }
       }
     }

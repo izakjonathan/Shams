@@ -1,8 +1,14 @@
+## 2.10.5 — Simple single-page content editor
 
-## 2.10.4 — Frontend editing view
+Admin now opens a compact, mobile-oriented list of expandable sections. Homepage copy, artists, gallery, programme, tickets, FAQs and contact/information pages have inline forms. Save returns to the edited section with confirmation. New collection entries save as drafts and have an explicit Publish button. Published record saves retain publication. Status actions and revision history are in More options. Reordering locks the collection and atomically writes changed positions, recovery snapshots and audit entries; tied positions are normalized. Contact and legal page editing uses labelled fields instead of JSON.
+
+Homepage copy is a validated `page` record with stable ID `page-home` and no slug. Existing databases need no new SQL type or migration for it. Until this record is first saved/published, the existing canonical homepage copy renders. Its first save uses the standard authenticated atomic writer and creates a published record; existing homepage edits use strict versions. Database-mode public reads consume published homepage copy and page cache invalidation. Local mode remains canonical/read-only. Other event date/location details, fixed ticket section copy and navigation remain code/config managed. Images use existing local media paths; uploads are not introduced.
+
+
+## 2.10.5 — Frontend editing view
 
 The admin landing page renders the shared public homepage with section controls and direct record edit links. Gallery controls follow the current slide; FAQs and programme filters remain interactive. Navigation uses the public paper colour and typography. Drafts and archives remain available in collection editors, while the landing preview shows published content. Homepage hero/about/mission/event/newsletter copy remains code-managed; this release does not add database fields for that copy. Save, publication, authorization, revisions and concurrency checks are unchanged.
-# Shams for Humanity — 2.10.4
+# Shams for Humanity — 2.10.5
 Admin login now distinguishes storage/setup errors from genuine attempt limits and can initialize only missing login-counter storage after configured credentials verify.
 
 A Next.js festival website with a single-administrator PostgreSQL content studio. This handover candidate corrects the deployed 2.10.0 media-validation regression and extends the original 2.9.4 code, preserves its visual system and relocates implementation into feature domains.

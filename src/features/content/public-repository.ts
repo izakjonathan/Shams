@@ -4,6 +4,7 @@ import { getAdminIdentity } from "../admin/server/auth";
 import { draftMode } from "next/headers";
 import { contentRepository } from "./repository";
 import type {
+  HomeContent,
   Artist,
   ContactPageContent,
   FaqEntry,
@@ -67,7 +68,10 @@ async function records(type: PublicContentType) {
 
 export const publicContentRepository = {
   getEvent: () => contentRepository.getEvent(),
-  getHome: () => contentRepository.getHome(),
+  getHome: async () => {
+    if (sourceMode() === "local") return contentRepository.getHome();
+    return (await records("page") as HomeContent[]).find(item => item.id === "page-home") ?? contentRepository.getHome();
+  },
   getPrimaryNavigation: () => contentRepository.getPrimaryNavigation(),
   getInformationNavigation: () => contentRepository.getInformationNavigation(),
   getPublishedArtists: async () => {

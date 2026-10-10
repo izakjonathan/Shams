@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
 import type { getDatabase } from "../../../db/client";
 import { auditLogs, contentRecords, contentRevisions } from "../../../db/schema";
@@ -66,5 +66,21 @@ export async function seedMissingRecords(db: Database, actor: string, records: A
       inserted += added.length;
     }
     if (inserted) await tx.insert(auditLogs).values({ id: randomUUID(), actor, action: "seed:missing", recordType: "all", recordId: "local-content", after: { version, inserted } });
+  });
+}
+
+export async function moveRecord(db: Database, actor: string, type: AdminRecord["type"], id: string, expected: string | null, direction: -1 | 1) {
+  await db.transaction(async tx => {
+    const rows = await tx.select().from(contentRecords).where(eq(contentRecords.type, type)).orderBy(asc(contentRecords.sortOrder), asc(contentRecords.id)).for("update");
+    const index = rows.findIndex(row => row.id === id);
+    const current = rows[index];
+    if (!current) throw new Error("Record not found. Reload the editor.");
+    checkVersion(current, type, expected);
+    if (!rows[index + direction]) return;
+    [rows[index], rows[index + direction]] = [rows[index + direction], rows[index]];
+    for (const [position, row] of rows.entries()) {
+      const sortOrder = position + 1;
+      if (row.sortOrder !== sortOrder) await write(tx, actor, { ...snapshot(row), sortOrder, data: { ...(row.data as Record<string, unknown>), sortOrder } }, row, "reorder");
+    }
   });
 }

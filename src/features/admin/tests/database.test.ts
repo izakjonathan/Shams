@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
-import { saveRecord, restoreRecord, seedMissingRecords } from "../server/record-writer";
+import { saveRecord, restoreRecord, seedMissingRecords, moveRecord } from "../server/record-writer";
 import { consumeAttempt } from "../server/login-attempts";
 import type { AdminRecord } from "../types";
 
@@ -99,4 +99,19 @@ test("maintenance CLIs preserve editorial values and intentional draft states", 
   const [row] = await client`SELECT status, data FROM content_records WHERE id=${faq.id}`;
   assert.equal(row.status, "draft"); assert.equal(row.data.id, faq.id); assert.equal(row.data.question, "Keep my editorial question?");
   assert.throws(() => run("scripts/db-seed.mjs"));
+});
+
+
+test("reordering handles tied positions, records revisions, and rejects a stale form", async () => {
+  await reset();
+  await saveRecord(db, "test", record, null);
+  await saveRecord(db, "test", { ...record, id: "test-faq-b", data: { ...record.data, id: "test-faq-b" } }, null);
+  await saveRecord(db, "test", { ...record, id: "test-faq-c", data: { ...record.data, id: "test-faq-c" } }, null);
+  const [before] = await client`SELECT updated_at FROM content_records WHERE id='test-faq-c'`;
+  await moveRecord(db, "test", "faq", "test-faq-c", new Date(before.updated_at).toISOString(), -1);
+  const rows = await client`SELECT id,sort_order FROM content_records ORDER BY sort_order,id`;
+  assert.deepEqual(rows.map(row => row.id), ["test-faq", "test-faq-c", "test-faq-b"]);
+  assert.deepEqual(rows.map(row => row.sort_order), [1,2,3]);
+  assert.equal((await client`SELECT count(*)::int count FROM audit_logs WHERE action='reorder'`)[0].count, 2);
+  await assert.rejects(moveRecord(db, "test", "faq", "test-faq-c", new Date(before.updated_at).toISOString(), 1), /Reload/);
 });

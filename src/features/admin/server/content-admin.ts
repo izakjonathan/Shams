@@ -11,7 +11,7 @@ import { auditLogs, contentRecords, contentRevisions } from "../../../db/schema"
 
 import type { AdminContentType, AdminRecord } from "../types";
 export type { AdminContentType, AdminRecord } from "../types";
-import { saveRecord, restoreRecord, seedMissingRecords } from "./record-writer";
+import { saveRecord, restoreRecord, seedMissingRecords, moveRecord } from "./record-writer";
 export interface AdminRevision {
   id: string;
   recordType: AdminContentType;
@@ -38,7 +38,7 @@ export function localAdminRecords(type: AdminContentType): AdminRecord[] {
     : type === "programme" ? contentRepository.getProgramme()
       : type === "ticket" ? contentRepository.getTickets()
         : type === "faq" ? contentRepository.getFaqs()
-          : [contentRepository.getInformationPage("privacy"), contentRepository.getInformationPage("terms"), contentRepository.getInformationPage("accessibility"), contentRepository.getContactPage()];
+          : [contentRepository.getHome(), contentRepository.getInformationPage("privacy"), contentRepository.getInformationPage("terms"), contentRepository.getInformationPage("accessibility"), contentRepository.getContactPage()];
   return records.map((record) => ({
     id: record.id,
     type,
@@ -53,7 +53,7 @@ export function localAdminRecords(type: AdminContentType): AdminRecord[] {
 export async function listAdminRecords(type: AdminContentType) {
   if (!isDatabaseConfigured()) return { source: "local" as const, records: localAdminRecords(type) };
   const db = getDatabase();
-  const rows = await db.select().from(contentRecords).where(eq(contentRecords.type, type)).orderBy(asc(contentRecords.sortOrder));
+  const rows = await db.select().from(contentRecords).where(eq(contentRecords.type, type)).orderBy(asc(contentRecords.sortOrder), asc(contentRecords.id));
   return { source: "database" as const, records: rows.map((row) => {
     const metadata = { id: row.id, type: row.type as AdminContentType, slug: row.slug, status: row.status as ContentStatus, sortOrder: row.sortOrder };
     return { ...row, type: metadata.type, status: metadata.status, data: normalizeAdminRecordData(completeRecordFromCanonicalBaseline(metadata.type, metadata.id, row.data), metadata), updatedAt: row.updatedAt.toISOString() };
@@ -127,4 +127,9 @@ export async function adminRecordCounts(): Promise<Record<string, number>> {
   if (!isDatabaseConfigured()) return Object.fromEntries((["artist", "gallery", "programme", "ticket", "faq", "page"] as AdminContentType[]).map((type) => [type, localAdminRecords(type).length]));
   const rows = await getDatabase().select({ type: contentRecords.type, total: count() }).from(contentRecords).groupBy(contentRecords.type);
   return Object.fromEntries(rows.map((row) => [row.type, row.total]));
+}
+
+export async function moveAdminRecord(actor: string, type: AdminContentType, id: string, expected: string | null, direction: -1 | 1) {
+  requireContentWritable();
+  await moveRecord(getDatabase(), actor, type, id, expected, direction);
 }

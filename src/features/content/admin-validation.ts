@@ -1,3 +1,4 @@
+import { HOME_FIELDS, HOME_ARRAY_FIELDS } from "./home-fields";
 import { isLocalMedia } from "./media-path";
 import type { ContentStatus, ProgrammeCategory, TicketAvailability } from "./models";
 
@@ -128,6 +129,17 @@ function validateFaq(data: Record<string, unknown>) {
 }
 
 function validatePage(data: Record<string, unknown>, metadata: AdminRecordMetadata) {
+  if (metadata.id === "page-home") {
+    if (metadata.slug !== null) fail("Homepage cannot have a slug.");
+    for (const [group, definition] of Object.entries(HOME_FIELDS)) {
+      const values = object(data[group], `homepage.${group}`);
+      for (const key of Object.keys(definition.fields)) {
+        if (HOME_ARRAY_FIELDS.has(key)) { const entries = stringArray(values[key], `homepage.${group}.${key}`); if (!entries.length) fail(`homepage.${group}.${key} cannot be empty.`); }
+        else string(values[key], `homepage.${group}.${key}`);
+      }
+    }
+    return;
+  }
   if (metadata.slug && data.slug !== metadata.slug) fail("Page JSON slug must match the slug field.");
   if ("routes" in data) {
     string(data.index, "contact.index");
