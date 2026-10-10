@@ -2,7 +2,7 @@ import Link from "next/link";
 import { logoutAction } from "../actions/auth";
 
 const items = [
-  ["Overview", "/admin"],
+  ["Edit site", "/admin"],
   ["Artists", "/admin/artists"],
   ["Gallery", "/admin/gallery"],
   ["Programme", "/admin/programme"],
@@ -17,7 +17,7 @@ const items = [
 export function AdminNav({ identity }: { identity: string }) {
   return (
     <aside className="adminSidebar">
-      <div><p className="adminEyebrow">SHAMS ADMIN</p><strong>Content studio</strong></div>
+      <div><p className="adminEyebrow">SHAMS ADMIN</p><strong>SHAMS / HUMANITY</strong></div>
       <nav aria-label="Admin navigation">{items.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}</nav>
       <div className="adminAccount"><span>{identity}</span><form action={logoutAction}><button type="submit">Sign out</button></form></div>
     </aside>

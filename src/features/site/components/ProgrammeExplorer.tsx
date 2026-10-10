@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { ProgrammeCategory, ProgrammeEntry } from "../../content";
 
@@ -11,10 +12,11 @@ const filters: ReadonlyArray<{ value: ProgrammeCategory; label: string }> = [
 ];
 
 interface ProgrammeExplorerProps {
+  readonly editing?: boolean;
   readonly entries: readonly ProgrammeEntry[];
 }
 
-export function ProgrammeExplorer({ entries }: ProgrammeExplorerProps) {
+export function ProgrammeExplorer({ entries, editing = false }: ProgrammeExplorerProps) {
   const [activeFilter, setActiveFilter] = useState<ProgrammeCategory>("all");
   const visibleEntries = useMemo(
     () =>
@@ -57,6 +59,7 @@ export function ProgrammeExplorer({ entries }: ProgrammeExplorerProps) {
               </time>
               <div className="programmeEntryContent">
                 <h3>{entry.label}</h3>
+                {editing && <Link className="inlineEdit" href={`/admin/programme?edit=${encodeURIComponent(entry.id)}#record-editor`}>Edit <span className="srOnly">{entry.label}</span></Link>}
                 <p>{entry.description}</p>
               </div>
               <div className="programmeEntryMeta">

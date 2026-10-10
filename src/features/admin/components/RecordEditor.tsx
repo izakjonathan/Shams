@@ -8,7 +8,8 @@ import { StructuredFields } from "./StructuredFields";
 export function RecordEditor({ record, type, writable }: { record: AdminRecord; type: AdminContentType; writable: boolean }) {
   const route = adminRouteForType(type);
   return (
-    <section className="adminEditor">
+    <section className="adminEditor" id="record-editor">
+      <Link className="adminBackLink" href="/admin">← Back to site editing view</Link>
       <div className="adminSectionHeading">
         <div><p className="adminEyebrow">RECORD EDITOR</p><h2>{record.id}</h2></div>
         <div className="adminEditorMeta">

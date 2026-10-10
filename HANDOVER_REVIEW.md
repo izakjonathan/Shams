@@ -1,3 +1,9 @@
+
+Validation for 2.10.4: production build, explicit type checking, lint (four existing image warnings), nine unit tests, architecture and runtime boundary audits passed. Isolated built-server HTTP checks passed for authenticated site rendering, record edit destinations, no public edit controls, login credential/storage/rate-limit behaviour, legacy media and social images. Desktop/iPhone visual browser checks were not run because browser binaries are unavailable in this environment; verify button placement and carousel/accordion interaction before handover. No production data or deployment changed.
+
+## 2.10.4 — Frontend editing view
+
+The admin landing page renders the shared public homepage with section controls and direct record edit links. Gallery controls follow the current slide; FAQs and programme filters remain interactive. Navigation uses the public paper colour and typography. Drafts and archives remain available in collection editors, while the landing preview shows published content. Homepage hero/about/mission/event/newsletter copy remains code-managed; this release does not add database fields for that copy. Save, publication, authorization, revisions and concurrency checks are unchanged.
 # 2.10.3 correction — admin login storage errors
 
 Baseline: deployed main `bfff6070959963af5d01897b9d2762c0cd01715c`, deployment `dpl_Fvs7bjbJHS145vzVCVJiQVe3J5KQ`. One controlled wrong-credential POST reproduced the screenshot's throttled redirect; the runtime log reported `[admin login] Login protection is unavailable.` This proves a protection-storage error was mislabeled as a 15-minute attempt limit. The exact production SQL cause remains unknown because the deployed code suppressed it.

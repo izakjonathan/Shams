@@ -1,3 +1,9 @@
+
+Validation for 2.10.4: production build, explicit type checking, lint (four existing image warnings), nine unit tests, architecture and runtime boundary audits passed. Isolated built-server HTTP checks passed for authenticated site rendering, record edit destinations, no public edit controls, login credential/storage/rate-limit behaviour, legacy media and social images. Desktop/iPhone visual browser checks were not run because browser binaries are unavailable in this environment; verify button placement and carousel/accordion interaction before handover. No production data or deployment changed.
+
+## 2.10.4 — Frontend editing view
+
+The admin landing page renders the shared public homepage with section controls and direct record edit links. Gallery controls follow the current slide; FAQs and programme filters remain interactive. Navigation uses the public paper colour and typography. Drafts and archives remain available in collection editors, while the landing preview shows published content. Homepage hero/about/mission/event/newsletter copy remains code-managed; this release does not add database fields for that copy. Save, publication, authorization, revisions and concurrency checks are unchanged.
 # 2.10.3 login verification
 
 Nine unit tests, TypeScript, static/runtime audits, lint (four existing warnings) and production build pass. The database-mode built-server fixture drops only its isolated login-counter table and uses synthetic credentials. Real form POSTs verify normal wrong-password feedback, correct-password setup/session creation, wrong-password feedback after setup and genuine rate limiting. Storage-outage/failed-setup decisions are unit tested and remain fail-closed. This is a local PostgreSQL-compatible server test, not production database/MFA/browser certification.

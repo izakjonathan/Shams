@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { GalleryImage } from "../../content";
@@ -7,7 +8,7 @@ import { prefersReducedMotion } from "../../../lib/motion";
 
 const SLIDE_INTERVAL_MS = 3600;
 
-export function EventGallery({ images }: { images: readonly GalleryImage[] }) {
+export function EventGallery({ images, editing = false }: { images: readonly GalleryImage[]; editing?: boolean }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -66,6 +67,7 @@ export function EventGallery({ images }: { images: readonly GalleryImage[] }) {
           </div>
         ))}
       </div>
+      {editing && images[activeIndex] && <Link className="inlineEdit galleryEdit" href={`/admin/gallery?edit=${encodeURIComponent(images[activeIndex].id)}#record-editor`}>Edit current image</Link>}
       <h2 className="eventGalleryTitle">Shams</h2>
       {images.length > 1 && <button type="button" className="galleryControl" aria-pressed={paused} onClick={() => setPaused((value) => !value)}>{paused ? "Resume gallery" : "Pause gallery"}</button>}
     </section>

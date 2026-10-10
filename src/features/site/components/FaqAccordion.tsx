@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useState } from "react";
 import type { FaqEntry } from "../../content";
 
-export function FaqAccordion({ faqs }: { faqs: readonly FaqEntry[] }) {
+export function FaqAccordion({ faqs, editing = false }: { faqs: readonly FaqEntry[]; editing?: boolean }) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const idPrefix = useId();
 
@@ -16,6 +17,7 @@ export function FaqAccordion({ faqs }: { faqs: readonly FaqEntry[] }) {
 
         return (
           <article className={isOpen ? "open" : ""} key={question}>
+            {editing && <Link className="inlineEdit" href={`/admin/faqs?edit=${encodeURIComponent(faqs[index].id)}#record-editor`}>Edit FAQ <span className="srOnly">{question}</span></Link>}
             <button
               id={buttonId}
               type="button"

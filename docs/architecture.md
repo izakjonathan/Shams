@@ -1,3 +1,7 @@
+
+## 2.10.4 — Frontend editing view
+
+The admin landing page renders the shared public homepage with section controls and direct record edit links. Gallery controls follow the current slide; FAQs and programme filters remain interactive. Navigation uses the public paper colour and typography. Drafts and archives remain available in collection editors, while the landing preview shows published content. Homepage hero/about/mission/event/newsletter copy remains code-managed; this release does not add database fields for that copy. Save, publication, authorization, revisions and concurrency checks are unchanged.
 # Architecture
 `src/app` contains route/layout/metadata/HTTP boundary entrypoints. `src/features/site` owns public presentation and interactive motion; `src/features/content` owns canonical content, models, validation, public reads, publication tags and structured data; `src/features/admin` owns studio components/actions, authorization, session policy, preview paths, transactions and tests. `src/components` contains presentation actually reused across features. `src/db` contains the PostgreSQL adapter, schema and immutable migrations; `src/lib` contains shared site/motion/viewport/theme primitives; `src/styles` owns the public design system. Empty config/types directories are intentionally omitted.
 

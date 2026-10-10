@@ -17,7 +17,7 @@ export function RecordList({ records, type, source }: { records: AdminRecord[]; 
       <div className="adminPanelHeader"><span>{records.length} records</span><span className={`adminSource adminSource--${source}`}>{source}</span></div>
       <div className="adminTable" role="table">
         {records.map((record) => (
-          <Link className="adminRow" href={`/admin/${route}?edit=${encodeURIComponent(record.id)}`} key={record.id}>
+          <Link className="adminRow" href={`/admin/${route}?edit=${encodeURIComponent(record.id)}#record-editor`} key={record.id}>
             <span className="adminOrder">{String(record.sortOrder).padStart(2, "0")}</span>
             <strong>{title(record)}</strong>
             <span>{record.slug ?? record.id}</span>

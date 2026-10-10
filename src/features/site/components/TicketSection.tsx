@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { ArrowIcon } from "../../../components/ArrowIcon";
 import type { TicketTier } from "../../content";
 
 interface TicketSectionProps {
+  readonly editing?: boolean;
   readonly tickets: readonly TicketTier[];
   readonly ticketUrl?: string;
 }
@@ -12,9 +14,10 @@ function actionLabel(ticket: TicketTier, hasTicketUrl: boolean) {
   return "Get ticket";
 }
 
-export function TicketSection({ tickets, ticketUrl }: TicketSectionProps) {
+export function TicketSection({ tickets, ticketUrl, editing = false }: TicketSectionProps) {
   return (
     <section className="tickets section darkGlowSection" id="tickets">
+      {editing && <Link className="inlineEdit" href="/admin/tickets">Manage tickets</Link>}
       <div className="darkGlow darkGlowOne" aria-hidden="true" />
       <div className="ticketsHeader" data-lower-reveal>
         <div className="sectionIndex">05 — TICKETS</div>
@@ -33,6 +36,7 @@ export function TicketSection({ tickets, ticketUrl }: TicketSectionProps) {
               data-availability={ticket.availability}
               key={ticket.type}
             >
+              {editing && <Link className="inlineEdit" href={`/admin/tickets?edit=${encodeURIComponent(ticket.id)}#record-editor`}>Edit <span className="srOnly">{ticket.type}</span></Link>}
               <div className="ticketCardTopline">
                 <span className="ticketType">{ticket.type}</span>
                 <span className="badge">{ticket.badge}</span>

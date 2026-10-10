@@ -1,3 +1,7 @@
+
+## 2.10.4 — Frontend editing view
+
+The admin landing page renders the shared public homepage with section controls and direct record edit links. Gallery controls follow the current slide; FAQs and programme filters remain interactive. Navigation uses the public paper colour and typography. Drafts and archives remain available in collection editors, while the landing preview shows published content. Homepage hero/about/mission/event/newsletter copy remains code-managed; this release does not add database fields for that copy. Save, publication, authorization, revisions and concurrency checks are unchanged.
 # Login storage recovery in 2.10.3
 A missing login-counter table can be initialized by the sign-in flow only after the configured credentials verify. The operation is transactional, idempotent and limited to security counter storage. It does not apply/mark migration 0003 or alter content. Complete migrations still need normal operator execution. Database outages/permissions failures stay fail-closed with a setup error; actual repeated attempts still have a 15-minute limit.
 
