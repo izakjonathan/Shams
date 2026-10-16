@@ -16,15 +16,15 @@
  */
 html.splashCanvasActive,
 html.splashCanvasActive body {
-  --document-canvas-color: var(--safari-splash-color);
+  --document-canvas-color: #000000;
   background-color: var(--document-canvas-color);
   background-image: none;
 }
 
-/* Switch to the normal paper canvas while the opaque splash still covers it. */
+/* Keep the black browser canvas while the opaque splash still covers it. */
 html.splashCanvasActive.splashCanvasHandoff,
 html.splashCanvasActive.splashCanvasHandoff body {
-  --document-canvas-color: var(--color-paper);
+  --document-canvas-color: #000000;
   background-color: var(--document-canvas-color);
 }
 
@@ -100,10 +100,10 @@ html.splashCanvasActive.splashCanvasHandoff body {
   pointer-events: none;
 }
 
-/* Repeat visits skip the overlay but keep the explicit paper canvas. */
+/* Repeat visits skip the overlay but keep the explicit black canvas. */
 html.splashSessionSeen,
 html.splashSessionSeen body {
-  --document-canvas-color: var(--color-paper);
+  --document-canvas-color: #000000;
   background-color: var(--document-canvas-color);
 }
 

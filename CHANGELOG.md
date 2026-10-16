@@ -1,5 +1,9 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.7 — Black browser canvas
+
+The viewport theme colour and html/body canvas stay #000000 during initial load, splash handoff, repeat visits, scrolling and admin navigation. Removed DocumentCanvasTone and its scroll sampling/conditional footer underlay. Visible page section colours and layout are unchanged. Safari controls its final native toolbar appearance.
+
 The owner sees an Admins section in the single-page editor. Add an email/password account, reset a password, disable or re-enable access. The existing Vercel-configured login stays the owner and cannot be modified through these forms. Added admins have full content editing access but cannot manage admin accounts. All account actions authorize the owner on the server, enforce the existing preview write policy, normalize emails, validate passwords (15–256 characters), and store unique salted scrypt hashes (N=32768/r=8/p=3) rather than plaintext. Hashes/session-binding data are never selected for UI or written to audit logs.
 
 Database account sessions use the same secure cookie/8-hour duration, with signatures bound to the stored password hash and session version. Every protected request checks the account; password reset, disable and enable invalidate prior sessions. Re-enabling requires a fresh login. Login throttling runs before expensive password hashing. Credentials are rechecked against the account snapshot used to issue the session, closing password-reset races. Account creation/change and safe audit entries commit in one transaction.

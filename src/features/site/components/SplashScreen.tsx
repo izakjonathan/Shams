@@ -70,7 +70,7 @@ export function SplashScreen() {
       root.classList.remove("splashCanvasActive", "splashCanvasHandoff");
       body.classList.remove("splashActive", "splashHandoff", "splashExiting");
       body.classList.add("splashComplete");
-      root.style.setProperty("--document-canvas-color", "var(--color-paper)");
+      root.style.setProperty("--document-canvas-color", "#000000");
       body.style.removeProperty("--document-canvas-color");
       setShellInert(false);
     };
@@ -115,7 +115,7 @@ export function SplashScreen() {
       body.classList.remove("splashActive");
       body.classList.add("splashHandoff");
       root.classList.add("splashCanvasHandoff");
-      root.style.setProperty("--document-canvas-color", "var(--color-paper)");
+      root.style.setProperty("--document-canvas-color", "#000000");
       body.style.removeProperty("--document-canvas-color");
       setShellInert(false);
 

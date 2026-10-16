@@ -175,8 +175,8 @@ for (const required of [
 if (!/\.splashHandoff \.siteShell,\s*\.splashExiting \.siteShell,[\s\S]*?\{[^}]*opacity:\s*1[^}]*transition:\s*none/s.test(splashStyles)) {
   errors.push("The destination site must be fully painted before the splash starts fading.");
 }
-if (!/html\.splashCanvasActive\.splashCanvasHandoff[\s\S]*--document-canvas-color:\s*var\(--color-paper\)[\s\S]*background-color:\s*var\(--document-canvas-color\)/.test(splashStyles)) {
-  errors.push("The sampled splash canvas must switch atomically to the paper canvas during handoff.");
+if (!/html\.splashCanvasActive\.splashCanvasHandoff[\s\S]*--document-canvas-color:\s*#000000[\s\S]*background-color:\s*var\(--document-canvas-color\)/.test(splashStyles)) {
+  errors.push("Splash handoff must retain the black browser canvas.");
 }
 if (/\.splashExiting \.siteShell\s*\{[^}]*transition-delay/s.test(splashStyles)) {
   errors.push("Splash exit must not delay revealing the destination site.");
@@ -198,15 +198,11 @@ if (!routeFade.includes("{transitioning && (") || !routeFade.includes('className
 if (/(?:^|[;{])\s*visibility:\s*hidden/m.test(transitions)) {
   errors.push("The route curtain must not remain mounted and hidden with visibility.");
 }
-if (!base.includes("--document-canvas-color: var(--color-paper)") || !base.includes("background-color: var(--document-canvas-color)")) {
-  errors.push("html/body need an immediate server-rendered paper canvas fallback.");
+if (!base.includes("--document-canvas-color: #000000") || !base.includes("background-color: var(--document-canvas-color)")) {
+  errors.push("html/body need an immediate server-rendered black canvas fallback.");
 }
-const canvasTone = readFileSync(resolve(root, "src/features/site/components/DocumentCanvasTone.tsx"), "utf8");
-for (const required of ["visualViewportHeight", "elementFromPoint", "isAtDocumentBottom", "pendingCount >= 2", "if (!candidate) return"]) {
-  if (!canvasTone.includes(required)) errors.push(`DocumentCanvasTone is missing visual-viewport stability hardening: ${required}`);
-}
-if (canvasTone.includes("MutationObserver")) errors.push("DocumentCanvasTone must not resample from unrelated DOM mutations.");
-if (/candidate\s*\?\?\s*cssToken\("--color-paper"/.test(canvasTone)) errors.push("Invalid canvas samples must retain the previous tone instead of falling back to paper.");
+if (!layout.includes('themeColor: "#000000"')) errors.push("Browser theme colour must remain black.");
+if (existsSync(resolve(root, "src/features/site/components/DocumentCanvasTone.tsx"))) errors.push("Remove the old scroll-dependent canvas sampler.");
 if (/html\.splashSessionSeen[\s\S]*background-color:\s*transparent/.test(splashStyles)) {
   errors.push("Repeat visits must never leave the root canvas transparent.");
 }
@@ -215,7 +211,6 @@ if (/html\.splashSessionSeen[\s\S]*background-color:\s*transparent/.test(splashS
 if (routeFade.includes("routeTransitionActive") || routeFade.includes("routeFade--") || routeFade.includes("data-transition-kind")) {
   errors.push("Dead route-transition markers must not be restored.");
 }
-if (canvasTone.includes("dataset.canvasTone")) errors.push("DocumentCanvasTone must not write unused canvas-tone data attributes.");
 // v1.7.6 centralized theme and gradient architecture.
 const themeSource = readFileSync(resolve(root, "src/styles/theme.json"), "utf8");
 const generatedTheme = readFileSync(resolve(root, "src/styles/theme.generated.css"), "utf8");
@@ -307,12 +302,6 @@ if (/\.artistQuote \.darkGlowOne\s*\{[^}]*--glow-(?:w|h|opacity)/s.test(artistSt
 }
 
 // v2.1.8 Safari bottom-canvas and motion hardening
-if (!canvasTone.includes('root.style.backgroundColor = color') || !canvasTone.includes('body.style.backgroundColor = color')) {
-  errors.push("DocumentCanvasTone must apply the sampled colour directly to both html and body.");
-}
-if (!canvasTone.includes('documentCanvasAtFooter') || !base.includes('html.documentCanvasAtFooter')) {
-  errors.push("The true document bottom must use the explicit dark Safari canvas state.");
-}
 if (footerStyles.includes('.siteFooter::after') || footerStyles.includes('flex: 0 0 160px')) {
   errors.push("Footer must not use flow-content bleed that makes it taller than one viewport.");
 }
@@ -355,14 +344,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.10.6") errors.push("package.json version must be 2.10.6.");
-// v2.1.8 footer canvas permanence guards
-const canvasToneV217 = readFileSync(resolve(root, "src/features/site/components/DocumentCanvasTone.tsx"), "utf8");
-const baseCssV217 = readFileSync(resolve(root, "src/styles/base.css"), "utf8");
-if (!canvasToneV217.includes("footerTouchesVisualViewportBottom")) errors.push("Document canvas must detect footer contact with the visual viewport bottom.");
-if (!canvasToneV217.includes("footerTouchesVisualViewportBottom() || isAtDocumentBottom()")) errors.push("Footer canvas lock must not depend only on exact document-end metrics.");
-if (!baseCssV217.includes("html.documentCanvasAtFooter body::after")) errors.push("Footer canvas state must provide a non-layout black Safari underlay.");
-if (!baseCssV217.includes("body::after") || !baseCssV217.includes("display: none")) errors.push("The Safari footer underlay must be display:none outside footer state.");
+if (packageJson.version !== "2.10.7") errors.push("package.json version must be 2.10.7.");
 if (readFileSync(resolve(root, "src/styles/footer.css"), "utf8").includes("footerCanvasBleed")) errors.push("Footer must not regain flow-based canvas bleed that increases its height.");
 
 // v2.1.8 artist arrow size regression guard
@@ -391,10 +373,7 @@ if (!routeFade.includes('data-route-phase={phase}') || !transitions.includes('.r
 if (!routeFade.includes('cssTimeMs("--route-curtain') || !routeFade.includes("FALLBACK_BUFFER_MS")) {
   errors.push("Route fallback timers must derive from the CSS motion tokens.");
 }
-if (!canvasTone.includes("isIOSWebKit") || !canvasTone.includes("SETTLE_DELAY_MS")) {
-  errors.push("DocumentCanvasTone must avoid continuous dynamic sampling on non-iOS engines and resample after toolbar settling.");
-}
-if (canvasTone.includes("scheduleTwice")) errors.push("Legacy double-rAF canvas scheduling must not remain.");
+
 const appShell = readFileSync(resolve(root, "src/features/site/components/AppShell.tsx"), "utf8");
 for (const obsolete of ["splashEntering", "splashHolding", "splashHandoffActive"]) {
   if (appShell.includes(obsolete)) errors.push(`Obsolete AppShell splash cleanup state remains: ${obsolete}`);

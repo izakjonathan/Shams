@@ -68,3 +68,7 @@ The public database pages, admin, and preview routes must report the Node.js run
 6. Move it back to draft and confirm it disappears publicly.
 7. Confirm authenticated preview still displays it.
 8. Confirm the audit log records both status changes.
+
+## 2.10.7 verification
+
+Passed: production build, TypeScript, 12 unit tests, static architecture audit, runtime-boundary audit and release configuration validation. ESLint completed with no errors and four existing next/no-img-element warnings. No database change; SQL checks were not needed. Physical iPhone/Safari toolbar tint and browser interaction checks were not available in this environment; follow APPLY_CHANGES.md for device checks. Reviewed the changed React components for hook dependencies, accessibility, hydration and render behaviour; no new interaction or fetching was introduced.

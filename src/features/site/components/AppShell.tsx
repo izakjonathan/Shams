@@ -2,7 +2,6 @@
 
 import { useEffect, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { DocumentCanvasTone } from "./DocumentCanvasTone";
 import { RouteFade } from "./RouteFade";
 import { SplashScreen } from "./SplashScreen";
 import { LowerSectionReveal } from "./LowerSectionReveal";
@@ -14,12 +13,12 @@ export function AppShell({ children, header, footer }: { children: ReactNode; he
   useEffect(() => {
     if (!isAdmin) return;
     const root = document.documentElement;
-    const paper = getComputedStyle(root).getPropertyValue("--color-paper").trim() || "#f5f2eb";
+    const canvas = "#000000";
     document.body.classList.remove("splashActive", "splashHandoff", "splashExiting", "splashComplete");
-    root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashSessionSeen", "documentCanvasAtFooter");
-    root.style.setProperty("--document-canvas-color", paper);
-    root.style.backgroundColor = paper;
-    document.body.style.backgroundColor = paper;
+    root.classList.remove("splashCanvasActive", "splashCanvasHandoff", "splashSessionSeen");
+    root.style.setProperty("--document-canvas-color", canvas);
+    root.style.backgroundColor = canvas;
+    document.body.style.backgroundColor = canvas;
   }, [isAdmin]);
 
   if (isAdmin) return <>{children}</>;
@@ -28,7 +27,6 @@ export function AppShell({ children, header, footer }: { children: ReactNode; he
     <>
       <a className="skipLink" href="#main-content">Skip to content</a>
       <SplashScreen />
-      <DocumentCanvasTone />
       <LowerSectionReveal />
       <div className="siteShell">
         <RouteFade header={header}>{children}{footer}</RouteFade>
