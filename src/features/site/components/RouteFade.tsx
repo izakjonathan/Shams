@@ -83,11 +83,16 @@ function focusElement(target: HTMLElement | null) {
 }
 
 async function waitForDestinationLayout() {
+  let fontTimer = 0;
   try {
-    await document.fonts?.ready;
+    await Promise.race([
+      document.fonts?.ready,
+      new Promise<void>((resolve) => { fontTimer = window.setTimeout(resolve, 300); }),
+    ]);
   } catch {
     // Font loading failure must never block navigation recovery.
   }
+  window.clearTimeout(fontTimer);
   await nextPaint();
 }
 
@@ -154,7 +159,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       target.scrollIntoView({ behavior: "auto", block: "start" });
     } else {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-      target = document.querySelector<HTMLElement>("main#main-content");
+      target = document.getElementById("main-content");
     }
 
     if (pending?.hash) clearManagedHash();
@@ -214,10 +219,11 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       else if (target) target.scrollIntoView({ behavior, block: "start" });
       else window.scrollTo({ top: 0, left: 0, behavior });
       clearManagedHash();
-      if (options?.focusOnArrival) focusElement(target ?? document.querySelector<HTMLElement>("main#main-content"));
+      if (options?.focusOnArrival) focusElement(target ?? document.getElementById("main-content"));
       return;
     }
 
+    prefetch(href);
     clearTimers();
     lockRef.current = true;
     navigationStartedRef.current = false;
@@ -247,7 +253,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       timer(startNavigation, curtainDuration(nextKind, "cover") + FALLBACK_BUFFER_MS);
     });
     timer(unlock, WATCHDOG_MS);
-  }, [clearTimers, startNavigation, timer, unlock]);
+  }, [clearTimers, prefetch, startNavigation, timer, unlock]);
 
   useEffect(() => {
     const previous = window.history.scrollRestoration;
@@ -275,6 +281,7 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
         data-live-route
         data-route-phase={phase}
         aria-busy={transitioning}
+        inert={transitioning}
       >
         {children}
       </div>

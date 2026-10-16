@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 
-export const SPLASH_SESSION_KEY = "shf-splash-seen-v2.1.8";
+export const SPLASH_SESSION_KEY = "shf-splash-seen-v2.6.0";
 
 export async function skipSplash(page: Page): Promise<void> {
   await page.addInitScript((key) => {
@@ -9,6 +9,6 @@ export async function skipSplash(page: Page): Promise<void> {
 }
 
 export async function waitForRouteIdle(page: Page): Promise<void> {
-  await page.locator(".routeTransitionVeil").waitFor({ state: "detached", timeout: 10_000 }).catch(() => {});
+  await page.locator(".routeTransitionVeil").waitFor({ state: "detached", timeout: 10_000 });
   await page.locator("main").first().waitFor({ state: "visible" });
 }

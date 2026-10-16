@@ -3,10 +3,10 @@
    ========================================================================== */
 
 :root {
-  --route-curtain-open-duration: 550ms;
-  --route-curtain-close-duration: 500ms;
-  --route-curtain-switch-duration: 470ms;
-  --route-curtain-reveal-duration: 550ms;
+  --route-curtain-open-duration: 320ms;
+  --route-curtain-close-duration: 280ms;
+  --route-curtain-switch-duration: 260ms;
+  --route-curtain-reveal-duration: 320ms;
   --route-curtain-ease: var(--ease-menu);
 }
 
@@ -59,4 +59,13 @@
 
 @media (prefers-reduced-motion: reduce) {
   .routeTransitionVeil { transition-duration: 1ms !important; }
+}
+
+@media (min-width: 760px) {
+  :root {
+    --route-curtain-open-duration: 380ms;
+    --route-curtain-close-duration: 320ms;
+    --route-curtain-switch-duration: 300ms;
+    --route-curtain-reveal-duration: 380ms;
+  }
 }

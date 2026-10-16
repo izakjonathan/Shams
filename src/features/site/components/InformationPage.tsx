@@ -20,7 +20,7 @@ export function InformationPage({ content }: { readonly content: InformationPage
         </aside>
         <article>
           {content.sections.map((section, indexNumber) => (
-            <section key={section.id} data-content-id={section.id} data-content-status={section.status}>
+            <section data-lower-reveal key={section.id} data-content-id={section.id} data-content-status={section.status}>
               <div className="informationNumber">{String(indexNumber + 1).padStart(2, "0")}</div>
               <div>
                 <h2>{section.heading}</h2>

@@ -27,11 +27,12 @@ export function TicketSection({ tickets, ticketUrl, editing = false }: TicketSec
         <h2>Choose your way in.</h2>
         <p>Every ticket gives full access to the festival. The tiers simply offer different ways to support the shared purpose.</p>
       </div>
-      <div className="ticketGrid" data-lower-reveal>
+      <div className="ticketGrid">
         {tickets.map((ticket) => {
           const canPurchase = ticket.availability === "available" && Boolean(ticketUrl);
           return (
             <article
+              data-lower-reveal
               className={ticket.featured ? "featuredTicket" : ""}
               data-availability={ticket.availability}
               key={ticket.type}

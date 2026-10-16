@@ -9,14 +9,14 @@ export function FaqAccordion({ faqs, editing = false }: { faqs: readonly FaqEntr
   const idPrefix = useId();
 
   return (
-    <div className="faqList" data-lower-reveal>
+    <div className="faqList">
       {faqs.map(({ question, answer }, index) => {
         const isOpen = openFaq === index;
         const buttonId = `${idPrefix}-button-${index}`;
         const answerId = `${idPrefix}-answer-${index}`;
 
         return (
-          <article className={isOpen ? "open" : ""} key={question}>
+          <article data-lower-reveal className={isOpen ? "open" : ""} key={question}>
             {editing && <Link className="inlineEdit" href={`/admin/faqs?edit=${encodeURIComponent(faqs[index].id)}#record-editor`}>Edit FAQ <span className="srOnly">{question}</span></Link>}
             <button
               id={buttonId}
@@ -26,7 +26,7 @@ export function FaqAccordion({ faqs, editing = false }: { faqs: readonly FaqEntr
               aria-controls={answerId}
             >
               <span>{question}</span>
-              <span className="faqToggleIcon" aria-hidden="true">{isOpen ? "−" : "+"}</span>
+              <span className="faqToggleIcon" aria-hidden="true" />
             </button>
             <div
               id={answerId}

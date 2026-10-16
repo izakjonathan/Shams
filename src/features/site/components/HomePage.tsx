@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { eventStructuredData } from "../../../features/content/structured-data";
 import { FadeLink } from "../../../components/FadeLink";
@@ -45,7 +46,9 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
         <div className="heroMeta topRight"><span>{event.numericDate}</span><span>{event.city.toUpperCase()}</span></div>
         <div className="heroCenter">
           <p className="eyebrow">{home.hero.eyebrow}</p>
-          <h1>{home.hero.titleLines.map((line, index) => <span key={line}>{line}{index < home.hero.titleLines.length - 1 && <br />}</span>)}</h1>
+          <h1>{home.hero.titleLines.map((line, index) => (
+            <span className="heroTitleLine" key={`${index}-${line}`} style={{ "--hero-line-index": Math.min(index, 3) } as CSSProperties}><span>{line}</span></span>
+          ))}</h1>
           <div className="heroActions">
             <FadeLink className="button buttonPrimary" href="/#tickets">{home.hero.primaryAction} <ArrowIcon /></FadeLink>
             <FadeLink className="textLink" href="/#about">{home.hero.secondaryAction} <span aria-hidden="true">↓</span></FadeLink>
@@ -96,9 +99,9 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
           description={home.lineup.description}
           reveal
         />
-        <div className="artistList" data-lower-reveal>
+        <div className="artistList">
           {artists.map((artist, index) => (
-            <article className="artistRow" id={`artist-${artist.slug}`} key={artist.slug}>
+            <article className="artistRow" data-lower-reveal id={`artist-${artist.slug}`} key={artist.slug}>
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
               <h3>{artist.name}</h3>
               {editing && <Link className="inlineEdit inlineEdit--record" href={`/admin/artists?edit=${encodeURIComponent(artist.id)}#record-editor`}>Edit <span className="srOnly">{artist.name}</span></Link>}
@@ -125,15 +128,15 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
           <h2>Everything you need for the day.</h2>
           <p>Designed to feel easy from arrival to the final track.</p>
         </div>
-        <div className="infoCards" data-lower-reveal>
-          <article><span>01</span><h3>Date & time</h3><p>Sunday<br/>{event.date}<br/>{event.timeRange}</p></article>
-          <article><span>02</span><h3>Location</h3><p>Copenhagen<br/>Venue revealed soon<br/>Easy public transport</p></article>
-          <article><span>03</span><h3>Experience</h3><p>2 stages<br/>Food & drinks<br/>Art installations</p></article>
-          <article><span>04</span><h3>Access</h3><p>18+ event<br/>Step-free routes<br/>Quiet space available</p></article>
+        <div className="infoCards">
+          <article data-lower-reveal><span>01</span><h3>Date & time</h3><p>Sunday<br/>{event.date}<br/>{event.timeRange}</p></article>
+          <article data-lower-reveal><span>02</span><h3>Location</h3><p>Copenhagen<br/>Venue revealed soon<br/>Easy public transport</p></article>
+          <article data-lower-reveal><span>03</span><h3>Experience</h3><p>2 stages<br/>Food & drinks<br/>Art installations</p></article>
+          <article data-lower-reveal><span>04</span><h3>Access</h3><p>18+ event<br/>Step-free routes<br/>Quiet space available</p></article>
         </div>
       </section>
 
-      <section className="programme section paperGlowSection">
+      <section className="programme section paperGlowSection" id="programme">
         <div className="paperGlow glowOne" aria-hidden="true" />
         <div className="paperGlow glowTwo" aria-hidden="true" />
         <div className="paperGlow glowThree" aria-hidden="true" />

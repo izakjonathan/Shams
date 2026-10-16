@@ -1,52 +1,10 @@
-/* ========================================================================== 
-   21 — Reduced motion
-   ========================================================================== */
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    transition-delay: 0ms !important;
-  }
-
-  .siteShell,
-  .splashScreen,
-  .splashScreenArtWrap,
-  .mobileMenu,
-  .faqAnswerInner {
-    transform: none !important;
-    filter: none !important;
-  }
-
-
-  .faqAnswer,
-  .faqAnswerInner {
-    transition: none;
-  }
-}
-
-/* ========================================================================== 
-   Lower-section scroll reveal — progressive enhancement only
-   ========================================================================== */
-
+/* Motion is progressive enhancement: server content is always readable. */
 :root {
-  --lower-reveal-distance: 28px;
-  --lower-reveal-duration: 760ms;
-  --lower-reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --lower-reveal-distance: 16px;
+  --lower-reveal-duration: var(--duration-reveal);
+  --lower-reveal-ease: var(--ease-reveal);
 }
 
-/*
- * Server-rendered content is visible by default. Only elements marked pending
- * by the client controller are concealed, and iOS WebKit never enables this
- * state. The hero is intentionally unmarked; About is the first reveal-enabled section.
- */
 html.lowerRevealEnabled [data-lower-reveal].isLowerRevealPending {
   opacity: 0;
   transform: translate3d(0, var(--lower-reveal-distance), 0);
@@ -54,18 +12,88 @@ html.lowerRevealEnabled [data-lower-reveal].isLowerRevealPending {
 }
 
 html.lowerRevealEnabled [data-lower-reveal].isLowerRevealVisible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
+  opacity: var(--reveal-final-opacity, 1);
+  transform: none;
   transition:
     opacity var(--lower-reveal-duration) var(--lower-reveal-ease),
     transform var(--lower-reveal-duration) var(--lower-reveal-ease);
   transition-delay: var(--lower-reveal-delay, 0ms);
 }
 
+/* Focus is immediate even before the observer gets its next callback. */
+html.lowerRevealEnabled [data-lower-reveal]:focus-within {
+  opacity: var(--reveal-final-opacity, 1);
+  transform: none;
+  transition: none;
+}
+
+.heroTitleLine,
+.heroTitleLine > span,
+.eventGalleryTitle > span { display: block; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Start when the splash dissolves; never conceal the hero in server HTML. */
+  body:is(.splashExiting, .splashComplete) .heroTitleLine > span {
+    animation: heroLineArrival var(--duration-reveal) var(--ease-reveal) backwards;
+    animation-delay: calc(var(--hero-line-index, 0) * 60ms);
+  }
+
+  .programmeEntry {
+    animation: programmeArrival 280ms var(--ease-standard) backwards;
+    animation-delay: calc(var(--programme-entry-index, 0) * 35ms);
+  }
+
+  .button .arrowIcon,
+  .ticketAction .arrowIcon,
+  .artistArrow .arrowIcon { transition: transform var(--duration-fast) var(--ease-standard); }
+
+  /* Touch feedback needs neither a hover state nor a JavaScript listener. */
+  .programmeFilter:active,
+  .galleryControl:not(:disabled):active { transform: scale(.97); }
+
+  @media (hover: hover) and (pointer: fine) {
+    .button:hover .arrowIcon,
+    .ticketAction:hover .arrowIcon,
+    .artistArrow:hover .arrowIcon { transform: translateX(3px); }
+  }
+}
+
+@keyframes heroLineArrival {
+  from { opacity: .35; transform: translate3d(0, 14px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes programmeArrival {
+  from { opacity: .35; transform: translate3d(0, 8px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (min-width: 760px) {
+  :root { --lower-reveal-distance: 22px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
   html.lowerRevealEnabled [data-lower-reveal] {
-    opacity: 1 !important;
+    opacity: var(--reveal-final-opacity, 1) !important;
     transform: none !important;
     transition: none !important;
   }
+  .siteShell, .splashScreen, .splashScreenArtWrap, .mobileMenu,
+  .mobileMenu nav a, .heroTitleLine > span, .programmeEntry,
+  .faqAnswerInner, .artistPortraitImage,
+  .button:active, .ticketAction:active, .artistNavigationLink:active,
+  .pageCloseButtonVisual {
+    transform: none !important;
+    filter: none !important;
+  }
+  .faqAnswer, .faqAnswerInner { transition: none; }
+  .splashScreen { display: none !important; }
+  .splashActive .siteShell { opacity: 1 !important; }
+  .splashActive .skipLink { opacity: 1 !important; pointer-events: auto !important; }
 }

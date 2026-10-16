@@ -17,7 +17,8 @@ input:focus-visible {
 .skipLink {
   position: absolute;
   z-index: 100;
-  top: -100%;
+  top: 16px;
+  transform: translateY(calc(-100% - 20px));
   left: var(--page-gutter);
   padding: 12px 20px;
   background: var(--color-ink);
@@ -25,11 +26,11 @@ input:focus-visible {
   font-size: 13px;
   letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  transition: top var(--duration-fast) var(--ease-standard);
+  transition: transform var(--duration-fast) var(--ease-standard);
 }
 
 .skipLink:focus {
-  top: 16px;
+  transform: translateY(0);
 }
 
 
@@ -79,8 +80,6 @@ input:focus-visible {
   }
 
   .faqList button:hover {
-    padding-right: 10px;
-    padding-left: 10px;
     background: var(--color-overlay-hover) !important;
   }
 

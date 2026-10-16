@@ -6,17 +6,17 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("mobile menu opens, closes, and returns interaction to the page", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "webkit-mobile", "Mobile-menu lifecycle is covered in the mobile project.");
+  test.skip(!testInfo.project.use.isMobile, "Mobile-menu lifecycle is covered in the mobile project.");
   await page.goto("/");
   const openButton = page.getByRole("button", { name: "Open navigation menu" });
   await openButton.click();
 
   await expect(page.getByRole("button", { name: "Close navigation menu" })).toBeVisible();
-  await expect(page.getByRole("navigation", { name: "Site navigation" })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Site navigation" })).toBeVisible();
   await expect(page.locator("main")).toHaveJSProperty("inert", true);
 
   await page.getByRole("button", { name: "Close navigation menu" }).click();
-  await expect(page.getByRole("navigation", { name: "Site navigation" })).not.toBeAttached();
+  await expect(page.getByRole("dialog", { name: "Site navigation" })).not.toBeAttached();
   await expect(page.locator("main")).toHaveJSProperty("inert", false);
 });
 
@@ -24,6 +24,7 @@ test("artist page opens through the curtain and closes back to its lineup row", 
   await page.goto("/#lineup");
   const artistLink = page.getByRole("link", { name: /View .* artist page/ }).first();
   const targetHref = await artistLink.getAttribute("href");
+  const rowId = await artistLink.locator("..").getAttribute("id");
   expect(targetHref).toMatch(/^\/artists\//);
 
   await artistLink.click();
@@ -33,15 +34,15 @@ test("artist page opens through the curtain and closes back to its lineup row", 
 
   await page.getByRole("link", { name: "Close the artist page and return to the lineup" }).click();
   await waitForRouteIdle(page);
-  await expect(page).toHaveURL(/\/#artist-/);
-  await expect(page.locator(".artistRow:target")).toBeVisible();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.locator(`#${rowId}`)).toBeInViewport();
 });
 
 test("information page close returns to the footer", async ({ page }) => {
   await page.goto("/privacy");
   await page.getByRole("link", { name: /Close this page and return to the bottom/ }).click();
   await waitForRouteIdle(page);
-  await expect(page).toHaveURL(/\/#site-footer$/);
+  await expect(page).toHaveURL(/\/$/);
   await expect(page.locator("#site-footer")).toBeVisible();
 
   const footerContact = await page.evaluate(() => {

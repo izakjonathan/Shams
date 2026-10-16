@@ -5,59 +5,49 @@ import { useEffect, useRef, useState } from "react";
 import { afterPaint, cssTimeMs, prefersReducedMotion } from "../../../lib/motion";
 import splashArtwork from "../../../../public/images/splash-humanity-artwork.png";
 
-const MIN_HOLD_MS = 1100;
-const FONT_READY_TIMEOUT_MS = 1400;
+const MIN_HOLD_MS = 640;
+const FONT_READY_TIMEOUT_MS = 800;
+const MAX_SPLASH_WAIT_MS = 2000;
 const SESSION_KEY = "shf-splash-seen-v2.6.0";
 let hasShownSplashInMemory = false;
 
 function hasSeenSplashThisSession(): boolean {
   if (hasShownSplashInMemory) return true;
-  try {
-    return window.sessionStorage.getItem(SESSION_KEY) === "1";
-  } catch {
-    return false;
-  }
+  try { return window.sessionStorage.getItem(SESSION_KEY) === "1"; }
+  catch { return false; }
 }
 
 function markSplashSeen(): void {
   hasShownSplashInMemory = true;
-  try {
-    window.sessionStorage.setItem(SESSION_KEY, "1");
-  } catch {
-    // The in-memory fallback still prevents repeats during client navigation.
-  }
+  try { window.sessionStorage.setItem(SESSION_KEY, "1"); }
+  catch { /* In-memory state still prevents repeats during navigation. */ }
 }
-
 
 type SplashStage = "entering" | "active" | "exiting" | "done";
 
-/**
- * Full-screen splash sequence with no document-scroll mutation:
- * 1. keep an explicit sampled blue document colour,
- * 2. bleed the artwork beyond both toolbar edges,
- * 3. atomically prepare the live site and paper canvas,
- * 4. dissolve the artwork only after the destination is painted.
- */
+/** A bounded artwork dissolve; never waits on unrelated page images or window.load. */
 export function SplashScreen() {
   const [stage, setStage] = useState<SplashStage>("entering");
-  const hasBegunExit = useRef(false);
+  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const root = document.documentElement;
     const body = document.body;
     const shell = document.querySelector<HTMLElement>(".siteShell");
-    const reducedMotion = prefersReducedMotion();
-    const enterDuration = cssTimeMs("--duration-splash-enter", 760);
-    const exitDuration = cssTimeMs("--duration-splash-exit", 860);
-    const isRepeatVisit = hasSeenSplashThisSession();
-    const skipEnterAnimation = reducedMotion;
+    const image = imageRef.current;
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const enterDuration = cssTimeMs("--duration-splash-enter", 320);
+    const exitDuration = cssTimeMs("--duration-splash-exit", 420);
     const start = performance.now();
-    let hasLoaded = document.readyState === "complete";
-    let cancelEnterPaint: (() => void) | null = null;
-    let cancelHandoffPaint: (() => void) | null = null;
+    let cancelled = false;
+    let finished = false;
+    let exiting = false;
+    let cancelEnterPaint: (() => void) | undefined = undefined;
+    let cancelHandoffPaint: (() => void) | undefined;
     let exitTimer = 0;
     let doneTimer = 0;
-    let completed = false;
+    let fontTimer = 0;
+    let watchdog = 0;
 
     const setShellInert = (inert: boolean) => {
       if (!shell) return;
@@ -65,7 +55,6 @@ export function SplashScreen() {
       if (inert) shell.setAttribute("aria-hidden", "true");
       else shell.removeAttribute("aria-hidden");
     };
-
     const restoreNormalDocument = () => {
       root.classList.remove("splashCanvasActive", "splashCanvasHandoff");
       body.classList.remove("splashActive", "splashHandoff", "splashExiting");
@@ -74,13 +63,24 @@ export function SplashScreen() {
       body.style.removeProperty("--document-canvas-color");
       setShellInert(false);
     };
-
-    if (isRepeatVisit) {
-      hasShownSplashInMemory = true;
+    const complete = () => {
+      if (cancelled || finished) return;
+      finished = true;
+      window.clearTimeout(exitTimer);
+      window.clearTimeout(doneTimer);
+      window.clearTimeout(fontTimer);
+      window.clearTimeout(watchdog);
+      cancelEnterPaint?.();
+      cancelHandoffPaint?.();
       setStage("done");
+      markSplashSeen();
       root.classList.add("splashSessionSeen");
       restoreNormalDocument();
-      completed = true;
+    };
+    const handleMotionChange = () => { if (motionQuery.matches) complete(); };
+
+    if (hasSeenSplashThisSession() || prefersReducedMotion()) {
+      complete();
       return;
     }
 
@@ -88,95 +88,67 @@ export function SplashScreen() {
     body.classList.add("splashActive");
     body.classList.remove("splashHandoff", "splashExiting", "splashComplete");
     root.classList.add("splashCanvasActive");
-    if (skipEnterAnimation) {
-      setStage("active");
-    } else {
-      cancelEnterPaint = afterPaint(() => setStage("active"));
-    }
+    cancelEnterPaint = afterPaint(() => { if (!cancelled) setStage("active"); });
+    motionQuery.addEventListener("change", handleMotionChange);
 
     const waitForDisplayFont = async () => {
       if (!("fonts" in document)) return;
-      await Promise.race([
-        document.fonts.ready,
-        new Promise<void>((resolve) => window.setTimeout(resolve, FONT_READY_TIMEOUT_MS)),
-      ]);
+      try {
+        await Promise.race([
+          document.fonts.ready,
+          new Promise<void>((resolve) => { fontTimer = window.setTimeout(resolve, FONT_READY_TIMEOUT_MS); }),
+        ]);
+      } catch { /* A failed font must not block the page. */ }
+      window.clearTimeout(fontTimer);
     };
-
     const beginExit = async () => {
-      if (hasBegunExit.current) return;
-      hasBegunExit.current = true;
-
-      // Keep the artwork fully opaque until the display font has either loaded
-      // or reached a bounded timeout. This prevents a Times-to-Agilera swap
-      // from occurring after the hero is already visible.
+      if (cancelled || finished || exiting) return;
+      exiting = true;
       await waitForDisplayFont();
-
-      // Prepare the live page while the splash is still fully opaque.
+      if (cancelled || finished || motionQuery.matches) return;
       body.classList.remove("splashActive");
       body.classList.add("splashHandoff");
       root.classList.add("splashCanvasHandoff");
       root.style.setProperty("--document-canvas-color", "#000000");
-      body.style.removeProperty("--document-canvas-color");
       setShellInert(false);
-
       cancelHandoffPaint = afterPaint(() => {
+        if (cancelled) return;
         setStage("exiting");
         body.classList.remove("splashHandoff");
         body.classList.add("splashExiting");
+        doneTimer = window.setTimeout(complete, exitDuration + 50);
       });
-
-      doneTimer = window.setTimeout(() => {
-        setStage("done");
-        markSplashSeen();
-        root.classList.add("splashSessionSeen");
-        restoreNormalDocument();
-        completed = true;
-        window.dispatchEvent(new Event("scroll"));
-      }, skipEnterAnimation ? 50 : exitDuration + 50);
     };
-
-    const maybeScheduleExit = () => {
-      if (!hasLoaded || hasBegunExit.current) return;
-      const minimumTotal = reducedMotion ? 0 : enterDuration + MIN_HOLD_MS;
-      const remaining = Math.max(0, minimumTotal - (performance.now() - start));
+    const scheduleExit = () => {
+      if (cancelled || finished) return;
       window.clearTimeout(exitTimer);
-      exitTimer = window.setTimeout(beginExit, remaining);
+      exitTimer = window.setTimeout(beginExit, Math.max(0, Math.max(enterDuration, MIN_HOLD_MS) - (performance.now() - start)));
     };
-
-    const handleLoad = () => {
-      hasLoaded = true;
-      maybeScheduleExit();
-    };
-
-    if (hasLoaded) maybeScheduleExit();
-    else window.addEventListener("load", handleLoad, { once: true });
+    image?.addEventListener("load", scheduleExit, { once: true });
+    image?.addEventListener("error", scheduleExit, { once: true });
+    if (!image || image.complete) scheduleExit();
+    watchdog = window.setTimeout(beginExit, MAX_SPLASH_WAIT_MS);
 
     return () => {
+      cancelled = true;
       cancelEnterPaint?.();
       cancelHandoffPaint?.();
       window.clearTimeout(exitTimer);
       window.clearTimeout(doneTimer);
-      window.removeEventListener("load", handleLoad);
-      if (!completed) restoreNormalDocument();
+      window.clearTimeout(fontTimer);
+      window.clearTimeout(watchdog);
+      image?.removeEventListener("load", scheduleExit);
+      image?.removeEventListener("error", scheduleExit);
+      motionQuery.removeEventListener("change", handleMotionChange);
+      restoreNormalDocument();
     };
   }, []);
 
   if (stage === "done") return null;
-
   return (
-    <div
-      className={`splashScreen is${stage[0].toUpperCase()}${stage.slice(1)}`}
-      aria-hidden="true"
-    >
+    <div className={`splashScreen is${stage[0].toUpperCase()}${stage.slice(1)}`} aria-hidden="true">
       <div className="splashScreenArtWrap">
-        <Image
-          src={splashArtwork}
-          alt=""
-          fill
-          priority
-          sizes="100vw"
-          className="splashScreenArt"
-        />
+        <Image ref={imageRef} src={splashArtwork} alt="" fill priority sizes="100vw" className="splashScreenArt" />
       </div>
     </div>
   );

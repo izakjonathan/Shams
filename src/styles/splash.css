@@ -3,7 +3,7 @@
    ========================================================================== */
 
 :root {
-  /* Sampled from the supplied artwork for Safari's Liquid Glass fallback. */
+  /* Artwork background only; the document canvas remains black. */
   --safari-splash-color: #78bce8;
   --safari-splash-top-bleed: 72px;
   --safari-splash-bottom-bleed: 160px;

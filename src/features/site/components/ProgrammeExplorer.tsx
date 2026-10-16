@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import type { ProgrammeCategory, ProgrammeEntry } from "../../content";
 
 const filters: ReadonlyArray<{ value: ProgrammeCategory; label: string }> = [
@@ -27,7 +27,7 @@ export function ProgrammeExplorer({ entries, editing = false }: ProgrammeExplore
   );
 
   return (
-    <div className="programmeExplorer" data-lower-reveal>
+    <div className="programmeExplorer">
       <div className="programmeFilters" role="group" aria-label="Filter programme">
         {filters.map((filter) => (
           <button
@@ -42,13 +42,14 @@ export function ProgrammeExplorer({ entries, editing = false }: ProgrammeExplore
         ))}
       </div>
 
-      <div className="programmeList" aria-live="polite">
+      <div className="programmeList" data-lower-reveal aria-live="polite" key={activeFilter}>
         {visibleEntries.length === 0 ? (
           <p className="programmeEmpty">Nothing in this category yet — check back soon or browse another filter.</p>
         ) : (
-          visibleEntries.map((entry) => (
+          visibleEntries.map((entry, index) => (
             <article
               className="programmeEntry"
+              style={{ "--programme-entry-index": Math.min(index, 3) } as CSSProperties}
               id={`programme-${entry.id}`}
               data-content-id={entry.id}
               data-content-status={entry.status}

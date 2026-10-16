@@ -9,9 +9,10 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent as ReactMouseEvent,
   type TransitionEvent,
+  type CSSProperties,
 } from "react";
 import { navigationRepository } from "../../content";
-import { afterPaint, cssTimeMs } from "../../../lib/motion";
+import { afterPaint, cssTimeMs, prefersReducedMotion } from "../../../lib/motion";
 
 type MenuPhase = "closed" | "opening" | "open" | "closing";
 
@@ -47,6 +48,10 @@ export function SiteHeader() {
     if (menuPhase !== "opening") return;
 
     // Paint the translated starting state before beginning the opening motion.
+    if (prefersReducedMotion()) {
+      setMenuPhase("open");
+      return;
+    }
     cancelEnterPaintRef.current = afterPaint(() => {
       cancelEnterPaintRef.current = null;
       setMenuPhase("open");
@@ -60,7 +65,7 @@ export function SiteHeader() {
 
   useEffect(() => {
     const backgroundRegions = Array.from(
-      document.querySelectorAll<HTMLElement>("main, .siteFooter, .skipLink")
+      document.querySelectorAll<HTMLElement>("main, #main-content, .siteFooter, .skipLink")
     );
 
     for (const region of backgroundRegions) region.inert = menuMounted;
@@ -120,7 +125,7 @@ export function SiteHeader() {
     // transitionend is primary; this covers interrupted/reduced-motion exits.
     exitTimerRef.current = window.setTimeout(() => {
       setMenuPhase("closed");
-    }, cssTimeMs("--duration-menu", 550) + 100);
+    }, prefersReducedMotion() ? 0 : cssTimeMs("--duration-menu", 360) + 100);
 
     return () => {
       if (exitTimerRef.current !== null) {
@@ -229,7 +234,7 @@ export function SiteHeader() {
           aria-label={menuMounted ? "Close navigation menu" : "Open navigation menu"}
         >
           <span>{menuMounted ? "Close" : "Menu"}</span>
-          <span className="menuIcon" aria-hidden="true">{menuMounted ? "×" : "＋"}</span>
+          <span className="menuIcon" aria-hidden="true" />
         </button>
       </header>
 
@@ -248,7 +253,7 @@ export function SiteHeader() {
         >
           <nav aria-label="Mobile navigation">
             {primaryNavigation.map((item, index) => (
-              <FadeLink key={item.id} onBeforeNavigate={closeMenuForNavigation} href={item.href}>
+              <FadeLink style={{ "--menu-link-index": Math.min(index, 5) } as CSSProperties} key={item.id} onBeforeNavigate={closeMenuForNavigation} href={item.href}>
                 {item.mobileLabel ?? item.label} <span>{String(index + 1).padStart(2, "0")}</span>
               </FadeLink>
             ))}

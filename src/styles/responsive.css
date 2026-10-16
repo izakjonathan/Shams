@@ -202,8 +202,6 @@
 
 @media (hover: hover) and (pointer: fine) {
   .artistRow:hover {
-    padding-right: 12px;
-    padding-left: 12px;
     background: var(--color-overlay-hover);
   }
 }

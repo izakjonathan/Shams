@@ -158,7 +158,7 @@ if (/html\.splashSessionSeen\s+\.splashScreen\s*\{[^}]*position:\s*(?:fixed|abso
 if (!/html\.splashSessionSeen\s+\.splashScreen\s*\{[^}]*display:\s*none\s*!important/s.test(splashStyles)) {
   errors.push("Repeat visits must suppress the server-rendered splash before hydration.");
 }
-if (!splash.includes('markSplashSeen();\n        root.classList.add("splashSessionSeen")')) {
+if (!/markSplashSeen\(\);\s*root.classList.add\("splashSessionSeen"\)/.test(splash)) {
   errors.push("The splash session flag must be written only after the first sequence completes.");
 }
 if (splashStyles.includes("splashScreenArtWrap::before") || splashStyles.includes("splashScreenArtWrap::after")) {
@@ -344,7 +344,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.10.7") errors.push("package.json version must be 2.10.7.");
+if (packageJson.version !== "2.10.8") errors.push("package.json version must be 2.10.8.");
 if (readFileSync(resolve(root, "src/styles/footer.css"), "utf8").includes("footerCanvasBleed")) errors.push("Footer must not regain flow-based canvas bleed that increases its height.");
 
 // v2.1.8 artist arrow size regression guard
@@ -548,7 +548,6 @@ const lowerReveal = readFileSync(resolve(root, "src/features/site/components/Low
 const appShellReveal = readFileSync(resolve(root, "src/features/site/components/AppShell.tsx"), "utf8");
 const motionRevealStyles = readFileSync(resolve(root, "src/styles/motion.css"), "utf8");
 for (const required of [
-  'pathname !== "/"',
   'prefersReducedMotion()',
   'IntersectionObserver',
   'INITIAL_VISIBLE_VIEWPORT_RATIO',
@@ -603,8 +602,8 @@ if (!v260AdminMedia.includes("Artist images") || !v260AdminMedia.includes("Edit 
 if (!readFileSync(resolve(root, "src/features/admin/components/AdminNav.tsx"), "utf8").includes('/admin/media')) errors.push("Admin navigation must expose the media workspace.");
 // v2.6.2 visible reveal guards.
 if (lowerReveal.includes("isIOSWebKit")) errors.push("Lower-section reveal must not be blanket-disabled on iOS Safari.");
-if (!lowerReveal.includes('threshold: 0.04') || !lowerReveal.includes('rootMargin: "0px 0px -10% 0px"')) errors.push("Visible lower reveal observer settings are missing.");
-if (!motionRevealStyles.includes("--lower-reveal-distance: 28px") || !motionRevealStyles.includes("--lower-reveal-duration: 760ms") || !motionRevealStyles.includes("--lower-reveal-delay")) errors.push("Visible reveal motion tokens or stagger are missing.");
+if (!lowerReveal.includes('threshold: 0') || !lowerReveal.includes('rootMargin: "0px 0px -24px 0px"')) errors.push("Mobile reveal observer settings are missing.");
+if (!motionRevealStyles.includes("--lower-reveal-distance: 16px") || !motionRevealStyles.includes("--lower-reveal-duration: var(--duration-reveal)") || !motionRevealStyles.includes("--lower-reveal-delay")) errors.push("Visible reveal motion tokens or stagger are missing.");
 
 // v2.7.1 event-atmosphere gallery and reveal guards.
 const eventGallery = readFileSync(resolve(root, "src/features/site/components/EventGallery.tsx"), "utf8");
@@ -615,14 +614,14 @@ if (!publicHome245.includes("<EventGallery images={gallery}") || publicHome245.i
 }
 for (const required of [
   'aria-label="Event atmosphere gallery"',
-  'SLIDE_INTERVAL_MS = 3600',
+  'SLIDE_INTERVAL_MS = 4800',
   'prefersReducedMotion()',
   'IntersectionObserver',
   'eventGalleryTitle',
 ]) {
   if (!eventGallery.includes(required)) errors.push(`Event gallery behavior is missing: ${required}`);
 }
-if (!galleryStyles.includes("transition: opacity 900ms") || !galleryStyles.includes("color: var(--color-accent)") || !galleryStyles.includes("font-family: var(--font-display)")) {
+if (!galleryStyles.includes("transition: opacity 600ms") || !galleryStyles.includes("color: var(--color-accent)") || !galleryStyles.includes("font-family: var(--font-display)")) {
   errors.push("Gallery must use an opacity crossfade and centered yellow Agilera overlay.");
 }
 if ((galleryData.match(/status: "published"/g) || []).length !== 14) errors.push("Gallery must include all 14 supplied images.");

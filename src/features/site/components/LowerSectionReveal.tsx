@@ -5,80 +5,77 @@ import { usePathname } from "next/navigation";
 import { prefersReducedMotion } from "../../../lib/motion";
 
 const SELECTOR = "[data-lower-reveal]";
-const INITIAL_VISIBLE_VIEWPORT_RATIO = 0.92;
-const STAGGER_STEP_MS = 45;
-const MAX_STAGGER_ITEMS = 5;
+const INITIAL_VISIBLE_VIEWPORT_RATIO = 1;
+const STAGGER_STEP_MS = 40;
+const MAX_STAGGER_MS = 80;
 
-function viewportHeight(): number {
-  return window.visualViewport?.height ?? window.innerHeight;
-}
-
-/**
- * Progressive enhancement for lower-page content.
- *
- * Server HTML remains visible by default. During the pre-paint layout phase,
- * only marked elements clearly below the initial visual viewport are placed in
- * a pending state. The hero remains unmarked; the About section is the first
- * section eligible for reveal. This keeps first paint deterministic while allowing the effect on
- * iOS Safari and other modern browsers.
- */
+/** Visible server HTML; arm only below-screen elements, and reveal each once. */
 export function LowerSectionReveal() {
   const pathname = usePathname();
 
   useLayoutEffect(() => {
-    if (pathname !== "/") return;
-
     const root = document.documentElement;
     const elements = Array.from(document.querySelectorAll<HTMLElement>(SELECTOR));
-    if (elements.length === 0) return;
+    if (!elements.length) return;
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let observer: IntersectionObserver | undefined;
+
+    const reveal = (element: HTMLElement, delay = 0) => {
+      element.style.setProperty("--lower-reveal-delay", `${delay}ms`);
+      element.classList.remove("isLowerRevealPending");
+      element.classList.add("isLowerRevealVisible");
+      observer?.unobserve(element);
+    };
+
+    const revealAll = () => {
+      observer?.disconnect();
+      root.classList.remove("lowerRevealEnabled");
+      for (const element of elements) reveal(element);
+    };
+
+    const handleMotionChange = () => {
+      if (motionQuery.matches) revealAll();
+    };
+    // Tab navigation must never land on transparent controls or text.
+    const handleFocus = (event: FocusEvent) => {
+      if (!(event.target instanceof Element)) return;
+      for (let element = event.target.closest<HTMLElement>(SELECTOR); element;
+        element = element.parentElement?.closest<HTMLElement>(SELECTOR) ?? null) {
+        reveal(element);
+      }
+    };
 
     if (prefersReducedMotion() || !("IntersectionObserver" in window)) {
-      for (const element of elements) element.classList.add("isLowerRevealVisible");
-      return;
-    }
-
-    const initialLimit = viewportHeight() * INITIAL_VISIBLE_VIEWPORT_RATIO;
-    const pending: HTMLElement[] = [];
-
-    for (const [index, element] of elements.entries()) {
-      const rect = element.getBoundingClientRect();
-      if (rect.top <= initialLimit) {
-        element.classList.add("isLowerRevealVisible");
-        continue;
-      }
-
-      element.style.setProperty(
-        "--lower-reveal-delay",
-        `${(index % MAX_STAGGER_ITEMS) * STAGGER_STEP_MS}ms`,
-      );
-      element.classList.add("isLowerRevealPending");
-      pending.push(element);
-    }
-
-    if (pending.length === 0) return;
-
-    root.classList.add("lowerRevealEnabled");
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const element = entry.target as HTMLElement;
-          element.classList.remove("isLowerRevealPending");
-          element.classList.add("isLowerRevealVisible");
-          observer.unobserve(element);
+      revealAll();
+    } else {
+      const initialLimit = (window.visualViewport?.height ?? window.innerHeight) * INITIAL_VISIBLE_VIEWPORT_RATIO;
+      // Batch all geometry reads before changing any styles.
+      const positions = elements.map((element) => ({ element, top: element.getBoundingClientRect().top }));
+      observer = new IntersectionObserver((entries) => {
+        const arriving = entries.filter((entry) => entry.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        for (const [index, entry] of arriving.entries()) {
+          reveal(entry.target as HTMLElement, Math.min(index * STAGGER_STEP_MS, MAX_STAGGER_MS));
         }
-      },
-      {
-        threshold: 0.04,
-        rootMargin: "0px 0px -10% 0px",
-      },
-    );
+      }, { threshold: 0, rootMargin: "0px 0px -24px 0px" });
 
-    for (const element of pending) observer.observe(element);
+      for (const { element, top } of positions) {
+        if (top <= initialLimit) reveal(element);
+        else {
+          element.classList.add("isLowerRevealPending");
+          observer.observe(element);
+        }
+      }
+      root.classList.add("lowerRevealEnabled");
+      motionQuery.addEventListener("change", handleMotionChange);
+      document.addEventListener("focusin", handleFocus);
+    }
 
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
+      motionQuery.removeEventListener("change", handleMotionChange);
+      document.removeEventListener("focusin", handleFocus);
       root.classList.remove("lowerRevealEnabled");
       for (const element of elements) {
         element.classList.remove("isLowerRevealPending", "isLowerRevealVisible");

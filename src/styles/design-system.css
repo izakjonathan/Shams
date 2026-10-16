@@ -45,12 +45,12 @@
   --icon-button-size: 34px;
 
   /* Motion */
-  --duration-fast: 240ms;
-  --duration-medium: 420ms;
-  --duration-menu: 550ms;
-  --duration-reveal: 700ms;
-  --duration-splash-enter: 520ms;
-  --duration-splash-exit: 700ms;
+  --duration-fast: 160ms;
+  --duration-medium: 280ms;
+  --duration-menu: 360ms;
+  --duration-reveal: 520ms;
+  --duration-splash-enter: 320ms;
+  --duration-splash-exit: 420ms;
   --reveal-stagger: 40ms;
   --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
@@ -59,4 +59,12 @@
   --reveal-distance: 16px;
   --reveal-distance-small: 10px;
 
+}
+
+/* Wider screens have space for a slightly longer editorial cadence. */
+@media (min-width: 760px) and (prefers-reduced-motion: no-preference) {
+  :root {
+    --duration-menu: 420ms;
+    --duration-reveal: 620ms;
+  }
 }

@@ -47,16 +47,20 @@
   height: 1px;
   position: absolute;
   left: 0;
-  right: 100%;
+  right: 0;
+  transform: scaleX(0);
+  transform-origin: right;
   bottom: -3px;
   background: currentColor;
-  transition: right var(--duration-fast);
+  transition: transform var(--duration-fast) var(--ease-standard);
 }
 
-.desktopNav a:hover:after,
-.textLink:hover:after {
-  right: 0;
+@media (hover: hover) and (pointer: fine) {
+  .desktopNav a:hover:after,
+  .textLink:hover:after { transform: scaleX(1); transform-origin: left; }
 }
+.desktopNav a:focus-visible:after,
+.textLink:focus-visible:after { transform: scaleX(1); transform-origin: left; }
 
 .menuButton {
   border: 0;
@@ -71,6 +75,21 @@
 }
 
 .menuIcon {
-  font-size: 18px;
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+  transition: transform var(--duration-fast) var(--ease-standard);
 }
+.menuIcon::before, .menuIcon::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  left: 2px;
+  width: 14px;
+  height: 1px;
+  background: currentColor;
+}
+.menuIcon::after { transform: rotate(90deg); }
+.menuButton[aria-expanded="true"] .menuIcon { transform: rotate(45deg); }
 

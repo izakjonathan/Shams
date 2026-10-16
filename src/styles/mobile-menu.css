@@ -50,3 +50,17 @@
   letter-spacing: var(--tracking-label);
 }
 
+
+/* The panel establishes direction; the links follow in a short, capped wave. */
+.mobileMenu nav a { opacity: 0; }
+.mobileMenu.isOpen nav a { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .mobileMenu.isOpen nav a {
+    animation: menuLinkArrival 280ms var(--ease-reveal) backwards;
+    animation-delay: calc(70ms + var(--menu-link-index, 0) * 30ms);
+  }
+}
+@keyframes menuLinkArrival {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to { opacity: 1; transform: none; }
+}

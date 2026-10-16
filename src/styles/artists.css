@@ -71,7 +71,7 @@
 .artistPortraitImage {
   object-fit: cover;
   filter: saturate(.94) contrast(1.03);
-  transition: transform 700ms var(--ease-reveal), filter 500ms var(--ease-standard);
+  transition: transform var(--duration-reveal) var(--ease-reveal);
 }
 
 .artistPortrait figcaption {
@@ -91,7 +91,6 @@
 @media (hover: hover) and (pointer: fine) {
   .artistPortrait:hover .artistPortraitImage {
     transform: scale(1.025);
-    filter: saturate(1) contrast(1.02);
   }
 }
 

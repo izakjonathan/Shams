@@ -1,5 +1,9 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.8 — Mobile motion refinement
+
+Faster splash and route transitions, smaller one-shot scroll reveals, staged menu links and CSS icon, hero title entrances, FAQ icon motion and short programme-result transitions. Gallery playback uses at most three mounted slides and follows live motion preferences/page visibility. Black browser canvas retained. Research, design choices and source links are in `docs/MOTION_REVIEW.md`.
+
 ## 2.10.7 — Black browser canvas
 
 The viewport theme colour and html/body canvas stay #000000 during initial load, splash handoff, repeat visits, scrolling and admin navigation. Removed DocumentCanvasTone and its scroll sampling/conditional footer underlay. Visible page section colours and layout are unchanged. Safari controls its final native toolbar appearance.

@@ -161,6 +161,7 @@
 }
 
 .ticketGrid article[data-availability="sold-out"] {
+  --reveal-final-opacity: .68;
   opacity: .68;
 }
 
