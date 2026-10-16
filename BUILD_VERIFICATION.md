@@ -1,5 +1,9 @@
 > Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
 
+## 2.10.14 verification
+
+Production build, TypeScript, static/runtime audits and all 12 unit tests passed; ESLint has no errors and four existing admin image warnings. Inspected the mobile hero and checked layout at 390px and 1280px. The same mobile rich-yellow pixel comparison used for 2.10.13 now measures 63.0% coverage, down from 83.8%, restoring more cream space. Both layouts preserve the seamless join and have no horizontal overflow; the adjacent-row join difference is at most 2/255 per channel on mobile and 1/255 on desktop. No runtime dependency, animation, filter, database or authentication change.
+
 ## 2.10.13 verification
 
 Production build, TypeScript, static/runtime audits and all 12 unit tests passed. ESLint has no errors and four existing admin image warnings. Rendered the final build at 390px and 1280px; inspected the mobile hero. Both layouts retain coincident Hero/About edges and no horizontal overflow. The mobile rich-yellow area increases from 50.3% to 83.8% of the viewport when compared with the previous recipe under identical rendering (pixel threshold R>235, 170<G<220, B<115; a design-comparison measure, not a performance score). Adjacent rows at the section join differ by at most 2/255 per channel on mobile and 0/255 on desktop. No new dependency, animation, filter or database change. Physical iPhone frame rate and native toolbar tint were not measured.

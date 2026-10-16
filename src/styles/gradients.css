@@ -449,13 +449,13 @@
 /* Hero + About share one continuous surface, so no artwork resets at their join.
  * Static radial washes use the existing palette/strength/size controls. */
 .openingSections {
-  /* Broad, saturated yellow fields retain the shared seamless surface. */
+  /* Defined yellow centres with more cream space between the shared washes. */
   --opening-wash-stops: rgb(var(--color-accent-rgb) / 1) 0%,
-    rgb(var(--color-accent-rgb) / 1) 36%,
-    rgb(var(--color-accent-rgb) / .95) 56%,
-    rgb(var(--color-accent-rgb) / .7) 70%,
-    rgb(var(--color-accent-rgb) / .28) 82%,
-    transparent 94%;
+    rgb(var(--color-accent-rgb) / 1) 26%,
+    rgb(var(--color-accent-rgb) / .85) 50%,
+    rgb(var(--color-accent-rgb) / .46) 65%,
+    rgb(var(--color-accent-rgb) / .18) 77%,
+    transparent 88%;
   position: relative;
   isolation: isolate;
   overflow: hidden;

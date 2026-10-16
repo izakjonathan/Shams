@@ -1,5 +1,9 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.14 — Balance the opening gradients
+
+Reduced the yellow core from 36% to 26% and softened the middle/outer falloff so more cream shows between the glows. Yellow centres retain their original saturated colour, while the overall composition is less uniformly yellow. The shared seamless Hero/About background and all layout/motion behaviour remain.
+
 ## 2.10.13 — Stronger opening yellow fields
 
 Expanded the fully saturated yellow core of the shared Hero/About gradient from 24% to 36%, raised the middle falloff opacity to 95% / 70%, and extended the soft edge to 94%. This produces larger, richer yellow areas while retaining the continuous background, the existing palette and the cream highlights. No new layer, image, animation or dependency is introduced.
