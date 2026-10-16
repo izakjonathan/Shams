@@ -449,6 +449,13 @@
 /* Hero + About share one continuous surface, so no artwork resets at their join.
  * Static radial washes use the existing palette/strength/size controls. */
 .openingSections {
+  /* Match the saturated centres and soft falloff of the other paper sections. */
+  --opening-wash-stops: rgb(var(--color-accent-rgb) / 1) 0%,
+    rgb(var(--color-accent-rgb) / 1) 24%,
+    rgb(var(--color-accent-rgb) / .783) 48%,
+    rgb(var(--color-accent-rgb) / .405) 64%,
+    rgb(var(--color-accent-rgb) / .162) 74%,
+    transparent 86%;
   position: relative;
   isolation: isolate;
   overflow: hidden;
@@ -463,11 +470,11 @@
   pointer-events: none;
   opacity: min(1, var(--gradient-strength));
   background-image:
-    radial-gradient(ellipse calc(66vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 2% 14%, rgb(var(--color-accent-rgb) / .84) 0%, transparent 76%),
-    radial-gradient(ellipse calc(64vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 104% 3%, rgb(var(--color-accent-rgb) / .7) 0%, transparent 78%),
-    radial-gradient(ellipse calc(72vw * var(--gradient-size)) calc(62vw * var(--gradient-size)) at 34% 40%, rgb(var(--color-accent-rgb) / .88) 0%, rgb(var(--color-accent-rgb) / .48) 38%, transparent 80%),
-    radial-gradient(ellipse calc(70vw * var(--gradient-size)) calc(68vw * var(--gradient-size)) at 104% 66%, rgb(var(--color-accent-rgb) / .72) 0%, transparent 80%),
-    radial-gradient(ellipse calc(72vw * var(--gradient-size)) calc(62vw * var(--gradient-size)) at 4% 86%, rgb(var(--color-accent-rgb) / .78) 0%, transparent 80%);
+    radial-gradient(ellipse calc(66vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 2% 14%, var(--opening-wash-stops)),
+    radial-gradient(ellipse calc(64vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 104% 3%, var(--opening-wash-stops)),
+    radial-gradient(ellipse calc(72vw * var(--gradient-size)) calc(62vw * var(--gradient-size)) at 34% 40%, var(--opening-wash-stops)),
+    radial-gradient(ellipse calc(70vw * var(--gradient-size)) calc(68vw * var(--gradient-size)) at 104% 66%, var(--opening-wash-stops)),
+    radial-gradient(ellipse calc(72vw * var(--gradient-size)) calc(62vw * var(--gradient-size)) at 4% 86%, var(--opening-wash-stops));
   background-repeat: no-repeat;
 }
 .openingSections > .hero,

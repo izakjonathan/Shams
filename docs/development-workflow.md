@@ -1,5 +1,9 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.12 — Richer opening gradients
+
+Hero and About retain their single seamless background, now using the same fully saturated yellow centres and multi-stop soft falloff as the other paper-section glows. The palette, layout, motion, compact Event Info cards and gallery without its playback button remain. Only the opening background's colour-stop recipe changes.
+
 ## 2.10.11 — Gallery button removed
 
 Removed the visible Pause/Resume gallery button and its unused styles. The automatic slideshow, slide count, three-image window, off-screen/hidden-tab suspension and Reduce Motion behaviour remain. Editor-link focus pauses playback until focus leaves.

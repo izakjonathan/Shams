@@ -35,8 +35,8 @@ function parsePublicUrl(name, { required = false } = {}) {
 }
 
 const pkg = readJson("package.json");
-if (pkg.version !== "2.10.11") {
-  errors.push(`package.json version must be 2.10.11 for this release (found ${pkg.version}).`);
+if (pkg.version !== "2.10.12") {
+  errors.push(`package.json version must be 2.10.12 for this release (found ${pkg.version}).`);
 }
 
 for (const path of [

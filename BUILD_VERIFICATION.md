@@ -1,5 +1,9 @@
 > Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
 
+## 2.10.12 verification
+
+Production build, TypeScript, static/runtime audits and all 12 unit tests passed. ESLint has no errors and four existing admin image warnings. Inspected stronger opening gradients at mobile and desktop sizes (390px and 1280px); both keep transparent child sections above one continuous background, matching edges and no horizontal overflow. Saturated centres now use the same colour-stop values as the shared paper-orb recipe. No new blur, animation, runtime listener, image or dependency was added.
+
 ## 2.10.11 verification
 
 Production build, TypeScript, static/runtime audits and all 12 unit tests passed. ESLint has no errors and four existing admin image warnings. Targeted iPhone-sized WebKit checks passed: there is no gallery playback button, automatic image advancement still works, incoming photos are loaded before switching, and live Reduce Motion stops playback. The three-slide limit remains.
