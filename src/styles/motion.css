@@ -48,8 +48,7 @@ html.lowerRevealEnabled [data-lower-reveal]:focus-within {
   .artistArrow .arrowIcon { transition: transform var(--duration-fast) var(--ease-standard); }
 
   /* Touch feedback needs neither a hover state nor a JavaScript listener. */
-  .programmeFilter:active,
-  .galleryControl:not(:disabled):active { transform: scale(.97); }
+  .programmeFilter:active { transform: scale(.97); }
 
   @media (hover: hover) and (pointer: fine) {
     .button:hover .arrowIcon,

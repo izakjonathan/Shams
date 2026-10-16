@@ -445,3 +445,35 @@
 
 }
 
+
+/* Hero + About share one continuous surface, so no artwork resets at their join.
+ * Static radial washes use the existing palette/strength/size controls. */
+.openingSections {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  overflow: clip;
+  background-color: var(--color-paper);
+}
+.openingSections::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: min(1, var(--gradient-strength));
+  background-image:
+    radial-gradient(ellipse calc(66vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 2% 14%, rgb(var(--color-accent-rgb) / .84) 0%, transparent 76%),
+    radial-gradient(ellipse calc(64vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 104% 3%, rgb(var(--color-accent-rgb) / .7) 0%, transparent 78%),
+    radial-gradient(ellipse calc(72vw * var(--gradient-size)) calc(62vw * var(--gradient-size)) at 34% 40%, rgb(var(--color-accent-rgb) / .88) 0%, rgb(var(--color-accent-rgb) / .48) 38%, transparent 80%),
+    radial-gradient(ellipse calc(70vw * var(--gradient-size)) calc(68vw * var(--gradient-size)) at 104% 66%, rgb(var(--color-accent-rgb) / .72) 0%, transparent 80%),
+    radial-gradient(ellipse calc(72vw * var(--gradient-size)) calc(62vw * var(--gradient-size)) at 4% 86%, rgb(var(--color-accent-rgb) / .78) 0%, transparent 80%);
+  background-repeat: no-repeat;
+}
+.openingSections > .hero,
+.openingSections > .statement {
+  position: relative;
+  z-index: 1;
+  background-color: transparent;
+}
+.openingSections > .hero::before { content: none; }

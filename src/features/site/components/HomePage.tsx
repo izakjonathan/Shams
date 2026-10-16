@@ -38,10 +38,8 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
   return (
     <div id="main-content" tabIndex={-1} className={editing ? "adminSitePreview" : undefined}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(eventStructuredData(artists, tickets)) }} />
+      <div className="openingSections">
       <section className="hero" id="top">
-        <div className="heroOrb orbOne" aria-hidden="true" />
-        <div className="heroOrb orbTwo" aria-hidden="true" />
-        <div className="heroOrb orbThree" aria-hidden="true" />
         <div className="heroMeta topLeft"><span>{home.hero.edition}</span><span>{home.hero.descriptor}</span></div>
         <div className="heroMeta topRight"><span>{event.numericDate}</span><span>{event.city.toUpperCase()}</span></div>
         <div className="heroCenter">
@@ -60,10 +58,7 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
         </div>
       </section>
 
-      <section className="statement section paperGlowSection" id="about">
-        <div className="paperGlow glowOne" aria-hidden="true" />
-        <div className="paperGlow glowTwo" aria-hidden="true" />
-        <div className="paperGlow glowThree" aria-hidden="true" />
+      <section className="statement section" id="about">
         <div className="sectionIndex" data-lower-reveal>01 — ABOUT</div>
         <div className="statementGrid">
           <h2 data-lower-reveal>{home.about.heading}</h2>
@@ -74,6 +69,8 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
           </div>
         </div>
       </section>
+
+      </div>
 
       <section className="manifesto darkGlowSection" id="mission">
         <div className="darkGlow darkGlowOne" aria-hidden="true" />

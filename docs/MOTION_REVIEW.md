@@ -1,5 +1,9 @@
 # Mobile motion review — 2.10.8
 
+## 2.10.11 — Gallery button removed
+
+Removed the visible Pause/Resume gallery button and its unused styles. The automatic slideshow, slide count, three-image window, off-screen/hidden-tab suspension and Reduce Motion behaviour remain. Editor-link focus pauses playback until focus leaves.
+
 Research and code review: 16 October 2026. This release builds on 2.10.7 and retains the black browser theme/canvas, colour system, typography and public/admin functionality.
 
 ## Research and design decisions

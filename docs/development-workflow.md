@@ -1,5 +1,13 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.11 — Gallery button removed
+
+Removed the visible Pause/Resume gallery button and its unused styles. The automatic slideshow, slide count, three-image window, off-screen/hidden-tab suspension and Reduce Motion behaviour remain. Editor-link focus pauses playback until focus leaves.
+
+## 2.10.10 — Seamless hero / About background
+
+Hero and About now sit on one shared, static gradient surface. Their individual background layers no longer restart at the section boundary, so the yellow/paper artwork flows continuously through the join. Palette, typography, content, anchors and animations are preserved. The shared wash uses the existing gradient size/strength controls and introduces no animation or scroll listener.
+
 ## 2.10.9 — Compact mobile Event Info
 
 Removed the 270px minimum card height below 760px, reduced heading margins to 14px above / 12px below, and kept 24px of space after the description. Cards size naturally to their content. Desktop/tablet cards retain their existing minimum height and heading spacing. Motion and the black browser canvas are unchanged.

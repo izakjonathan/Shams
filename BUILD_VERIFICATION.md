@@ -1,5 +1,13 @@
 > Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
 
+## 2.10.11 verification
+
+Production build, TypeScript, static/runtime audits and all 12 unit tests passed. ESLint has no errors and four existing admin image warnings. Targeted iPhone-sized WebKit checks passed: there is no gallery playback button, automatic image advancement still works, incoming photos are loaded before switching, and live Reduce Motion stops playback. The three-slide limit remains.
+
+## 2.10.10 verification
+
+Production build, TypeScript, static/runtime audits and all 12 unit tests passed; ESLint has no errors and four existing admin image warnings. Inspected the hero/About join at 390px and 1280px widths. Both sections now have transparent backgrounds above one shared gradient; their adjacent edges coincide exactly and neither layout overflows horizontally. Adjacent screenshot rows across the join differ by at most 2 (mobile) / 3 (desktop) levels per 8-bit colour channel, consistent with a smooth gradient rather than a section colour reset. Previous mobile Event Info spacing and motion features remain included. No database or authentication code changed.
+
 ## 2.10.9 verification
 
 Production build, TypeScript, static/runtime audits and all 12 unit tests passed. ESLint has no errors and four existing admin image warnings. Browser layout checks at 360px and 390px confirmed each Event Info card is now approximately 189px high (previous minimum 270px), with 24px of bottom padding and 14px above the heading. At 1280px the original desktop minimum height and heading spacing remain. Inspected the updated mobile screenshot. This change is scoped to two CSS files plus release metadata/documentation; no database or authentication code changed.

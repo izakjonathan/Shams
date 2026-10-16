@@ -79,7 +79,5 @@
   }
 }
 
-.galleryControl { position: absolute; z-index: 3; right: 1rem; bottom: 1rem; min-height: 44px; padding: .5rem .8rem; border: 1px solid currentColor; color: var(--color-ink); background: var(--color-paper); cursor: pointer; font: inherit; }
-.galleryControl:focus-visible { outline: 2px solid var(--color-paper); outline-offset: 4px; }
 
 .galleryCount { position: absolute; z-index: 3; left: var(--page-gutter); bottom: 1.5rem; color: var(--color-white); font-size: 10px; letter-spacing: var(--tracking-label); font-variant-numeric: tabular-nums; }

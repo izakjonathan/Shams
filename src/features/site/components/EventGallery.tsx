@@ -74,7 +74,8 @@ export function EventGallery({ images, editing = false }: { images: readonly Gal
       id="gallery"
       aria-label="Event atmosphere gallery"
       aria-roledescription="carousel"
-      onFocusCapture={(event) => { if (!(event.target as Element).closest(".galleryControl")) setPaused(true); }}
+      onFocusCapture={() => setPaused(true)}
+      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
       onPointerEnter={(event) => { if (event.pointerType === "mouse") setHoverPaused(true); }}
       onPointerLeave={() => setHoverPaused(false)}
     >
@@ -95,7 +96,6 @@ export function EventGallery({ images, editing = false }: { images: readonly Gal
       {editing && images[currentIndex] && <Link className="inlineEdit galleryEdit" href={`/admin/gallery?edit=${encodeURIComponent(images[currentIndex].id)}#record-editor`}>Edit current image</Link>}
       <h2 className="eventGalleryTitle"><span data-lower-reveal>Shams</span></h2>
       <span className="galleryCount" aria-hidden="true">{String(currentIndex + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}</span>
-      {images.length > 1 && <button type="button" className="galleryControl" disabled={reducedMotion} aria-pressed={paused || reducedMotion} onClick={() => setPaused((value) => !value)}>{reducedMotion ? "Gallery paused" : paused ? "Resume gallery" : "Pause gallery"}</button>}
     </section>
   );
 }

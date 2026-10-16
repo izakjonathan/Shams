@@ -17,20 +17,17 @@ test("mobile reveals are one-shot, keyboard-safe and obey live Reduce Motion", a
   await expect(row).toHaveClass(/isLowerRevealVisible/);
 });
 
-test("gallery bounds its image layers and supports pause and live motion preferences", async ({ page }) => {
+test("gallery has no playback button and stops for live reduced motion", async ({ page }) => {
   await skipSplash(page);
   await page.goto("/");
   const gallery = page.locator("#gallery");
   expect(await gallery.locator("img").count()).toBeLessThanOrEqual(3);
   await gallery.scrollIntoViewIfNeeded();
-  const pause = page.getByRole("button", { name: "Pause gallery", exact: true });
-  await pause.click();
-  await expect(page.getByRole("button", { name: "Resume gallery" })).toHaveAttribute("aria-pressed", "true");
+  await expect(gallery.getByRole("button")).toHaveCount(0);
+  await page.emulateMedia({ reducedMotion: "reduce" });
   const active = await gallery.locator(".isActive img").getAttribute("src");
   await page.waitForTimeout(5100);
   await expect(gallery.locator(".isActive img")).toHaveAttribute("src", active!);
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(page.getByRole("button", { name: "Gallery paused" })).toBeDisabled();
   await expect.poll(() => gallery.locator(".isActive").evaluate((element) =>
     Number.parseFloat(getComputedStyle(element).transitionDuration),
   )).toBeLessThan(.001);
