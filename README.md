@@ -1,5 +1,9 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.9 — Compact mobile Event Info
+
+Removed the 270px minimum card height below 760px, reduced heading margins to 14px above / 12px below, and kept 24px of space after the description. Cards size naturally to their content. Desktop/tablet cards retain their existing minimum height and heading spacing. Motion and the black browser canvas are unchanged.
+
 ## 2.10.8 — Mobile motion refinement
 
 Faster splash and route transitions, smaller one-shot scroll reveals, staged menu links and CSS icon, hero title entrances, FAQ icon motion and short programme-result transitions. Gallery playback uses at most three mounted slides and follows live motion preferences/page visibility. Black browser canvas retained. Research, design choices and source links are in `docs/MOTION_REVIEW.md`.
