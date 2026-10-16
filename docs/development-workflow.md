@@ -1,5 +1,9 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.13 — Stronger opening yellow fields
+
+Expanded the fully saturated yellow core of the shared Hero/About gradient from 24% to 36%, raised the middle falloff opacity to 95% / 70%, and extended the soft edge to 94%. This produces larger, richer yellow areas while retaining the continuous background, the existing palette and the cream highlights. No new layer, image, animation or dependency is introduced.
+
 ## 2.10.12 — Richer opening gradients
 
 Hero and About retain their single seamless background, now using the same fully saturated yellow centres and multi-stop soft falloff as the other paper-section glows. The palette, layout, motion, compact Event Info cards and gallery without its playback button remain. Only the opening background's colour-stop recipe changes.

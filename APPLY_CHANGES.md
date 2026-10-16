@@ -1,4 +1,4 @@
-# Apply 2.10.12
+# Apply 2.10.13
 
 Copy the project files into your repository. If upgrading from 2.10.6 or earlier, delete `src/features/site/components/DocumentCanvasTone.tsx` as listed in FILES_TO_DELETE.txt. No new dependency, environment variable or database migration is required.
 
