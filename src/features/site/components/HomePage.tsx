@@ -38,7 +38,10 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
   return (
     <div id="main-content" tabIndex={-1} className={editing ? "adminSitePreview" : undefined}>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(eventStructuredData(artists, tickets)) }} />
-      <div className="openingSections">
+      <div className="openingSections paperGlowSection">
+        <div className="paperGlow glowOne" aria-hidden="true" />
+        <div className="paperGlow glowTwo" aria-hidden="true" />
+        <div className="paperGlow glowThree" aria-hidden="true" />
       <section className="hero" id="top">
         <div className="heroMeta topLeft"><span>{home.hero.edition}</span><span>{home.hero.descriptor}</span></div>
         <div className="heroMeta topRight"><span>{event.numericDate}</span><span>{event.city.toUpperCase()}</span></div>

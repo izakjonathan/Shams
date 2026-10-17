@@ -1,5 +1,9 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.16 — One shared paper glow system
+
+Hero/About now use the same three background washes, three independently rotated glow elements, shared theme gradient stops, opacity calculation and responsive geometry as Programme. Removed the separate five-gradient opening recipe and its 72% whole-layer fade. All layers render once on the continuous wrapper, preserving the seamless section join.
+
 ## 2.10.15 — Softer opening colour
 
 Reduced the opacity of the complete Hero/About gradient layer from 100% to 72% at the default strength. This softens overlapping yellow cores as well as their edges, allowing the cream base to show throughout the joined surface. The seamless background and mobile layout are preserved.

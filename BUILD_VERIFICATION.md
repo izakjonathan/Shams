@@ -1,5 +1,9 @@
 > Historical reference retained from the baseline. For 2.10.0, use HANDOVER_REVIEW.md and docs/development-workflow.md; previous check results and runtime versions do not certify this candidate.
 
+## 2.10.16 verification
+
+Lint (four existing admin image warnings), TypeScript, all 12 unit tests, static/runtime audits and production build passed. Browser checks at 390px and 1280px confirm exact computed-style parity between the opening and Programme for wash images/opacity and all three glow images, opacity, dimensions and transforms. Hero/About edges coincide and neither viewport has horizontal overflow. Visually inspected the mobile hero, join and Programme comparison. The shared surface uses static CSS, with three decorative aria-hidden glow elements and no new dependency or runtime listener.
+
 ## 2.10.15 verification
 
 Lint (four existing admin image warnings), TypeScript, all 12 unit tests, static/runtime audits and a clean production build passed. The initial build encountered a stale Turbopack persistence-cache error; rebuilding after removing generated .next output succeeded. Rendered the production build at 390px and 1280px: the shared wash computes to 72% opacity, Hero/About edges coincide and neither viewport has horizontal overflow. Visually inspected the mobile hero and section join. No new layer, animation, dependency or runtime listener was added.

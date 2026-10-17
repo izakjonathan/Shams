@@ -288,7 +288,8 @@
   --section-glow-3-opacity: 0.66;
 }
 
-.programme {
+.programme,
+.openingSections {
   --section-wash-1: radial-gradient(ellipse 86% 50% at 16% 6%, rgb(var(--color-accent-rgb) / 0.405) 0%, rgb(var(--color-accent-rgb) / 0.216) 34%, rgb(var(--color-accent-rgb) / 0.095) 58%, transparent 80%);
   --section-wash-2: radial-gradient(ellipse 90% 54% at 90% 34%, rgb(var(--color-accent-rgb) / 0.351) 0%, rgb(var(--color-accent-rgb) / 0.189) 36%, rgb(var(--color-accent-rgb) / 0.081) 58%, transparent 80%);
   --section-wash-3: radial-gradient(ellipse 76% 44% at 42% 100%, rgb(var(--color-accent-rgb) / 0.243) 0%, rgb(var(--color-accent-rgb) / 0.135) 34%, rgb(var(--color-accent-rgb) / 0.054) 56%, transparent 78%);
@@ -425,7 +426,8 @@
     --section-glow-3-h: 60vw;
   }
 
-  .programme {
+  .programme,
+  .openingSections {
     --section-glow-1-w: 111vw;
     --section-glow-1-h: 78vw;
     --section-glow-2-w: 114vw;
@@ -446,42 +448,10 @@
 }
 
 
-/* Hero + About share one continuous surface, so no artwork resets at their join.
- * Static radial washes use the existing palette/strength/size controls. */
-.openingSections {
-  /* Defined yellow centres with more cream space between the shared washes. */
-  --opening-wash-stops: rgb(var(--color-accent-rgb) / 1) 0%,
-    rgb(var(--color-accent-rgb) / 1) 26%,
-    rgb(var(--color-accent-rgb) / .85) 50%,
-    rgb(var(--color-accent-rgb) / .46) 65%,
-    rgb(var(--color-accent-rgb) / .18) 77%,
-    transparent 88%;
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  overflow: clip;
-  background-color: var(--color-paper);
-}
-.openingSections::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  /* Soften the entire composited wash, including overlapping yellow cores. */
-  opacity: min(1, calc(var(--gradient-strength) * .6));
-  background-image:
-    radial-gradient(ellipse calc(66vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 2% 14%, var(--opening-wash-stops)),
-    radial-gradient(ellipse calc(64vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 104% 3%, var(--opening-wash-stops)),
-    radial-gradient(ellipse calc(72vw * var(--gradient-size)) calc(62vw * var(--gradient-size)) at 34% 40%, var(--opening-wash-stops)),
-    radial-gradient(ellipse calc(70vw * var(--gradient-size)) calc(68vw * var(--gradient-size)) at 104% 66%, var(--opening-wash-stops)),
-    radial-gradient(ellipse calc(72vw * var(--gradient-size)) calc(62vw * var(--gradient-size)) at 4% 86%, var(--opening-wash-stops));
-  background-repeat: no-repeat;
-}
+/* Hero + About share the programme's wash, glow recipe and responsive geometry.
+ * Render these layers once on their wrapper to preserve the seamless join. */
 .openingSections > .hero,
 .openingSections > .statement {
-  position: relative;
-  z-index: 1;
   background-color: transparent;
 }
 .openingSections > .hero::before { content: none; }
