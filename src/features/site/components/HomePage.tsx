@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { eventStructuredData } from "../../../features/content/structured-data";
 import { FadeLink } from "../../../components/FadeLink";
+import { SunMark } from "../../../components/SunMark";
 import { ArrowIcon } from "../../../components/ArrowIcon";
 import { FaqAccordion } from "../../../features/site/components/FaqAccordion";
 import { EventGallery } from "../../../features/site/components/EventGallery";
@@ -49,7 +50,7 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
           <h1>{home.hero.titleLines.map((line, index) => (
             <span className="heroTitleLine" key={`${index}-${line}`} style={{ "--hero-line-index": Math.min(index, 3) } as CSSProperties}><span>{line}</span></span>
           ))}</h1>
-          <p className="heroEventDetails"><time dateTime={event.isoStart}>{event.date}</time><span aria-hidden="true">✦</span><span>{event.city}</span></p>
+          <p className="heroEventDetails"><time dateTime={event.isoStart}>{event.date}</time><SunMark className="heroSunMark" /><span>{event.city}</span></p>
           <div className="heroActions">
             <FadeLink className="button buttonPrimary" href="/#tickets">{home.hero.primaryAction} <ArrowIcon /></FadeLink>
             <FadeLink className="textLink" href="/#about">{home.hero.secondaryAction} <span aria-hidden="true">↓</span></FadeLink>
@@ -62,7 +63,7 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
       </section>
 
       <section className="statement section" id="about">
-        <div className="sectionIndex" data-lower-reveal>01 — ABOUT</div>
+        <div className="sectionIndex sunSectionIndex" data-lower-reveal><SunMark />01 — ABOUT</div>
         <div className="statementGrid">
           <h2 data-lower-reveal>{home.about.heading}</h2>
           <div data-lower-reveal>
@@ -77,6 +78,7 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
 
       <section className="manifesto darkGlowSection" id="mission">
         <div className="darkGlow darkGlowOne" aria-hidden="true" />
+        <div className="manifestoSun" aria-hidden="true"><SunMark /></div>
         <p className="verticalText">SHAMS MEANS SUN</p>
         <div className="manifestoContent" data-lower-reveal>
           <span className="kicker">{home.mission.kicker}</span>

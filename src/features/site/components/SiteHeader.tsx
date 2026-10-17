@@ -1,7 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useHeaderTone } from "../hooks/useHeaderTone";
+import { SunMark } from "../../../components/SunMark";
 import { FadeLink } from "../../../components/FadeLink";
 import { useRouteTransition } from "./RouteFade";
 import {
@@ -31,8 +30,6 @@ const event = navigationRepository.getEventSummary();
 const primaryNavigation = navigationRepository.getPrimaryNavigation();
 
 export function SiteHeader() {
-  const pathname = usePathname();
-  const headerRef = useRef<HTMLElement | null>(null);
   const routeTransition = useRouteTransition();
   const routeTransitioning = routeTransition?.transitioning ?? false;
   const [menuPhase, setMenuPhase] = useState<MenuPhase>("closed");
@@ -47,7 +44,6 @@ export function SiteHeader() {
   const menuMounted = menuPhase !== "closed";
   const menuExpanded = menuPhase === "opening" || menuPhase === "open";
   const menuVisible = menuPhase === "open";
-  useHeaderTone(headerRef, pathname, routeTransitioning);
 
   useEffect(() => {
     if (menuPhase !== "opening") return;
@@ -213,14 +209,14 @@ export function SiteHeader() {
 
   return (
     <>
-      <header ref={headerRef} className="siteHeader" data-menu-open={menuMounted ? "true" : undefined} inert={routeTransitioning} aria-hidden={routeTransitioning ? "true" : undefined}>
+      <header className="siteHeader" inert={routeTransitioning} aria-hidden={routeTransitioning ? "true" : undefined}>
         <FadeLink
           className="brand"
           href="/#top"
           aria-label="Shams for Humanity home"
           inert={menuMounted || routeTransitioning}
         >
-          <span className="brandMark" aria-hidden="true">✦</span>
+          <span className="brandMark" aria-hidden="true"><SunMark /></span>
           <span>SHAMS / HUMANITY</span>
         </FadeLink>
         <nav className="desktopNav" aria-label="Primary navigation" inert={menuMounted || routeTransitioning}>

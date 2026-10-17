@@ -1,5 +1,9 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.18 — Sun motif and original header blending
+
+Restored the fixed header’s transparent background and original difference colour blending, removing the section-tone observer. Added a shared decorative four-point SVG sun: the existing header/hero marks now use the same shape, with small About and featured-ticket accents and a faint cropped outline in the manifesto. Most sections remain free of new decoration. Other 2.10.17 refinements remain.
+
 ## 2.10.17 — Mobile festival design refinement
 
 Implemented the selected design review items 1, 2, 4, 5, 6, 7, 12, 13, 14 and 15. Event details now accompany the hero title; supporting type is more readable; ticket tiers are compact with shared benefits and the featured tier first in DOM order. Header tones follow section surfaces through IntersectionObserver without colour blending or a scroll listener. Artist names and arrows share a large link with mobile performance metadata. Programme hierarchy, menu Programme link and ticket emphasis, 44px touch targets, content-sized footer and brief signature sun motion complete the pass. The shared opening gradient, gallery imagery, section spacing system and programme-filter layout remain.

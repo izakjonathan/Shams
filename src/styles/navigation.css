@@ -13,8 +13,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--page-gutter);
-  color: var(--color-ink);
-  background: var(--color-paper);
+  mix-blend-mode: difference;
+  color: var(--color-white);
 }
 
 .brand {
@@ -94,15 +94,6 @@
 .menuButton[aria-expanded="true"] .menuIcon { transform: rotate(45deg); }
 
 
-.siteHeader[data-tone="dark"],
-.siteHeader[data-menu-open="true"] {
-  color: var(--color-white);
-  background: var(--color-dark);
-}
-.siteHeader[data-tone="photo"]:not([data-menu-open="true"]) {
-  color: var(--color-white);
-  background: rgb(var(--color-dark-rgb) / .78);
-}
 .brand, .menuButton, .desktopNav a { min-height: 44px; }
 .desktopNav a { display: inline-flex; align-items: center; }
 .menuButton { padding: 0 0 0 12px; min-width: 88px; justify-content: flex-end; }

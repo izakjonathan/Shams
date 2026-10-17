@@ -1,0 +1,31 @@
+/* One four-point sun, used sparingly at three editorial scales. */
+.sunMark {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+  fill: currentColor;
+  pointer-events: none;
+}
+.brandMark .sunMark { width: 20px; height: 20px; }
+.heroSunMark { width: 12px; height: 12px; }
+.sunSectionIndex { display: flex; align-items: center; gap: 12px; }
+.sunSectionIndex .sunMark { width: 14px; height: 14px; }
+.ticketType { display: inline-flex; align-items: center; gap: 8px; }
+.ticketSunMark { width: 13px; height: 13px; }
+.manifesto > .manifestoSun {
+  position: absolute;
+  z-index: 1;
+  top: -12%;
+  right: -34%;
+  width: clamp(280px, 86vw, 580px);
+  aspect-ratio: 1;
+  color: var(--color-accent);
+  opacity: .14;
+  transform: rotate(12deg);
+  pointer-events: none;
+}
+.manifestoSun .sunMark { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1; }
+@media (min-width: 760px) {
+  .manifesto > .manifestoSun { top: 6%; right: -12%; width: clamp(440px, 48vw, 760px); }
+}

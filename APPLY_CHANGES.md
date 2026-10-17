@@ -1,4 +1,6 @@
-# Apply 2.10.17
+# Apply 2.10.18
+
+Restore the original blended header and add the restrained sun motif. Delete `src/features/site/hooks/useHeaderTone.ts` when copying over a 2.10.17 installation. No dependency, environment or database change is required.
 
 This release implements the ten selected mobile design refinements described in CHANGELOG.md. No environment change, dependency or database migration is required.
 

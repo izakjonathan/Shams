@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SunMark } from "../../../components/SunMark";
 import { ArrowIcon } from "../../../components/ArrowIcon";
 import type { TicketTier } from "../../content";
 
@@ -46,7 +47,7 @@ export function TicketSection({ tickets, ticketUrl, editing = false }: TicketSec
             >
               {editing && <Link className="inlineEdit" href={`/admin/tickets?edit=${encodeURIComponent(ticket.id)}#record-editor`}>Edit <span className="srOnly">{ticket.type}</span></Link>}
               <div className="ticketCardTopline">
-                <span className="ticketType">{ticket.type}</span>
+                <span className="ticketType">{ticket.featured && <SunMark className="ticketSunMark" />}{ticket.type}</span>
                 <span className="badge">{ticket.badge}</span>
               </div>
               <p>{ticket.description}</p>
