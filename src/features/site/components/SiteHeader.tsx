@@ -1,5 +1,7 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import { useHeaderTone } from "../hooks/useHeaderTone";
 import { FadeLink } from "../../../components/FadeLink";
 import { useRouteTransition } from "./RouteFade";
 import {
@@ -29,6 +31,8 @@ const event = navigationRepository.getEventSummary();
 const primaryNavigation = navigationRepository.getPrimaryNavigation();
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  const headerRef = useRef<HTMLElement | null>(null);
   const routeTransition = useRouteTransition();
   const routeTransitioning = routeTransition?.transitioning ?? false;
   const [menuPhase, setMenuPhase] = useState<MenuPhase>("closed");
@@ -43,6 +47,7 @@ export function SiteHeader() {
   const menuMounted = menuPhase !== "closed";
   const menuExpanded = menuPhase === "opening" || menuPhase === "open";
   const menuVisible = menuPhase === "open";
+  useHeaderTone(headerRef, pathname, routeTransitioning);
 
   useEffect(() => {
     if (menuPhase !== "opening") return;
@@ -208,7 +213,7 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="siteHeader" inert={routeTransitioning} aria-hidden={routeTransitioning ? "true" : undefined}>
+      <header ref={headerRef} className="siteHeader" data-menu-open={menuMounted ? "true" : undefined} inert={routeTransitioning} aria-hidden={routeTransitioning ? "true" : undefined}>
         <FadeLink
           className="brand"
           href="/#top"
@@ -253,12 +258,12 @@ export function SiteHeader() {
         >
           <nav aria-label="Mobile navigation">
             {primaryNavigation.map((item, index) => (
-              <FadeLink style={{ "--menu-link-index": Math.min(index, 5) } as CSSProperties} key={item.id} onBeforeNavigate={closeMenuForNavigation} href={item.href}>
+              <FadeLink className={item.id === "nav-tickets" ? "menuTicketLink" : undefined} style={{ "--menu-link-index": Math.min(index, 5) } as CSSProperties} key={item.id} onBeforeNavigate={closeMenuForNavigation} href={item.href}>
                 {item.mobileLabel ?? item.label} <span>{String(index + 1).padStart(2, "0")}</span>
               </FadeLink>
             ))}
           </nav>
-          <p>{event.city} · {event.date}</p>
+          <div className="menuEventDetails"><span>{event.city}</span><p>{event.date}</p><span>Music · Art · Solidarity</span></div>
         </div>
       )}
     </>

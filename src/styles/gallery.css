@@ -21,7 +21,7 @@
 .eventGallerySlide {
   z-index: 0;
   opacity: 0;
-  transition: opacity 600ms var(--ease-standard);
+  transition: opacity 480ms var(--ease-standard);
   pointer-events: none;
 }
 
@@ -68,6 +68,7 @@
 }
 
 @media (min-width: 760px) {
+  .eventGallerySlide { transition-duration: 600ms; }
   .eventGalleryTitle {
     font-size: clamp(120px, 18vw, 290px);
   }

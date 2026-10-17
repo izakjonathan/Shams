@@ -1,6 +1,6 @@
 /* Motion is progressive enhancement: server content is always readable. */
 :root {
-  --lower-reveal-distance: 16px;
+  --lower-reveal-distance: var(--reveal-distance);
   --lower-reveal-duration: var(--duration-reveal);
   --lower-reveal-ease: var(--ease-reveal);
 }
@@ -39,7 +39,7 @@ html.lowerRevealEnabled [data-lower-reveal]:focus-within {
   }
 
   .programmeEntry {
-    animation: programmeArrival 280ms var(--ease-standard) backwards;
+    animation: programmeArrival 220ms var(--ease-standard) backwards;
     animation-delay: calc(var(--programme-entry-index, 0) * 35ms);
   }
 
@@ -47,6 +47,11 @@ html.lowerRevealEnabled [data-lower-reveal]:focus-within {
   .ticketAction .arrowIcon,
   .artistArrow .arrowIcon { transition: transform var(--duration-fast) var(--ease-standard); }
 
+  body:is(.splashExiting, .splashComplete) .brandMark {
+    animation: sunMarkArrival 600ms var(--ease-reveal) backwards;
+  }
+  .artistRowLink:active .artistArrow { transform: scale(.94); }
+  .artistArrow { transition: transform var(--duration-fast) var(--ease-standard); }
   /* Touch feedback needs neither a hover state nor a JavaScript listener. */
   .programmeFilter:active { transform: scale(.97); }
 
@@ -68,7 +73,7 @@ html.lowerRevealEnabled [data-lower-reveal]:focus-within {
 }
 
 @media (min-width: 760px) {
-  :root { --lower-reveal-distance: 22px; }
+  :root { --lower-reveal-distance: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -95,4 +100,9 @@ html.lowerRevealEnabled [data-lower-reveal]:focus-within {
   .splashScreen { display: none !important; }
   .splashActive .siteShell { opacity: 1 !important; }
   .splashActive .skipLink { opacity: 1 !important; pointer-events: auto !important; }
+}
+
+@keyframes sunMarkArrival {
+  from { opacity: .4; transform: rotate(-90deg); }
+  to { opacity: 1; transform: rotate(0); }
 }

@@ -2,11 +2,12 @@ import { contentRepository } from "../../content";
 import { FadeLink } from "../../../components/FadeLink";
 
 export function SiteFooter() {
+  const event = contentRepository.getEvent();
   const primaryNavigation = contentRepository.getPrimaryNavigation();
   const informationNavigation = contentRepository.getInformationNavigation();
   return (
     <footer className="siteFooter" id="site-footer">
-      <FadeLink className="footerLogo" href="/#top">Shams for<br/>Humanity</FadeLink>
+      <div className="footerIdentity"><FadeLink className="footerLogo" href="/#top">Shams for<br/>Humanity</FadeLink><p>{event.city}<br/>{event.date}</p></div>
       <div className="footerLinks">
         <div>
           <span>EXPLORE</span>

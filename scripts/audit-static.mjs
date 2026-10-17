@@ -105,8 +105,8 @@ const footer = readFileSync(resolve(root, "src/features/site/components/SiteFoot
 if (!footer.includes('id="site-footer"')) errors.push("Footer must expose the site-footer destination anchor.");
 const homepage = readFileSync(resolve(root, "src/styles/homepage.css"), "utf8");
 const footerStyles = readFileSync(resolve(root, "src/styles/footer.css"), "utf8");
-if (!/\.siteFooter\s*\{[^}]*min-height:\s*100svh/s.test(footerStyles)) {
-  errors.push("Footer must be at least one small viewport high.");
+if (/\.siteFooter\s*\{[^}]*(?:min-height|height):\s*100(?:s|d)?vh/s.test(footerStyles)) {
+  errors.push("Footer must size to its content rather than force a full viewport.");
 }
 if (!routeFade.includes('hash === "#site-footer"') || !routeFade.includes("scrollToDocumentBottom")) {
   errors.push("Route controller must position footer returns at the document maximum scroll.");
@@ -305,8 +305,8 @@ if (/\.artistQuote \.darkGlowOne\s*\{[^}]*--glow-(?:w|h|opacity)/s.test(artistSt
 if (footerStyles.includes('.siteFooter::after') || footerStyles.includes('flex: 0 0 160px')) {
   errors.push("Footer must not use flow-content bleed that makes it taller than one viewport.");
 }
-if (!footerStyles.includes('min-height: 100dvh') || !footerStyles.includes('.siteFooter .footerBottom { margin-top: auto; }')) {
-  errors.push("Footer must retain dynamic-viewport sizing and bottom-row distribution.");
+if (!footerStyles.includes('env(safe-area-inset-bottom, 0px)')) {
+  errors.push("The content-sized footer must retain bottom safe-area padding.");
 }
 
 // v2.1.0 typed content architecture
@@ -344,7 +344,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.10.16") errors.push("package.json version must be 2.10.16.");
+if (packageJson.version !== "2.10.17") errors.push("package.json version must be 2.10.17.");
 if (readFileSync(resolve(root, "src/styles/footer.css"), "utf8").includes("footerCanvasBleed")) errors.push("Footer must not regain flow-based canvas bleed that increases its height.");
 
 // v2.1.8 artist arrow size regression guard
@@ -621,7 +621,7 @@ for (const required of [
 ]) {
   if (!eventGallery.includes(required)) errors.push(`Event gallery behavior is missing: ${required}`);
 }
-if (!galleryStyles.includes("transition: opacity 600ms") || !galleryStyles.includes("color: var(--color-accent)") || !galleryStyles.includes("font-family: var(--font-display)")) {
+if (!/transition:\s*opacity\s+\d+ms/.test(galleryStyles) || !galleryStyles.includes("color: var(--color-accent)") || !galleryStyles.includes("font-family: var(--font-display)")) {
   errors.push("Gallery must use an opacity crossfade and centered yellow Agilera overlay.");
 }
 if ((galleryData.match(/status: "published"/g) || []).length !== 14) errors.push("Gallery must include all 14 supplied images.");

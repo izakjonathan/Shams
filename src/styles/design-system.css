@@ -42,13 +42,13 @@
   /* Reusable component dimensions */
   --button-height: 52px;
   --button-height-compact: 48px;
-  --icon-button-size: 34px;
+  --icon-button-size: 44px;
 
   /* Motion */
   --duration-fast: 160ms;
   --duration-medium: 280ms;
   --duration-menu: 360ms;
-  --duration-reveal: 520ms;
+  --duration-reveal: 420ms;
   --duration-splash-enter: 320ms;
   --duration-splash-exit: 420ms;
   --reveal-stagger: 40ms;
@@ -56,7 +56,7 @@
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-splash: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-menu: cubic-bezier(0.76, 0, 0.24, 1);
-  --reveal-distance: 16px;
+  --reveal-distance: 10px;
   --reveal-distance-small: 10px;
 
 }
@@ -65,6 +65,6 @@
 @media (min-width: 760px) and (prefers-reduced-motion: no-preference) {
   :root {
     --duration-menu: 420ms;
-    --duration-reveal: 620ms;
+    --duration-reveal: 520ms;
   }
 }

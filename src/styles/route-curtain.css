@@ -3,10 +3,10 @@
    ========================================================================== */
 
 :root {
-  --route-curtain-open-duration: 320ms;
+  --route-curtain-open-duration: 280ms;
   --route-curtain-close-duration: 280ms;
   --route-curtain-switch-duration: 260ms;
-  --route-curtain-reveal-duration: 320ms;
+  --route-curtain-reveal-duration: 280ms;
   --route-curtain-ease: var(--ease-menu);
 }
 

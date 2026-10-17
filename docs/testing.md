@@ -1,5 +1,9 @@
 ## Current validation — 2.10.6
 
+## 2.10.17 verification
+
+Lint passed with four existing admin image warnings; TypeScript, all 12 unit tests, static/runtime audits, release validation and production build passed. Static guards were updated for the explicitly selected content-sized footer and configurable gallery crossfade. Browser checks covered 320, 390, 430, 768 and 1440px, plus 667×375 landscape: no horizontal overflow, coincident Hero/About edges, 44px artist controls, featured ticket first in DOM order, and correct light/dark/photo header tones. Exercised programme filtering, five menu destinations, keyboard opening/Escape/focus restoration, menu anchor navigation, artist open/return, FAQ expansion and legal-page return to document bottom. Normal motion and live Reduce Motion switching passed without client exceptions. Inspected phone and desktop screenshots. At 390px, Tickets measures 1524px versus 1847px before; the footer measures 674px versus 844px. Final filter targets are 44px and desktop ticket borders remain complete. Local ticket/newsletter/site URL configuration warnings remain unchanged; physical iPhone toolbar behaviour and frame rate were not measured. No dependency, database or authentication change.
+
 ## 2.10.16 verification
 
 Lint (four existing admin image warnings), TypeScript, all 12 unit tests, static/runtime audits and production build passed. Browser checks at 390px and 1280px confirm exact computed-style parity between the opening and Programme for wash images/opacity and all three glow images, opacity, dimensions and transforms. Hero/About edges coincide and neither viewport has horizontal overflow. Visually inspected the mobile hero, join and Programme comparison. The shared surface uses static CSS, with three decorative aria-hidden glow elements and no new dependency or runtime listener.

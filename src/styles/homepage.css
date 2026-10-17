@@ -6,7 +6,7 @@
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  padding: 100px var(--page-gutter) 30px;
+  padding: 180px var(--page-gutter) 110px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,8 +21,8 @@
 
 .eyebrow,
 .kicker {
-  font-size: 10px;
-  letter-spacing: .13em;
+  font-size: 12px;
+  letter-spacing: .1em;
   text-transform: uppercase;
   font-weight: var(--font-weight-bold);
 }
@@ -44,11 +44,24 @@
   margin: 26px 0 40px;
 }
 
+.heroEventDetails {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin: 0 0 28px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.heroEventDetails > span[aria-hidden] { font-size: 12px; }
+.heroCenter > .eyebrow { max-width: 38ch; margin-inline: auto; }
+
 .heroActions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
 .button {
@@ -97,8 +110,8 @@
   top: 92px;
   display: flex;
   flex-direction: column;
-  font-size: 9px;
-  letter-spacing: .12em;
+  font-size: 12px;
+  letter-spacing: .08em;
 }
 
 .topLeft {
@@ -119,9 +132,9 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
 }
 
 .scrollCue {
@@ -146,7 +159,7 @@
 }
 
 .sectionIndex {
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .12em;
   font-weight: var(--font-weight-bold);
   margin-bottom: 46px;
@@ -253,7 +266,7 @@
 }
 
 .lineupNote {
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: var(--tracking-label);
   margin-top: 24px;
@@ -299,7 +312,7 @@
 }
 
 .infoCards article>span {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .infoCards h3 {
@@ -312,7 +325,7 @@
 }
 
 .infoCards p {
-  font-size: 14px;
+  font-size: 16px;
   margin: 0;
 }
 
@@ -337,8 +350,8 @@
   display: flex;
   justify-content: space-between;
   text-transform: uppercase;
-  font-size: 10px;
-  letter-spacing: .1em;
+  font-size: 12px;
+  letter-spacing: .08em;
 }
 
 .ticketGrid {
@@ -349,7 +362,7 @@
 .ticketGrid article {
   border: var(--border-solid) var(--color-ticket-line);
   padding: 24px;
-  min-height: 370px;
+  min-height: 0;
   display: flex;
   flex-direction: column;
 }
@@ -365,12 +378,12 @@
 }
 
 .ticketType {
-  font-size: 10px;
-  letter-spacing: .1em;
+  font-size: 12px;
+  letter-spacing: .08em;
 }
 
 .badge {
-  font-size: 9px;
+  font-size: 12px;
   border: var(--border-solid) var(--color-control-line);
   border-radius: 20px;
   padding: 5px 8px;
@@ -378,7 +391,7 @@
 
 .ticketGrid p {
   color: var(--color-ticket-copy);
-  max-width: 260px;
+  max-width: 40ch;
 }
 
 .ticketGrid strong {
@@ -399,8 +412,8 @@
   background: none;
   color: var(--color-white);
   text-transform: uppercase;
-  font-size: 10px;
-  letter-spacing: .1em;
+  font-size: 12px;
+  letter-spacing: .08em;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -448,6 +461,9 @@
   padding: 22px 0;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 64px;
   text-align: left;
   font-family: var(--font-display);
   font-size: 22px;
@@ -459,7 +475,7 @@
   flex: 0 0 18px;
   width: 18px;
   height: 18px;
-  margin: 4px 0 0 16px;
+  margin: 0;
 }
 .faqToggleIcon::before, .faqToggleIcon::after {
   content: "";
@@ -540,9 +556,9 @@
 }
 
 .newsletter label {
-  font-size: 10px;
+  font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: .1em;
+  letter-spacing: .08em;
 }
 
 .newsletter form>div {
@@ -576,7 +592,7 @@
   border: 0;
   background: none;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: var(--font-weight-bold);
 }
 
@@ -587,7 +603,7 @@
   opacity: 0.62;
 }
 .newsletter form p {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 /* v1.3.2 — restored compact artist list */
@@ -597,7 +613,7 @@
 
 .artistRow {
   display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) auto;
+  grid-template-columns: 24px minmax(0, 1fr);
   gap: 12px;
   align-items: center;
   padding: 22px 0;
@@ -617,19 +633,19 @@
 
 .artistRow > span:not(.artistNumber) {
   display: none;
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
 }
 
 .artistNumber {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .artistArrow {
   display: grid;
   width: var(--icon-button-size);
   height: var(--icon-button-size);
-  padding: 8px;
+  padding: 11px;
   place-items: center;
   border: 1px solid var(--color-ink);
   border-radius: var(--radius-circle);
@@ -642,3 +658,28 @@
   width: 100%;
   height: 100%;
 }
+
+.artistRowLink {
+  min-width: 0;
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+}
+.artistRowIdentity { min-width: 0; }
+.artistMobileMeta {
+  display: block;
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.artistRowLink:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 5px; }
+.artistRow > .inlineEdit { grid-column: 2; }
+
+.textLink { min-height: 44px; }
+.newsletter button { min-height: 48px; padding: 0 12px; }
+.galleryCount { font-size: 12px; }
+
+.ticketsHeader { align-items: center; gap: 16px; }
+.ticketsHeader .sectionIndex { margin: 0; }

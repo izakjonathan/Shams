@@ -1,4 +1,6 @@
-# Apply 2.10.16
+# Apply 2.10.17
+
+This release implements the ten selected mobile design refinements described in CHANGELOG.md. No environment change, dependency or database migration is required.
 
 Copy the project files into your repository. If upgrading from 2.10.6 or earlier, delete `src/features/site/components/DocumentCanvasTone.tsx` as listed in FILES_TO_DELETE.txt. No new dependency, environment variable or database migration is required.
 

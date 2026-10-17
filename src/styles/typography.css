@@ -151,7 +151,7 @@ li {
 
 /* Homepage editorial rhythm */
 .hero h1 {
-  margin: 26px 0 clamp(34px, 5vw, 48px);
+  margin: 22px 0 24px;
 }
 
 .statement h2,

@@ -27,13 +27,13 @@
 .programmeFilter {
   flex: 0 0 auto;
   scroll-snap-align: start;
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 18px;
   border: 1px solid var(--color-line);
   border-radius: 999px;
   background: transparent;
   color: var(--color-ink);
-  font: 10px var(--font-body);
+  font: 12px var(--font-body);
   letter-spacing: .1em;
   text-transform: uppercase;
   cursor: pointer;
@@ -55,12 +55,12 @@
 
 .programmeEmpty {
   padding: 36px 0;
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
 }
 
 .programmeEntry {
   display: grid;
-  grid-template-columns: 52px minmax(0, 1fr);
+  grid-template-columns: 46px minmax(0, 1fr);
   gap: 12px;
   padding: 22px 0;
   border-bottom: 1px solid var(--color-line);
@@ -68,13 +68,13 @@
 
 .programmeEntryTime,
 .programmeEntryMeta {
-  font-size: 10px;
-  letter-spacing: .08em;
+  font-size: 12px;
+  letter-spacing: .04em;
   text-transform: uppercase;
 }
 
 .programmeEntryTime {
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
@@ -86,7 +86,7 @@
 .programmeEntry h3 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(28px, 8vw, 48px);
+  font-size: clamp(28px, 7.2vw, 44px);
   font-weight: var(--font-weight-display);
   line-height: .95;
   letter-spacing: -.025em;
@@ -96,7 +96,8 @@
   max-width: 560px;
   margin: 14px 0 0;
   color: var(--color-text-muted);
-  font-size: 13px;
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 .programmeEntryMeta {
@@ -104,14 +105,14 @@
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 8px;
-  color: var(--color-text-subtle);
+  margin-top: 4px;
+  color: var(--color-text-muted);
 }
 
 .ticketIntro {
   display: grid;
   gap: 18px;
-  margin-top: 36px;
+  margin-top: 24px;
 }
 
 .ticketIntro h2 {
@@ -125,7 +126,7 @@
 }
 
 .ticketGrid article {
-  min-height: 430px;
+  min-height: 0;
 }
 
 .ticketCardTopline {
@@ -143,7 +144,7 @@
   padding: 0;
   list-style: none;
   color: var(--color-ticket-copy);
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .ticketIncludes li {
@@ -170,7 +171,7 @@
   gap: 8px;
   padding-top: 22px;
   color: var(--color-ticket-footnote);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .ticketFooter p {
@@ -216,7 +217,7 @@
 
 @media (min-width: 1100px) {
   .programmeEntry h3 {
-    font-size: 54px;
+    font-size: 46px;
   }
 }
 
@@ -225,3 +226,28 @@
     transition: none;
   }
 }
+
+.programmeEntryTime { font-size: 13px; font-weight: 700; padding-top: 5px; }
+.programmeEntryMeta { flex-wrap: wrap; line-height: 1.5; }
+.programmeEntryMeta > span:first-child { font-weight: 700; }
+.ticketSharedIncludes { display: flex; flex-wrap: wrap; gap: 10px 24px; margin: 24px 0 0; padding: 0; list-style: none; font-size: 14px; }
+.ticketSharedIncludes li { display: flex; gap: 8px; }
+.ticketSharedIncludes li::before { content: "✦"; color: var(--color-accent); }
+.ticketGrid { gap: 14px; margin-top: 28px; }
+.ticketGrid article { padding: 22px; border: 1px solid var(--color-ticket-line); }
+.ticketGrid article + article { border-top: 1px solid var(--color-ticket-line); }
+.ticketGrid article > p { margin: 16px 0 0; font-size: 16px; line-height: 1.5; }
+.ticketGrid article > .ticketPrice { margin: 22px 0 16px; font-size: 58px; line-height: .9; }
+.ticketGrid article > .ticketPrice small { margin-left: 8px; font-size: 14px; }
+.ticketGrid article.featuredTicket { border-color: var(--color-accent); padding: 26px 22px; }
+.ticketGrid article.featuredTicket > .ticketPrice { font-size: 76px; }
+.ticketIncludes { gap: 6px; margin: 16px 0 0; }
+.ticketAction, .ticketGrid button { min-height: 48px; font-size: 12px; }
+.ticketGrid .ticketAction { border-color: currentColor; }
+@media (min-width: 760px) {
+  .ticketGrid { gap: 18px; align-items: stretch; }
+  .ticketGrid article > .ticketPrice { margin-top: auto; padding-top: 28px; }
+  .ticketCardTopline { align-items: flex-start; }
+}
+
+.programmeFilter:focus-visible, .featuredTicket .ticketAction:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }

@@ -44,12 +44,12 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
         <div className="paperGlow glowThree" aria-hidden="true" />
       <section className="hero" id="top">
         <div className="heroMeta topLeft"><span>{home.hero.edition}</span><span>{home.hero.descriptor}</span></div>
-        <div className="heroMeta topRight"><span>{event.numericDate}</span><span>{event.city.toUpperCase()}</span></div>
         <div className="heroCenter">
           <p className="eyebrow">{home.hero.eyebrow}</p>
           <h1>{home.hero.titleLines.map((line, index) => (
             <span className="heroTitleLine" key={`${index}-${line}`} style={{ "--hero-line-index": Math.min(index, 3) } as CSSProperties}><span>{line}</span></span>
           ))}</h1>
+          <p className="heroEventDetails"><time dateTime={event.isoStart}>{event.date}</time><span aria-hidden="true">✦</span><span>{event.city}</span></p>
           <div className="heroActions">
             <FadeLink className="button buttonPrimary" href="/#tickets">{home.hero.primaryAction} <ArrowIcon /></FadeLink>
             <FadeLink className="textLink" href="/#about">{home.hero.secondaryAction} <span aria-hidden="true">↓</span></FadeLink>
@@ -103,19 +103,22 @@ export async function HomePage({ editing = false }: { editing?: boolean }) {
           {artists.map((artist, index) => (
             <article className="artistRow" data-lower-reveal id={`artist-${artist.slug}`} key={artist.slug}>
               <span className="artistNumber">{String(index + 1).padStart(2, "0")}</span>
-              <h3>{artist.name}</h3>
-              {editing && <Link className="inlineEdit inlineEdit--record" href={`/admin/artists?edit=${encodeURIComponent(artist.id)}#record-editor`}>Edit <span className="srOnly">{artist.name}</span></Link>}
-              <span>{artist.type}</span>
-              <span>{artist.time}</span>
-              <span>{artist.stage}</span>
               <FadeLink
-                className="artistArrow"
+                className="artistRowLink"
                 href={`/artists/${artist.slug}`}
                 transitionKind="artist-open"
                 aria-label={`View ${artist.name} artist page`}
               >
-                <ArrowIcon />
+                <div className="artistRowIdentity">
+                  <h3>{artist.name}</h3>
+                  <span className="artistMobileMeta">{artist.type} · {artist.stage}</span>
+                </div>
+                <span className="artistArrow" aria-hidden="true"><ArrowIcon /></span>
               </FadeLink>
+              {editing && <Link className="inlineEdit inlineEdit--record" href={`/admin/artists?edit=${encodeURIComponent(artist.id)}#record-editor`}>Edit <span className="srOnly">{artist.name}</span></Link>}
+              <span>{artist.type}</span>
+              <span>{artist.time}</span>
+              <span>{artist.stage}</span>
             </article>
           ))}
         </div>

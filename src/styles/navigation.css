@@ -13,8 +13,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--page-gutter);
-  mix-blend-mode: difference;
-  color: var(--color-white);
+  color: var(--color-ink);
+  background: var(--color-paper);
 }
 
 .brand {
@@ -69,7 +69,7 @@
   gap: 10px;
   align-items: center;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: var(--tracking-label);
   cursor: pointer;
 }
@@ -93,3 +93,21 @@
 .menuIcon::after { transform: rotate(90deg); }
 .menuButton[aria-expanded="true"] .menuIcon { transform: rotate(45deg); }
 
+
+.siteHeader[data-tone="dark"],
+.siteHeader[data-menu-open="true"] {
+  color: var(--color-white);
+  background: var(--color-dark);
+}
+.siteHeader[data-tone="photo"]:not([data-menu-open="true"]) {
+  color: var(--color-white);
+  background: rgb(var(--color-dark-rgb) / .78);
+}
+.brand, .menuButton, .desktopNav a { min-height: 44px; }
+.desktopNav a { display: inline-flex; align-items: center; }
+.menuButton { padding: 0 0 0 12px; min-width: 88px; justify-content: flex-end; }
+.siteHeader a:focus-visible, .siteHeader button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+.brandMark { display: inline-block; transform-origin: center; }

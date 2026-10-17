@@ -4,7 +4,8 @@ export const primaryNavigation = [
   { id: "nav-about", sortOrder: 1, status: "published", label: "About", mobileLabel: "About", href: "/#about" },
   { id: "nav-artists", sortOrder: 2, status: "published", label: "Artists", mobileLabel: "Artists", href: "/#lineup" },
   { id: "nav-info", sortOrder: 3, status: "published", label: "Info", mobileLabel: "Event info", href: "/#info" },
-  { id: "nav-tickets", sortOrder: 4, status: "published", label: "Tickets", mobileLabel: "Tickets", href: "/#tickets" },
+  { id: "nav-programme", sortOrder: 4, status: "published", label: "Programme", mobileLabel: "Programme", href: "/#programme" },
+  { id: "nav-tickets", sortOrder: 5, status: "published", label: "Tickets", mobileLabel: "Tickets", href: "/#tickets" },
 ] as const satisfies readonly NavigationItem[];
 
 export const informationNavigation = [
