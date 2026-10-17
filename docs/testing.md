@@ -1,5 +1,9 @@
 ## Current validation — 2.10.6
 
+## 2.10.15 verification
+
+Lint (four existing admin image warnings), TypeScript, all 12 unit tests, static/runtime audits and a clean production build passed. The initial build encountered a stale Turbopack persistence-cache error; rebuilding after removing generated .next output succeeded. Rendered the production build at 390px and 1280px: the shared wash computes to 72% opacity, Hero/About edges coincide and neither viewport has horizontal overflow. Visually inspected the mobile hero and section join. No new layer, animation, dependency or runtime listener was added.
+
 ## 2.10.14 verification
 
 Production build, TypeScript, static/runtime audits and all 12 unit tests passed; ESLint has no errors and four existing admin image warnings. Inspected the mobile hero and checked layout at 390px and 1280px. The same mobile rich-yellow pixel comparison used for 2.10.13 now measures 63.0% coverage, down from 83.8%, restoring more cream space. Both layouts preserve the seamless join and have no horizontal overflow; the adjacent-row join difference is at most 2/255 per channel on mobile and 1/255 on desktop. No runtime dependency, animation, filter, database or authentication change.

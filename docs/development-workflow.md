@@ -1,5 +1,9 @@
 ## 2.10.6 — Multiple admin logins
 
+## 2.10.15 — Softer opening colour
+
+Reduced the opacity of the complete Hero/About gradient layer from 100% to 72% at the default strength. This softens overlapping yellow cores as well as their edges, allowing the cream base to show throughout the joined surface. The seamless background and mobile layout are preserved.
+
 ## 2.10.14 — Balance the opening gradients
 
 Reduced the yellow core from 36% to 26% and softened the middle/outer falloff so more cream shows between the glows. Yellow centres retain their original saturated colour, while the overall composition is less uniformly yellow. The shared seamless Hero/About background and all layout/motion behaviour remain.

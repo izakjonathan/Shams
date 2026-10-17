@@ -468,7 +468,8 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: min(1, var(--gradient-strength));
+  /* Soften the entire composited wash, including overlapping yellow cores. */
+  opacity: min(1, calc(var(--gradient-strength) * .6));
   background-image:
     radial-gradient(ellipse calc(66vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 2% 14%, var(--opening-wash-stops)),
     radial-gradient(ellipse calc(64vw * var(--gradient-size)) calc(52vw * var(--gradient-size)) at 104% 3%, var(--opening-wash-stops)),
