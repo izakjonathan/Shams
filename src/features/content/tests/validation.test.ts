@@ -1,3 +1,4 @@
+import { validateContentBudget } from "../admin-validation";
 import { MEDIA_PLACEHOLDER, publicImageOrBaseline } from "../media-path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -55,4 +56,13 @@ test("homepage copy validates every nested field and cannot gain a public slug",
   assert.throws(() => validateAdminRecord({ ...home.data, hero: { ...(home.data.hero as object), titleLines: [] } }, home));
   assert.throws(() => validateAdminRecord({ ...home.data, mission: { ...(home.data.mission as object), tags: [42] } }, home));
   assert.throws(() => validateAdminRecord(home.data, { ...home, slug: "home" }));
+});
+
+test("write budget refuses oversized content and excessive nesting without changing read rules", () => {
+  assert.doesNotThrow(() => validateContentBudget({ nested: ["normal"] }));
+  assert.throws(() => validateContentBudget({ bio: "x".repeat(20001) }), /20,000/);
+  assert.throws(() => validateContentBudget({ items: Array(501).fill("x") }), /500 entries/);
+  let deep: unknown = "leaf";
+  for (let i = 0; i < 18; i++) deep = { child: deep };
+  assert.throws(() => validateContentBudget(deep), /complex/);
 });

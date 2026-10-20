@@ -33,3 +33,28 @@ export function readSessionIdentity(token: string | undefined, config: AdminConf
     return config.email;
   } catch { return null; }
 }
+
+/** Authenticate the database session envelope with a secret-only MAC before any database lookup.
+ * The password/version-bound signature is still checked after loading the account. */
+function signDbEnvelope(payload: string, secret: string) {
+  return createHmac("sha256", secret).update("db-session-v1:").update(payload).digest("base64url");
+}
+export function wrapDbSessionToken(token: string, secret: string): string {
+  const [payload, signature] = token.split(".");
+  if (!payload || !signature || !secret) throw new Error("Invalid database session.");
+  return `${payload}.${signature}.${signDbEnvelope(payload, secret)}`;
+}
+export function inspectDbSessionEnvelope(token: string, config: AdminConfig, now = Date.now()): string | null {
+  if (!adminConfigured(config) || token.length > 2048) return null;
+  const parts = token.split(".");
+  if (parts.length !== 3 || !parts.every(Boolean) || !safeEqual(parts[2], signDbEnvelope(parts[0], config.secret))) return null;
+  try {
+    const value: unknown = JSON.parse(Buffer.from(parts[0], "base64url").toString("utf8"));
+    if (!value || typeof value !== "object") return null;
+    const session = value as {email?: unknown; expires?: unknown};
+    if (typeof session.email !== "string" || session.email.length > 254 || !session.email ||
+        typeof session.expires !== "number" || !Number.isSafeInteger(session.expires) ||
+        session.expires <= now / 1000 || session.expires > Math.floor(now / 1000) + SESSION_MAX_AGE) return null;
+    return session.email;
+  } catch { return null; }
+}

@@ -1,3 +1,4 @@
+import { ImageUploadField } from "./ImageUploadField";
 import { HOME_FIELDS } from "../../content/home-fields";
 import type { AdminContentType, AdminRecord } from "../server/content-admin";
 
@@ -34,7 +35,7 @@ export function StructuredFields({ record, type }: { record: AdminRecord; type: 
     <label>Highlights<textarea name="highlights" className="adminTextarea--medium" defaultValue={lines(data,"highlights")}  required /><small >One highlight per line.</small></label>
     <fieldset className="adminMediaFieldset"><legend>Artist image</legend><div className="adminMediaGrid">
       <div className="adminMediaPreview">{value(data,"image") ? <img src={value(data,"image")} alt="" /> : <span>No image</span>}</div>
-      <div className="adminMediaInputs"><label>Local image path<input name="image" defaultValue={value(data,"image")} required /></label><label>Alternative text<input name="imageAlt" defaultValue={value(data,"imageAlt")} required /></label></div>
+      <div className="adminMediaInputs"><ImageUploadField name="image" defaultValue={value(data,"image")} required /><label>Alternative text<input name="imageAlt" defaultValue={value(data,"imageAlt")} required /></label></div>
     </div></fieldset>
     <label>External links<textarea name="links" className="adminTextarea--medium" defaultValue={Array.isArray(data.links) ? data.links.map((link) => { const item=link as Record<string,unknown>; return `${String(item.label ?? "")}|${String(item.href ?? "")}`; }).join("\n") : ""}  /><small >One link per line: Label|https://example.com</small></label>
   </>;
@@ -43,7 +44,7 @@ export function StructuredFields({ record, type }: { record: AdminRecord; type: 
   if (type === "gallery") return <>
     <fieldset className="adminMediaFieldset"><legend>Gallery image</legend><div className="adminMediaGrid">
       <div className="adminMediaPreview">{value(data,"image") ? <img src={value(data,"image")} alt="" /> : <span>No image</span>}</div>
-      <div className="adminMediaInputs"><label>Local image path<input name="image" defaultValue={value(data,"image")} required /></label><label>Alternative text<input name="alt" defaultValue={value(data,"alt")} required /></label></div>
+      <div className="adminMediaInputs"><ImageUploadField name="image" defaultValue={value(data,"image")} required /><label>Alternative text<input name="alt" defaultValue={value(data,"alt")} required /></label></div>
     </div></fieldset>
   </>;
 

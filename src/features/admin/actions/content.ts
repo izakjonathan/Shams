@@ -122,6 +122,7 @@ export async function createRecordFormAction(_state: { error: string }, formData
     const data = validateAdminRecord({ ...structuredData(type, formData, baseline.data), id, status: "draft", sortOrder, ...(slug ? { slug } : {}) }, { id, type, slug, status: "draft", sortOrder });
     await saveAdminRecord(actor, { id, type, slug, status: "draft", sortOrder, data, updatedAt: null }, null);
     updateTag(CONTENT_TAGS[type]); revalidatePath("/admin");
+    if (type === "gallery") { revalidatePath("/admin/gallery"); redirect(`/admin/gallery?edit=${encodeURIComponent(id)}&saved=1#record-editor`); }
     redirect(`/admin?saved=1&section=${encodeURIComponent(`${type}:${id}`)}#section-${id === "page-home" ? "home" : type}`);
   } catch (error) { unstable_rethrow(error); return formError(error); }
 }

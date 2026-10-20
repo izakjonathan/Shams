@@ -66,3 +66,5 @@ html:has(.adminShell),html:has(.adminLoginShell),html:has(.adminShell) body,html
 @media(max-width:600px){.simpleToolbar>div{gap:14px;font-size:13px}.simpleSection>summary{font-size:22px}.simpleRecord>summary{padding:14px}.simpleRecordEditor{padding:0 14px 14px}.simpleRecordEditor input,.simpleRecordEditor textarea,.simpleRecordEditor select{font-size:16px}}
 
 .simpleHomeGroup{border-bottom:1px solid var(--admin-line);padding:12px 0}.simpleHomeGroup>summary{cursor:pointer;padding:8px 0;font-size:18px}.simpleHomeGroup>div{display:grid;gap:18px;padding:16px 0}.simpleRecordEditor fieldset.adminMediaFieldset{display:grid;gap:16px}
+
+.adminPasswordControl{display:flex;position:relative;align-items:center}.adminPasswordControl input{padding-right:48px!important;width:100%}.adminPasswordToggle{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:grid;place-items:center;border:0;background:transparent;color:inherit;padding:9px;cursor:pointer}.adminUploadField{display:grid;gap:8px;margin:12px 0}.adminUploadField input[type=file]{max-width:100%}.adminUploadField small{opacity:.7}

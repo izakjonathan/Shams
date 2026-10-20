@@ -6,7 +6,7 @@ export default async function MediaPage() {
   const [{ records, source }, galleryResult] = await Promise.all([listAdminRecords("artist"), listAdminRecords("gallery")]);
   return <>
     <header className="adminPageHeader"><div><p className="adminEyebrow">MEDIA</p><h1>Artist images</h1></div><span className={`adminSource adminSource--${source}`}>{source}</span></header>
-    <div className="adminNotice"><strong>Media foundation</strong><p>Image paths and URLs are managed from each artist’s structured editor. This overview checks artwork, alternative text and crop positioning before publishing. Direct binary uploads require a configured storage provider and are intentionally not written to the Vercel filesystem.</p></div>
+    <div className="adminNotice"><strong>Media foundation</strong><p>Choose and upload an image from each artist or gallery editor. Uploaded files are stored in the configured PostgreSQL database and are not written to the Vercel filesystem. This overview checks artwork, alternative text and crop positioning before publishing.</p></div>
     <div className="adminMediaLibrary">{records.map((record: AdminRecord) => {
       const image = typeof record.data.image === "string" ? record.data.image : "";
       const alt = typeof record.data.imageAlt === "string" ? record.data.imageAlt : "";

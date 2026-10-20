@@ -5,6 +5,7 @@ export function isLocalMedia(value: unknown): boolean {
   if (typeof src !== "string") return false;
   const path = src.trim();
   if (path === MEDIA_PLACEHOLDER) return true;
+  if (/^\/api\/media\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(path)) return true;
   return /^\/(?:images|_next\/static\/media)\/[a-zA-Z0-9_./-]+\.(?:webp|png|jpe?g|avif)$/i.test(path) && !path.includes("..") && !path.includes("//");
 }
 /** Public compatibility: editor media, the same record's approved asset, then a neutral placeholder. */

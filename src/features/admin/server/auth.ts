@@ -3,7 +3,7 @@ import { findAdminAccount } from "./accounts";
 import { verifyPassword } from "./passwords";
 import { cookies, draftMode } from "next/headers";
 import { redirect } from "next/navigation";
-import { adminConfigured, createSessionToken, readSessionIdentity, safeEqual, SESSION_MAX_AGE } from "./session";
+import { adminConfigured, createSessionToken, readSessionIdentity, inspectDbSessionEnvelope, wrapDbSessionToken, safeEqual, SESSION_MAX_AGE } from "./session";
 
 const COOKIE_NAME = "shf-admin-session";
 function config() {
@@ -31,7 +31,7 @@ export async function createAdminSession(email: string, password: string) {
   else {
     const account = await findAdminAccount(identity);
     if (!account?.enabled || !await verifyPassword(password, account.passwordHash)) throw new Error("Credentials changed during sign-in.");
-    token = `db.${createSessionToken(identity, { email: identity, password: `${account.passwordHash}:${account.sessionVersion}`, secret: value.secret })}`;
+    token = `db.${wrapDbSessionToken(createSessionToken(identity, { email: identity, password: `${account.passwordHash}:${account.sessionVersion}`, secret: value.secret }), value.secret)}`;
   }
   (await cookies()).set(COOKIE_NAME, token, { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", maxAge: SESSION_MAX_AGE });
 }
@@ -45,11 +45,11 @@ export async function getAdminIdentity() {
   if (!token?.startsWith("db.")) return readSessionIdentity(token, value);
   if (!adminConfigured(value) || token.length > 2048) return null;
   try {
-    const payload = JSON.parse(Buffer.from(token.slice(3).split(".")[0], "base64url").toString("utf8")) as { email?: unknown };
-    if (typeof payload.email !== "string" || payload.email.length > 254 || payload.email === value.email) return null;
-    const account = await findAdminAccount(payload.email);
+    const email = inspectDbSessionEnvelope(token.slice(3), value);
+    if (!email || email === value.email) return null;
+    const account = await findAdminAccount(email);
     if (!account?.enabled) return null;
-    return readSessionIdentity(token.slice(3), { email: account.email, password: `${account.passwordHash}:${account.sessionVersion}`, secret: value.secret });
+    return readSessionIdentity(token.slice(3).split(".").slice(0, 2).join("."), { email: account.email, password: `${account.passwordHash}:${account.sessionVersion}`, secret: value.secret });
   } catch { return null; }
 }
 export async function requireAdmin(): Promise<string> {

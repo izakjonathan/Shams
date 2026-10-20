@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { adminConfigured, createSessionToken, readSessionIdentity, SESSION_MAX_AGE } from "../server/session";
+import { adminConfigured, createSessionToken, readSessionIdentity, SESSION_MAX_AGE, wrapDbSessionToken, inspectDbSessionEnvelope } from "../server/session";
 import { safePreviewUrl } from "../server/preview-path";
 const config = { email: "admin@example.test", password: "test-only-password", secret: "test-only-secret-32-characters-long" };
 const now = 1800000000000;
@@ -60,4 +60,14 @@ test("database-account session binding invalidates on password or version change
   assert.equal(readSessionIdentity(token, { ...account, password: "hash:2" }, now), null);
   assert.equal(readSessionIdentity(token, { ...account, password: "new-hash:1" }, now), null);
   assert.equal(readSessionIdentity(token, config, now), null);
+});
+
+test("database session envelope blocks forged payloads before account lookup", () => {
+  const raw = createSessionToken("editor@example.test", { ...config, email: "editor@example.test", password: "account-hash:1" }, now);
+  const wrapped = wrapDbSessionToken(raw, config.secret);
+  assert.equal(inspectDbSessionEnvelope(wrapped, config, now), "editor@example.test");
+  assert.equal(inspectDbSessionEnvelope(wrapped.replace(/.$/, "x"), config, now), null);
+  assert.equal(inspectDbSessionEnvelope(raw, config, now), null);
+  assert.equal(inspectDbSessionEnvelope(wrapped, config, now + SESSION_MAX_AGE * 1000), null);
+  assert.equal(readSessionIdentity(wrapped.split(".").slice(0,2).join("."), { ...config, email: "editor@example.test", password: "account-hash:2" }, now), null);
 });

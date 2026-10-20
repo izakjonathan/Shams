@@ -52,6 +52,36 @@ function uniqueIds(items: unknown[], path: string) {
   const ids = items.map((item) => object(item, path).id);
   if (new Set(ids).size !== ids.length) fail(`${path} contains duplicate IDs.`);
 }
+/** Limits apply to writes only. Reading previously published content is unaffected. */
+export function validateContentBudget(value: unknown) {
+  const seen = new Set<object>();
+  let nodes = 0;
+  let bytes = 0;
+  function visit(item: unknown, depth: number) {
+    if (++nodes > 5000 || depth > 16) fail("Content is too complex (maximum 5,000 nodes and 16 levels).");
+    if (typeof item === "string") {
+      if (item.length > 20000) fail("A content field exceeds 20,000 characters.");
+      bytes += new TextEncoder().encode(item).length;
+    } else if (Array.isArray(item)) {
+      if (item.length > 500) fail("A content array exceeds 500 entries.");
+      if (seen.has(item)) fail("Circular content is not supported.");
+      seen.add(item); item.forEach(entry => visit(entry, depth + 1)); seen.delete(item);
+    } else if (item && typeof item === "object") {
+      if (seen.has(item)) fail("Circular content is not supported.");
+      seen.add(item);
+      const entries = Object.entries(item);
+      if (entries.length > 250) fail("A content object exceeds 250 fields.");
+      for (const [key, entry] of entries) {
+        if (key.length > 160) fail("A content field name exceeds 160 characters.");
+        bytes += new TextEncoder().encode(key).length; visit(entry, depth + 1);
+      }
+      seen.delete(item);
+    }
+    if (bytes > 300000) fail("Content exceeds the 300 KB text budget.");
+  }
+  visit(value, 0);
+}
+
 function validateCommon(data: Record<string, unknown>, metadata: AdminRecordMetadata) {
   if (!Number.isInteger(metadata.sortOrder) || metadata.sortOrder < -2147483648 || metadata.sortOrder > 2147483647) fail("sortOrder must be a PostgreSQL integer.");
   if (string(data.id, "data.id") !== metadata.id) fail("JSON id must match the stable record id.");
@@ -201,6 +231,7 @@ export function normalizeAdminRecordData(dataInput: unknown, metadata: AdminReco
 
 export function validateAdminRecord(dataInput: unknown, metadata: AdminRecordMetadata): Record<string, unknown> {
   const data = object(dataInput, "data");
+  validateContentBudget(data);
   validateCommon(data, metadata);
   if (metadata.type === "artist") validateArtist(data, metadata);
   else if (metadata.type === "gallery") validateGallery(data);

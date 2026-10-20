@@ -71,7 +71,10 @@ export async function seedMissingRecords(db: Database, actor: string, records: A
 
 export async function moveRecord(db: Database, actor: string, type: AdminRecord["type"], id: string, expected: string | null, direction: -1 | 1) {
   await db.transaction(async tx => {
-    const rows = await tx.select().from(contentRecords).where(eq(contentRecords.type, type)).orderBy(asc(contentRecords.sortOrder), asc(contentRecords.id)).for("update");
+    // Lock by immutable IDs to avoid cycles between concurrent reorders, then
+    // evaluate ordering from the locked, current rows (not a stale pre-lock sort).
+    const rows = await tx.select().from(contentRecords).where(eq(contentRecords.type, type)).orderBy(asc(contentRecords.id)).for("update");
+    rows.sort((a, b) => a.sortOrder - b.sortOrder || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
     const index = rows.findIndex(row => row.id === id);
     const current = rows[index];
     if (!current) throw new Error("Record not found. Reload the editor.");
