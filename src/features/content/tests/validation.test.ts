@@ -3,7 +3,7 @@ import { MEDIA_PLACEHOLDER, publicImageOrBaseline } from "../media-path";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { normalizeAdminRecordData, validateAdminRecord, type AdminRecordMetadata } from "../admin-validation";
+import { normalizeAdminRecordData, validateAdminRecord, validateStoredAdminRecord, type AdminRecordMetadata } from "../admin-validation";
 const records = JSON.parse(readFileSync("scripts/db-seed-data.json", "utf8")).records as (AdminRecordMetadata & { data: Record<string, unknown> })[];
 test("every canonical record passes strict validation", () => {
   for (const record of records) assert.doesNotThrow(() => validateAdminRecord(record.data, record), record.id);
@@ -65,4 +65,14 @@ test("write budget refuses oversized content and excessive nesting without chang
   let deep: unknown = "leaf";
   for (let i = 0; i < 18; i++) deep = { child: deep };
   assert.throws(() => validateContentBudget(deep), /complex/);
+});
+
+
+test("published legacy records exceeding new write budgets still render with shape checks", () => {
+  const artist = records.find((record) => record.type === "artist")!;
+  const legacy = { ...artist.data, ...Object.fromEntries(Array.from({ length: 251 }, (_, index) => [`legacyField${index}`, `existing-${index}`])) };
+  assert.throws(() => validateAdminRecord(legacy, artist), /250 fields/);
+  assert.doesNotThrow(() => validateStoredAdminRecord(legacy, artist));
+  assert.throws(() => validateStoredAdminRecord({ ...legacy, name: "" }, artist), /artist.name/);
+  assert.throws(() => validateStoredAdminRecord({ ...legacy, image: "https://untrusted.example/img.jpg" }, artist), /local image path/);
 });

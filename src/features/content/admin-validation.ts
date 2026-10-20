@@ -229,9 +229,8 @@ export function normalizeAdminRecordData(dataInput: unknown, metadata: AdminReco
   return data;
 }
 
-export function validateAdminRecord(dataInput: unknown, metadata: AdminRecordMetadata): Record<string, unknown> {
+function validateRecordShape(dataInput: unknown, metadata: AdminRecordMetadata): Record<string, unknown> {
   const data = object(dataInput, "data");
-  validateContentBudget(data);
   validateCommon(data, metadata);
   if (metadata.type === "artist") validateArtist(data, metadata);
   else if (metadata.type === "gallery") validateGallery(data);
@@ -240,4 +239,20 @@ export function validateAdminRecord(dataInput: unknown, metadata: AdminRecordMet
   else if (metadata.type === "faq") validateFaq(data);
   else validatePage(data, metadata);
   return data;
+}
+
+/** Validate writes, including their size and complexity budget. */
+export function validateAdminRecord(dataInput: unknown, metadata: AdminRecordMetadata): Record<string, unknown> {
+  validateContentBudget(dataInput);
+  return validateRecordShape(dataInput, metadata);
+}
+
+/**
+ * Validate the shape of records already stored in the database for rendering.
+ * Legacy published content can exceed newer write limits; those limits must
+ * never turn a previously working public page into a 500 response.
+ * This function is intentionally not used in save/publish actions.
+ */
+export function validateStoredAdminRecord(dataInput: unknown, metadata: AdminRecordMetadata): Record<string, unknown> {
+  return validateRecordShape(dataInput, metadata);
 }

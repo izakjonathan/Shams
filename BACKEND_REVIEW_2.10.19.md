@@ -37,3 +37,12 @@ This package was not committed to GitHub or deployed to Vercel; production data 
 - New gallery entries start without an image path; user chooses a local image, provides alt text, and saves a draft. The create action then returns to the newly created gallery record.
 - Existing gallery image editing retains its file uploader, and the admin overview still supports adding gallery items.
 - Static source checks performed. Dependency installation, runtime upload tests, and production PostgreSQL end-to-end verification are not completed in this environment.
+
+
+## 2.10.21 production regression hotfix (20 October 2026)
+- Inspected Vercel runtime error clusters and request logs for the production Shams project. The deployed 2.10.20 reader throws `[admin content] A content object exceeds 250 fields.` from `database-public-records.ts` on public page loads, causing the error boundary shown to visitors.
+- Root cause: `validateAdminRecord` was shared by write actions and public reads, so the new size/complexity budget unexpectedly rejected older published content. The earlier report's assertion that reads were unaffected was incorrect.
+- Introduced `validateStoredAdminRecord` for public database reads. It still validates record structure, metadata, safe media paths and artist links but does not impose write-only size/complexity budgets. `validateAdminRecord` remains strict for writes.
+- Regression test covers a legacy artist record with more than 250 keys: public read succeeds, write fails, and invalid name/media still fail read validation.
+- **Verified locally:** Runtime smoke checks against compiled TypeScript logic passed for 40 canonical seed records, legacy-read/write separation, and malformed fields; Node-based static architecture checks run separately. The TypeScript compiler can emit the isolated module but reports missing `next/image` types because dependencies are not installed.
+- **Not verified:** Full dependency-based typecheck/build, full unit suite, browser E2E, PostgreSQL concurrency and deployed hotfix. This ZIP is not yet live. A redeployment followed by public route checks is required.

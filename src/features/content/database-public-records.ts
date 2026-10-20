@@ -4,7 +4,7 @@ import { unstable_cache } from "next/cache";
 import { and, asc, eq } from "drizzle-orm";
 import { getDatabase, isDatabaseConfigured } from "../../db/client";
 import { contentRecords } from "../../db/schema";
-import { normalizeAdminRecordData, validateAdminRecord, type AdminContentType } from "./admin-validation";
+import { normalizeAdminRecordData, validateStoredAdminRecord, type AdminContentType } from "./admin-validation";
 import type { ContentStatus } from "./models";
 import { CONTENT_TAGS } from "./cache-tags";
 import { MEDIA_PLACEHOLDER, isLocalMedia, publicImageOrBaseline } from "./media-path";
@@ -56,7 +56,7 @@ async function queryDatabase(type: PublicContentType, includeDrafts: boolean) {
       }
       console.warn(`[public content] Using safe media fallback for ${metadata.type}:${metadata.id}. Review the saved image path in the studio.`);
     }
-    const data = validateAdminRecord(normalized, metadata);
+    const data = validateStoredAdminRecord(normalized, metadata);
     if (!includeDrafts && metadata.type === "page") {
       for (const key of ["sections", "routes"]) {
         if (Array.isArray(data[key])) data[key] = data[key].filter((item: { status?: string }) => item.status === "published" || item.status === "placeholder");

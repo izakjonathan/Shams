@@ -1,3 +1,7 @@
+## 2.10.21 — Public content read compatibility hotfix
+
+Fixed a production regression in 2.10.20: strict write-size limits were also being applied to existing database records on public reads, producing HTTP 500 errors for records with more than 250 keys. Public readers now use the same structural and media safety validation without applying the newer write-only budget. New/edited content still goes through all size/complexity checks. Added a regression test for oversized legacy records and invalid fields. No database migration or content deletion is required. Retains the 2.10.20 Gallery upload workflow.
+
 ## 2.10.6 — Multiple admin logins
 
 ## 2.10.18 — Sun motif and original header blending
