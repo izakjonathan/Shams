@@ -344,7 +344,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.10.23") errors.push("package.json version must be 2.10.23.");
+if (packageJson.version !== "2.10.25") errors.push("package.json version must be 2.10.25.");
 if (readFileSync(resolve(root, "src/styles/footer.css"), "utf8").includes("footerCanvasBleed")) errors.push("Footer must not regain flow-based canvas bleed that increases its height.");
 
 // v2.1.8 artist arrow size regression guard
@@ -615,12 +615,15 @@ if (!publicHome245.includes("<EventGallery images={gallery}") || publicHome245.i
 for (const required of [
   'aria-label="Event atmosphere gallery"',
   'SLIDE_INTERVAL_MS = 4800',
-  'prefersReducedMotion()',
-  'IntersectionObserver',
+  'window.setInterval',
+  'failedImages.current.has',
+  'Pause gallery slideshow',
+  'Resume gallery slideshow',
   'eventGalleryTitle',
 ]) {
   if (!eventGallery.includes(required)) errors.push(`Event gallery behavior is missing: ${required}`);
 }
+if (eventGallery.includes('loadedImages.current.has') || eventGallery.includes('hoverPaused') || eventGallery.includes('prefersReducedMotion()')) errors.push("Gallery autoplay must not be blocked by image-load, hover, or motion readiness checks.");
 if (!/transition:\s*opacity\s+\d+ms/.test(galleryStyles) || !galleryStyles.includes("color: var(--color-accent)") || !galleryStyles.includes("font-family: var(--font-display)")) {
   errors.push("Gallery must use an opacity crossfade and centered yellow Agilera overlay.");
 }

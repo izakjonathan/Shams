@@ -81,4 +81,9 @@
 }
 
 
-.galleryCount { position: absolute; z-index: 3; left: var(--page-gutter); bottom: 1.5rem; color: var(--color-white); font-size: 10px; letter-spacing: var(--tracking-label); font-variant-numeric: tabular-nums; }
+.galleryControls { position:absolute; z-index:3; left:var(--page-gutter); bottom:1.5rem; display:flex; align-items:center; gap:18px; color:var(--color-white); }
+.galleryCount { font-size:10px; letter-spacing:var(--tracking-label); font-variant-numeric:tabular-nums; }
+.galleryButtons { display:flex; gap:8px; }
+.galleryButtons button { display:grid; place-items:center; width:38px; height:38px; border:1px solid currentColor; border-radius:50%; background:rgb(0 0 0 / .15); color:inherit; font:20px/1 Arial,sans-serif; cursor:pointer; }
+.galleryButtons button:hover { background:rgb(0 0 0 / .45); }
+.galleryButtons button:focus-visible { outline:2px solid currentColor; outline-offset:3px; }

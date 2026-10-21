@@ -4,62 +4,58 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { GalleryImage } from "../../content";
-import { prefersReducedMotion } from "../../../lib/motion";
 
 const SLIDE_INTERVAL_MS = 4800;
 
+// A stable record ID is not a stable image: an editor can replace its media.
+function mediaKey(image: GalleryImage): string {
+  return typeof image.image === "string" ? image.image : image.image.src;
+}
+
 export function EventGallery({ images, editing = false }: { images: readonly GalleryImage[]; editing?: boolean }) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const loadedImages = useRef(new Set<string>());
+  const failedImages = useRef(new Set<string>());
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [hoverPaused, setHoverPaused] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);
-  const [isVisible, setIsVisible] = useState(false);
   const currentIndex = activeIndex % Math.max(1, images.length);
 
   useEffect(() => {
-    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const updateMotion = () => setReducedMotion(query.matches);
     const updateVisibility = () => setPageVisible(!document.hidden);
-    updateMotion();
     updateVisibility();
-    query.addEventListener("change", updateMotion);
     document.addEventListener("visibilitychange", updateVisibility);
     return () => {
-      query.removeEventListener("change", updateMotion);
       document.removeEventListener("visibilitychange", updateVisibility);
     };
   }, []);
 
+  // Advance on a clock, not on Next/Image onLoad events. In particular,
+  // opacity-hidden slides can be deferred by browsers even when marked eager,
+  // leaving a readiness-gated slideshow stuck on the first image.
+  // Reduced-motion users get an instant change (see gallery.css), not a fade.
   useEffect(() => {
-    const section = sectionRef.current;
-    if (!section || !("IntersectionObserver" in window)) {
-      setIsVisible(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.12 },
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (paused || hoverPaused || reducedMotion || !pageVisible || !isVisible || images.length < 2 || prefersReducedMotion()) return;
+    if (paused || !pageVisible || images.length < 2) return;
     const interval = window.setInterval(() => {
       setActiveIndex((current) => {
-        const next = (current + 1) % images.length;
-        // Retain the current photograph until the incoming image has decoded.
-        return loadedImages.current.has(images[next].id) ? next : current;
+        for (let step = 1; step < images.length; step++) {
+          const next = (current + step) % images.length;
+          if (!failedImages.current.has(mediaKey(images[next]))) return next;
+        }
+        return current;
       });
     }, SLIDE_INTERVAL_MS);
     return () => window.clearInterval(interval);
-  }, [images, isVisible, paused, hoverPaused, reducedMotion, pageVisible]);
+  }, [images, paused, pageVisible]);
 
   if (!images.length) return null;
+  const goTo = (direction: number) => {
+    setActiveIndex((current) => {
+      for (let step = 1; step < images.length; step++) {
+        const next = (current + direction * step + images.length * 2) % images.length;
+        if (!failedImages.current.has(mediaKey(images[next]))) return next;
+      }
+      return current;
+    });
+  };
   // Only the outgoing, active and incoming slides need decoded image layers.
   const liveIndices = new Set([
     (currentIndex + images.length - 1) % images.length,
@@ -69,15 +65,10 @@ export function EventGallery({ images, editing = false }: { images: readonly Gal
 
   return (
     <section
-      ref={sectionRef}
       className="eventGallery"
       id="gallery"
       aria-label="Event atmosphere gallery"
       aria-roledescription="carousel"
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
-      onPointerEnter={(event) => { if (event.pointerType === "mouse") setHoverPaused(true); }}
-      onPointerLeave={() => setHoverPaused(false)}
     >
       <div className="eventGallerySlides" aria-hidden="true">
         {images.map((item, index) => liveIndices.has(index) ? (
@@ -87,15 +78,29 @@ export function EventGallery({ images, editing = false }: { images: readonly Gal
               alt=""
               fill
               sizes="100vw"
-              loading="lazy"
-              onLoad={() => { loadedImages.current.add(item.id); }}
+              // Adjacent slides have opacity:0. Lazy loading can defer them forever
+              // in Safari, leaving the carousel unable to advance.
+              loading="eager"
+              onLoad={() => { failedImages.current.delete(mediaKey(item)); }}
+              onError={() => {
+                failedImages.current.add(mediaKey(item));
+                // Do not leave a broken active image visible until the next tick.
+                if (index === currentIndex) goTo(1);
+              }}
             />
           </div>
         ) : null)}
       </div>
       {editing && images[currentIndex] && <Link className="inlineEdit galleryEdit" href={`/admin/gallery?edit=${encodeURIComponent(images[currentIndex].id)}#record-editor`}>Edit current image</Link>}
       <h2 className="eventGalleryTitle"><span data-lower-reveal>Shams</span></h2>
-      <span className="galleryCount" aria-hidden="true">{String(currentIndex + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}</span>
+      <div className="galleryControls">
+        <span className="galleryCount" aria-live="off">{String(currentIndex + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}</span>
+        {images.length > 1 && <div className="galleryButtons">
+          <button type="button" onClick={() => goTo(-1)} aria-label="Previous gallery image">←</button>
+          <button type="button" onClick={() => goTo(1)} aria-label="Next gallery image">→</button>
+          <button type="button" onClick={() => setPaused((value) => !value)} aria-label={paused ? "Resume gallery slideshow" : "Pause gallery slideshow"} aria-pressed={paused}>{paused ? "▶" : "Ⅱ"}</button>
+        </div>}
+      </div>
     </section>
   );
 }

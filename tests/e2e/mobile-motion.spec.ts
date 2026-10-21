@@ -17,30 +17,50 @@ test("mobile reveals are one-shot, keyboard-safe and obey live Reduce Motion", a
   await expect(row).toHaveClass(/isLowerRevealVisible/);
 });
 
-test("gallery has no playback button and stops for live reduced motion", async ({ page }) => {
+test("gallery automatically cycles and provides manual navigation and pause", async ({ page }) => {
   await skipSplash(page);
   await page.goto("/");
   const gallery = page.locator("#gallery");
-  expect(await gallery.locator("img").count()).toBeLessThanOrEqual(3);
   await gallery.scrollIntoViewIfNeeded();
-  await expect(gallery.getByRole("button")).toHaveCount(0);
+  const counter = gallery.locator(".galleryCount");
+  await expect(counter).toContainText("01 / ");
+  const initial = await gallery.locator(".eventGallerySlide.isActive img").getAttribute("src");
+  await expect.poll(() => gallery.locator(".eventGallerySlide.isActive img").getAttribute("src"), { timeout: 12_000 }).not.toBe(initial);
+  await gallery.getByRole("button", { name: "Pause gallery slideshow" }).click();
+  const paused = await gallery.locator(".eventGallerySlide.isActive img").getAttribute("src");
+  await page.waitForTimeout(5200);
+  await expect(gallery.locator(".eventGallerySlide.isActive img")).toHaveAttribute("src", paused!);
+  await gallery.getByRole("button", { name: "Next gallery image" }).click();
+  await expect(gallery.locator(".eventGallerySlide.isActive img")).not.toHaveAttribute("src", paused!);
+  await gallery.getByRole("button", { name: "Resume gallery slideshow" }).click();
+  expect(await gallery.locator(".eventGallerySlide").count()).toBeLessThanOrEqual(3);
+});
+
+test("reduced motion removes fading but does not freeze gallery rotation", async ({ page }) => {
+  await skipSplash(page);
   await page.emulateMedia({ reducedMotion: "reduce" });
-  const active = await gallery.locator(".isActive img").getAttribute("src");
-  await page.waitForTimeout(5100);
-  await expect(gallery.locator(".isActive img")).toHaveAttribute("src", active!);
+  await page.goto("/");
+  const gallery = page.locator("#gallery");
+  await gallery.scrollIntoViewIfNeeded();
+  const initial = await gallery.locator(".eventGallerySlide.isActive img").getAttribute("src");
+  await expect.poll(() => gallery.locator(".eventGallerySlide.isActive img").getAttribute("src"), { timeout: 12_000 }).not.toBe(initial);
   await expect.poll(() => gallery.locator(".isActive").evaluate((element) =>
     Number.parseFloat(getComputedStyle(element).transitionDuration),
   )).toBeLessThan(.001);
 });
 
-test("normal gallery advances only to a loaded photograph", async ({ page }) => {
+test("gallery timer does not depend on images completing their load", async ({ page }) => {
   await skipSplash(page);
-  await page.goto("/");
-  await page.locator("#gallery").scrollIntoViewIfNeeded();
-  const first = await page.locator(".eventGallerySlide.isActive img").getAttribute("src");
-  await expect.poll(() => page.locator(".eventGallerySlide.isActive img").getAttribute("src"), { timeout: 12_000 }).not.toBe(first);
-  expect(await page.locator(".eventGallerySlide").count()).toBeLessThanOrEqual(3);
-  expect(await page.locator(".eventGallerySlide.isActive img").evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  // Delay every optimized image long enough to exceed one slide interval.
+  // A readiness-gated implementation would stay at 01 / N indefinitely.
+  await page.route("**/_next/image?**", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 9000));
+    await route.continue().catch(() => {});
+  });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  const counter = page.locator("#gallery .galleryCount");
+  await expect(counter).toContainText("01 / ");
+  await expect(counter).toContainText("02 / ", { timeout: 7500 });
 });
 
 test("reduced motion skips the first splash and keeps menus, filters and FAQ usable", async ({ page }) => {

@@ -31,6 +31,7 @@ export function RecordEditor({ record, type, writable }: { record: AdminRecord; 
         <p className="adminRecordState" role="status"><strong>{record.status === "published" ? "Published — visible on the website" : record.status === "draft" ? "Draft — not visible publicly" : record.status === "archived" ? "Archived — not visible publicly" : "Placeholder"}</strong>{record.updatedAt ? ` · Last saved ${new Date(record.updatedAt).toLocaleString("en-GB")}` : ""}</p>
         <StructuredFields record={record} type={type} />
         <details className="adminAdvanced"><summary>Advanced record JSON</summary><p>Read-only reference for debugging and migrations.</p><pre>{JSON.stringify(record.data, null, 2)}</pre></details>
+        {type === "gallery" && <p className="adminRecordState">To show a new gallery image on the public website, click <strong>Publish</strong>. For an existing published image, <strong>Save changes</strong> updates the public gallery.</p>}
         <div className="adminEditorActions">
           <button className="adminPrimaryButton" name="intent" value="save" type="submit" disabled={!writable}>Save changes</button>
           <button className="adminSecondaryButton" name="intent" value="publish" type="submit" disabled={!writable}>Publish</button>

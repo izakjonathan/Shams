@@ -72,3 +72,7 @@ html:has(.adminShell),html:has(.adminLoginShell),html:has(.adminShell) body,html
 /* Handover: make publication state unmistakable while editing. */
 .adminRecordState { margin: .75rem 0; font-size: .875rem; line-height: 1.5; opacity: .9; }
 .adminUploadField progress { display: block; width: min(100%, 18rem); margin-top: .35rem; accent-color: currentColor; }
+
+/* iOS Safari zooms focused form controls with text below 16px. Keep admin
+   forms readable at their natural viewport scale without disabling pinch zoom. */
+:is(.adminShell,.adminLoginShell) :is(input,select,textarea) { font-size:16px; }

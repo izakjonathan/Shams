@@ -1,3 +1,18 @@
+## 2.10.25 — Reliable gallery autoplay
+
+- Removed image `onLoad` readiness gating from the homepage gallery timer. The carousel advances every 4.8 seconds whenever two or more images are available, independent of browser image-loading callbacks.
+- Removed automatic pause on hover, section visibility, and OS Reduce Motion (the reduced-motion CSS still removes fades). Kept pause on hidden browser tabs and added an explicit accessible Pause/Resume button.
+- Preserved previous/next controls and failed-image skipping. When an active image fails, the gallery moves to the next usable image.
+- Added a warning in the Gallery admin page if fewer than two records are published; a one-image collection cannot cycle.
+- Updated Playwright gallery regression coverage and static audit assertions.
+
+## 2.10.24 — Admin mobile zoom and gallery refresh
+
+- Prevent iOS Safari focus zoom on admin inputs by using 16px controls.
+- Eagerly load adjacent gallery images, skip failed images, and add previous/next controls.
+- Invalidate the public homepage when gallery records change; warn when the site uses local content.
+- Add one-step Save & publish for new gallery images.
+
 ## 2.10.21 — Public content read compatibility hotfix
 
 Fixed a production regression in 2.10.20: strict write-size limits were also being applied to existing database records on public reads, producing HTTP 500 errors for records with more than 250 keys. Public readers now use the same structural and media safety validation without applying the newer write-only budget. New/edited content still goes through all size/complexity checks. Added a regression test for oversized legacy records and invalid fields. No database migration or content deletion is required. Retains the 2.10.20 Gallery upload workflow.

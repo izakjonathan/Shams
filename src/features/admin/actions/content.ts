@@ -70,8 +70,12 @@ export async function saveRecordAction(formData: FormData) {
   await saveAdminRecord(actor, { id, type, slug, status, sortOrder, data, updatedAt: expectedUpdatedAt }, expectedUpdatedAt);
   const route = adminRouteForType(type);
   revalidatePath(`/admin/${route}`);
+  // Rebuild the public homepage as well as the tagged published-data cache.
+  // Gallery image replacements must be visible without a redeployment.
+  revalidatePath("/");
   updateTag(CONTENT_TAGS[type]);
   if (formData.get("returnRoute") === "simple") redirect(`/admin?saved=1&section=${encodeURIComponent(`${type}:${id}`)}#section-${id === "page-home" ? "home" : type}`);
+  if (type === "gallery") redirect(`/admin/gallery?edit=${encodeURIComponent(id)}&saved=1#record-editor`);
   redirect(`/admin/${route}?saved=1`);
 }
 
@@ -85,6 +89,7 @@ export async function restoreRevisionAction(formData: FormData) {
   revalidatePath(`/admin/${route}`);
   revalidatePath(`/admin/revisions/${restored.type}/${encodeURIComponent(restored.id)}`);
   updateTag(CONTENT_TAGS[restored.type]);
+  revalidatePath("/");
   redirect(`/admin/${route}?edit=${encodeURIComponent(restored.id)}&restored=1`);
 }
 
@@ -119,9 +124,10 @@ export async function createRecordFormAction(_state: { error: string }, formData
     const rows = (await listAdminRecords(type)).records;
     const sortOrder = Math.min(2147483647, Math.max(0, ...rows.map(row => row.sortOrder)) + 1);
     const slug = type === "artist" ? String(formData.get("slug") ?? "").trim() : null;
-    const data = validateAdminRecord({ ...structuredData(type, formData, baseline.data), id, status: "draft", sortOrder, ...(slug ? { slug } : {}) }, { id, type, slug, status: "draft", sortOrder });
-    await saveAdminRecord(actor, { id, type, slug, status: "draft", sortOrder, data, updatedAt: null }, null);
-    updateTag(CONTENT_TAGS[type]); revalidatePath("/admin");
+    const status = type === "gallery" && formData.get("intent") === "publish" ? "published" : "draft";
+    const data = validateAdminRecord({ ...structuredData(type, formData, baseline.data), id, status, sortOrder, ...(slug ? { slug } : {}) }, { id, type, slug, status, sortOrder });
+    await saveAdminRecord(actor, { id, type, slug, status, sortOrder, data, updatedAt: null }, null);
+    updateTag(CONTENT_TAGS[type]); revalidatePath("/admin"); revalidatePath("/");
     if (type === "gallery") { revalidatePath("/admin/gallery"); redirect(`/admin/gallery?edit=${encodeURIComponent(id)}&saved=1#record-editor`); }
     redirect(`/admin?saved=1&section=${encodeURIComponent(`${type}:${id}`)}#section-${id === "page-home" ? "home" : type}`);
   } catch (error) { unstable_rethrow(error); return formError(error); }
@@ -135,7 +141,7 @@ export async function moveRecordAction(formData: FormData) {
   if (direction !== -1 && direction !== 1) throw new Error("Invalid record direction.");
   const expected = String(formData.get("expectedUpdatedAt") ?? "") || null;
   await moveAdminRecord(actor, type, id, expected, direction);
-  updateTag(CONTENT_TAGS[type]); revalidatePath("/admin");
+  updateTag(CONTENT_TAGS[type]); revalidatePath("/admin"); revalidatePath("/");
   redirect(`/admin?saved=1&section=${encodeURIComponent(`${type}:${id}`)}#section-${id === "page-home" ? "home" : type}`);
 }
 
