@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { afterPaint, cssTimeMs, prefersReducedMotion } from "../../../lib/motion";
 import splashArtwork from "../../../../public/images/splash-humanity-artwork.png";
 
-const MIN_HOLD_MS = 640;
+const MIN_HOLD_MS = 420;
 const FONT_READY_TIMEOUT_MS = 800;
 const MAX_SPLASH_WAIT_MS = 2000;
 const SESSION_KEY = "shf-splash-seen-v2.6.0";

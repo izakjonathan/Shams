@@ -7,7 +7,7 @@ test("mobile reveals are one-shot, keyboard-safe and obey live Reduce Motion", a
   const row = page.locator(".artistRow").first();
   await expect(row).toHaveClass(/isLowerRevealPending/);
   // Focus a below-screen control without scrolling first: it must become readable.
-  await row.locator("a.artistArrow").focus();
+  await row.locator("a.artistRowLink").focus();
   await expect(row).toHaveClass(/isLowerRevealVisible/);
   await expect(row).toHaveCSS("opacity", "1");
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -17,50 +17,86 @@ test("mobile reveals are one-shot, keyboard-safe and obey live Reduce Motion", a
   await expect(row).toHaveClass(/isLowerRevealVisible/);
 });
 
-test("gallery automatically cycles and provides manual navigation and pause", async ({ page }) => {
+test("gallery advances decoded frames, supports manual navigation, and pauses", async ({ page }) => {
   await skipSplash(page);
   await page.goto("/");
   const gallery = page.locator("#gallery");
   await gallery.scrollIntoViewIfNeeded();
   const counter = gallery.locator(".galleryCount");
-  await expect(counter).toContainText("01 / ");
-  const initial = await gallery.locator(".eventGallerySlide.isActive img").getAttribute("src");
-  await expect.poll(() => gallery.locator(".eventGallerySlide.isActive img").getAttribute("src"), { timeout: 12_000 }).not.toBe(initial);
+  const initial = await counter.textContent();
+  await expect.poll(() => counter.textContent(), { timeout: 14_000 }).not.toBe(initial);
+  await expect(gallery.locator(".eventGallerySlide.isActive img")).toBeVisible();
   await gallery.getByRole("button", { name: "Pause gallery slideshow" }).click();
-  const paused = await gallery.locator(".eventGallerySlide.isActive img").getAttribute("src");
-  await page.waitForTimeout(5200);
-  await expect(gallery.locator(".eventGallerySlide.isActive img")).toHaveAttribute("src", paused!);
+  const paused = await counter.textContent();
+  await page.waitForTimeout(5300);
+  await expect(counter).toHaveText(paused!);
   await gallery.getByRole("button", { name: "Next gallery image" }).click();
-  await expect(gallery.locator(".eventGallerySlide.isActive img")).not.toHaveAttribute("src", paused!);
+  await expect.poll(() => counter.textContent()).not.toBe(paused);
   await gallery.getByRole("button", { name: "Resume gallery slideshow" }).click();
-  expect(await gallery.locator(".eventGallerySlide").count()).toBeLessThanOrEqual(3);
+  expect(await gallery.locator(".eventGallerySlide").count()).toBeLessThanOrEqual(2);
 });
 
-test("reduced motion removes fading but does not freeze gallery rotation", async ({ page }) => {
+test("gallery does not advance when scrolled away or when the document is hidden", async ({ page }) => {
+  await skipSplash(page);
+  await page.goto("/");
+  const gallery = page.locator("#gallery");
+  await gallery.scrollIntoViewIfNeeded();
+  await expect(gallery.locator(".eventGallerySlide.isActive img")).toBeVisible();
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  await expect.poll(() => gallery.evaluate((node) => node.getBoundingClientRect().top >= window.innerHeight)).toBe(true);
+  const before = await gallery.locator(".galleryCount").textContent();
+  await page.waitForTimeout(5500);
+  await expect(gallery.locator(".galleryCount")).toHaveText(before!);
+});
+
+test("reduced motion starts paused and reacts to live preference changes", async ({ page }) => {
   await skipSplash(page);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   const gallery = page.locator("#gallery");
   await gallery.scrollIntoViewIfNeeded();
-  const initial = await gallery.locator(".eventGallerySlide.isActive img").getAttribute("src");
-  await expect.poll(() => gallery.locator(".eventGallerySlide.isActive img").getAttribute("src"), { timeout: 12_000 }).not.toBe(initial);
-  await expect.poll(() => gallery.locator(".isActive").evaluate((element) =>
-    Number.parseFloat(getComputedStyle(element).transitionDuration),
-  )).toBeLessThan(.001);
+  await expect(gallery.getByRole("button", { name: "Resume gallery slideshow" })).toBeVisible();
+  const before = await gallery.locator(".galleryCount").textContent();
+  await page.waitForTimeout(5200);
+  await expect(gallery.locator(".galleryCount")).toHaveText(before!);
+  await gallery.getByRole("button", { name: "Next gallery image" }).click();
+  await expect.poll(() => gallery.locator(".galleryCount").textContent()).not.toBe(before);
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(gallery.getByRole("button", { name: "Pause gallery slideshow" })).toBeVisible();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(gallery.getByRole("button", { name: "Resume gallery slideshow" })).toBeVisible();
 });
 
-test("gallery timer does not depend on images completing their load", async ({ page }) => {
+test("a failed gallery image is skipped without a blank active slide", async ({ page }) => {
   await skipSplash(page);
-  // Delay every optimized image long enough to exceed one slide interval.
-  // A readiness-gated implementation would stay at 01 / N indefinitely.
+  // The second bundled gallery frame is gallery-06.webp; intercept the actual
+  // responsive optimizer request, not the old unoptimized image path.
   await page.route("**/_next/image?**", async (route) => {
-    await new Promise((resolve) => setTimeout(resolve, 9000));
+    if (route.request().url().includes("gallery-06.webp")) await route.abort();
+    else await route.continue();
+  });
+  await page.goto("/");
+  const gallery = page.locator("#gallery");
+  await gallery.scrollIntoViewIfNeeded();
+  await expect(gallery.locator(".eventGallerySlide.isActive img")).toBeVisible();
+  await expect.poll(() => gallery.locator(".galleryCount").textContent(), { timeout: 16_000 }).not.toBe("01 / 14");
+  await expect(gallery.locator(".eventGallerySlide.isActive img")).toBeVisible();
+});
+
+test("slow gallery media never makes the current image disappear", async ({ page }) => {
+  await skipSplash(page);
+  await page.route("**/_next/image?**", async (route) => {
+    if (route.request().url().includes("gallery-06.webp")) {
+      await new Promise((resolve) => setTimeout(resolve, 9000));
+    }
     await route.continue().catch(() => {});
   });
-  await page.goto("/", { waitUntil: "domcontentloaded" });
-  const counter = page.locator("#gallery .galleryCount");
-  await expect(counter).toContainText("01 / ");
-  await expect(counter).toContainText("02 / ", { timeout: 7500 });
+  await page.goto("/");
+  const gallery = page.locator("#gallery");
+  await gallery.scrollIntoViewIfNeeded();
+  await expect(gallery.locator(".eventGallerySlide.isActive img")).toBeVisible();
+  await page.waitForTimeout(5400);
+  await expect(gallery.locator(".eventGallerySlide.isActive img")).toBeVisible();
 });
 
 test("reduced motion skips the first splash and keeps menus, filters and FAQ usable", async ({ page }) => {
@@ -124,4 +160,17 @@ test("server content stays readable with JavaScript disabled", async ({ browser,
   await expect(page.locator(".hero h1")).toBeVisible();
   await expect(page.locator(".artistRow").first()).toHaveCSS("opacity", "1");
   await context.close();
+});
+
+test("search-only navigation bypasses the curtain and browser Back restores reading position", async ({ page }) => {
+  await skipSplash(page);
+  await page.goto("/?motion-query=1");
+  await page.locator("#lineup").scrollIntoViewIfNeeded();
+  const readingY = await page.evaluate(() => window.scrollY);
+  await page.locator('.siteHeader a[href="/#top"]').first().click();
+  await expect(page).toHaveURL(/\/#top$/);
+  await expect(page.locator(".routeTransitionVeil")).toHaveCount(0);
+  await page.goBack();
+  await expect(page).toHaveURL(/motion-query=1/);
+  await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 6000 }).toBeGreaterThan(Math.max(0, readingY - 200));
 });

@@ -1,3 +1,12 @@
+## 2.10.27 — Animation lifecycle and media delivery hardening
+
+- Gallery now pauses automatically when off-screen or in a hidden tab, and defaults to paused for Reduce Motion; explicit manual resume remains possible.
+- Gallery preloads and decodes responsive high-quality media before changing slides, retains the previous image during a crossfade, skips failed images, and uses bounded waits for slow requests.
+- Uses responsive Next/Image gallery derivatives (quality 90) instead of eagerly downloading multiple full-resolution originals; originals remain in storage.
+- Query-only navigation bypasses the curtain; native browser Back/Forward scroll restoration is preserved; `popstate` cancels an in-flight curtain.
+- Dynamically inserted reveal targets are observed without hiding already-visible content; reduced-motion and focus safeguards remain.
+- Shortened first-visit splash minimum hold, refreshed gallery/route/reveal motion tests and replaced outdated motion documentation.
+
 ## 2.10.26 — Gallery image fidelity and centred controls
 
 - Replaced text-glyph gallery navigation with consistently centred, accessible SVG icons.

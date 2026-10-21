@@ -149,7 +149,9 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
     const hash = pending?.hash ?? (window.location.hash || null);
     let target: HTMLElement | null = null;
 
-    if (hash && hash !== "#top") target = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (hash && hash !== "#top") {
+      try { target = document.getElementById(decodeURIComponent(hash.slice(1))); } catch { /* Invalid hash: go to top. */ }
+    }
 
     if (hash === "#site-footer") {
       target?.classList.add("isRevealed");
@@ -209,17 +211,44 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
 
     const destination = new URL(href, window.location.href);
     const current = new URL(window.location.href);
-    const sameDocumentRoute = destination.pathname === current.pathname && destination.search === current.search;
+    const samePath = destination.pathname === current.pathname;
+    const sameDocumentRoute = samePath && destination.search === current.search;
 
     if (sameDocumentRoute) {
       const hash = destination.hash || "#top";
-      const target = hash === "#top" ? null : document.getElementById(decodeURIComponent(hash.slice(1)));
+      let target: HTMLElement | null = null;
+      if (hash !== "#top") { try { target = document.getElementById(decodeURIComponent(hash.slice(1))); } catch { /* Invalid hash. */ } }
       const behavior = prefersReducedMotion() ? "auto" : "smooth";
       if (hash === "#site-footer") scrollToDocumentBottom(behavior);
       else if (target) target.scrollIntoView({ behavior, block: "start" });
       else window.scrollTo({ top: 0, left: 0, behavior });
-      clearManagedHash();
+      // Preserve native anchor history so Back/Forward can restore a reading
+      // position rather than silently discarding the destination hash.
+      const anchorHref = `${destination.pathname}${destination.search}${destination.hash}`;
+      if (`${current.pathname}${current.search}${current.hash}` !== anchorHref) {
+        if (options?.replace) window.history.replaceState(window.history.state, "", anchorHref);
+        else window.history.pushState(window.history.state, "", anchorHref);
+      }
       if (options?.focusOnArrival) focusElement(target ?? document.getElementById("main-content"));
+      return;
+    }
+
+    // Search/filter updates are not a page transition. A curtain here would
+    // wait for a pathname change that never arrives and trap focus until timeout.
+    if (samePath) {
+      const nextHref = `${destination.pathname}${destination.search}${destination.hash}`;
+      if (options?.replace) router.replace(nextHref, { scroll: false });
+      else router.push(nextHref, { scroll: false });
+      if (destination.hash) {
+        afterPaint(() => {
+          let target: HTMLElement | null = null;
+          try { target = document.getElementById(decodeURIComponent(destination.hash.slice(1))); } catch { /* Invalid hash. */ }
+          if (destination.hash === "#top") window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+          else if (destination.hash === "#site-footer") scrollToDocumentBottom("auto");
+          else target?.scrollIntoView({ behavior: "auto", block: "start" });
+          if (options?.focusOnArrival) focusElement(target ?? document.getElementById("main-content"));
+        });
+      }
       return;
     }
 
@@ -253,24 +282,26 @@ export function RouteFade({ children, header }: { readonly children: ReactNode; 
       timer(startNavigation, curtainDuration(nextKind, "cover") + FALLBACK_BUFFER_MS);
     });
     timer(unlock, WATCHDOG_MS);
-  }, [clearTimers, prefetch, startNavigation, timer, unlock]);
+  }, [clearTimers, prefetch, router, startNavigation, timer, unlock]);
 
   useEffect(() => {
-    const previous = window.history.scrollRestoration;
-    window.history.scrollRestoration = "manual";
+    const onHistoryNavigation = () => { if (lockRef.current) unlock(); };
+    window.addEventListener("popstate", onHistoryNavigation);
+    // Browser-native scroll restoration preserves Back/Forward reading positions.
+    // Only curtain-initiated push/replace calls manage the destination scroll.
     return () => {
-      window.history.scrollRestoration = previous;
+      window.removeEventListener("popstate", onHistoryNavigation);
       clearTimers();
       cancelMountPaintRef.current?.();
     };
-  }, [clearTimers]);
+  }, [clearTimers, unlock]);
 
   useLayoutEffect(() => {
     if (previousPathRef.current === pathname) return;
     previousPathRef.current = pathname;
     if (lockRef.current) void revealDestination();
-    else positionDestination();
-  }, [pathname, positionDestination, revealDestination]);
+    // Popstate and ordinary browser history navigation use native restoration.
+  }, [pathname, revealDestination]);
 
   const value = useMemo<RouteTransitionContextValue>(() => ({ navigate, prefetch, transitioning }), [navigate, prefetch, transitioning]);
   return (

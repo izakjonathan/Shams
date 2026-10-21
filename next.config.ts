@@ -46,7 +46,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  images: { remotePatterns: [{ protocol: "https", hostname: "**.public.blob.vercel-storage.com", pathname: "/shams/**" }] },
+  images: { qualities: [75, 90], remotePatterns: [{ protocol: "https", hostname: "**.public.blob.vercel-storage.com", pathname: "/shams/**" }] },
   serverExternalPackages: ["postgres"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

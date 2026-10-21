@@ -32,7 +32,7 @@ if (globals.indexOf("responsive.css") < globals.indexOf("artists.css")) {
 
 const routeFade = readFileSync(resolve(root, "src/features/site/components/RouteFade.tsx"), "utf8");
 for (const required of [
-  "WATCHDOG_MS", "scrollRestoration", "aria-busy", "router.prefetch",
+  "WATCHDOG_MS", "popstate", "aria-busy", "router.prefetch",
   "routeTransitionVeil", "onTransitionEnd",
   "waitForDestinationLayout", "shf-route-target", "navigationStartedRef",
 ]) {
@@ -344,7 +344,7 @@ for (const file of adminRequired) {
   if (!existsSync(join(root, file))) errors.push(`Missing v2.1.0 admin/database file: ${file}`);
 }
 const packageJson = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-if (packageJson.version !== "2.10.26") errors.push("package.json version must be 2.10.26.");
+if (packageJson.version !== "2.10.27") errors.push("package.json version must be 2.10.27.");
 if (readFileSync(resolve(root, "src/styles/footer.css"), "utf8").includes("footerCanvasBleed")) errors.push("Footer must not regain flow-based canvas bleed that increases its height.");
 
 // v2.1.8 artist arrow size regression guard
@@ -550,7 +550,7 @@ const motionRevealStyles = readFileSync(resolve(root, "src/styles/motion.css"), 
 for (const required of [
   'prefersReducedMotion()',
   'IntersectionObserver',
-  'INITIAL_VISIBLE_VIEWPORT_RATIO',
+  'MutationObserver',
   'STAGGER_STEP_MS',
   'data-lower-reveal',
 ]) {
@@ -615,15 +615,18 @@ if (!publicHome245.includes("<EventGallery images={gallery}") || publicHome245.i
 for (const required of [
   'aria-label="Event atmosphere gallery"',
   'SLIDE_INTERVAL_MS = 4800',
-  'window.setInterval',
-  'failedImages.current.has',
+  'IntersectionObserver',
+  'Promise.race',
+  'IMAGE_WAIT_MS',
+  'failedRef.current.has',
+  'window.setTimeout',
   'Pause gallery slideshow',
   'Resume gallery slideshow',
   'eventGalleryTitle',
 ]) {
   if (!eventGallery.includes(required)) errors.push(`Event gallery behavior is missing: ${required}`);
 }
-if (eventGallery.includes('loadedImages.current.has') || eventGallery.includes('hoverPaused') || eventGallery.includes('prefersReducedMotion()')) errors.push("Gallery autoplay must not be blocked by image-load, hover, or motion readiness checks.");
+if (eventGallery.includes('hoverPaused') || !eventGallery.includes('motion.addEventListener("change"') || !eventGallery.includes('!visible || !pageVisible')) errors.push("Gallery must respect off-screen, hidden-tab and reduced-motion states.");
 if (!/transition:\s*opacity\s+\d+ms/.test(galleryStyles) || !galleryStyles.includes("color: var(--color-accent)") || !galleryStyles.includes("font-family: var(--font-display)")) {
   errors.push("Gallery must use an opacity crossfade and centered yellow Agilera overlay.");
 }
