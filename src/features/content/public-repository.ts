@@ -17,6 +17,9 @@ import type { PublicContentType } from "./database-public-records";
 
 type FailurePolicy = "error" | "local-fallback";
 
+// Best-effort per-instance stale data: never mix draft content into public responses.
+const lastPublished = new Map<PublicContentType, unknown[]>();
+
 function sourceMode() {
   return process.env.CONTENT_SOURCE?.trim().toLowerCase() === "database"
     ? "database"
@@ -24,10 +27,8 @@ function sourceMode() {
 }
 
 function failurePolicy(): FailurePolicy {
-  return process.env.CONTENT_DATABASE_FAILURE?.trim().toLowerCase() ===
-    "local-fallback"
-    ? "local-fallback"
-    : "error";
+  return process.env.CONTENT_DATABASE_FAILURE?.trim().toLowerCase() === "error"
+    ? "error" : "local-fallback";
 }
 
 function localFor(type: PublicContentType): unknown[] {
@@ -58,10 +59,18 @@ async function records(type: PublicContentType) {
     const { readDatabasePublicRecords } = await import(
       "./database-public-records"
     );
-    return await readDatabasePublicRecords(type, preview);
+    const result = await readDatabasePublicRecords(type, preview);
+    if (!preview) lastPublished.set(type, result);
+    return result;
   } catch (error) {
-    console.error(`[public content] Failed to read ${type} from database.`);
-    if (failurePolicy() === "local-fallback") return localFor(type);
+    console.error(`[public content] Failed to read ${type} from database: ${error instanceof Error ? error.name : "unknown"}.`);
+    if (!preview && failurePolicy() === "local-fallback") {
+      const stale = lastPublished.get(type);
+      if (stale) return stale;
+      // Ticket prices/availability must never silently revert to potentially stale defaults.
+      if (type === "ticket") return [];
+      return localFor(type);
+    }
     throw error;
   }
 }
@@ -74,11 +83,7 @@ export const publicContentRepository = {
   },
   getPrimaryNavigation: () => contentRepository.getPrimaryNavigation(),
   getInformationNavigation: () => contentRepository.getInformationNavigation(),
-  getPublishedArtists: async () => {
-    if (sourceMode() === "local") return contentRepository.getArtists();
-    const { readDatabasePublicRecords } = await import("./database-public-records");
-    return await readDatabasePublicRecords("artist", false) as Artist[];
-  },
+  getPublishedArtists: async () => records("artist") as Promise<Artist[]>,
   getArtists: async () => records("artist") as Promise<Artist[]>,
   getGallery: async () => records("gallery") as Promise<GalleryImage[]>,
   getArtistBySlug: async (slug: string) =>

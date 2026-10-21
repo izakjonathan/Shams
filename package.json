@@ -1,6 +1,6 @@
 {
   "name": "shams-for-humanity",
-  "version": "2.10.21",
+  "version": "2.10.23",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -28,10 +28,11 @@
     "db:align-publication": "node scripts/db-align-publication.mjs",
     "db:repair-records": "node scripts/db-repair-records.mjs",
     "lint": "eslint .",
-    "test": "node --import tsx --test src/features/admin/tests/session.test.ts src/features/content/tests/validation.test.ts",
+    "test": "node --import tsx --test src/features/admin/tests/session.test.ts src/features/content/tests/validation.test.ts src/features/content/tests/public-read-policy.test.ts",
     "test:db": "node --conditions=react-server --import tsx --test src/features/admin/tests/database.test.ts"
   },
   "dependencies": {
+    "@vercel/blob": "2.3.0",
     "drizzle-orm": "0.45.4",
     "next": "16.4.0",
     "postgres": "3.4.7",

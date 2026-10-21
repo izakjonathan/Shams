@@ -20,8 +20,9 @@ export function SimpleRecordEditor({ record, writable, creating = false }: { rec
       <input type="hidden" name="status" value={record.status} />
       <input type="hidden" name="sortOrder" value={record.sortOrder} />
       {record.type === "artist" ? <label>Page address<input name="slug" defaultValue={record.slug ?? ""} required /></label> : <input type="hidden" name="slug" value={record.slug ?? ""} />}
+      {!creating && <p className="adminRecordState" role="status"><strong>{record.status === "published" ? "Published — visible on the website" : record.status === "draft" ? "Draft — not visible publicly" : record.status === "archived" ? "Archived — not visible publicly" : "Placeholder"}</strong>{record.updatedAt ? ` · Last saved ${new Date(record.updatedAt).toLocaleString("en-GB")}` : ""}</p>}
       <StructuredFields record={record} type={record.type} />
-      <div className="simpleSave"><button className="adminPrimaryButton" name="intent" value="save" disabled={!writable}>{creating ? "Save draft" : "Save changes"}</button>
+      <div className="simpleSave"><button className="adminPrimaryButton" name="intent" value="save" disabled={!writable}>{creating ? "Save draft" : record.status === "published" ? "Save published changes" : "Save changes"}</button>
       {!creating && record.status !== "published" && <button className="adminSecondaryButton" name="intent" value="publish" disabled={!writable}>Publish</button>}</div>
       {!creating && record.id !== "page-home" && <details className="simpleMore"><summary>More options</summary><div className="adminEditorActions"><Link href={`/admin/revisions/${record.type}/${encodeURIComponent(record.id)}`}>Revision history</Link><button className="adminSecondaryButton" name="intent" value="draft" disabled={!writable}>Move to draft</button><button className="adminDangerButton" name="intent" value="archive" disabled={!writable}>Archive</button></div></details>}
     </RecordForm>

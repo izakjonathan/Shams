@@ -22,9 +22,9 @@ function contentSecurityPolicy(): string {
     // trade-off for what is otherwise a fully static festival site.)
     "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data:",
+    "img-src 'self' data: https://*.public.blob.vercel-storage.com",
     "font-src 'self'",
-    "connect-src 'self'",
+    "connect-src 'self' https://*.public.blob.vercel-storage.com https://blob.vercel-storage.com",
     `form-action ${formActionOrigins}`,
     "object-src 'none'",
     "base-uri 'self'",
@@ -46,6 +46,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: { remotePatterns: [{ protocol: "https", hostname: "**.public.blob.vercel-storage.com", pathname: "/shams/**" }] },
   serverExternalPackages: ["postgres"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

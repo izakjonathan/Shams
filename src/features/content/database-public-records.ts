@@ -9,6 +9,7 @@ import type { ContentStatus } from "./models";
 import { CONTENT_TAGS } from "./cache-tags";
 import { MEDIA_PLACEHOLDER, isLocalMedia, publicImageOrBaseline } from "./media-path";
 import { canonicalImageForRecord, completeRecordFromCanonicalBaseline } from "./canonical-record-completion";
+import { mapValidPublicRecords } from "./public-read-policy";
 
 export type PublicContentType = keyof typeof CONTENT_TAGS;
 
@@ -35,7 +36,7 @@ async function queryDatabase(type: PublicContentType, includeDrafts: boolean) {
         )
         .orderBy(asc(contentRecords.sortOrder), asc(contentRecords.id));
 
-  return rows.map((row) => {
+  return mapValidPublicRecords(rows, (row) => {
     const metadata = {
       id: row.id,
       type: row.type as AdminContentType,
@@ -63,6 +64,9 @@ async function queryDatabase(type: PublicContentType, includeDrafts: boolean) {
       }
     }
     return data;
+  }, (row, error) => {
+    // A broken record must not make unrelated content disappear. Never log its JSON.
+    console.error(`[public content] Skipping invalid ${type} record ${row.id}: ${error instanceof Error ? error.message : "invalid record"}`);
   });
 }
 

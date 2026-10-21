@@ -40,7 +40,7 @@ function stringArray(value: unknown, path: string): string[] {
 }
 
 function image(value: unknown, path: string) {
-  if (!isLocalMedia(value)) fail(`${path} must be a local image path.`);
+  if (!isLocalMedia(value)) fail(`${path} must be an approved local or Vercel Blob image path.`);
 }
 
 function nestedMetadata(item: Record<string, unknown>, path: string) {

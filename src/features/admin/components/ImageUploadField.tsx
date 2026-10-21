@@ -1,11 +1,14 @@
 "use client";
 import { useState, useRef } from "react";
+import { upload as uploadBlob } from "@vercel/blob/client";
+import { useUploadPending } from "./RecordForm";
 
 const LARGE = 8 * 1024 * 1024;
 async function prepare(file: File): Promise<File> {
-  if (file.size <= LARGE) return file; // Original bytes and metadata remain intact for normal images.
+  if (file.size <= LARGE) return file;
   if (!file.type.startsWith("image/") || file.type === "image/avif") return file;
-  const bitmap = await createImageBitmap(file);
+  let bitmap: ImageBitmap;
+  try { bitmap = await createImageBitmap(file); } catch { return file; }
   try {
     const scale = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement("canvas");
@@ -18,24 +21,64 @@ async function prepare(file: File): Promise<File> {
     return result && result.size < file.size ? new File([result], "optimised.webp", {type:"image/webp"}) : file;
   } finally { bitmap.close(); }
 }
+function sendUpload(form: FormData, onProgress: (value: number) => void): Promise<{path: string}> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "/api/media");
+    xhr.upload.onprogress = (event) => { if (event.lengthComputable) onProgress(Math.round(event.loaded / event.total * 100)); };
+    xhr.onerror = () => reject(new Error("Network error during upload. Try again."));
+    xhr.ontimeout = () => reject(new Error("Upload timed out. Try again."));
+    xhr.timeout = 45000;
+    xhr.onload = () => {
+      let json: {path?: string; error?: string};
+      try { json = JSON.parse(xhr.responseText); }
+      catch { reject(new Error("The server returned an unexpected upload response.")); return; }
+      if (xhr.status < 200 || xhr.status >= 300 || !json.path) reject(new Error(json.error ?? "Upload failed."));
+      else resolve({path: json.path});
+    };
+    xhr.send(form);
+  });
+}
 export function ImageUploadField({name, defaultValue, required}: {name:string;defaultValue:string;required?:boolean}) {
   const [path, setPath] = useState(defaultValue);
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [message, setMessage] = useState("");
   const input = useRef<HTMLInputElement>(null);
+  const markUpload = useUploadPending();
   async function upload(file?: File) {
-    if (!file) return;
-    setBusy(true); setMessage("");
+    if (!file || busy) return;
+    setBusy(true); markUpload(1); setMessage(""); setProgress(0);
     try {
       const processed = await prepare(file);
       if (processed.size > 12 * 1024 * 1024) throw new Error("This image is still over 12 MB after optimisation.");
-      const form = new FormData(); form.set("file", processed);
-      const response = await fetch("/api/media", {method:"POST",body:form});
-      const json = await response.json() as {path?:string;error?:string};
-      if (!response.ok || !json.path) throw new Error(json.error ?? "Upload failed.");
-      setPath(json.path); setMessage(processed !== file ? "Large image optimised and uploaded. Save changes to publish." : "Original image uploaded unchanged. Save changes to publish.");
+      const response = await fetch("/api/media", { cache: "no-store" });
+      if (!response.ok) throw new Error("Could not check upload configuration. Sign in again.");
+      const config = await response.json() as { storage: "blob" | "database" };
+      let imagePath: string;
+      if (config.storage === "blob") {
+        const extension = processed.type === "image/jpeg" ? "jpg" : processed.type.split("/")[1];
+        const blob = await uploadBlob(`shams/${crypto.randomUUID()}.${extension}`, processed, {
+          access: "public",
+          handleUploadUrl: "/api/media/client",
+          onUploadProgress: event => setProgress(Math.round(event.percentage)),
+        });
+        imagePath = blob.url;
+      } else {
+        const form = new FormData(); form.set("file", processed);
+        imagePath = (await sendUpload(form, setProgress)).path;
+      }
+      setPath(imagePath);
+      setMessage(processed !== file ? "Large image optimised and uploaded. Save changes to publish." : "Original image uploaded unchanged. Save changes to publish.");
     } catch (error) { setMessage(error instanceof Error ? error.message : "Upload failed."); }
-    finally { setBusy(false); if (input.current) input.current.value = ""; }
+    finally { setBusy(false); markUpload(-1); if (input.current) input.current.value = ""; }
   }
-  return <div className="adminUploadField"><label>Upload image — choose photo or file<input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={busy} onChange={event => void upload(event.target.files?.[0])}/></label><label>Image path<input name={name} value={path} onChange={event => setPath(event.target.value)} required={required} disabled={busy}/></label><small>Images above 8 MB are optimised when possible; smaller files stay unchanged. Maximum upload: 12 MB. Requires database storage.</small>{message && <span role="status">{message}</span>}{busy && <span role="status">Uploading…</span>}{path && <img src={path} alt="Selected upload preview" style={{maxWidth:180,maxHeight:130,objectFit:"contain"}}/>}</div>;
+  return <div className="adminUploadField">
+    <label>Upload image — choose photo or file<input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={busy} onChange={event => void upload(event.target.files?.[0])}/></label>
+    <label>Image path<input name={name} value={path} onChange={event => setPath(event.target.value)} required={required} disabled={busy}/></label>
+    <small>Only images over 8 MB are optimised where possible. Maximum 12 MB. Save after upload to apply the image.</small>
+    {busy && <div role="status">Uploading image: {progress}% <progress max={100} value={progress} aria-label="Image upload progress" /></div>}
+    {message && <span role="status">{message}</span>}
+    {path && <img src={path} alt="Selected upload preview" style={{maxWidth:180,maxHeight:130,objectFit:"contain"}}/>}
+  </div>;
 }

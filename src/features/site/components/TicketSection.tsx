@@ -34,6 +34,7 @@ export function TicketSection({ tickets, ticketUrl, editing = false }: TicketSec
       <ul className="ticketSharedIncludes" aria-label="Included with every ticket">
         {sharedIncludes.map((item) => <li key={item}>{item}</li>)}
       </ul>
+      {orderedTickets.length === 0 && <p role="status">Ticket details are temporarily unavailable. Please check back shortly.</p>}
       <div className="ticketGrid">
         {orderedTickets.map((ticket) => {
           const extraIncludes = ticket.includes.filter((item) => !sharedIncludes.includes(item) && item !== "Everything in general admission");

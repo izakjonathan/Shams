@@ -28,6 +28,7 @@ export function RecordEditor({ record, type, writable }: { record: AdminRecord; 
           <label>Sort order<input name="sortOrder" type="number" defaultValue={record.sortOrder} /></label>
           <label>Status<select name="status" defaultValue={record.status}><option value="draft">Draft</option><option value="placeholder">Placeholder</option><option value="published">Published</option><option value="archived">Archived</option></select></label>
         </div>
+        <p className="adminRecordState" role="status"><strong>{record.status === "published" ? "Published — visible on the website" : record.status === "draft" ? "Draft — not visible publicly" : record.status === "archived" ? "Archived — not visible publicly" : "Placeholder"}</strong>{record.updatedAt ? ` · Last saved ${new Date(record.updatedAt).toLocaleString("en-GB")}` : ""}</p>
         <StructuredFields record={record} type={type} />
         <details className="adminAdvanced"><summary>Advanced record JSON</summary><p>Read-only reference for debugging and migrations.</p><pre>{JSON.stringify(record.data, null, 2)}</pre></details>
         <div className="adminEditorActions">

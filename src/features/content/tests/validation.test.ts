@@ -74,5 +74,16 @@ test("published legacy records exceeding new write budgets still render with sha
   assert.throws(() => validateAdminRecord(legacy, artist), /250 fields/);
   assert.doesNotThrow(() => validateStoredAdminRecord(legacy, artist));
   assert.throws(() => validateStoredAdminRecord({ ...legacy, name: "" }, artist), /artist.name/);
-  assert.throws(() => validateStoredAdminRecord({ ...legacy, image: "https://untrusted.example/img.jpg" }, artist), /local image path/);
+  assert.throws(() => validateStoredAdminRecord({ ...legacy, image: "https://untrusted.example/img.jpg" }, artist), /approved local or Vercel Blob image path/);
+});
+
+
+test("only approved Vercel Blob image URLs are accepted", () => {
+  const approved = "https://abc123.public.blob.vercel-storage.com/shams/123e4567-e89b-12d3-a456-426614174000-rand123.webp";
+  assert.equal(publicImageOrBaseline(approved, undefined), approved);
+  for (const rejected of [
+    "https://evil.example/shams/123e4567-e89b-12d3-a456-426614174000.webp",
+    "https://abc123.public.blob.vercel-storage.com/other/file.webp",
+    "https://abc123.public.blob.vercel-storage.com/shams/123e4567-e89b-12d3-a456-426614174000.webp?download=1",
+  ]) assert.equal(publicImageOrBaseline(rejected, undefined), MEDIA_PLACEHOLDER);
 });
