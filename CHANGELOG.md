@@ -1,3 +1,10 @@
+## 2.10.26 — Gallery image fidelity and centred controls
+
+- Replaced text-glyph gallery navigation with consistently centred, accessible SVG icons.
+- Served gallery image files without an extra Next.js lossy compression pass, preserving uploaded source pixels. This can increase image transfer sizes; upload appropriately sized, high-quality originals.
+- Increased the high-resolution upload optimisation target to 3200px and high-quality WebP encoding for images over 8 MB; images at or below 8 MB are unchanged.
+- Added a non-blocking low-resolution warning to the admin uploader. Existing low-resolution images cannot be made sharp by a code change.
+
 ## 2.10.25 — Reliable gallery autoplay
 
 - Removed image `onLoad` readiness gating from the homepage gallery timer. The carousel advances every 4.8 seconds whenever two or more images are available, independent of browser image-loading callbacks.

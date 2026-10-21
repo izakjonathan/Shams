@@ -84,6 +84,7 @@
 .galleryControls { position:absolute; z-index:3; left:var(--page-gutter); bottom:1.5rem; display:flex; align-items:center; gap:18px; color:var(--color-white); }
 .galleryCount { font-size:10px; letter-spacing:var(--tracking-label); font-variant-numeric:tabular-nums; }
 .galleryButtons { display:flex; gap:8px; }
-.galleryButtons button { display:grid; place-items:center; width:38px; height:38px; border:1px solid currentColor; border-radius:50%; background:rgb(0 0 0 / .15); color:inherit; font:20px/1 Arial,sans-serif; cursor:pointer; }
+.galleryButtons button { display:flex; align-items:center; justify-content:center; flex:0 0 38px; box-sizing:border-box; width:38px; height:38px; padding:0; border:1px solid currentColor; border-radius:50%; background:rgb(0 0 0 / .15); color:inherit; line-height:1; cursor:pointer; appearance:none; -webkit-appearance:none; }
+.galleryButtons button svg { display:block; flex:none; width:22px; height:22px; margin:0; padding:0; transform:none; }
 .galleryButtons button:hover { background:rgb(0 0 0 / .45); }
 .galleryButtons button:focus-visible { outline:2px solid currentColor; outline-offset:3px; }

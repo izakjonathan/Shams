@@ -7,6 +7,16 @@ import type { GalleryImage } from "../../content";
 
 const SLIDE_INTERVAL_MS = 4800;
 
+// Geometric icons avoid the font-baseline offsets of ←, → and Ⅱ on iOS.
+function GalleryIcon({ kind }: { kind: "previous" | "next" | "pause" | "play" }) {
+  return <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round">
+    {kind === "previous" && <><path d="M20 12H4" /><path d="m11 5-7 7 7 7" /></>}
+    {kind === "next" && <><path d="M4 12h16" /><path d="m13 5 7 7-7 7" /></>}
+    {kind === "pause" && <><path d="M9 5v14" /><path d="M15 5v14" /></>}
+    {kind === "play" && <path d="m8 5 10 7-10 7z" fill="currentColor" stroke="none" />}
+  </svg>;
+}
+
 // A stable record ID is not a stable image: an editor can replace its media.
 function mediaKey(image: GalleryImage): string {
   return typeof image.image === "string" ? image.image : image.image.src;
@@ -78,6 +88,10 @@ export function EventGallery({ images, editing = false }: { images: readonly Gal
               alt=""
               fill
               sizes="100vw"
+              // Preserve original uploaded pixels: Next's default lossy re-encode
+              // noticeably softens photographs already compressed by the camera.
+              // Bundled WebP images are also served at source quality.
+              unoptimized
               // Adjacent slides have opacity:0. Lazy loading can defer them forever
               // in Safari, leaving the carousel unable to advance.
               loading="eager"
@@ -96,9 +110,9 @@ export function EventGallery({ images, editing = false }: { images: readonly Gal
       <div className="galleryControls">
         <span className="galleryCount" aria-live="off">{String(currentIndex + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}</span>
         {images.length > 1 && <div className="galleryButtons">
-          <button type="button" onClick={() => goTo(-1)} aria-label="Previous gallery image">←</button>
-          <button type="button" onClick={() => goTo(1)} aria-label="Next gallery image">→</button>
-          <button type="button" onClick={() => setPaused((value) => !value)} aria-label={paused ? "Resume gallery slideshow" : "Pause gallery slideshow"} aria-pressed={paused}>{paused ? "▶" : "Ⅱ"}</button>
+          <button type="button" onClick={() => goTo(-1)} aria-label="Previous gallery image"><GalleryIcon kind="previous" /></button>
+          <button type="button" onClick={() => goTo(1)} aria-label="Next gallery image"><GalleryIcon kind="next" /></button>
+          <button type="button" onClick={() => setPaused((value) => !value)} aria-label={paused ? "Resume gallery slideshow" : "Pause gallery slideshow"} aria-pressed={paused}><GalleryIcon kind={paused ? "play" : "pause"} /></button>
         </div>}
       </div>
     </section>

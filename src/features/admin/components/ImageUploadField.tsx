@@ -10,15 +10,22 @@ async function prepare(file: File): Promise<File> {
   let bitmap: ImageBitmap;
   try { bitmap = await createImageBitmap(file); } catch { return file; }
   try {
-    const scale = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height));
+    // Retain more detail in full-screen gallery photographs.
+    const scale = Math.min(1, 3200 / Math.max(bitmap.width, bitmap.height));
     const canvas = document.createElement("canvas");
     canvas.width = Math.max(1, Math.round(bitmap.width * scale));
     canvas.height = Math.max(1, Math.round(bitmap.height * scale));
     const context = canvas.getContext("2d");
     if (!context) return file;
     context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const result = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/webp", 0.85));
-    return result && result.size < file.size ? new File([result], "optimised.webp", {type:"image/webp"}) : file;
+    // Try high fidelity first; only step down if needed to meet the upload cap.
+    for (const quality of [0.94, 0.91, 0.88]) {
+      const result = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, "image/webp", quality));
+      if (result && result.size < file.size && result.size <= 12 * 1024 * 1024) {
+        return new File([result], "optimised.webp", {type:"image/webp"});
+      }
+    }
+    return file;
   } finally { bitmap.close(); }
 }
 function sendUpload(form: FormData, onProgress: (value: number) => void): Promise<{path: string}> {
@@ -69,14 +76,22 @@ export function ImageUploadField({name, defaultValue, required}: {name:string;de
         imagePath = (await sendUpload(form, setProgress)).path;
       }
       setPath(imagePath);
-      setMessage(processed !== file ? "Large image optimised and uploaded. Save changes to publish." : "Original image uploaded unchanged. Save changes to publish.");
+      let resolutionWarning = "";
+      try {
+        const bitmap = await createImageBitmap(processed);
+        if (Math.min(bitmap.width, bitmap.height) < 1200) {
+          resolutionWarning = ` Note: this image is ${bitmap.width} × ${bitmap.height} pixels. For a crisp full-screen gallery, use a higher-resolution original (ideally at least 1200px on the shorter edge).`;
+        }
+        bitmap.close();
+      } catch { /* File was uploaded; an unsupported dimension check must not fail it. */ }
+      setMessage((processed !== file ? "Large image optimised at high quality and uploaded." : "Original image uploaded unchanged.") + " Save changes to publish." + resolutionWarning);
     } catch (error) { setMessage(error instanceof Error ? error.message : "Upload failed."); }
     finally { setBusy(false); markUpload(-1); if (input.current) input.current.value = ""; }
   }
   return <div className="adminUploadField">
     <label>Upload image — choose photo or file<input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/avif" disabled={busy} onChange={event => void upload(event.target.files?.[0])}/></label>
     <label>Image path<input name={name} value={path} onChange={event => setPath(event.target.value)} required={required} disabled={busy}/></label>
-    <small>Only images over 8 MB are optimised where possible. Maximum 12 MB. Save after upload to apply the image.</small>
+    <small>Images up to 8 MB are kept exactly as uploaded. Larger images are optimised at high quality where possible (12 MB upload maximum). For a sharp full-screen gallery, use an original at least 1200px wide on its shorter edge. Save after upload to apply the image.</small>
     {busy && <div role="status">Uploading image: {progress}% <progress max={100} value={progress} aria-label="Image upload progress" /></div>}
     {message && <span role="status">{message}</span>}
     {path && <img src={path} alt="Selected upload preview" style={{maxWidth:180,maxHeight:130,objectFit:"contain"}}/>}
